@@ -34,7 +34,9 @@ package fr.sorbonne_u.components.equipments.meter;
 
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
+import fr.sorbonne_u.components.equipments.meter.connections.ElectricMeterConsumptionInboundPort;
 import fr.sorbonne_u.components.equipments.meter.connections.ElectricMeterInboundPort;
+import fr.sorbonne_u.components.equipments.meter.connections.ElectricMeterProductionInboundPort;
 import fr.sorbonne_u.components.equipments.meter.interfaces.ElectricMeterCI;
 import fr.sorbonne_u.components.equipments.meter.interfaces.ElectricMeterConsumptionI;
 import fr.sorbonne_u.components.equipments.meter.interfaces.ElectricMeterImplementationI;
@@ -75,6 +77,9 @@ implements	ElectricMeterImplementationI, ElectricMeterConsumptionI, ElectricMete
 	/** URI of the electric meter inbound port used in tests.				*/
 	public static final String	ELECTRIC_METER_INBOUND_PORT_URI =
 															"ELECTRIC-METER";
+	public static final String CONSUMPTION_INBOUND_PORT_URI = "CONSUMPTION_INBOUND_PORT_URI";
+	public static final String PRODUCTION_INBOUND_PORT_URI = "PRODUCTION_INBOUND_PORT_URI";
+
 	/** when true, methods trace their actions.								*/
 	public static boolean		VERBOSE = false;
 	/** when tracing, x coordinate of the window relative position.			*/
@@ -84,7 +89,9 @@ implements	ElectricMeterImplementationI, ElectricMeterConsumptionI, ElectricMete
 
 	/** inbound port offering the <code>ElectricMeterCI</code> interface.	*/
 	protected ElectricMeterInboundPort	emip;
-	
+	protected ElectricMeterConsumptionInboundPort consumptionInboundPort;
+	protected ElectricMeterProductionInboundPort productionInboundPort;
+
 	protected double currentConsumption;
 	protected double currentProduction;
 
@@ -233,6 +240,12 @@ implements	ElectricMeterImplementationI, ElectricMeterConsumptionI, ElectricMete
 				new ElectricMeterInboundPort(electricMeterInboundPortURI, this);
 		this.emip.publishPort();
 		
+		this.consumptionInboundPort = new ElectricMeterConsumptionInboundPort(CONSUMPTION_INBOUND_PORT_URI, this);
+		this.consumptionInboundPort.publishPort();
+		
+		this.productionInboundPort = new ElectricMeterProductionInboundPort(PRODUCTION_INBOUND_PORT_URI, this);
+		this.productionInboundPort.publishPort();
+		
 		this.currentProduction = 0;
 		this.currentConsumption = 0;
 
@@ -338,7 +351,7 @@ implements	ElectricMeterImplementationI, ElectricMeterConsumptionI, ElectricMete
 	public void addElectricProduction(double quantity) throws Exception {
 		if(VERBOSE)
 			this.traceMessage("Adding " + quantity + " to the total production (" + 
-					this.currentProduction + " + " + quantity + " = " + (this.currentProduction + quantity) + ")");
+					this.currentProduction + " + " + quantity + " = " + (this.currentProduction + quantity) + ")\n");
 		
 		this.currentProduction += quantity;
 	}	
@@ -347,7 +360,7 @@ implements	ElectricMeterImplementationI, ElectricMeterConsumptionI, ElectricMete
 	public void addElectricConsumption(double quantity) throws Exception {
 		if(VERBOSE)
 			this.traceMessage("Adding " + quantity + " to the total consumption (" + 
-					this.currentConsumption + " + " + quantity + " = " + (this.currentConsumption + quantity) + ")");
+					this.currentConsumption + " + " + quantity + " = " + (this.currentConsumption + quantity) + ")\n");
 		
 		this.currentConsumption += quantity;
 	}

@@ -95,7 +95,7 @@ extends		AbstractCVM
 		try {
 			CVMUnitTest cvm = new CVMUnitTest();
 			cvm.startStandardLifeCycle(1000L);
-			Thread.sleep(10000L);
+			Thread.sleep(1000000L);
 			System.exit(0);
 		} catch (Exception e) {
 			e.printStackTrace();

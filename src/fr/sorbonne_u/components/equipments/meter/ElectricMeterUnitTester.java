@@ -35,11 +35,20 @@ package fr.sorbonne_u.components.equipments.meter;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.equipments.meter.connections.ElectricMeterConnector;
+import fr.sorbonne_u.components.equipments.meter.connections.ElectricMeterConsumptionConnector;
+import fr.sorbonne_u.components.equipments.meter.connections.ElectricMeterConsumptionOutboundPort;
 import fr.sorbonne_u.components.equipments.meter.connections.ElectricMeterOutboundPort;
+import fr.sorbonne_u.components.equipments.meter.connections.ElectricMeterProductionConnector;
+import fr.sorbonne_u.components.equipments.meter.connections.ElectricMeterProductionOutboundPort;
 import fr.sorbonne_u.components.equipments.meter.interfaces.ElectricMeterCI;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
+import fr.sorbonne_u.components.utils.Measure;
+import fr.sorbonne_u.components.utils.MeasurementUnit;
+import fr.sorbonne_u.components.utils.SensorData;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 // -----------------------------------------------------------------------------
 /**
@@ -80,6 +89,9 @@ extends		AbstractComponent
 	public static int			Y_RELATIVE_POSITION = 0;
 
 	protected ElectricMeterOutboundPort emop;
+	
+	protected ElectricMeterConsumptionOutboundPort consumptionPort;
+	protected ElectricMeterProductionOutboundPort productionPort;
 
 	// -------------------------------------------------------------------------
 	// Constructors
@@ -103,6 +115,12 @@ extends		AbstractComponent
 
 		this.emop = new ElectricMeterOutboundPort(this);
 		this.emop.publishPort();
+		
+		this.consumptionPort = new ElectricMeterConsumptionOutboundPort(this);
+		this.consumptionPort.publishPort();
+		
+		this.productionPort = new ElectricMeterProductionOutboundPort(this);
+		this.productionPort.publishPort();
 
 		if(VERBOSE) {
 			this.tracer.get().setTitle("Electric meter tester component");
@@ -141,11 +159,44 @@ extends		AbstractComponent
 		}
 		this.traceMessage("...done.\n");
 	}
+	
+	protected void testAddElectricConsumption() {
+		this.traceMessage("testAddElectricConsumption()...\n");
+		try {
+			this.consumptionPort.addElectricConsumption(50.0);
+			
+			Measure<Double> measure = new Measure<>(50.0, MeasurementUnit.WATTS);
+	        SensorData<Measure<Double>> sensorData = new SensorData<>(measure);
+	        
+	        assertEquals(sensorData.getMeasure().getData(), this.emop.getCurrentConsumption().getMeasure().getData());
+		} catch(Exception e) {
+			this.traceMessage("...KO.\n");
+			assertTrue(false);
+		}
+		this.traceMessage("...done.\n");
+	}
+	
+	protected void testAddElectricProduction() {
+		this.traceMessage("testAddElectricProduction()...\n");
+		try {
+			this.productionPort.addElectricProduction(50.0);
+			
+			Measure<Double> measure = new Measure<>(50.0, MeasurementUnit.WATTS);
+	        SensorData<Measure<Double>> sensorData = new SensorData<>(measure);
+	        
+	        assertEquals(sensorData.getMeasure().getData(), this.emop.getCurrentProduction().getMeasure().getData());
+		} catch(Exception e) {
+			this.traceMessage("...KO.\n");
+			assertTrue(false);
+		}
+		this.traceMessage("...done.\n");
+	}
 
-	protected void			runAllTests()
-	{
+	protected void runAllTests() {
 		this.testGetCurrentConsumption();
 		this.testGetCurrentProduction();
+		this.testAddElectricConsumption();
+		this.testAddElectricProduction();
 	}
 
 	// -------------------------------------------------------------------------
@@ -165,6 +216,16 @@ extends		AbstractComponent
 					this.emop.getPortURI(),
 					ElectricMeter.ELECTRIC_METER_INBOUND_PORT_URI,
 					ElectricMeterConnector.class.getCanonicalName());
+			
+			this.doPortConnection(
+					this.consumptionPort.getPortURI(),
+					ElectricMeter.CONSUMPTION_INBOUND_PORT_URI,
+					ElectricMeterConsumptionConnector.class.getCanonicalName());
+			
+			this.doPortConnection(
+					this.productionPort.getPortURI(),
+					ElectricMeter.PRODUCTION_INBOUND_PORT_URI,
+					ElectricMeterProductionConnector.class.getCanonicalName());
 		} catch (Exception e) {
 			throw new ComponentStartException(e) ;
 		}
@@ -197,6 +258,8 @@ extends		AbstractComponent
 	{
 		try {
 			this.emop.unpublishPort();
+			this.consumptionPort.unpublishPort();
+			this.productionPort.unpublishPort();
 		} catch (Exception e) {
 			throw new ComponentShutdownException(e) ;
 		}
