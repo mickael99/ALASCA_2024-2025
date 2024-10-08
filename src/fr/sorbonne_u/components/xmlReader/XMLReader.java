@@ -97,7 +97,7 @@ public class XMLReader {
 	protected ArrayList<Methode> getServiceMethodes() {
 		ArrayList<Methode> serviceMethodes = new ArrayList<Methode>();
 		
-		String[] methodTags = {"upMode", "downMode", "setMode", "currentMode", "suspended", "suspend", "resume", "emergency"};
+		String[] methodTags = {"maxMode", "upMode", "downMode", "setMode", "currentMode", "suspended", "suspend", "resume", "emergency"};
 	    
 	    for(String tag : methodTags) {
 	        NodeList methodesList = rootElement.getElementsByTagName(tag);

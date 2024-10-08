@@ -5,9 +5,9 @@
   <consumption nominal="500" min="0" max="500"/>
   <required>java.lang.Math</required>
   <instance-var modifiers= "protected static" type="int" name="MAX_MODE"
-                static-init="3.0"/>
+                static-init="3"/>
   <instance-var modifiers= "protected static" type="double"
-                name="MIN_ADMISSIBLE_TEMP" static-init="0"/>
+                name="MIN_ADMISSIBLE_TEMP" static-init="0.0"/>
   <instance-var modifiers= "protected static" type="double"
                 name="MAX_ADMISSIBLE_DELTA" static-init="5.0"/>
   <instance-var modifiers= "protected" type="int" name="currentMode"
@@ -24,7 +24,12 @@
       ((FridgeExternalControlCI)this.offering).setCurrentCoolingPower(newPowerLevel);
     </body>
   </internal>
-  <maxMode type="double"><body>return MAX_MODE;</body></maxMode>
+  <maxMode type="int">
+	  <thrown>java.lang.Exception</thrown>
+	  <body>
+		  return MAX_MODE;
+	  </body>
+  </maxMode>
   <upMode type="boolean">
     <thrown>java.lang.Exception</thrown>
     <body>
@@ -62,7 +67,7 @@
       return true;
     </body>
   </setMode>
-  <currentMode type="double">
+  <currentMode type="int">
     <thrown>java.lang.Exception</thrown>
     <body>
       if (suspended()) {

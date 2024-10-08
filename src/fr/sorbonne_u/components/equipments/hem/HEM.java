@@ -1,5 +1,9 @@
 package fr.sorbonne_u.components.equipments.hem;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.HashMap;
 
 import fr.sorbonne_u.components.AbstractComponent;
@@ -14,6 +18,7 @@ import fr.sorbonne_u.components.equipments.meter.connections.ElectricMeterOutbou
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
 import fr.sorbonne_u.components.xmlReader.ClassCreator;
+import fr.sorbonne_u.exceptions.PreconditionException;
 import fr.sorbonne_u.utils.aclocks.AcceleratedClock;
 
 public class HEM extends AbstractComponent implements RegistrationI {
@@ -37,6 +42,7 @@ public class HEM extends AbstractComponent implements RegistrationI {
 	protected HashMap<String, AdjustableOutboundPort> registeredUriModularEquipement;
 	
 	// Test
+	public static boolean TEST_COMMUNICATION_WITH_FRIDGE; 
 	protected boolean isTestElectricMetter;
 	protected boolean isTestFridge;
 
@@ -61,13 +67,16 @@ public class HEM extends AbstractComponent implements RegistrationI {
 		}
 	}
 	
-	protected HEM(boolean isTestElectricMetter) {
+	protected HEM(boolean isTestElectricMetter) throws Exception {
 		super(1, 1);
 		
 		this.isTestElectricMetter = isTestElectricMetter;
 		this.isTestFridge = false;
 		
 		registeredUriModularEquipement = new HashMap<String, AdjustableOutboundPort>();
+		
+		this.registrationPort = new RegistrationInboundPort(URI_REGISTRATION_INBOUND_PORT, this);
+		this.registrationPort.publishPort();
 
 		if (VERBOSE) {
 			this.tracer.get().setTitle("Home Energy Manager component");
@@ -87,7 +96,6 @@ public class HEM extends AbstractComponent implements RegistrationI {
 		
 		this.registrationPort = new RegistrationInboundPort(URI_REGISTRATION_INBOUND_PORT, this);
 		this.registrationPort.publishPort();
-		
 
 		if (VERBOSE) {
 			this.tracer.get().setTitle("Home Energy Manager component");
@@ -181,6 +189,7 @@ public class HEM extends AbstractComponent implements RegistrationI {
 			
 			if(this.isTestElectricMetter)
 				this.electricMeterPort.unpublishPort();
+
 			
 		} catch (Exception e) {
 			throw new ComponentShutdownException(e) ;
@@ -280,9 +289,13 @@ public class HEM extends AbstractComponent implements RegistrationI {
 		
 		ClassCreator classCreator = new ClassCreator(xmlControlAdapter);
 		Class<?> classConnector = classCreator.createClass();
+
 		this.doPortConnection(ao.getPortURI(), 
 				controlPortURI, 
-				classConnector.getName());
+				classConnector.getCanonicalName());
+		
+		if(TEST_COMMUNICATION_WITH_FRIDGE)
+			this.scenarioCommunicationWithFridge(uid);
 		
 		return true;
 	}
@@ -291,7 +304,81 @@ public class HEM extends AbstractComponent implements RegistrationI {
 	public void unregister(String uid) throws Exception {
 		if(VERBOSE)
 			this.traceMessage("unregister of" + uid + "\n");
-		if(registered(uid))
+		if(registered(uid)) {
+			this.doPortDisconnection(this.registeredUriModularEquipement.get(uid).getPortURI());
 			this.registeredUriModularEquipement.remove(uid);
+		}
+	}
+	
+	public void scenarioCommunicationWithFridge(String fridgeURI) throws Exception {
+		if(VERBOSE)
+			this.traceMessage("\n\nStart scenario between the HEM and the fridge\n");
+		
+		assert this.registeredUriModularEquipement.containsKey(fridgeURI) :
+			new PreconditionException("Impossible test the commmunication with the fridge because it's not connect to the HEM");
+		
+		AdjustableOutboundPort ao = this.registeredUriModularEquipement.get(fridgeURI);
+		
+		if(VERBOSE)
+			this.traceMessage("maxMode()\n");
+		assertEquals(ao.maxMode(), 3);
+		if(VERBOSE)
+			this.traceMessage("done...\n");
+		
+		if(VERBOSE)
+			this.traceMessage("currentMode()\n");
+		assertEquals(ao.currentMode(), 3);
+		if(VERBOSE)
+			this.traceMessage("done...\n");
+		
+		if(VERBOSE)
+			this.traceMessage("downMode()\n");
+		assertTrue(ao.downMode());
+		assertEquals(ao.currentMode(), 2);
+		
+		if(VERBOSE)
+			this.traceMessage("done...\n");
+		
+		if(VERBOSE)
+			this.traceMessage("upMode()\n");
+		assertTrue(ao.upMode());
+		assertEquals(ao.currentMode(), 3);
+		if(VERBOSE)
+			this.traceMessage("done...\n");
+		
+		if(VERBOSE)
+			this.traceMessage("setMode()\n");
+		assertTrue(ao.setMode(1));
+		assertEquals(ao.currentMode(), 1);
+		if(VERBOSE)
+			this.traceMessage("done...\n");
+		
+		if(VERBOSE)
+			this.traceMessage("suspended()\n");
+		assertFalse(ao.suspended());
+		if(VERBOSE)
+			this.traceMessage("done...\n");
+		
+		if(VERBOSE)
+			this.traceMessage("suspend()\n");
+		assertTrue(ao.suspend());
+		assertTrue(ao.suspended());
+		if(VERBOSE)
+			this.traceMessage("done...\n");
+		
+		if(VERBOSE)
+			this.traceMessage("resume()\n");
+		assertTrue(ao.resume());
+		assertFalse(ao.suspended());
+		if(VERBOSE)
+			this.traceMessage("done...\n");
+		
+		if(VERBOSE)
+			this.traceMessage("emergency...\n");
+		if(VERBOSE)
+			this.traceMessage("done...\n");
+		
+		if(VERBOSE)
+			this.traceMessage("End of scenario between the HEM and the fridge \n\n");
 	}
 }

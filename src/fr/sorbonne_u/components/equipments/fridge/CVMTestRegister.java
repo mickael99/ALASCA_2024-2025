@@ -8,6 +8,7 @@ public class CVMTestRegister extends AbstractCVM {
 	
 	public CVMTestRegister() throws Exception {
 		Fridge.TEST_REGISTRATION = true;
+		HEM.TEST_COMMUNICATION_WITH_FRIDGE = true;
 	}
 	
 	@Override

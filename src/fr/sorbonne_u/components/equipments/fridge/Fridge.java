@@ -83,7 +83,7 @@ public class Fridge extends AbstractComponent implements FridgeInternalControlI,
 	}
 	
 	protected Fridge(String userInboundURI, String internalInboundURI, String externalInboundURI, boolean isHEMConnectionRequired) throws Exception {
-		super(1, 0);
+		super(2, 0);
 		this.initialise(userInboundURI, internalInboundURI, externalInboundURI, isHEMConnectionRequired);
 	}
 	
@@ -237,7 +237,7 @@ public class Fridge extends AbstractComponent implements FridgeInternalControlI,
 	public void setCurrentCoolingPower(double power) throws Exception { 
 		if (VERBOSE)
 			this.traceMessage("Trying to set current cooling power -> " + power + "\n.");
-		
+				
 		assert this.currentState != FridgeState.OFF :
 			new PreconditionException("Impossible to set current cooling power because the fridge is off");
 		assert power > 0 && power <= MAX_COOLING_POWER :
@@ -397,7 +397,7 @@ public class Fridge extends AbstractComponent implements FridgeInternalControlI,
 	
 	
 	// -------------------------------------------------------------------------
-	// Component services Registration
+	// Component Tests Registration
 	// -------------------------------------------------------------------------
 	
 	protected void testRegistered() {
@@ -418,7 +418,7 @@ public class Fridge extends AbstractComponent implements FridgeInternalControlI,
 		if(VERBOSE)
 			this.traceMessage("Test register\n");
 		try {
-			assertTrue(this.registrationPort.register(URI, this.registrationPort.getPortURI(), XML_PATH));
+			assertTrue(this.registrationPort.register(URI, this.externalInbound.getPortURI(), XML_PATH));
 			assertTrue(this.registrationPort.registered(URI));
 		}
 		catch(Exception e) {
@@ -444,7 +444,10 @@ public class Fridge extends AbstractComponent implements FridgeInternalControlI,
 			this.traceMessage("Done...\n");
 	}
 	
-	protected void runAllRegistrationTest() {
+	protected void runAllRegistrationTest() throws Exception {
+		// Switch on to make the tests
+		this.switchOn();
+		
 		this.testRegistered();
 		this.testRegister();
 		this.testUnregister();

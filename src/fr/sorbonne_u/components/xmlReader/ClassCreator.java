@@ -1,7 +1,6 @@
 package fr.sorbonne_u.components.xmlReader;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import fr.sorbonne_u.components.connectors.AbstractConnector;
 import fr.sorbonne_u.components.equipments.hem.adjustable.AdjustableCI;
@@ -46,10 +45,7 @@ public class ClassCreator {
 			//superclass et interface
 			ctClass.setSuperclass(cs);
 			ctClass.setInterfaces(new CtClass[]{cii});
-			
-			//consommation
-			HashMap<String, Integer> consumption = xmlReader.getConsumption();
-			
+						
 			//attributs 
 			ArrayList<Attribute> attributeArray = xmlReader.getInstanceVar();
 			for(Attribute attribute : attributeArray) {
@@ -101,12 +97,19 @@ public class ClassCreator {
 			oi.detach();
 			
 			
-		    Class<?> ret = ctClass.toClass();
+		    
 			ctClass.writeFile(".");
+			Class<?> ret = null;
+			
+			try {
+				ret = ctClass.toClass();
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+			
+			ctClass.detach();
 
 		    // Décharge ctClass
-		    ctClass.detach();
-
 		    return ret;
 		}
 }
