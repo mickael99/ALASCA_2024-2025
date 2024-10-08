@@ -11,42 +11,42 @@ public class TestFridgeXmlReader {
 	public void testUid() throws Exception {
 		XMLReader xml = new XMLReader("fridge-descriptor.xml");
 		String uid = xml.getUid();
-		assert uid.equals("WaterHeater");
+		System.out.println(uid);
+		assert uid.equals("1A10000");
 	}
 	
 	@Test
 	public void testOffered() throws Exception {
-		XMLReader xml = new XMLReader("waterheater-descriptor.xml");
+		XMLReader xml = new XMLReader("fridge-descriptor.xml");
 		String offered = xml.getOffered();
-		assert offered.equals("fr.sorbonne_u.components.hem2023.equipements.waterHeating.interfaces.WaterHeaterExternalControlCI");
+		assert offered.equals("fr.sorbonne_u.components.equipments.fridge.interfaces.FridgeExternalControlCI");
 	}
 	
 	@Test
 	public void testConsumption() throws Exception {
-		XMLReader xml = new XMLReader("waterheater-descriptor.xml");
+		XMLReader xml = new XMLReader("fridge-descriptor.xml");
 		HashMap<String, Integer> map = new HashMap<String, Integer>();
 		map = xml.getConsumption();
-		assert map.get("nominal") ==  50;	
-		assert map.get("min") == 45;
-		assert map.get("max") == 60;
+		assert map.get("nominal") ==  500;	
+		assert map.get("min") == 0;
+		assert map.get("max") == 500;
 	}
 	
 	@Test
 	public void testInstanceVar() throws Exception {
-		XMLReader xml = new XMLReader("waterheater-descriptor.xml");
+		XMLReader xml = new XMLReader("fridge-descriptor.xml");
 		ArrayList<Attribute> attributes = xml.getInstanceVar();
 		ArrayList<Attribute> res = new ArrayList<Attribute>();
 		
-		res.add(new Attribute("protected static final", "int", "MAX_MODE", "2"));
-		res.add(new Attribute("protected static final", "int", "MAX_TEMPERATURE", "60"));
-		res.add(new Attribute("protected static final", "int", "MIN_TEMPERATURE", "45"));
-		res.add(new Attribute("protected static final", "int", "INITIALISE_TEMPERATURE", "50"));
-		res.add(new Attribute("protected", "boolean", "suspended", "false"));
-		res.add(new Attribute("protected", "int", "currentMode", "0"));
+		res.add(new Attribute("protected static", "int", "MAX_MODE", "3.0"));
+		res.add(new Attribute("protected static", "double", "MIN_ADMISSIBLE_TEMP", "0"));
+		res.add(new Attribute("protected static", "double", "MAX_ADMISSIBLE_DELTA", "5.0"));
+		res.add(new Attribute("protected", "int", "currentMode", "MAX_MODE"));
+		res.add(new Attribute("protected", "boolean", "isSuspended", "false"));
 		
 		assert res.size() == attributes.size();
 				
-		for(int i = 0; i < res.size(); i++)
+		for(int i = 0; i < res.size(); i++) 
 			assert res.get(i).equals(attributes.get(i));
 	}
   	
@@ -54,6 +54,9 @@ public class TestFridgeXmlReader {
 	public void printMethode() throws Exception {
 		XMLReader xml = new XMLReader("fridge-descriptor.xml");
 		ArrayList<Methode> methodes = xml.getMethode();
+		//for(Methode m : methodes)
+		//	System.out.println(m.getName());
+		
 		System.out.println(methodes.get(3));
 	}
 }

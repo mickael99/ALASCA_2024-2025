@@ -59,9 +59,9 @@ public class XMLReader {
 		
 		return attributes;
 	}
-
-	public ArrayList<Methode> getMethode() {
-		ArrayList<Methode> methodes = new ArrayList<Methode>();
+	
+	protected ArrayList<Methode> getInternalMethodes() {
+		ArrayList<Methode> internalMethodes = new ArrayList<Methode>();
 		
 		NodeList methodesList = rootElement.getElementsByTagName("internal");
 		
@@ -82,8 +82,7 @@ public class XMLReader {
 		    	parameterArray.add(new Parameter(parameter.getAttribute("type"),
 		    			parameter.getAttribute("name")));
 		    }
-		    
-			methodes.add(
+		    internalMethodes.add(
 					new Methode(methode.getAttribute("modifiers"), 
 									methode.getAttribute("type"),
 									methode.getAttribute("name"),
@@ -91,6 +90,55 @@ public class XMLReader {
 									methode.getElementsByTagName("body").item(0).getTextContent(),
 									parameterArray));
 		}
+		
+		return internalMethodes;
+	}
+	
+	protected ArrayList<Methode> getServiceMethodes() {
+		ArrayList<Methode> serviceMethodes = new ArrayList<Methode>();
+		
+		String[] methodTags = {"upMode", "downMode", "setMode", "currentMode", "suspended", "suspend", "resume", "emergency"};
+	    
+	    for(String tag : methodTags) {
+	        NodeList methodesList = rootElement.getElementsByTagName(tag);
+	        
+	        for(int i = 0; i < methodesList.getLength(); i++) {
+	            Element methode = (Element)methodesList.item(i);
+	            
+	            NodeList thrownElements = methode.getElementsByTagName("thrown");
+	            String thrownContent = "";
+	            if (thrownElements.getLength() > 0) 
+	                thrownContent = thrownElements.item(0).getTextContent();
+	            
+	            ArrayList<Parameter> parameterArray = new ArrayList<Parameter>();
+	            NodeList parametersElement = methode.getElementsByTagName("parameter");
+	            for(int j = 0; j < parametersElement.getLength(); j++) {
+	                Element parameter = (Element)parametersElement.item(j);
+	                parameterArray.add(new Parameter(parameter.getAttribute("type"),
+	                        parameter.getAttribute("name")));
+	            }
+	            
+	            serviceMethodes.add(
+	                    new Methode(
+	                        "protected", 
+	                        methode.getAttribute("type"),
+	                        tag,
+	                        thrownContent,
+	                        methode.getElementsByTagName("body").item(0).getTextContent(),
+	                        parameterArray
+	                    )
+	            );
+	        }
+	    }
+		
+		return serviceMethodes;
+	}
+
+	public ArrayList<Methode> getMethode() {
+		ArrayList<Methode> methodes = new ArrayList<Methode>();
+		
+		methodes = this.getInternalMethodes();
+		methodes.addAll(this.getServiceMethodes());
 		
 		return methodes;
 	}

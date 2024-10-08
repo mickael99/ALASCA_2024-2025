@@ -24,8 +24,9 @@
       fridge.setCurrentCoolingPower(newPowerLevel);
     </body>
   </internal>
-  <maxMode><body>return MAX_MODE;</body></maxMode>
-  <upMode>
+  <maxMode type="double"><body>return MAX_MODE;</body></maxMode>
+  <upMode type="boolean">
+    <thrown>java.lang.Exception</thrown>
     <body>
       try {
         computeAndSetNewPowerLevel(currentMode + 1);
@@ -36,7 +37,8 @@
       return true;
     </body>
   </upMode>
-  <downMode>
+  <downMode type="boolean">
+    <thrown>java.lang.Exception</thrown>
     <body>
       try {
         computeAndSetNewPowerLevel(currentMode - 1);
@@ -47,8 +49,9 @@
       return true;
     </body>
   </downMode>
-  <setMode>
-    <parameter name="modeIndex"/>
+  <setMode type="boolean">
+    <parameter name="modeIndex" type="double"/>
+    <thrown>java.lang.Exception</thrown>
     <body>
       try {
         computeAndSetNewPowerLevel(modeIndex);
@@ -59,7 +62,8 @@
       return true;
     </body>
   </setMode>
-  <currentMode>
+  <currentMode type="double">
+    <thrown>java.lang.Exception</thrown>
     <body>
       if (suspended()) {
         return 0;
@@ -68,12 +72,14 @@
       }
     </body>
   </currentMode>
-  <suspended>
+  <suspended type="boolean">
+    <thrown>java.lang.Exception</thrown>
     <body>
       return isSuspended;
     </body>
   </suspended>
-  <suspend>
+  <suspend type="boolean">
+    <thrown>java.lang.Exception</thrown>
     <body equipmentRef="fridge">
       try {
         fridge.setCurrentCoolingPower(0.0);
@@ -84,7 +90,8 @@
       return true;
     </body>
   </suspend>
-  <resume>
+  <resume type="boolean">
+    <thrown>java.lang.Exception</thrown>
     <body equipmentRef="fridge">
       try {
         computeAndSetNewPowerLevel(currentMode);
@@ -95,7 +102,8 @@
       return true;
     </body>
   </resume>
-  <emergency>
+  <emergency type="double">
+    <thrown>java.lang.Exception</thrown>
     <body equipmentRef="fridge">
       double currentTemperature = fridge.getCurrentTemperature();
       double targetTemperature = fridge.getTargetTemperature();
