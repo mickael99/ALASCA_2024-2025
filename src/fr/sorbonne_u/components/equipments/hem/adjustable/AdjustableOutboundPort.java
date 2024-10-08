@@ -1,4 +1,4 @@
-package fr.sorbonne_u.components.equipments.hem;
+package fr.sorbonne_u.components.equipments.hem.adjustable;
 
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
@@ -33,7 +33,6 @@ package fr.sorbonne_u.components.equipments.hem;
 // knowledge of the CeCILL-C license and that you accept its terms.
 
 import fr.sorbonne_u.components.ComponentI;
-import fr.sorbonne_u.components.bases.AdjustableCI;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 
 // -----------------------------------------------------------------------------
@@ -125,7 +124,7 @@ implements	AdjustableCI
 	// -------------------------------------------------------------------------
 
 	/**
-	 * @see fr.sorbonne_u.components.hem2024.bases.AdjustableCI#maxMode()
+	 * @see fr.sorbonne_u.components.equipments.hem.adjustable.hem2024.bases.AdjustableCI#maxMode()
 	 */
 	@Override
 	public int			maxMode() throws Exception
@@ -136,7 +135,7 @@ implements	AdjustableCI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.hem2024.bases.AdjustableCI#upMode()
+	 * @see fr.sorbonne_u.components.equipments.hem.adjustable.hem2024.bases.AdjustableCI#upMode()
 	 */
 	@Override
 	public boolean		upMode() throws Exception
@@ -149,7 +148,7 @@ implements	AdjustableCI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.hem2024.bases.AdjustableCI#downMode()
+	 * @see fr.sorbonne_u.components.equipments.hem.adjustable.hem2024.bases.AdjustableCI#downMode()
 	 */
 	@Override
 	public boolean		downMode() throws Exception
@@ -162,7 +161,7 @@ implements	AdjustableCI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.hem2024.bases.AdjustableCI#setMode(int)
+	 * @see fr.sorbonne_u.components.equipments.hem.adjustable.hem2024.bases.AdjustableCI#setMode(int)
 	 */
 	@Override
 	public boolean		setMode(int modeIndex) throws Exception
@@ -174,7 +173,7 @@ implements	AdjustableCI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.hem2024.bases.AdjustableCI#currentMode()
+	 * @see fr.sorbonne_u.components.equipments.hem.adjustable.hem2024.bases.AdjustableCI#currentMode()
 	 */
 	@Override
 	public int			currentMode() throws Exception
@@ -185,7 +184,7 @@ implements	AdjustableCI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.hem2024.bases.AdjustableCI#suspended()
+	 * @see fr.sorbonne_u.components.equipments.hem.adjustable.hem2024.bases.AdjustableCI#suspended()
 	 */
 	@Override
 	public boolean		suspended() throws Exception
@@ -194,7 +193,7 @@ implements	AdjustableCI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.hem2024.bases.AdjustableCI#suspend()
+	 * @see fr.sorbonne_u.components.equipments.hem.adjustable.hem2024.bases.AdjustableCI#suspend()
 	 */
 	@Override
 	public boolean		suspend() throws Exception
@@ -206,7 +205,7 @@ implements	AdjustableCI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.hem2024.bases.AdjustableCI#resume()
+	 * @see fr.sorbonne_u.components.equipments.hem.adjustable.hem2024.bases.AdjustableCI#resume()
 	 */
 	@Override
 	public boolean		resume() throws Exception
@@ -218,7 +217,7 @@ implements	AdjustableCI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.hem2024.bases.AdjustableCI#emergency()
+	 * @see fr.sorbonne_u.components.equipments.hem.adjustable.hem2024.bases.AdjustableCI#emergency()
 	 */
 	@Override
 	public double		emergency() throws Exception

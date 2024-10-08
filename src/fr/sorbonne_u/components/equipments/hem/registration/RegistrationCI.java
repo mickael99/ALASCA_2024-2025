@@ -1,4 +1,4 @@
-package fr.sorbonne_u.components.bases;
+package fr.sorbonne_u.components.equipments.hem.registration;
 
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
@@ -76,7 +76,8 @@ import fr.sorbonne_u.components.interfaces.RequiredCI;
  */
 public interface		RegistrationCI
 extends		OfferedCI,
-			RequiredCI
+			RequiredCI,
+			RegistrationI
 {
 	/**
 	 * return true if the equipment has been registered on this home energy

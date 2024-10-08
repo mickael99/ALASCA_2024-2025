@@ -85,4 +85,14 @@ public class FridgeExternalControlInboundPort extends AbstractInboundPort implem
 				});
 	}
 
+	@Override
+	public double getTargetTemperature() throws Exception {
+		return this.getOwner().handleRequest(o -> ((FridgeUserAndExternalControlI)o).getTargetTemperature());
+	}
+
+	@Override
+	public double getCurrentTemperature() throws Exception {
+		return this.getOwner().handleRequest(o -> ((FridgeUserAndExternalControlI)o).getCurrentTemperature());
+	}
+
 }

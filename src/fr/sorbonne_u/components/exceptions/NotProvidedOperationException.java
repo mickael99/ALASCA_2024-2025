@@ -1,4 +1,4 @@
-package fr.sorbonne_u.components.bases;
+package fr.sorbonne_u.components.exceptions;
 
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr

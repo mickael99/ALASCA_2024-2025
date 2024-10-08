@@ -81,7 +81,7 @@ implements	ElectricMeterImplementationI, ElectricMeterConsumptionI, ElectricMete
 	public static final String PRODUCTION_INBOUND_PORT_URI = "PRODUCTION_INBOUND_PORT_URI";
 
 	/** when true, methods trace their actions.								*/
-	public static boolean		VERBOSE = false;
+	public static boolean		VERBOSE = true;
 	/** when tracing, x coordinate of the window relative position.			*/
 	public static int			X_RELATIVE_POSITION = 0;
 	/** when tracing, y coordinate of the window relative position.			*/

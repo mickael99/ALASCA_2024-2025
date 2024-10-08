@@ -64,4 +64,14 @@ public class FridgeExternalControlOutboundPort extends AbstractOutboundPort impl
 		((FridgeExternalControlCI)this.getConnector()).setTargetTemperature(temperature);
 	}
 
+	@Override
+	public double getTargetTemperature() throws Exception {
+		return ((FridgeExternalControlCI)this.getConnector()).getTargetTemperature();
+	}
+
+	@Override
+	public double getCurrentTemperature() throws Exception {
+		return ((FridgeExternalControlCI)this.getConnector()).getCurrentTemperature();
+	}
+
 }

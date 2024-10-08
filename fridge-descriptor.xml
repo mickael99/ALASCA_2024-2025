@@ -1,0 +1,113 @@
+<control-adapter
+    xmlns="http://www.sorbonne-universite.fr/alasca/control-adapter"
+    uid="1A10000"
+    offered="fr.sorbonne_u.components.equipments.fridge.interfaces.FridgeExternalControlCI">
+  <consumption nominal="500" min="0" max="500"/>
+  <required>java.lang.Math</required>
+  <instance-var modifiers= "protected static" type="int" name="MAX_MODE"
+                static-init="3.0"/>
+  <instance-var modifiers= "protected static" type="double"
+                name="MIN_ADMISSIBLE_TEMP" static-init="0"/>
+  <instance-var modifiers= "protected static" type="double"
+                name="MAX_ADMISSIBLE_DELTA" static-init="5.0"/>
+  <instance-var modifiers= "protected" type="int" name="currentMode"
+                static-init="MAX_MODE"/>
+  <instance-var modifiers= "protected" type="boolean" name="isSuspended"
+                static-init="false"/>
+  <internal modifiers= "protected" type="void"
+            name="computeAndSetNewPowerLevel">
+    <parameter type="int" name="newMode"/>
+    <thrown>java.lang.Exception</thrown>
+    <body equipmentRef="fridge">
+      double maxPowerLevel = fridge.getCurrentCoolingPower();
+      double newPowerLevel = (newMode - 1) * maxPowerLevel/(MAX_MODE - 1);
+      fridge.setCurrentCoolingPower(newPowerLevel);
+    </body>
+  </internal>
+  <maxMode><body>return MAX_MODE;</body></maxMode>
+  <upMode>
+    <body>
+      try {
+        computeAndSetNewPowerLevel(currentMode + 1);
+        currentMode++;
+      } catch(Exception e) {
+        return false;
+      }
+      return true;
+    </body>
+  </upMode>
+  <downMode>
+    <body>
+      try {
+        computeAndSetNewPowerLevel(currentMode - 1);
+        currentMode--;
+      } catch(Exception e) {
+        return false;
+      }
+      return true;
+    </body>
+  </downMode>
+  <setMode>
+    <parameter name="modeIndex"/>
+    <body>
+      try {
+        computeAndSetNewPowerLevel(modeIndex);
+        currentMode = modeIndex;
+      } catch(Exception e) {
+        return false;
+      }
+      return true;
+    </body>
+  </setMode>
+  <currentMode>
+    <body>
+      if (suspended()) {
+        return 0;
+      } else {
+        return currentMode;
+      }
+    </body>
+  </currentMode>
+  <suspended>
+    <body>
+      return isSuspended;
+    </body>
+  </suspended>
+  <suspend>
+    <body equipmentRef="fridge">
+      try {
+        fridge.setCurrentCoolingPower(0.0);
+        isSuspended = true;
+      } catch(Exception e) {
+        return false;
+      }
+      return true;
+    </body>
+  </suspend>
+  <resume>
+    <body equipmentRef="fridge">
+      try {
+        computeAndSetNewPowerLevel(currentMode);
+        isSuspended = false;
+      } catch(Exception e) {
+        return false;
+      }
+      return true;
+    </body>
+  </resume>
+  <emergency>
+    <body equipmentRef="fridge">
+      double currentTemperature = fridge.getCurrentTemperature();
+      double targetTemperature = fridge.getTargetTemperature();
+      double delta = Math.abs(targetTemperature - currentTemperature);
+      double ret = -1.0;
+      if (currentTemperature &lt; MIN_ADMISSIBLE_TEMP ||
+                                    delta &gt;= MAX_ADMISSIBLE_DELTA) {
+        ret = 1.0;
+      } else {
+        ret = delta/MAX_ADMISSIBLE_DELTA;
+      }
+      return ret;
+    </body>
+  </emergency>
+</control-adapter>

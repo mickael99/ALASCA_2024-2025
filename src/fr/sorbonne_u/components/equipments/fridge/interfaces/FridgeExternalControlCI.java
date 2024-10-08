@@ -15,4 +15,7 @@ public interface FridgeExternalControlCI extends FridgeUserAndExternalControlI, 
     boolean isAlarmTriggered() throws Exception;
     
     void setTargetTemperature(double temperature) throws Exception;
+    
+    public double getTargetTemperature() throws Exception;
+    public double getCurrentTemperature() throws Exception;
 }

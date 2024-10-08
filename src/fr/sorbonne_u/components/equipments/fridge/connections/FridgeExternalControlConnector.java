@@ -39,5 +39,12 @@ public class FridgeExternalControlConnector extends AbstractConnector implements
 	public void setTargetTemperature(double temperature) throws Exception {
 		((FridgeExternalControlCI)this.offering).setTargetTemperature(temperature);
 	}
+	
+	public double getTargetTemperature() throws Exception {
+		return ((FridgeExternalControlCI)this.offering).getTargetTemperature();
+	}
+    public double getCurrentTemperature() throws Exception {
+		return ((FridgeExternalControlCI)this.offering).getCurrentTemperature();
+    }
 
 }

@@ -10,4 +10,7 @@ public interface FridgeUserAndExternalControlI extends FridgeUserExternalAndInte
     void setTargetTemperature(double temperature) throws Exception;
     
     boolean isOpen() throws Exception;
+    
+    double getTargetTemperature() throws Exception;
+    double getCurrentTemperature() throws Exception;
 }

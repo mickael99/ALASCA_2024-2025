@@ -2,11 +2,12 @@ package fr.sorbonne_u.components.equipments.fridge;
 
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
+import fr.sorbonne_u.components.equipments.hem.HEM;
 
-public class CVMUnitTest extends AbstractCVM {
-
-	public CVMUnitTest() throws Exception {
-		Fridge.TEST_REGISTRATION = false;
+public class CVMTestRegister extends AbstractCVM {
+	
+	public CVMTestRegister() throws Exception {
+		Fridge.TEST_REGISTRATION = true;
 	}
 	
 	@Override
@@ -14,11 +15,11 @@ public class CVMUnitTest extends AbstractCVM {
 	{
 		AbstractComponent.createComponent(
 				Fridge.class.getCanonicalName(),
-				new Object[]{false});
+				new Object[]{true});
 
 		AbstractComponent.createComponent(
-				FridgeTester.class.getCanonicalName(),
-				new Object[]{true});
+				HEM.class.getCanonicalName(),
+				new Object[]{false, false});
 
 		super.deploy();
 	}
@@ -26,7 +27,7 @@ public class CVMUnitTest extends AbstractCVM {
 	public static void	main(String[] args)
 	{
 		try {
-			CVMUnitTest cvm = new CVMUnitTest();
+			CVMTestRegister cvm = new CVMTestRegister();
 			cvm.startStandardLifeCycle(1000L);
 			Thread.sleep(100000L);
 			System.exit(0);

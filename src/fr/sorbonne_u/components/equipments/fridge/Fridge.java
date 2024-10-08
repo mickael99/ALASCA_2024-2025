@@ -1,12 +1,19 @@
 package fr.sorbonne_u.components.equipments.fridge;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.equipments.fridge.connections.FridgeExternalControlInboundPort;
 import fr.sorbonne_u.components.equipments.fridge.connections.FridgeInternalControlInboundPort;
 import fr.sorbonne_u.components.equipments.fridge.connections.FridgeUserInboundPort;
 import fr.sorbonne_u.components.equipments.fridge.interfaces.FridgeInternalControlI;
 import fr.sorbonne_u.components.equipments.fridge.interfaces.FridgeUserI;
+import fr.sorbonne_u.components.equipments.hem.HEM;
+import fr.sorbonne_u.components.equipments.hem.registration.RegistrationConnector;
+import fr.sorbonne_u.components.equipments.hem.registration.RegistrationOutboundPort;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
+import fr.sorbonne_u.components.exceptions.ComponentStartException;
 import fr.sorbonne_u.exceptions.PreconditionException;
 
 public class Fridge extends AbstractComponent implements FridgeInternalControlI, FridgeUserI {
@@ -25,6 +32,8 @@ public class Fridge extends AbstractComponent implements FridgeInternalControlI,
 	// -------------------------------------------------------------------------
 	// Constants and variables
 	// -------------------------------------------------------------------------
+	
+	protected static final String URI = "FRIDGE-URI"; 
 	
 	// Tracing
 	public static final boolean VERBOSE = true;
@@ -58,26 +67,32 @@ public class Fridge extends AbstractComponent implements FridgeInternalControlI,
 	protected FridgeInternalControlInboundPort internalInbound;
 	protected FridgeExternalControlInboundPort externalInbound;
 	
+	// Registration
+	public static boolean TEST_REGISTRATION = false;
+	protected RegistrationOutboundPort registrationPort;
+	protected boolean isHEMConnectionRequired;
+	protected static final String XML_PATH = "fridge-descriptor.xml";
+	
 	
 	// -------------------------------------------------------------------------
 	// Constructors
 	// -------------------------------------------------------------------------
 	
-	protected Fridge() throws Exception {
-		this(USER_INBOUND_PORT_URI, INTERNAL_CONTROL_INBOUND_PORT_URI, EXTERNAL_CONTROL_INBOUND_PORT_URI);
+	protected Fridge(boolean isHEMConnectionRequired) throws Exception {
+		this(USER_INBOUND_PORT_URI, INTERNAL_CONTROL_INBOUND_PORT_URI, EXTERNAL_CONTROL_INBOUND_PORT_URI, isHEMConnectionRequired);
 	}
 	
-	protected Fridge(String userInboundURI, String internalInboundURI, String externalInboundURI) throws Exception {
+	protected Fridge(String userInboundURI, String internalInboundURI, String externalInboundURI, boolean isHEMConnectionRequired) throws Exception {
 		super(1, 0);
-		this.initialise(userInboundURI, internalInboundURI, externalInboundURI);
+		this.initialise(userInboundURI, internalInboundURI, externalInboundURI, isHEMConnectionRequired);
 	}
 	
-	protected Fridge(String reflectionInboundPortURI, String userInboundURI, String internalInboundURI, String externalInboundURI) throws Exception {
+	protected Fridge(String reflectionInboundPortURI, String userInboundURI, String internalInboundURI, String externalInboundURI, boolean isHEMConnectionRequired) throws Exception {
 		super(reflectionInboundPortURI, 1, 0);
-		this.initialise(userInboundURI, internalInboundURI, externalInboundURI);
+		this.initialise(userInboundURI, internalInboundURI, externalInboundURI, isHEMConnectionRequired);
 	}
 	
-	protected void initialise(String userInboundURI, String internalInboundURI, String externalInboundURI) throws Exception {
+	protected void initialise(String userInboundURI, String internalInboundURI, String externalInboundURI, boolean isHEMConnectionRequired) throws Exception {
 		assert userInboundURI != null && !userInboundURI.isEmpty();
 		assert internalInboundURI != null && !internalInboundURI.isEmpty();
 		assert externalInboundURI != null && !externalInboundURI.isEmpty();
@@ -100,6 +115,14 @@ public class Fridge extends AbstractComponent implements FridgeInternalControlI,
 		this.externalInbound = new FridgeExternalControlInboundPort(externalInboundURI, this);
 		this.externalInbound.publishPort();
 		
+		// Registration
+		this.isHEMConnectionRequired = isHEMConnectionRequired;
+		
+		if(this.isHEMConnectionRequired) {
+			this.registrationPort = new RegistrationOutboundPort(this);
+			this.registrationPort.publishPort();
+		}
+		
 		// Tracing
 		if (VERBOSE) {
 			this.tracer.get().setTitle("Fridge component");
@@ -114,6 +137,30 @@ public class Fridge extends AbstractComponent implements FridgeInternalControlI,
 	// Component life-cycle
 	// -------------------------------------------------------------------------
 
+	
+	@Override
+	public synchronized void start() throws ComponentStartException {
+		super.start();
+
+		try {
+			// Registration
+			if(this.isHEMConnectionRequired) {
+				this.doPortConnection(
+						this.registrationPort.getPortURI(),
+						HEM.URI_REGISTRATION_INBOUND_PORT,
+						RegistrationConnector.class.getCanonicalName());
+			}
+		} catch (Exception e) {
+			throw new ComponentStartException(e) ;
+		}
+	}
+	
+	@Override
+	public synchronized void execute() throws Exception {
+		if (this.isHEMConnectionRequired && TEST_REGISTRATION) 
+			this.runAllRegistrationTest();
+	}
+	
 	@Override
 	public synchronized void shutdown() throws ComponentShutdownException
 	{
@@ -121,10 +168,24 @@ public class Fridge extends AbstractComponent implements FridgeInternalControlI,
 			this.userInbound.unpublishPort();
 			this.internalInbound.unpublishPort();
 			this.externalInbound.unpublishPort();
+			
+			// Registration
+			if(this.isHEMConnectionRequired)
+				this.registrationPort.unpublishPort();
+			
 		} catch (Exception e) {
 			throw new ComponentShutdownException(e) ;
 		}
 		super.shutdown();
+	}
+	
+	@Override
+	public synchronized void finalise() throws Exception {
+		// Registration
+		if(this.isHEMConnectionRequired)
+			this.doPortDisconnection(this.registrationPort.getPortURI());
+		
+		super.finalise();
 	}
 	
 	
@@ -332,5 +393,60 @@ public class Fridge extends AbstractComponent implements FridgeInternalControlI,
 		
 		if(VERBOSE)
 			this.traceMessage("The alarm is stop \n.");
+	}
+	
+	
+	// -------------------------------------------------------------------------
+	// Component services Registration
+	// -------------------------------------------------------------------------
+	
+	protected void testRegistered() {
+		if(VERBOSE)
+			this.traceMessage("Test registered\n");
+		try {
+			assertFalse(this.registrationPort.registered(URI));
+		}
+		catch(Exception e) {
+			this.traceMessage("...KO.\n" + e);
+			assertTrue(false);
+		}
+		if(VERBOSE)
+			this.traceMessage("Done...\n");
+	}
+	
+	protected void testRegister() {
+		if(VERBOSE)
+			this.traceMessage("Test register\n");
+		try {
+			assertTrue(this.registrationPort.register(URI, this.registrationPort.getPortURI(), XML_PATH));
+			assertTrue(this.registrationPort.registered(URI));
+		}
+		catch(Exception e) {
+			this.traceMessage("...KO.\n" + e);
+			assertTrue(false);
+		}
+		if(VERBOSE)
+			this.traceMessage("Done...\n");
+	}
+	
+	protected void testUnregister() {
+		if(VERBOSE)
+			this.traceMessage("Test unregister\n");
+		try {
+			this.registrationPort.unregister(URI);
+			assertFalse(this.registrationPort.registered(URI));
+		}
+		catch(Exception e) {
+			this.traceMessage("...KO.\n" + e);
+			assertTrue(false);
+		}
+		if(VERBOSE)
+			this.traceMessage("Done...\n");
+	}
+	
+	protected void runAllRegistrationTest() {
+		this.testRegistered();
+		this.testRegister();
+		this.testUnregister();
 	}
 }

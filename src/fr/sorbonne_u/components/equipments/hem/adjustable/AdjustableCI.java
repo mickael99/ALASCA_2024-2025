@@ -1,4 +1,4 @@
-package fr.sorbonne_u.components.bases;
+package fr.sorbonne_u.components.equipments.hem.adjustable;
 
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
