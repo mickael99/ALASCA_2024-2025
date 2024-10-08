@@ -1,6 +1,6 @@
 <control-adapter
     xmlns="http://www.sorbonne-universite.fr/alasca/control-adapter"
-    uid="1A10000"
+    uid="FridgeRegistration"
     offered="fr.sorbonne_u.components.equipments.fridge.interfaces.FridgeExternalControlCI">
   <consumption nominal="500" min="0" max="500"/>
   <required>java.lang.Math</required>
@@ -18,10 +18,10 @@
             name="computeAndSetNewPowerLevel">
     <parameter type="int" name="newMode"/>
     <thrown>java.lang.Exception</thrown>
-    <body equipmentRef="fridge">
-      double maxPowerLevel = fridge.getCurrentCoolingPower();
+    <body equipmentRef="Fridge">
+      double maxPowerLevel =  ((FridgeExternalControlCI)this.offering).getCurrentCoolingPower();
       double newPowerLevel = (newMode - 1) * maxPowerLevel/(MAX_MODE - 1);
-      fridge.setCurrentCoolingPower(newPowerLevel);
+      ((FridgeExternalControlCI)this.offering).setCurrentCoolingPower(newPowerLevel);
     </body>
   </internal>
   <maxMode type="double"><body>return MAX_MODE;</body></maxMode>
@@ -50,7 +50,7 @@
     </body>
   </downMode>
   <setMode type="boolean">
-    <parameter name="modeIndex" type="double"/>
+    <parameter name="modeIndex" type="int"/>
     <thrown>java.lang.Exception</thrown>
     <body>
       try {
@@ -82,7 +82,7 @@
     <thrown>java.lang.Exception</thrown>
     <body equipmentRef="fridge">
       try {
-        fridge.setCurrentCoolingPower(0.0);
+        ((FridgeExternalControlCI)this.offering).setCurrentCoolingPower(0.0);
         isSuspended = true;
       } catch(Exception e) {
         return false;
@@ -105,8 +105,8 @@
   <emergency type="double">
     <thrown>java.lang.Exception</thrown>
     <body equipmentRef="fridge">
-      double currentTemperature = fridge.getCurrentTemperature();
-      double targetTemperature = fridge.getTargetTemperature();
+      double currentTemperature = ((FridgeExternalControlCI)this.offering).getCurrentTemperature();
+      double targetTemperature = ((FridgeExternalControlCI)this.offering).getTargetTemperature();
       double delta = Math.abs(targetTemperature - currentTemperature);
       double ret = -1.0;
       if (currentTemperature &lt; MIN_ADMISSIBLE_TEMP ||

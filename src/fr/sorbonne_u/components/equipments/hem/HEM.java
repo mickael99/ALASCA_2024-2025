@@ -278,11 +278,11 @@ public class HEM extends AbstractComponent implements RegistrationI {
 		ao.publishPort();
 		this.registeredUriModularEquipement.put(uid, ao);
 		
-		/*ClassCreator classCreator = new ClassCreator(xmlControlAdapter);
+		ClassCreator classCreator = new ClassCreator(xmlControlAdapter);
 		Class<?> classConnector = classCreator.createClass();
 		this.doPortConnection(ao.getPortURI(), 
 				controlPortURI, 
-				classConnector.getName()); */
+				classConnector.getName());
 		
 		return true;
 	}

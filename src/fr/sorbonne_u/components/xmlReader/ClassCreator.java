@@ -88,7 +88,7 @@ public class ClassCreator {
 				
 				String newBody = methode.getBody().replace(offered, offeredPackage);
 				source += newBody + "\n}\n\n";
-				
+								
 				//ajout de la methode dans la classe
 				CtMethod newMethod = CtNewMethod.make(source, ctClass);
 				ctClass.addMethod(newMethod);
@@ -99,6 +99,7 @@ public class ClassCreator {
 			cii.detach(); 
 			cs.detach(); 
 			oi.detach();
+			
 			
 		    Class<?> ret = ctClass.toClass();
 			ctClass.writeFile(".");

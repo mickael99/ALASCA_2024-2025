@@ -12,7 +12,7 @@ public class TestFridgeXmlReader {
 		XMLReader xml = new XMLReader("fridge-descriptor.xml");
 		String uid = xml.getUid();
 		System.out.println(uid);
-		assert uid.equals("1A10000");
+		assert uid.equals("FridgeRegistration");
 	}
 	
 	@Test
@@ -54,9 +54,7 @@ public class TestFridgeXmlReader {
 	public void printMethode() throws Exception {
 		XMLReader xml = new XMLReader("fridge-descriptor.xml");
 		ArrayList<Methode> methodes = xml.getMethode();
-		//for(Methode m : methodes)
-		//	System.out.println(m.getName());
-		
-		System.out.println(methodes.get(3));
+		for(Methode m : methodes)
+			System.out.println(m.getName());
 	}
 }

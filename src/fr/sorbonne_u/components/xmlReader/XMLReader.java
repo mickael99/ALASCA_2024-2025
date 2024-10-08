@@ -120,7 +120,7 @@ public class XMLReader {
 	            
 	            serviceMethodes.add(
 	                    new Methode(
-	                        "protected", 
+	                        "public", 
 	                        methode.getAttribute("type"),
 	                        tag,
 	                        thrownContent,
