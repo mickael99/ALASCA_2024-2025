@@ -6,7 +6,7 @@ public class TestFridgeClassCreator {
 	
 	public TestFridgeClassCreator() throws Exception {
 		ClassCreator classCreator = new ClassCreator(PATH_XML);
-		Class<?> classConnector = classCreator.createClass();
+		classCreator.createClass();
 	}
 	
 	public static void main(String[] args) {

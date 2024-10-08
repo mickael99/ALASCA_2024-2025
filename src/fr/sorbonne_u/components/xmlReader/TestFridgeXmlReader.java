@@ -38,8 +38,8 @@ public class TestFridgeXmlReader {
 		ArrayList<Attribute> attributes = xml.getInstanceVar();
 		ArrayList<Attribute> res = new ArrayList<Attribute>();
 		
-		res.add(new Attribute("protected static", "int", "MAX_MODE", "3.0"));
-		res.add(new Attribute("protected static", "double", "MIN_ADMISSIBLE_TEMP", "0"));
+		res.add(new Attribute("protected static", "int", "MAX_MODE", "3"));
+		res.add(new Attribute("protected static", "double", "MIN_ADMISSIBLE_TEMP", "0.0"));
 		res.add(new Attribute("protected static", "double", "MAX_ADMISSIBLE_DELTA", "5.0"));
 		res.add(new Attribute("protected", "int", "currentMode", "MAX_MODE"));
 		res.add(new Attribute("protected", "boolean", "isSuspended", "false"));

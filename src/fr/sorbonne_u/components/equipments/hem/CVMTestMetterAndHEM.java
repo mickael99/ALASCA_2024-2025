@@ -7,7 +7,7 @@ import fr.sorbonne_u.components.equipments.meter.ElectricMeter;
 public class CVMTestMetterAndHEM extends AbstractCVM {
 	
 	public CVMTestMetterAndHEM() throws Exception {
-		
+		HEM.TEST_COMMUNICATION_WITH_FRIDGE = false;
 	}
 	
 	@Override

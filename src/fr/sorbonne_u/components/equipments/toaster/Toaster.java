@@ -144,6 +144,8 @@ public class Toaster extends AbstractComponent implements ToasterImplementationI
 		
 		assert this.currentState == ToasterState.OFF :
 			new PreconditionException("Toaster must be turn off for setting slice count \n.");
+		assert sliceCount <= 3 && sliceCount >= 0 :
+			new PreconditionException("Toaster can contain between 0 et 3 slice of bread \n.");
 		
 		this.sliceCount = sliceCount;
 		
