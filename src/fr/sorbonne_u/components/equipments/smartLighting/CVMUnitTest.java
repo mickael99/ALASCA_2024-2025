@@ -22,10 +22,13 @@ public class CVMUnitTest extends AbstractCVM {
     // CVM life-cycle
     // -------------------------------------------------------------------------
 
+    /**
+     * @see fr.sorbonne_u.components.cvm.AbstractCVM#deploy()
+     */
     @Override
     public void deploy() throws Exception {
         AbstractComponent.createComponent(SmartLighting.class.getCanonicalName(), new Object[] {});
-        AbstractComponent.createComponent(SmartLightingTester.class.getCanonicalName(), new Object[] {});
+        AbstractComponent.createComponent(SmartLightingTester.class.getCanonicalName(), new Object[] {true});
         super.deploy();
     }
 

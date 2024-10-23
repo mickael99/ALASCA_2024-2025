@@ -1,9 +1,10 @@
 package fr.sorbonne_u.components.xmlReader;
 
+import org.junit.jupiter.api.Test;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.junit.Test;
 
 public class TestFridgeXmlReader {
 	
