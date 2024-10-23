@@ -6,6 +6,7 @@ import fr.sorbonne_u.components.equipments.smartLighting.connections.SmartLighti
 import fr.sorbonne_u.components.equipments.smartLighting.connections.SmartLightingInternalControlInboundPort;
 import fr.sorbonne_u.components.equipments.smartLighting.connections.SmartLightingUserInboundPort;
 import fr.sorbonne_u.components.equipments.smartLighting.interfaces.*;
+import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.exceptions.PostconditionException;
 import fr.sorbonne_u.exceptions.PreconditionException;
 
@@ -63,6 +64,7 @@ public class SmartLighting extends AbstractComponent implements SmartLightingUse
 
     protected SmartLighting(String userInboundPortURI, String internalControlInboundPortURI, String externalControlInboundPortURI) throws Exception {
         super(1, 0);
+        this.initialise(userInboundPortURI, internalControlInboundPortURI, externalControlInboundPortURI);
     }
 
     protected void initialise(String smartLightingUserInboundPortURI, String smartLightingInternalControlInboundPortURI, String smartLightingExternalControlInboundPortURI) throws Exception {
@@ -89,6 +91,20 @@ public class SmartLighting extends AbstractComponent implements SmartLightingUse
         }
     }
 
+    // -------------------------------------------------------------------------
+    // Component life-cycle
+    // -------------------------------------------------------------------------
+    @Override
+    public synchronized void shutdown() throws ComponentShutdownException{
+        try {
+            this.slip.unpublishPort();
+            this.slcip.unpublishPort();
+            this.sleip.unpublishPort();
+        } catch (Exception e){
+            throw new ComponentShutdownException(e);
+        }
+        super.shutdown();
+    }
     // ------------------------------------------------------------------------
     // Comonent services inplementation
     // ------------------------------------------------------------------------
@@ -100,6 +116,7 @@ public class SmartLighting extends AbstractComponent implements SmartLightingUse
         }
         return this.currentState == SmartLightingState.ON || this.currentState == SmartLightingState.INCREASE || this.currentState == SmartLightingState.DECREASE;
     }
+
 
     @Override
     public void switchOn() throws Exception {

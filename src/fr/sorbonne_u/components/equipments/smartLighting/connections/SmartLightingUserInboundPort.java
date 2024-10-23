@@ -2,6 +2,7 @@ package fr.sorbonne_u.components.equipments.smartLighting.connections;
 
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.equipments.smartLighting.interfaces.SmartLightingUserCI;
+import fr.sorbonne_u.components.equipments.smartLighting.interfaces.SmartLightingUserI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
 import fr.sorbonne_u.exceptions.PreconditionException;
 
@@ -10,6 +11,7 @@ public class SmartLightingUserInboundPort extends AbstractInboundPort implements
     // -------------------------------------------------------------------------
     // Constants and variables
     // -------------------------------------------------------------------------
+
     private static final long serialVersionUID = 1L;
 
     // -------------------------------------------------------------------------
@@ -18,15 +20,15 @@ public class SmartLightingUserInboundPort extends AbstractInboundPort implements
 
     public SmartLightingUserInboundPort(ComponentI owner) throws Exception {
         super (SmartLightingUserCI.class, owner);
-        assert owner instanceof SmartLightingUserCI:
-            new PreconditionException("Owner is not an instance of SmartLightingUserCI");
+        assert owner instanceof SmartLightingUserI :
+            new PreconditionException("Owner is not an instance of SmartLightingUserI");
     }
 
 
     public SmartLightingUserInboundPort(String uri, ComponentI owner) throws Exception {
         super(uri, SmartLightingUserCI.class, owner);
-        assert owner instanceof SmartLightingUserCI:
-            new PreconditionException("Owner is not an instance of SmartLightingUserCI");
+        assert owner instanceof SmartLightingUserI:
+            new PreconditionException("Owner is not an instance of SmartLightingUserI");
     }
 
     // -------------------------------------------------------------------------

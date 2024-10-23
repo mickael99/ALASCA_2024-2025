@@ -17,8 +17,7 @@ import fr.sorbonne_u.utils.aclocks.ClocksServerOutboundPort;
 import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @RequiredInterfaces(required = {SmartLightingUserCI.class, SmartLightingInternalControlCI.class, SmartLightingExternalControlCI.class, ClocksServerCI.class})
 public class SmartLightingTester extends AbstractComponent {
@@ -57,30 +56,29 @@ public class SmartLightingTester extends AbstractComponent {
     // Constructors
     // ------------------------------------------------------------------------
 
-    protected SmartLightingTester(String uri, boolean isUnitTest) throws Exception {
+    protected SmartLightingTester(boolean isUnitTest) throws Exception {
         this(isUnitTest, SmartLighting.USER_INBOUND_PORT_URI, SmartLighting.INTERNAL_CONTROL_INBOUND_PORT_URI, SmartLighting.EXTERNAL_CONTROL_INBOUND_PORT_URI);
     }
 
-    protected SmartLightingTester(boolean isUnitTest, String smartLightingUserInboundPortURI, String smartLignthingInternalControlInboundPortURI, String smartLightingExternalControlInboundPortURI) throws Exception {
+    protected SmartLightingTester(boolean isUnitTest, String smartLightingUserInboundPortURI, String smartLightingInternalControlInboundPortURI, String smartLightingExternalControlInboundPortURI) throws Exception {
         super(1, 1);
         this.isUnitTest = isUnitTest;
-        this.initialise(smartLightingUserInboundPortURI, smartLignthingInternalControlInboundPortURI, smartLightingExternalControlInboundPortURI);
+        this.initialise(smartLightingUserInboundPortURI, smartLightingInternalControlInboundPortURI, smartLightingExternalControlInboundPortURI);
     }
 
-    protected SmartLightingTester(boolean isUnitTest, String reflectionInboundPortURI, String smartLightingUserInboundPortURI, String smartLignthingInternalControlInboundPortURI, String smartLightingExternalControlInboundPortURI) throws Exception {
+    protected SmartLightingTester(boolean isUnitTest, String reflectionInboundPortURI, String smartLightingUserInboundPortURI, String smartLightingInternalControlInboundPortURI, String smartLightingExternalControlInboundPortURI) throws Exception {
         super(reflectionInboundPortURI, 1, 1);
         this.isUnitTest = false;
-        this.initialise(smartLightingUserInboundPortURI, smartLignthingInternalControlInboundPortURI, smartLightingExternalControlInboundPortURI);
+        this.initialise(smartLightingUserInboundPortURI, smartLightingInternalControlInboundPortURI, smartLightingExternalControlInboundPortURI);
     }
 
-    protected void initialise(String smartLightingUserInboundPortURI, String smartLignthingInternalControlInboundPortURI, String smartLightingExternalControlInboundPortURI) throws Exception {
+    protected void initialise(String smartLightingUserInboundPortURI, String smartLightingInternalControlInboundPortURI, String smartLightingExternalControlInboundPortURI) throws Exception {
 
         this.smartLightingUserInboundPortURI = smartLightingUserInboundPortURI;
-
         this.slop = new SmartLightingUserOutboundPort(this);
         this.slop.publishPort();
 
-        this.smartLignthingInternalControlInboundPortURI = smartLignthingInternalControlInboundPortURI;
+        this.smartLignthingInternalControlInboundPortURI = smartLightingInternalControlInboundPortURI;
         this.slicop = new SmartLightingInternalControlOutboundPort(this);
         this.slicop.publishPort();
 
@@ -106,13 +104,13 @@ public class SmartLightingTester extends AbstractComponent {
             this.slop.switchOn();
         } catch (Exception e) {
             this.traceMessage("...KO. " + e + "\n");
-            assertTrue(false);
+            fail();
         }
         try{
             this.slop.switchOff();
         } catch (Exception e) {
             this.traceMessage("...KO. " + e + "\n");
-            assertTrue(false);
+            fail();
         }
         this.traceMessage("...testSwitchStatesDone.\n");
     }
@@ -120,18 +118,18 @@ public class SmartLightingTester extends AbstractComponent {
     protected void testOn(){
         this.traceMessage("Testing isOn...\n");
         try{
-            assertEquals(false, this.slop.isOn());
+            assertFalse(this.slop.isOn());
         } catch (Exception e) {
             this.traceMessage("...KO. " + e + "\n");
-            assertTrue(false);
+            fail();
         }
         try {
             this.slop.switchOn();
-            assertEquals(true, this.slop.isOn());
+            assertTrue(this.slop.isOn());
             this.slop.switchOff();
         } catch (Exception e) {
             this.traceMessage("...KO. " + e + "\n");
-            assertTrue(false);
+            fail();
         }
         this.traceMessage("...testOn() Done.\n");
     }
@@ -232,17 +230,17 @@ public class SmartLightingTester extends AbstractComponent {
             this.doPortConnection(
                 this.slop.getPortURI(),
                 this.smartLightingUserInboundPortURI,
-                SmartLightingUserInboundPort.class.getCanonicalName()
+                SmartLightingUserConnector.class.getCanonicalName()
             );
             this.doPortConnection(
                 this.slicop.getPortURI(),
                 this.smartLignthingInternalControlInboundPortURI,
-                SmartLightingInternalControlInboundPort.class.getCanonicalName()
+                SmartLightingInternalControlConnector.class.getCanonicalName()
             );
             this.doPortConnection(
                 this.slecop.getPortURI(),
                 this.smartLightingExternalControlInboundPortURI,
-                SmartLightingExternalControlOutboundPort.class.getCanonicalName()
+                SmartLightingExternalControlConnector.class.getCanonicalName()
             );
         } catch (Exception e) {
             throw new ComponentStartException(e);
@@ -276,7 +274,7 @@ public class SmartLightingTester extends AbstractComponent {
 
             this.traceMessage("Smart Lighting tester waits until start.\n");
             ac.waitUntilStart();
-            this.traceMessage("Heater tester schedules switch on and off.\n");
+            this.traceMessage("Smart Lighting tester schedules switch on and off.\n");
             long delayToSwitchOn = ac.nanoDelayUntilInstant(smartLightingSwitchOn);
             long delayToSwitchOff = ac.nanoDelayUntilInstant(smartLightingSwitchOff);
 
