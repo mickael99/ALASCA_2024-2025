@@ -135,14 +135,16 @@ public class SmartLightingTester extends AbstractComponent {
     }
 
     protected void testTargetIllumination(){
-        this.traceMessage("Testing targetIllumination...\n");
+        this.traceMessage("Testing setTargetIllumination...\n");
         try{
-            this.slop.setTargetIllumination(200);
-            assertEquals(200, this.slop.getTargetIllumination());
+            this.slop.switchOn();
+            this.slop.setTargetIllumination(200.0);
+            assertEquals(200.0, this.slop.getTargetIllumination());
             this.slop.setTargetIllumination(SmartLighting.STANDARD_TARGET_ILLUMINATION);
+            this.slop.switchOff();
         } catch (Exception e) {
             this.traceMessage("...KO. " + e + "\n");
-            assertTrue(false);
+            fail();
         }
         this.traceMessage("...testTargetIllumination() Done.\n");
     }
@@ -155,7 +157,7 @@ public class SmartLightingTester extends AbstractComponent {
             this.slop.switchOff();
         } catch (Exception e) {
             this.traceMessage("...KO. " + e + "\n");
-            assertTrue(false);
+            fail();
         }
         this.traceMessage("...testCurrentIllumination() Done.\n");
     }
@@ -170,7 +172,7 @@ public class SmartLightingTester extends AbstractComponent {
             this.slop.switchOff();
         } catch (Exception e) {
             this.traceMessage("...KO. " + e + "\n");
-            assertTrue(false);
+            fail();
         }
         this.traceMessage("...testPowerLevel() Done.\n");
     }
@@ -178,16 +180,16 @@ public class SmartLightingTester extends AbstractComponent {
     protected void testInternalControl(){
         this.traceMessage("Testing internal control...\n");
         try{
-            assertEquals(SmartLighting.STANDARD_TARGET_ILLUMINATION, this.slop.getTargetIllumination());
             this.slop.switchOn();
-            assertEquals(true, this.slop.isOn());
+            assertEquals(SmartLighting.STANDARD_TARGET_ILLUMINATION, this.slop.getTargetIllumination());
+            assertTrue(this.slop.isOn());
             assertEquals(0, this.slop.getCurrentIllumination());
             this.slicop.IncreaseLightIntensity();
             assertTrue(this.slicop.isSwitchingAutomatically());
             this.slop.switchOff();
         } catch (Exception e) {
             this.traceMessage("...KO. " + e + "\n");
-            assertTrue(false);
+            fail();
         }
         this.traceMessage("...testInternalControl() Done.\n");
     }
@@ -202,7 +204,7 @@ public class SmartLightingTester extends AbstractComponent {
             this.slop.switchOff();
         } catch (Exception e) {
             this.traceMessage("...KO. " + e + "\n");
-            assertTrue(false);
+            fail();
         }
         this.traceMessage("...testExternalControl() Done.\n");
     }
@@ -297,7 +299,6 @@ public class SmartLightingTester extends AbstractComponent {
                     },delayToSwitchOn, TimeUnit.NANOSECONDS
             );
 
-            //TODO: add more tests here
 
             //schedule switch off smart lighting
             this.scheduleTaskOnComponent(

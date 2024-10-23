@@ -151,6 +151,8 @@ public class SmartLighting extends AbstractComponent implements SmartLightingUse
             this.traceMessage("SmartLighting sets its target illumination to " + targetIllumination + ".\n");
         }
 
+        assert this.isOn() : new PreconditionException("SmartLighting is off.");
+
         assert targetIllumination >= 0.0 : new PreconditionException("Target illumination must be positive.");
 
         this.targetIllumination = targetIllumination;
