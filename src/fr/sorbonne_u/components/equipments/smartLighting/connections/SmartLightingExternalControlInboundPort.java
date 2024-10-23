@@ -46,18 +46,18 @@ public class SmartLightingExternalControlInboundPort extends AbstractInboundPort
     @Override
     public void setCurrentPowerLevel(double powerLevel) throws Exception {
         this.getOwner().handleRequest(owner -> {
-            ((SmartLightingExternalControlCI) owner).setCurrentPowerLevel(powerLevel);
+            ((SmartLightingExternalControlI) owner).setCurrentPowerLevel(powerLevel);
             return null;
         });
     }
 
     @Override
     public double getTargetIllumination() throws Exception {
-        return this.getOwner().handleRequest(owner -> ((SmartLightingExternalControlCI) owner).getTargetIllumination());
+        return this.getOwner().handleRequest(owner -> ((SmartLightingExternalControlI) owner).getTargetIllumination());
     }
 
     @Override
     public double getCurrentIllumination() throws Exception {
-        return this.getOwner().handleRequest(owner -> ((SmartLightingExternalControlCI) owner).getCurrentIllumination());
+        return this.getOwner().handleRequest(owner -> ((SmartLightingExternalControlI) owner).getCurrentIllumination());
     }
 }

@@ -1,6 +1,7 @@
 package fr.sorbonne_u.components.equipments.smartLighting.connections;
 
 import fr.sorbonne_u.components.ComponentI;
+import fr.sorbonne_u.components.equipments.smartLighting.SmartLighting;
 import fr.sorbonne_u.components.equipments.smartLighting.interfaces.SmartLightingUserCI;
 import fr.sorbonne_u.components.equipments.smartLighting.interfaces.SmartLightingUserI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
@@ -38,7 +39,7 @@ public class SmartLightingUserInboundPort extends AbstractInboundPort implements
     @Override
     public void switchOn() throws Exception {
         this.getOwner().handleRequest(owner -> {
-            ((SmartLightingUserCI) owner).switchOn();
+            ((SmartLighting) owner).switchOn();
             return null;
         });
     }
@@ -46,49 +47,49 @@ public class SmartLightingUserInboundPort extends AbstractInboundPort implements
     @Override
     public void switchOff() throws Exception {
         this.getOwner().handleRequest(owner -> {
-            ((SmartLightingUserCI) owner).switchOff();
+            ((SmartLightingUserI) owner).switchOff();
             return null;
         });
     }
 
     @Override
     public boolean isOn() throws Exception {
-        return this.getOwner().handleRequest(owner -> ((SmartLightingUserCI) owner).isOn());
+        return this.getOwner().handleRequest(owner -> ((SmartLightingUserI) owner).isOn());
     }
 
 
     @Override
     public void setTargetIllumination(double targetIllumination) throws Exception {
         this.getOwner().handleRequest(owner -> {
-            ((SmartLightingUserCI) owner).setTargetIllumination(targetIllumination);
+            ((SmartLightingUserI) owner).setTargetIllumination(targetIllumination);
             return null;
         });
     }
 
     @Override
     public double getTargetIllumination() throws Exception {
-        return this.getOwner().handleRequest(owner -> ((SmartLightingUserCI) owner).getTargetIllumination());
+        return this.getOwner().handleRequest(owner -> ((SmartLightingUserI) owner).getTargetIllumination());
     }
 
     @Override
     public double getCurrentIllumination() throws Exception {
-        return this.getOwner().handleRequest(owner -> ((SmartLightingUserCI) owner).getCurrentIllumination());
+        return this.getOwner().handleRequest(owner -> ((SmartLightingUserI) owner).getCurrentIllumination());
     }
 
     @Override
     public double getMaxPowerLevel() throws Exception {
-        return this.getOwner().handleRequest(owner -> ((SmartLightingUserCI) owner).getMaxPowerLevel());
+        return this.getOwner().handleRequest(owner -> ((SmartLightingUserI) owner).getMaxPowerLevel());
     }
 
     @Override
     public double getCurrentPowerLevel() throws Exception {
-        return this.getOwner().handleRequest(owner -> ((SmartLightingUserCI) owner).getCurrentPowerLevel());
+        return this.getOwner().handleRequest(owner -> ((SmartLightingUserI) owner).getCurrentPowerLevel());
     }
 
     @Override
     public void setCurrentPowerLevel(double powerLevel) throws Exception {
         this.getOwner().handleRequest(owner -> {
-            ((SmartLightingUserCI) owner).setCurrentPowerLevel(powerLevel);
+            ((SmartLightingUserI) owner).setCurrentPowerLevel(powerLevel);
             return null;
         });
     }
