@@ -34,13 +34,9 @@ package fr.sorbonne_u.components.equipments.meter;
 
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
-import fr.sorbonne_u.components.equipments.meter.connections.ElectricMeterConsumptionInboundPort;
 import fr.sorbonne_u.components.equipments.meter.connections.ElectricMeterInboundPort;
-import fr.sorbonne_u.components.equipments.meter.connections.ElectricMeterProductionInboundPort;
 import fr.sorbonne_u.components.equipments.meter.interfaces.ElectricMeterCI;
-import fr.sorbonne_u.components.equipments.meter.interfaces.ElectricMeterConsumptionI;
 import fr.sorbonne_u.components.equipments.meter.interfaces.ElectricMeterImplementationI;
-import fr.sorbonne_u.components.equipments.meter.interfaces.ElectricMeterProductionI;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.utils.Measure;
 import fr.sorbonne_u.components.utils.MeasurementUnit;
@@ -66,10 +62,8 @@ import fr.sorbonne_u.exceptions.PreconditionException;
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
 @OfferedInterfaces(offered={ElectricMeterCI.class})
-public class			ElectricMeter
-extends		AbstractComponent
-implements	ElectricMeterImplementationI, ElectricMeterConsumptionI, ElectricMeterProductionI 
-{
+public class ElectricMeter extends	AbstractComponent implements ElectricMeterImplementationI {
+	
 	// -------------------------------------------------------------------------
 	// Constants and variables
 	// -------------------------------------------------------------------------
@@ -89,11 +83,6 @@ implements	ElectricMeterImplementationI, ElectricMeterConsumptionI, ElectricMete
 
 	/** inbound port offering the <code>ElectricMeterCI</code> interface.	*/
 	protected ElectricMeterInboundPort	emip;
-	protected ElectricMeterConsumptionInboundPort consumptionInboundPort;
-	protected ElectricMeterProductionInboundPort productionInboundPort;
-
-	protected double currentConsumption;
-	protected double currentProduction;
 
 	// -------------------------------------------------------------------------
 	// Constructors
@@ -239,15 +228,6 @@ implements	ElectricMeterImplementationI, ElectricMeterConsumptionI, ElectricMete
 		this.emip =
 				new ElectricMeterInboundPort(electricMeterInboundPortURI, this);
 		this.emip.publishPort();
-		
-		this.consumptionInboundPort = new ElectricMeterConsumptionInboundPort(CONSUMPTION_INBOUND_PORT_URI, this);
-		this.consumptionInboundPort.publishPort();
-		
-		this.productionInboundPort = new ElectricMeterProductionInboundPort(PRODUCTION_INBOUND_PORT_URI, this);
-		this.productionInboundPort.publishPort();
-		
-		this.currentProduction = 0;
-		this.currentConsumption = 0;
 
 		if (VERBOSE) {
 			this.tracer.get().setTitle("Electric meter component");
@@ -291,7 +271,7 @@ implements	ElectricMeterImplementationI, ElectricMeterConsumptionI, ElectricMete
 
 		SensorData<Measure<Double>> ret =
 				new SensorData<>(
-							new Measure<Double>(this.currentConsumption, MeasurementUnit.AMPERES));
+							new Measure<Double>(0.0, MeasurementUnit.AMPERES));
 
 		assert	ret != null : new PostconditionException("return != null");
 		assert	ret.getMeasure().isScalar() :
@@ -325,7 +305,7 @@ implements	ElectricMeterImplementationI, ElectricMeterConsumptionI, ElectricMete
 
 		SensorData<Measure<Double>> ret =
 				new SensorData<>(
-							new Measure<Double>(this.currentProduction, MeasurementUnit.WATTS));
+							new Measure<Double>(0.0, MeasurementUnit.WATTS));
 
 		assert	ret != null : new PostconditionException("return != null");
 		assert	ret.getMeasure().isScalar() :
@@ -346,23 +326,4 @@ implements	ElectricMeterImplementationI, ElectricMeterConsumptionI, ElectricMete
 
 		return ret;
 	}
-
-	@Override
-	public void addElectricProduction(double quantity) throws Exception {
-		if(VERBOSE)
-			this.traceMessage("Adding " + quantity + " to the total production (" + 
-					this.currentProduction + " + " + quantity + " = " + (this.currentProduction + quantity) + ")\n");
-		
-		this.currentProduction += quantity;
-	}	
-
-	@Override
-	public void addElectricConsumption(double quantity) throws Exception {
-		if(VERBOSE)
-			this.traceMessage("Adding " + quantity + " to the total consumption (" + 
-					this.currentConsumption + " + " + quantity + " = " + (this.currentConsumption + quantity) + ")\n");
-		
-		this.currentConsumption += quantity;
-	}
 }
-// -----------------------------------------------------------------------------

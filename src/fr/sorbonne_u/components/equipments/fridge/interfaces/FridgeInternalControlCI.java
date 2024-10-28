@@ -8,11 +8,7 @@ public interface FridgeInternalControlCI extends FridgeInternalControlI, Offered
 	boolean isCooling() throws Exception; 
     void startCooling() throws Exception; 
     void stopCooling() throws Exception; 
-    
-    boolean isOpen() throws Exception;
-    void triggeredAlarm() throws Exception; 
-    void stopAlarm() throws Exception; 
-    
+        
     double getTargetTemperature() throws Exception;
     double getCurrentTemperature() throws Exception;
 }

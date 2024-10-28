@@ -8,5 +8,4 @@ public interface FridgeUserI extends FridgeUserAndControlI, FridgeUserAndExterna
 	public void switchOn() throws Exception;
 	public void switchOff() throws Exception;
     
-	public void open() throws Exception;
 }

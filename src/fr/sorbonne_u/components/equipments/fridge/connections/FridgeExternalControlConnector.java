@@ -6,16 +6,6 @@ import fr.sorbonne_u.components.equipments.fridge.interfaces.FridgeExternalContr
 public class FridgeExternalControlConnector extends AbstractConnector implements FridgeExternalControlCI{
 
 	@Override
-	public boolean isOpen() throws Exception {
-		return ((FridgeExternalControlCI)this.offering).isOpen();
-	}
-
-	@Override
-	public void close() throws Exception {
-		((FridgeExternalControlCI)this.offering).close();
-	}
-
-	@Override
 	public double getMaxCoolingPower() throws Exception {
 		return ((FridgeExternalControlCI)this.offering).getMaxCoolingPower();
 	}
@@ -28,11 +18,6 @@ public class FridgeExternalControlConnector extends AbstractConnector implements
 	@Override
 	public void setCurrentCoolingPower(double power) throws Exception {
 		((FridgeExternalControlCI)this.offering).setCurrentCoolingPower(power);
-	}
-
-	@Override
-	public boolean isAlarmTriggered() throws Exception {
-		return ((FridgeExternalControlCI)this.offering).isAlarmTriggered();
 	}
 
 	@Override

@@ -54,10 +54,6 @@ public class Fridge extends AbstractComponent implements FridgeInternalControlI,
 	protected static final double STANDARD_TARGET_TEMPERATURE = 4.0;
 	protected double targetTemperature;
 	
-	// Alarm
-	protected boolean isDoorOpen;
-	protected boolean alarmTriggered;
-	
 	// Connections
 	public static final String USER_INBOUND_PORT_URI = "FRIDGE-USER-INBOUND-PORT-URI";
 	public static final String INTERNAL_CONTROL_INBOUND_PORT_URI = "FRIDGE-INTERNAL-CONTROL-INBOUND-PORT-URI";
@@ -101,9 +97,6 @@ public class Fridge extends AbstractComponent implements FridgeInternalControlI,
 		this.currentState = FridgeState.OFF;
 		this.currentCoolingPower = MAX_COOLING_POWER;
 		this.targetTemperature = STANDARD_TARGET_TEMPERATURE;
-		
-		this.isDoorOpen = false;
-		this.alarmTriggered = false;
 		
 		// Connections
 		this.userInbound = new FridgeUserInboundPort(userInboundURI, this);
@@ -210,14 +203,6 @@ public class Fridge extends AbstractComponent implements FridgeInternalControlI,
 	}
 
 	@Override
-	public void close() throws Exception { 
-		this.isDoorOpen = false;
-		
-		if (VERBOSE)
-			this.traceMessage("The door of the fridge is close \n.");
-	}
-
-	@Override
 	public double getMaxCoolingPower() throws Exception { 
 		if (VERBOSE)
 			this.traceMessage("Fridge returns its max cooling power -> " + MAX_COOLING_POWER + "\n.");
@@ -250,18 +235,6 @@ public class Fridge extends AbstractComponent implements FridgeInternalControlI,
 	}
 
 	@Override
-	public boolean isAlarmTriggered() throws Exception { 
-		if (VERBOSE) {
-			if (this.alarmTriggered)
-				this.traceMessage("Alarm is triggered \n.");
-			else
-				this.traceMessage("Alarm is not triggered \n.");
-		}
-		
-		return this.alarmTriggered;
-	}
-
-	@Override
 	public void setTargetTemperature(double temperature) throws Exception { 
 		if (VERBOSE)
 			this.traceMessage("Trying to set target temperature -> " + temperature + "\n.");
@@ -275,18 +248,6 @@ public class Fridge extends AbstractComponent implements FridgeInternalControlI,
 		
 		if (VERBOSE)
 			this.traceMessage("Target temperature is changing -> " + this.targetTemperature + "\n.");
-	}
-
-	@Override
-	public boolean isOpen() throws Exception { 
-		if (VERBOSE) {
-			if (this.isDoorOpen)
-				this.traceMessage("The door is open \n.");
-			else
-				this.traceMessage("The door is close \n.");
-		}
-		
-		return this.isDoorOpen;
 	}
 
 	@Override
@@ -311,14 +272,6 @@ public class Fridge extends AbstractComponent implements FridgeInternalControlI,
 		
 		if (VERBOSE) 
 			this.traceMessage("Fridge is turning off \n.");
-	}
-
-	@Override
-	public void open() throws Exception { 
-		this.isDoorOpen = true;
-				
-		if (VERBOSE) 
-			this.traceMessage("Fridge door is open \n.");
 	}
 
 	@Override
@@ -361,38 +314,6 @@ public class Fridge extends AbstractComponent implements FridgeInternalControlI,
 		
 		if(VERBOSE)
 			this.traceMessage("The fridge stop cooling \n.");
-	}
-
-	@Override
-	public void triggeredAlarm() throws Exception { 
-		if(VERBOSE)
-			this.traceMessage("Trying to trigger alarm \n.");
-		
-		assert this.currentState != FridgeState.OFF :
-			new PreconditionException("Impossible to trigger alarm because the fridge is off");
-		assert this.isDoorOpen :
-			new PreconditionException("Impossible to trigger alarm because the door is not open");
-		
-		this.alarmTriggered = true;
-		
-		if(VERBOSE)
-			this.traceMessage("The alarm is triggering \n.");
-	}
-
-	@Override
-	public void stopAlarm() throws Exception { 
-		if(VERBOSE)
-			this.traceMessage("Trying to stop alarm \n.");
-	
-		assert this.currentState != FridgeState.OFF :
-			new PreconditionException("Impossible to stop alarm because the fridge is off");
-		assert !this.isDoorOpen :
-			new PreconditionException("Impossible to stop alarm because the door is open");
-		
-		this.alarmTriggered = false;
-		
-		if(VERBOSE)
-			this.traceMessage("The alarm is stop \n.");
 	}
 	
 	

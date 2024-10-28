@@ -9,12 +9,7 @@ public interface FridgeUserCI extends OfferedCI, RequiredCI, FridgeUserI {
 	public FridgeState getState() throws Exception;
 	public void switchOn() throws Exception;
 	public void switchOff() throws Exception;
-    
-	public boolean isOpen() throws Exception;
-	public void open() throws Exception;
-	public void close() throws Exception;
-	public boolean isAlarmTriggered() throws Exception;
-    
+        
 	public double getMaxCoolingPower() throws Exception;
 	public double getCurrentCoolingPower() throws Exception;
 	public void setCurrentCoolingPower(double power) throws Exception;

@@ -4,7 +4,6 @@ import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.equipments.fridge.interfaces.FridgeInternalControlCI;
 import fr.sorbonne_u.components.equipments.fridge.interfaces.FridgeInternalControlI;
 import fr.sorbonne_u.components.equipments.fridge.interfaces.FridgeUserAndControlI;
-import fr.sorbonne_u.components.equipments.fridge.interfaces.FridgeUserExternalAndInternalControlI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
 
 public class FridgeInternalControlInboundPort extends AbstractInboundPort implements FridgeInternalControlCI {
@@ -26,7 +25,6 @@ public class FridgeInternalControlInboundPort extends AbstractInboundPort implem
 
 		assert	owner instanceof FridgeInternalControlI;
 		assert	owner instanceof FridgeUserAndControlI;
-		assert	owner instanceof FridgeUserExternalAndInternalControlI;
 	}
 
 	public FridgeInternalControlInboundPort(String uri, ComponentI owner) throws Exception {
@@ -34,7 +32,6 @@ public class FridgeInternalControlInboundPort extends AbstractInboundPort implem
 
 		assert	owner instanceof FridgeInternalControlI;
 		assert	owner instanceof FridgeUserAndControlI;
-		assert	owner instanceof FridgeUserExternalAndInternalControlI;
 	}
 	
 	
@@ -59,27 +56,6 @@ public class FridgeInternalControlInboundPort extends AbstractInboundPort implem
 	public void stopCooling() throws Exception {
 		this.getOwner().handleRequest(
 				o -> {	((FridgeInternalControlI)o).stopCooling();
-						return null;
-				});
-	}
-
-	@Override
-	public boolean isOpen() throws Exception {
-		return this.getOwner().handleRequest(o -> ((FridgeInternalControlI)o).isOpen());
-	}
-
-	@Override
-	public void triggeredAlarm() throws Exception {
-		this.getOwner().handleRequest(
-				o -> {	((FridgeInternalControlI)o).triggeredAlarm();
-						return null;
-				});	
-	}
-
-	@Override
-	public void stopAlarm() throws Exception {
-		this.getOwner().handleRequest(
-				o -> {	((FridgeInternalControlI)o).stopAlarm();
 						return null;
 				});
 	}

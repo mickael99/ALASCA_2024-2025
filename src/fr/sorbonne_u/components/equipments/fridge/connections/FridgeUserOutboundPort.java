@@ -47,26 +47,6 @@ public class FridgeUserOutboundPort extends AbstractOutboundPort implements Frid
 	}
 
 	@Override
-	public boolean isOpen() throws Exception {
-		return ((FridgeUserCI)this.getConnector()).isOpen();
-	}
-
-	@Override
-	public void open() throws Exception {
-		((FridgeUserCI)this.getConnector()).open();
-	}
-
-	@Override
-	public void close() throws Exception {
-		((FridgeUserCI)this.getConnector()).close();
-	}
-
-	@Override
-	public boolean isAlarmTriggered() throws Exception {
-		return ((FridgeUserCI)this.getConnector()).isAlarmTriggered();
-	}
-
-	@Override
 	public double getMaxCoolingPower() throws Exception {
 		return ((FridgeUserCI)this.getConnector()).getMaxCoolingPower();
 	}

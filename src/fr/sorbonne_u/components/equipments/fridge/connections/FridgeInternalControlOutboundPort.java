@@ -46,22 +46,6 @@ public class FridgeInternalControlOutboundPort extends AbstractOutboundPort impl
 	}
 
 	@Override
-	public boolean isOpen() throws Exception {
-		return ((FridgeInternalControlCI)this.getConnector()).isOpen();
-
-	}
-
-	@Override
-	public void triggeredAlarm() throws Exception {
-		((FridgeInternalControlCI)this.getConnector()).triggeredAlarm();
-	}
-
-	@Override
-	public void stopAlarm() throws Exception {
-		((FridgeInternalControlCI)this.getConnector()).stopAlarm();
-	}
-
-	@Override
 	public double getTargetTemperature() throws Exception {
 		return ((FridgeInternalControlCI)this.getConnector()).getTargetTemperature();
 

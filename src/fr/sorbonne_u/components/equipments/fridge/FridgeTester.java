@@ -218,21 +218,6 @@ public class FridgeTester extends AbstractComponent {
 		this.traceMessage("testGetState done \n");
 	}
 	
-	protected void testIsOpen() { 
-		this.traceMessage("testIsOpen...\n");
-		
-		try {
-			assertFalse(this.userOutboundPort.isOpen());
-			assertFalse(this.externalOutboundPort.isOpen());
-			assertFalse(this.internalOutboundPort.isOpen());
-		} catch (Exception e) {
-			this.traceMessage("...KO.\n" + e);
-			assertTrue(false);
-		}
-		
-		this.traceMessage("testIsOpen done \n");
-	}
-	
 	protected void testGetTargetTemperature() { 
 		this.traceMessage("testGetTargetTemperature...\n");
 		
@@ -275,20 +260,6 @@ public class FridgeTester extends AbstractComponent {
 		this.traceMessage("testGetCurrentCoolingPower done \n");
 	}
 	
-	protected void  testIsAlarmTriggered() { 
-		this.traceMessage("testIsAlarmTriggered...\n");
-		
-		try {
-			assertFalse(this.userOutboundPort.isAlarmTriggered());
-			assertFalse(this.externalOutboundPort.isAlarmTriggered());
-		} catch (Exception e) {
-			this.traceMessage("...KO.\n" + e);
-			assertTrue(false);
-		}
-		
-		this.traceMessage("testIsAlarmTriggered done \n");
-	}
-	
 	protected void testIsCooling() { 
 		this.traceMessage("testIsCooling...\n");
 		
@@ -300,38 +271,6 @@ public class FridgeTester extends AbstractComponent {
 		}
 		
 		this.traceMessage("testIsCooling done \n");	
-	}
-	
-	protected void testOpen() { 
-		this.traceMessage("testOpen...\n");
-		
-		try {
-			this.userOutboundPort.open();
-			assertTrue(this.userOutboundPort.isOpen());
-		} catch (Exception e) {
-			this.traceMessage("...KO.\n" + e);
-			assertTrue(false);
-		}
-		
-		this.traceMessage("testOpen done \n");
-	}
-	
-	protected void testClose() { 
-		this.traceMessage("testClose...\n");
-		
-		try {
-			this.userOutboundPort.close();
-			assertFalse(this.userOutboundPort.isOpen());
-			this.userOutboundPort.close();
-			
-			this.externalOutboundPort.close();
-			assertFalse(this.externalOutboundPort.isOpen());
-		} catch (Exception e) {
-			this.traceMessage("...KO.\n" + e);
-			assertTrue(false);
-		}
-		
-		this.traceMessage("testClose done \n");
 	}
 	
 	protected void testSwitchOn() { 
@@ -424,36 +363,6 @@ public class FridgeTester extends AbstractComponent {
 		this.traceMessage("testStopCooling done \n");	
 	}
 	
-	protected void testTriggeredAlarm() { 
-		this.traceMessage("testTriggeredAlarm...\n");
-		
-		try {
-			this.userOutboundPort.open();
-			this.internalOutboundPort.triggeredAlarm();
-			assertTrue(this.externalOutboundPort.isAlarmTriggered());
-		} catch (Exception e) {
-			this.traceMessage("...KO.\n" + e);
-			assertTrue(false);
-		}
-		
-		this.traceMessage("testTriggeredAlarm done \n");
-	}
-	
-	protected void testStopAlarm() { 
-		this.traceMessage("testStopAlarm...\n");
-		
-		try {
-			this.userOutboundPort.close();
-			this.internalOutboundPort.stopAlarm();
-			assertFalse(this.externalOutboundPort.isAlarmTriggered());
-		} catch (Exception e) {
-			this.traceMessage("...KO.\n" + e);
-			assertTrue(false);
-		}
-		
-		this.traceMessage("testStopAlarm done \n");
-	}
-	
 	protected void testSwitchoff() {
 		this.traceMessage("testSwitchoff...\n");
 		
@@ -470,22 +379,16 @@ public class FridgeTester extends AbstractComponent {
 	
 	protected void runAllTest() {
 		testGetState();
-		testIsOpen();
 		testGetTargetTemperature(); 
 		testGetMaxCoolingPower();		
 		testGetCurrentCoolingPower();
-		testIsAlarmTriggered();
 		testIsCooling();
-		testOpen();
-		testClose();
 		testSwitchOn();
 		testSwitchOff();
 		testSetCurrentCoolingPower();
 		testSetTargetTemperature();
 		testStartCooling();
 		testStopCooling();
-		testTriggeredAlarm();
-		testStopAlarm();
 		testSwitchoff();
 	}
 }

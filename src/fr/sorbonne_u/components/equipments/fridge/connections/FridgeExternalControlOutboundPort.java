@@ -30,16 +30,6 @@ public class FridgeExternalControlOutboundPort extends AbstractOutboundPort impl
 	// -------------------------------------------------------------------------
 
 	@Override
-	public boolean isOpen() throws Exception {
-		return ((FridgeExternalControlCI)this.getConnector()).isOpen();
-	}
-
-	@Override
-	public void close() throws Exception {
-		((FridgeExternalControlCI)this.getConnector()).close();
-	}
-
-	@Override
 	public double getMaxCoolingPower() throws Exception {
 		return ((FridgeExternalControlCI)this.getConnector()).getMaxCoolingPower();
 	}
@@ -52,11 +42,6 @@ public class FridgeExternalControlOutboundPort extends AbstractOutboundPort impl
 	@Override
 	public void setCurrentCoolingPower(double power) throws Exception {
 		((FridgeExternalControlCI)this.getConnector()).setCurrentCoolingPower(power);
-	}
-
-	@Override
-	public boolean isAlarmTriggered() throws Exception {
-		return ((FridgeExternalControlCI)this.getConnector()).isAlarmTriggered();
 	}
 
 	@Override

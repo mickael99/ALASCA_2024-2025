@@ -22,26 +22,6 @@ public class FridgeUserConnector extends AbstractConnector implements FridgeUser
 	}
 
 	@Override
-	public boolean isOpen() throws Exception {
-		return ((FridgeUserCI)this.offering).isOpen();
-	}
-
-	@Override
-	public void open() throws Exception {
-		((FridgeUserCI)this.offering).open();
-	}
-
-	@Override
-	public void close() throws Exception {
-		((FridgeUserCI)this.offering).close();
-	}
-
-	@Override
-	public boolean isAlarmTriggered() throws Exception {
-		return ((FridgeUserCI)this.offering).isAlarmTriggered();
-	}
-
-	@Override
 	public double getMaxCoolingPower() throws Exception {
 		return ((FridgeUserCI)this.offering).getMaxCoolingPower();
 	}

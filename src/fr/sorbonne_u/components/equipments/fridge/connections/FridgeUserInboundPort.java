@@ -5,7 +5,6 @@ import fr.sorbonne_u.components.equipments.fridge.Fridge.FridgeState;
 import fr.sorbonne_u.components.equipments.fridge.interfaces.FridgeUserAndControlI;
 import fr.sorbonne_u.components.equipments.fridge.interfaces.FridgeUserAndExternalControlI;
 import fr.sorbonne_u.components.equipments.fridge.interfaces.FridgeUserCI;
-import fr.sorbonne_u.components.equipments.fridge.interfaces.FridgeUserExternalAndInternalControlI;
 import fr.sorbonne_u.components.equipments.fridge.interfaces.FridgeUserI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
 
@@ -28,7 +27,6 @@ public class FridgeUserInboundPort extends AbstractInboundPort implements Fridge
 		assert	owner instanceof FridgeUserI;
 		assert	owner instanceof FridgeUserAndControlI;
 		assert	owner instanceof FridgeUserAndExternalControlI;
-		assert	owner instanceof FridgeUserExternalAndInternalControlI;
 	}
 
 	public FridgeUserInboundPort(String uri, ComponentI owner) throws Exception
@@ -38,7 +36,6 @@ public class FridgeUserInboundPort extends AbstractInboundPort implements Fridge
 		assert	owner instanceof FridgeUserI;
 		assert	owner instanceof FridgeUserAndControlI;
 		assert	owner instanceof FridgeUserAndExternalControlI;
-		assert	owner instanceof FridgeUserExternalAndInternalControlI;
 	}
 	
 	
@@ -65,32 +62,6 @@ public class FridgeUserInboundPort extends AbstractInboundPort implements Fridge
 				o -> {	((FridgeUserI)o).switchOff();;
 						return null;
 				});
-	}
-
-	@Override
-	public boolean isOpen() throws Exception {
-		return this.getOwner().handleRequest(o -> ((FridgeUserI)o).isOpen());
-	}
-
-	@Override
-	public void open() throws Exception {
-		this.getOwner().handleRequest(
-				o -> {	((FridgeUserI)o).open();;
-						return null;
-				});
-	}
-
-	@Override
-	public void close() throws Exception {
-		this.getOwner().handleRequest(
-				o -> {	((FridgeUserI)o).close();;
-						return null;
-				});
-	}
-
-	@Override
-	public boolean isAlarmTriggered() throws Exception {
-		return this.getOwner().handleRequest(o -> ((FridgeUserI)o).isAlarmTriggered());
 	}
 
 	@Override

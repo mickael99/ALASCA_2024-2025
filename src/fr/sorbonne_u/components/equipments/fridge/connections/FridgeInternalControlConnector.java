@@ -20,22 +20,7 @@ public class FridgeInternalControlConnector extends AbstractConnector implements
 	public void stopCooling() throws Exception {
 		((FridgeInternalControlI)this.offering).stopCooling();
 	}
-
-	@Override
-	public boolean isOpen() throws Exception {
-		return ((FridgeInternalControlI)this.offering).isOpen();
-	}
-
-	@Override
-	public void triggeredAlarm() throws Exception {
-		((FridgeInternalControlI)this.offering).triggeredAlarm();
-	}
-
-	@Override
-	public void stopAlarm() throws Exception {
-		((FridgeInternalControlCI)this.offering).stopAlarm();
-	}
-
+	
 	@Override
 	public double getTargetTemperature() throws Exception {
 		return ((FridgeInternalControlI)this.offering).getTargetTemperature();
