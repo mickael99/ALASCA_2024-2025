@@ -7,6 +7,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.HashMap;
 
 import fr.sorbonne_u.components.AbstractComponent;
+import fr.sorbonne_u.components.equipments.battery.Battery;
+import fr.sorbonne_u.components.equipments.battery.BatteryConnector;
+import fr.sorbonne_u.components.equipments.battery.BatteryOutboundPort;
 import fr.sorbonne_u.components.equipments.fridge.Fridge;
 import fr.sorbonne_u.components.equipments.hem.adjustable.AdjustableOutboundPort;
 import fr.sorbonne_u.components.equipments.hem.adjustable.FridgeConnector;
@@ -15,6 +18,9 @@ import fr.sorbonne_u.components.equipments.hem.registration.RegistrationInboundP
 import fr.sorbonne_u.components.equipments.meter.ElectricMeter;
 import fr.sorbonne_u.components.equipments.meter.connections.ElectricMeterConnector;
 import fr.sorbonne_u.components.equipments.meter.connections.ElectricMeterOutboundPort;
+import fr.sorbonne_u.components.equipments.windTurbine.WindTurbine;
+import fr.sorbonne_u.components.equipments.windTurbine.WindTurbineConnector;
+import fr.sorbonne_u.components.equipments.windTurbine.WindTurbineOutboundPort;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
 import fr.sorbonne_u.components.xmlReader.ClassCreator;
@@ -45,6 +51,15 @@ public class HEM extends AbstractComponent implements RegistrationI {
 	public static boolean TEST_COMMUNICATION_WITH_FRIDGE; 
 	protected boolean isTestElectricMetter;
 	protected boolean isTestFridge;
+	public static final boolean IS_INTEGRATION_TEST = false;
+	
+	// Battery (If it's an integration test)
+	public final static String URI_BATTERY_OUTBOUND_PORT = "URI_BATTERY_OUTBOUND_PORT";
+	protected BatteryOutboundPort batteryOutboundPort;
+	
+	// Wind turbine (If it's an integration test)
+	public final static String URI_WIND_TURBINE_OUTBOUND_PORT = "URI_WIND_TURBINE_OUTBOUND_PORT";
+	protected WindTurbineOutboundPort windTurbineOutboundPort;
 
 	
 	// -------------------------------------------------------------------------
@@ -73,10 +88,7 @@ public class HEM extends AbstractComponent implements RegistrationI {
 		this.isTestElectricMetter = isTestElectricMetter;
 		this.isTestFridge = false;
 		
-		registeredUriModularEquipement = new HashMap<String, AdjustableOutboundPort>();
-		
-		this.registrationPort = new RegistrationInboundPort(URI_REGISTRATION_INBOUND_PORT, this);
-		this.registrationPort.publishPort();
+		this.initialisePorts();
 
 		if (VERBOSE) {
 			this.tracer.get().setTitle("Home Energy Manager component");
@@ -92,16 +104,28 @@ public class HEM extends AbstractComponent implements RegistrationI {
 		this.isTestElectricMetter = isTestElectricMetter;
 		this.isTestFridge = isTestFridge;
 		
-		registeredUriModularEquipement = new HashMap<String, AdjustableOutboundPort>();
-		
-		this.registrationPort = new RegistrationInboundPort(URI_REGISTRATION_INBOUND_PORT, this);
-		this.registrationPort.publishPort();
+		this.initialisePorts();
 
 		if (VERBOSE) {
 			this.tracer.get().setTitle("Home Energy Manager component");
 			this.tracer.get().setRelativePosition(X_RELATIVE_POSITION,
 												  Y_RELATIVE_POSITION);
 			this.toggleTracing();
+		}
+	}
+	
+	protected void initialisePorts() throws Exception {
+		registeredUriModularEquipement = new HashMap<String, AdjustableOutboundPort>();
+		
+		this.registrationPort = new RegistrationInboundPort(URI_REGISTRATION_INBOUND_PORT, this);
+		this.registrationPort.publishPort();
+		
+		if(IS_INTEGRATION_TEST) {
+			this.windTurbineOutboundPort = new WindTurbineOutboundPort(URI_WIND_TURBINE_OUTBOUND_PORT, this);
+			this.windTurbineOutboundPort.publishPort();
+			
+			this.batteryOutboundPort = new BatteryOutboundPort(URI_BATTERY_OUTBOUND_PORT, this);
+			this.batteryOutboundPort.publishPort();
 		}
 	}
 
@@ -132,6 +156,19 @@ public class HEM extends AbstractComponent implements RegistrationI {
 						Fridge.EXTERNAL_CONTROL_INBOUND_PORT_URI,
 						FridgeConnector.class.getCanonicalName());	
 			}
+			
+			if(IS_INTEGRATION_TEST) {
+				this.doPortConnection(
+						this.windTurbineOutboundPort.getPortURI(),
+						WindTurbine.INBOUND_PORT_URI,
+						WindTurbineConnector.class.getCanonicalName());
+				
+				this.doPortConnection(
+						this.batteryOutboundPort.getPortURI(),
+						Battery.INTERNAL_INBOUND_PORT,
+						BatteryConnector.class.getCanonicalName());
+			}
+			
 		} catch (Exception e) {
 			throw new ComponentStartException(e) ;
 		}
@@ -172,6 +209,11 @@ public class HEM extends AbstractComponent implements RegistrationI {
 		if(this.isTestElectricMetter)
 			this.doPortDisconnection(this.electricMeterPort.getPortURI());
 		
+		if(IS_INTEGRATION_TEST) {
+			this.doPortDisconnection(this.windTurbineOutboundPort.getPortURI());
+			this.doPortDisconnection(this.batteryOutboundPort.getPortURI());
+		}
+		
 		super.finalise();
 	}
 
@@ -189,7 +231,11 @@ public class HEM extends AbstractComponent implements RegistrationI {
 			
 			if(this.isTestElectricMetter)
 				this.electricMeterPort.unpublishPort();
-
+			
+			if(IS_INTEGRATION_TEST) {
+				this.windTurbineOutboundPort.unpublishPort();
+				this.batteryOutboundPort.unpublishPort();
+			}
 			
 		} catch (Exception e) {
 			throw new ComponentShutdownException(e) ;

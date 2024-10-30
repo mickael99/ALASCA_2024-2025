@@ -12,7 +12,7 @@ public class WindTurbine extends AbstractComponent implements WindTurbineI {
 	public static final STATE INIT_STATE = STATE.STANDBY;
 	protected STATE currentState;
 	
-	protected static final String INBOUND_PORT_URI = "INBOUND_PORT_URI";
+	public static final String INBOUND_PORT_URI = "INBOUND_PORT_URI";
 	protected WindTurbineInboundPort inboundPort;
 	
 	protected double currentProduction = 0.0;
