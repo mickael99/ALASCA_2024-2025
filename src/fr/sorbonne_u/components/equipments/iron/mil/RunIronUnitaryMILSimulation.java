@@ -128,7 +128,7 @@ public class RunIronUnitaryMILSimulation {
 			
 			SimulatorI se = architecture.constructSimulator();
 			SimulationEngine.SIMULATION_STEP_SLEEP_TIME = 0L;
-			se.doStandAloneSimulation(0.0, 24.0);
+			se.doStandAloneSimulation(0.0, 24.0); // Bug ici
 			SimulationReportI sr = se.getSimulatedModel().getFinalReport();
 			System.out.println(sr);
 			

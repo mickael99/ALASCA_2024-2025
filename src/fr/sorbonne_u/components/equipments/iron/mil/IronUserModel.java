@@ -28,7 +28,7 @@ import fr.sorbonne_u.devs_simulation.simulators.interfaces.SimulationReportI;
 import fr.sorbonne_u.devs_simulation.utils.InvariantChecking;
 import fr.sorbonne_u.devs_simulation.utils.StandardLogger;
 
-@ModelExternalEvents(imported = {DisableEnergySavingModeIron.class,
+@ModelExternalEvents(exported = {DisableEnergySavingModeIron.class,
 		 EnableEnergySavingModeIron.class,
 		 DisableSteamModeIron.class,
 		 EnableSteamModeIron.class,

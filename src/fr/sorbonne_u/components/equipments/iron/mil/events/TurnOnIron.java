@@ -26,7 +26,6 @@ public class TurnOnIron extends AbstractIronEvent {
 						+ "IronElectricityModel");
 
 		IronElectricityModel m = (IronElectricityModel)model;
-		
 		if (m.getState() == IronElectricityModel.IronState.OFF) {
 			m.setState(IronElectricityModel.IronState.DELICATE);
 			m.toggleConsumptionHasChanged();
