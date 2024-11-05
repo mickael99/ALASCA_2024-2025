@@ -5,10 +5,12 @@
       <root url="jar://$PROJECT_DIR$/lib/HEM-2024-etape1-17092024.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/commons-math3-3.6.1.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/jing.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/NeoSim4Java-14102024.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
       <root url="jar://$PROJECT_DIR$/lib/HEM-2024-etape1-17092024.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/NeoSim4Java-14102024.jar!/" />
     </SOURCES>
   </library>
 </component>
