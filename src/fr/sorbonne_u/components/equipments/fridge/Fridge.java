@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import fr.sorbonne_u.components.AbstractComponent;
+import fr.sorbonne_u.components.annotations.OfferedInterfaces;
+import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.equipments.fridge.connections.FridgeExternalControlInboundPort;
 import fr.sorbonne_u.components.equipments.fridge.connections.FridgeInternalControlInboundPort;
 import fr.sorbonne_u.components.equipments.fridge.connections.FridgeUserInboundPort;
@@ -12,10 +14,14 @@ import fr.sorbonne_u.components.equipments.fridge.interfaces.FridgeUserI;
 import fr.sorbonne_u.components.equipments.hem.HEM;
 import fr.sorbonne_u.components.equipments.hem.registration.RegistrationConnector;
 import fr.sorbonne_u.components.equipments.hem.registration.RegistrationOutboundPort;
+import fr.sorbonne_u.components.equipments.fridge.interfaces.*;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
 import fr.sorbonne_u.exceptions.PreconditionException;
+import fr.sorbonne_u.components.equipments.hem.registration.RegistrationCI;
 
+@OfferedInterfaces(offered = {FridgeExternalControlCI.class, FridgeInternalControlCI.class, FridgeUserCI.class})
+@RequiredInterfaces(required = {RegistrationCI.class})
 public class Fridge extends AbstractComponent implements FridgeInternalControlI, FridgeUserI {
 
 	// -------------------------------------------------------------------------
@@ -225,7 +231,7 @@ public class Fridge extends AbstractComponent implements FridgeInternalControlI,
 				
 		assert this.currentState != FridgeState.OFF :
 			new PreconditionException("Impossible to set current cooling power because the fridge is off");
-		assert power > 0 && power <= MAX_COOLING_POWER :
+		assert power >= 0 && power <= MAX_COOLING_POWER :
 			new PreconditionException("The cooling power is not between 0 and " + MAX_COOLING_POWER + " -> " + power);
 
 		this.currentCoolingPower = power;

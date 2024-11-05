@@ -19,9 +19,9 @@
     <parameter type="int" name="newMode"/>
     <thrown>java.lang.Exception</thrown>
     <body equipmentRef="Fridge">
-      double maxPowerLevel =  ((FridgeExternalControlCI)this.offering).getCurrentCoolingPower();
-      double newPowerLevel = (newMode - 1) * maxPowerLevel/(MAX_MODE - 1);
-      ((FridgeExternalControlCI)this.offering).setCurrentCoolingPower(newPowerLevel);
+      	double maxCoolingPower = 500.0;
+		double newPowerLevel = (newMode - 1) * maxCoolingPower / (MAX_MODE - 1);
+		((FridgeExternalControlCI)this.offering).setCurrentCoolingPower(newPowerLevel);
     </body>
   </internal>
   <maxMode type="int">
@@ -58,10 +58,11 @@
     <parameter name="modeIndex" type="int"/>
     <thrown>java.lang.Exception</thrown>
     <body>
-      try {
+      try {      
         computeAndSetNewPowerLevel(modeIndex);
         currentMode = modeIndex;
       } catch(Exception e) {
+      	System.out.println(e);
         return false;
       }
       return true;

@@ -1,6 +1,7 @@
 package fr.sorbonne_u.components.equipments.battery;
 
 import fr.sorbonne_u.components.AbstractComponent;
+import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.equipments.battery.BatteryI.STATE;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
@@ -8,6 +9,7 @@ import fr.sorbonne_u.components.exceptions.ComponentStartException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@RequiredInterfaces(required = {BatteryCI.class})
 public class BatteryTester extends AbstractComponent {
 	
 	public static boolean VERBOSE = true;
@@ -17,7 +19,7 @@ public class BatteryTester extends AbstractComponent {
 	protected static final String OUTBOUND_PORT_URI = "OUTBOUND_PORT_URI"; 
 	protected BatteryOutboundPort outboundPort;
 	
-	public BatteryTester() throws Exception {
+	protected BatteryTester() throws Exception {
 		super(1, 0);
 		
 		this.outboundPort = new BatteryOutboundPort(OUTBOUND_PORT_URI, this);

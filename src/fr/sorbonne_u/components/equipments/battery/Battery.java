@@ -1,8 +1,10 @@
 package fr.sorbonne_u.components.equipments.battery;
 
 import fr.sorbonne_u.components.AbstractComponent;
+import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 
+@OfferedInterfaces(offered = {BatteryCI.class})
 public class Battery extends AbstractComponent implements BatteryI {
 
 	public static final boolean VERBOSE = true;
@@ -16,7 +18,7 @@ public class Battery extends AbstractComponent implements BatteryI {
 	protected BatteryInboundPort inboundPort;
 	
 	
-	public Battery() {
+	protected Battery() {
 		super(1, 0);
 		try {
 			this.currentState = INIT_STATE;

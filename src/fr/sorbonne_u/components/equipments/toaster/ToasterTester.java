@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.CVMIntegrationTest;
+import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.equipments.toaster.ToasterImplementationI.ToasterBrowningLevel;
 import fr.sorbonne_u.components.equipments.toaster.ToasterImplementationI.ToasterState;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
@@ -14,6 +15,7 @@ import fr.sorbonne_u.utils.aclocks.ClocksServer;
 import fr.sorbonne_u.utils.aclocks.ClocksServerConnector;
 import fr.sorbonne_u.utils.aclocks.ClocksServerOutboundPort;
 
+@RequiredInterfaces(required = {ToasterUserCI.class})
 public class ToasterTester extends AbstractComponent {
 	
 	// -------------------------------------------------------------------------

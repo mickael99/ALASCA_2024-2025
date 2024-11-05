@@ -1,9 +1,11 @@
 package fr.sorbonne_u.components.equipments.toaster;
 
 import fr.sorbonne_u.components.AbstractComponent;
+import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.exceptions.PreconditionException;
 
+@OfferedInterfaces(offered = {ToasterUserCI.class})
 public class Toaster extends AbstractComponent implements ToasterImplementationI {
 
 	// -------------------------------------------------------------------------

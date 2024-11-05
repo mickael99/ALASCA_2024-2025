@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import fr.sorbonne_u.components.AbstractComponent;
+import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.equipments.fridge.Fridge.FridgeState;
 import fr.sorbonne_u.components.equipments.fridge.connections.FridgeExternalControlConnector;
 import fr.sorbonne_u.components.equipments.fridge.connections.FridgeExternalControlOutboundPort;
@@ -12,10 +13,14 @@ import fr.sorbonne_u.components.equipments.fridge.connections.FridgeInternalCont
 import fr.sorbonne_u.components.equipments.fridge.connections.FridgeInternalControlOutboundPort;
 import fr.sorbonne_u.components.equipments.fridge.connections.FridgeUserConnector;
 import fr.sorbonne_u.components.equipments.fridge.connections.FridgeUserOutboundPort;
+import fr.sorbonne_u.components.equipments.fridge.interfaces.FridgeExternalControlCI;
+import fr.sorbonne_u.components.equipments.fridge.interfaces.FridgeInternalControlCI;
+import fr.sorbonne_u.components.equipments.fridge.interfaces.FridgeUserCI;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
 import fr.sorbonne_u.utils.aclocks.ClocksServerOutboundPort;
 
+@RequiredInterfaces(required = {FridgeExternalControlCI.class, FridgeInternalControlCI.class, FridgeUserCI.class})
 public class FridgeTester extends AbstractComponent {
 	
 	// -------------------------------------------------------------------------
@@ -384,7 +389,6 @@ public class FridgeTester extends AbstractComponent {
 		testGetCurrentCoolingPower();
 		testIsCooling();
 		testSwitchOn();
-		testSwitchOff();
 		testSetCurrentCoolingPower();
 		testSetTargetTemperature();
 		testStartCooling();

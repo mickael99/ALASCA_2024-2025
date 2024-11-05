@@ -143,6 +143,7 @@ implements	AdjustableCI
 		int oldMode = this.currentMode();
 		assert	oldMode < this.maxMode();
 		boolean ret = ((AdjustableCI)this.getConnector()).upMode();
+
 		assert	this.currentMode() > oldMode;
 		return ret;
 	}

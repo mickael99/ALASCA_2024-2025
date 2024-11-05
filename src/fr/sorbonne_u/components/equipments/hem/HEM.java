@@ -7,12 +7,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.HashMap;
 
 import fr.sorbonne_u.components.AbstractComponent;
+import fr.sorbonne_u.components.annotations.OfferedInterfaces;
+import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.equipments.battery.Battery;
 import fr.sorbonne_u.components.equipments.battery.BatteryConnector;
 import fr.sorbonne_u.components.equipments.battery.BatteryOutboundPort;
 import fr.sorbonne_u.components.equipments.fridge.Fridge;
+import fr.sorbonne_u.components.equipments.hem.adjustable.AdjustableCI;
 import fr.sorbonne_u.components.equipments.hem.adjustable.AdjustableOutboundPort;
 import fr.sorbonne_u.components.equipments.hem.adjustable.FridgeConnector;
+import fr.sorbonne_u.components.equipments.hem.registration.RegistrationCI;
 import fr.sorbonne_u.components.equipments.hem.registration.RegistrationI;
 import fr.sorbonne_u.components.equipments.hem.registration.RegistrationInboundPort;
 import fr.sorbonne_u.components.equipments.meter.ElectricMeter;
@@ -27,6 +31,8 @@ import fr.sorbonne_u.components.xmlReader.ClassCreator;
 import fr.sorbonne_u.exceptions.PreconditionException;
 import fr.sorbonne_u.utils.aclocks.AcceleratedClock;
 
+@OfferedInterfaces(offered = {RegistrationCI.class})
+@RequiredInterfaces(required = {AdjustableCI.class})
 public class HEM extends AbstractComponent implements RegistrationI {
 
 	// -------------------------------------------------------------------------
@@ -67,7 +73,7 @@ public class HEM extends AbstractComponent implements RegistrationI {
 	// -------------------------------------------------------------------------
 
 	protected HEM() {
-		super(1, 1);
+		super(2, 1);
 		
 		this.isTestElectricMetter = true;
 		this.isTestFridge = true;
@@ -228,10 +234,8 @@ public class HEM extends AbstractComponent implements RegistrationI {
 				this.controlFridgePort.unpublishPort();
 			
 			this.registrationPort.unpublishPort();
-			
 			if(this.isTestElectricMetter)
 				this.electricMeterPort.unpublishPort();
-			
 			if(IS_INTEGRATION_TEST) {
 				this.windTurbineOutboundPort.unpublishPort();
 				this.batteryOutboundPort.unpublishPort();
@@ -332,7 +336,6 @@ public class HEM extends AbstractComponent implements RegistrationI {
 		AdjustableOutboundPort ao = new AdjustableOutboundPort(this);
 		ao.publishPort();
 		this.registeredUriModularEquipement.put(uid, ao);
-		
 		ClassCreator classCreator = new ClassCreator(xmlControlAdapter);
 		Class<?> classConnector = classCreator.createClass();
 
@@ -352,6 +355,7 @@ public class HEM extends AbstractComponent implements RegistrationI {
 			this.traceMessage("unregister of" + uid + "\n");
 		if(registered(uid)) {
 			this.doPortDisconnection(this.registeredUriModularEquipement.get(uid).getPortURI());
+			this.registeredUriModularEquipement.get(uid).unpublishPort();
 			this.registeredUriModularEquipement.remove(uid);
 		}
 	}
