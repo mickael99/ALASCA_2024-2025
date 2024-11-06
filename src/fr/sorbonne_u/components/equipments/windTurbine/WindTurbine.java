@@ -1,8 +1,10 @@
 package fr.sorbonne_u.components.equipments.windTurbine;
 
 import fr.sorbonne_u.components.AbstractComponent;
+import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 
+@OfferedInterfaces(offered = {WindTurbineCI.class})
 public class WindTurbine extends AbstractComponent implements WindTurbineI {
 	
 	public static final boolean VERBOSE = true;
@@ -18,7 +20,7 @@ public class WindTurbine extends AbstractComponent implements WindTurbineI {
 	protected double currentProduction = 0.0;
 	
 	
-	public WindTurbine() throws Exception {
+	protected WindTurbine() throws Exception {
 		super(1, 0);
 		
 		this.currentState = INIT_STATE;

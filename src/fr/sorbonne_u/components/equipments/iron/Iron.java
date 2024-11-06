@@ -1,9 +1,11 @@
 package fr.sorbonne_u.components.equipments.iron;
 
 import fr.sorbonne_u.components.AbstractComponent;
+import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.exceptions.PreconditionException;
 
+@OfferedInterfaces(offered={IronUserCI.class})
 public class Iron extends AbstractComponent implements IronImplementationI {
 	
 	// -------------------------------------------------------------------------

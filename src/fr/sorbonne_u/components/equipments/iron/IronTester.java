@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.CVMIntegrationTest;
+import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.equipments.iron.IronImplementationI.IronEnergySavingMode;
 import fr.sorbonne_u.components.equipments.iron.IronImplementationI.IronState;
 import fr.sorbonne_u.components.equipments.iron.IronImplementationI.IronSteam;
@@ -16,6 +17,7 @@ import fr.sorbonne_u.utils.aclocks.ClocksServer;
 import fr.sorbonne_u.utils.aclocks.ClocksServerConnector;
 import fr.sorbonne_u.utils.aclocks.ClocksServerOutboundPort;
 
+@RequiredInterfaces(required={IronUserCI.class})
 public class IronTester extends AbstractComponent {
 	
 	// -------------------------------------------------------------------------

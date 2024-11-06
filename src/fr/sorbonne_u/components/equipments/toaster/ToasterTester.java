@@ -204,7 +204,6 @@ public class ToasterTester extends AbstractComponent {
 	{
 		this.logMessage("testSetBrowningLevel()... ");
 		try {
-			this.outboundPort.turnOn();
 			this.outboundPort.setBrowningLevel(ToasterBrowningLevel.HIGH);
 			assertEquals(ToasterBrowningLevel.HIGH, this.outboundPort.getBrowningLevel());
 		} catch (Exception e) {
@@ -213,10 +212,11 @@ public class ToasterTester extends AbstractComponent {
 		this.logMessage("...done.");
 	}
 
-	protected void runAllTests() {
+	protected void runAllTests() throws Exception {
 		this.testGetState();
 		this.testgetBrowningLevel();
 		this.testGetSliceCount();
+		this.testSetSliceCount();
 		this.testTurnOn();
 		this.testTurnOff();
 		this.testSetBrowningLevel();

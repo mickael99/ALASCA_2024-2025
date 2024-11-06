@@ -5,9 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import fr.sorbonne_u.components.AbstractComponent;
+import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
 
+@RequiredInterfaces(required = {WindTurbineCI.class})
 public class WindTurbineTester extends AbstractComponent {
 	public static boolean VERBOSE = true;
 	public static int X_RELATIVE_POSITION = 1;
@@ -16,7 +18,7 @@ public class WindTurbineTester extends AbstractComponent {
 	protected static final String OUTBOUND_PORT_URI = "OUTBOUND_PORT_URI"; 
 	protected WindTurbineOutboundPort outboundPort;
 	
-	public WindTurbineTester() throws Exception {
+	protected WindTurbineTester() throws Exception {
 		super(1, 0);
 		
 		this.outboundPort = new WindTurbineOutboundPort(OUTBOUND_PORT_URI, this);
