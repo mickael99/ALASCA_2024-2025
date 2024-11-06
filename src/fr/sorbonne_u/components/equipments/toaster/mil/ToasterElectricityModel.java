@@ -35,6 +35,7 @@ import java.util.concurrent.TimeUnit;
 @ModelExportedVariable(name = "currentIntensity", type = Double.class)
 @ModelExportedVariable(name = "currentBrowningLevel", type = ToasterElectricityModel.ToasterBrowningLevel.class)
 public class ToasterElectricityModel extends AtomicHIOA {
+
     // -------------------------------------------------------------------------
     // Inner classes and types
     // -------------------------------------------------------------------------
