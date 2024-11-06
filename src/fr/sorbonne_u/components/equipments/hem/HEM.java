@@ -31,9 +31,10 @@ import fr.sorbonne_u.components.xmlReader.ClassCreator;
 import fr.sorbonne_u.exceptions.PreconditionException;
 import fr.sorbonne_u.utils.aclocks.AcceleratedClock;
 import fr.sorbonne_u.components.equipments.meter.interfaces.ElectricMeterCI;
+import fr.sorbonne_u.components.equipments.battery.BatteryCI;
 
 @OfferedInterfaces(offered = {RegistrationCI.class})
-@RequiredInterfaces(required = {AdjustableCI.class, ElectricMeterCI.class})
+@RequiredInterfaces(required = {AdjustableCI.class, ElectricMeterCI.class, BatteryCI.class})
 public class HEM extends AbstractComponent implements RegistrationI {
 
 	// -------------------------------------------------------------------------
