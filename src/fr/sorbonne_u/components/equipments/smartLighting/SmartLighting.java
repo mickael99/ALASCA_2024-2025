@@ -55,6 +55,9 @@ public class SmartLighting extends AbstractComponent implements SmartLightingUse
 
     protected SmartLightingExternalControlInboundPort sleip;
 
+    public static boolean TEST_REGISTRATION = false;
+
+
     // ------------------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------------------

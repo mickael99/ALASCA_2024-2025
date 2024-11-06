@@ -56,7 +56,8 @@ public class HEM extends AbstractComponent implements RegistrationI {
 	protected HashMap<String, AdjustableOutboundPort> registeredUriModularEquipement;
 	
 	// Test
-	public static boolean TEST_COMMUNICATION_WITH_FRIDGE; 
+	public static boolean TEST_COMMUNICATION_WITH_FRIDGE;
+	public static boolean TEST_COMMUNICATION_WITH_SMART_LIGHTING;
 	protected boolean isTestElectricMetter;
 	protected boolean isTestFridge;
 	public static final boolean IS_INTEGRATION_TEST = false;
