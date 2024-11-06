@@ -1,12 +1,17 @@
 package fr.sorbonne_u.components.equipments.toaster.mil;
 
-import fr.sorbonne_u.components.equipments.toaster.mil.events.AbstractToasterEvent;
+import fr.sorbonne_u.components.equipments.toaster.mil.events.SetToasterBrowningLevel;
+import fr.sorbonne_u.components.equipments.toaster.mil.events.ToasterEventI;
+import fr.sorbonne_u.components.equipments.toaster.mil.events.TurnOffToaster;
+import fr.sorbonne_u.components.equipments.toaster.mil.events.TurnOnToaster;
 import fr.sorbonne_u.components.hem2024e2.HEM_ReportI;
 import fr.sorbonne_u.components.utils.Electricity;
 import fr.sorbonne_u.devs_simulation.exceptions.MissingRunParameterException;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ExportedVariable;
+import fr.sorbonne_u.devs_simulation.hioa.annotations.ModelExportedVariable;
 import fr.sorbonne_u.devs_simulation.hioa.models.AtomicHIOA;
 import fr.sorbonne_u.devs_simulation.hioa.models.vars.Value;
+import fr.sorbonne_u.devs_simulation.models.annotations.ModelExternalEvents;
 import fr.sorbonne_u.devs_simulation.models.events.Event;
 import fr.sorbonne_u.devs_simulation.models.events.EventI;
 import fr.sorbonne_u.devs_simulation.models.interfaces.ModelI;
@@ -15,14 +20,20 @@ import fr.sorbonne_u.devs_simulation.models.time.Time;
 import fr.sorbonne_u.devs_simulation.simulators.interfaces.AtomicSimulatorI;
 import fr.sorbonne_u.devs_simulation.simulators.interfaces.SimulationReportI;
 import fr.sorbonne_u.devs_simulation.utils.InvariantChecking;
+import fr.sorbonne_u.devs_simulation.utils.Pair;
 import fr.sorbonne_u.devs_simulation.utils.StandardLogger;
 
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-//TODO: Add the missing import statements here
-
+@ModelExternalEvents(imported = {
+        TurnOnToaster.class,
+        TurnOffToaster.class,
+        SetToasterBrowningLevel.class
+})
+@ModelExportedVariable(name = "currentIntensity", type = Double.class)
+@ModelExportedVariable(name = "currentBrowningLevel", type = ToasterElectricityModel.ToasterBrowningLevel.class)
 public class ToasterElectricityModel extends AtomicHIOA {
     // -------------------------------------------------------------------------
     // Inner classes and types
@@ -53,7 +64,6 @@ public class ToasterElectricityModel extends AtomicHIOA {
     protected static double TENSION = 220; // Volts
 
     protected ToasterState currentState = ToasterState.OFF;
-    protected ToasterBrowningLevel currentBrowningLevel = ToasterBrowningLevel.DEFROST;
 
     protected boolean consumptionHasChanged = false;
     protected double totalConsumption;
@@ -61,6 +71,9 @@ public class ToasterElectricityModel extends AtomicHIOA {
     //-------------------------------------------------------------------------
     // HIOA model variables
     //-------------------------------------------------------------------------
+
+    @ExportedVariable(type = ToasterBrowningLevel.class)
+    protected final Value<ToasterBrowningLevel> currentBrowningLevel = new Value<ToasterBrowningLevel>(this);
 
     /**
      * current intensity in amperes; intensity is power/tension.
@@ -198,20 +211,37 @@ public class ToasterElectricityModel extends AtomicHIOA {
     // Methods
     //-------------------------------------------------------------------------
 
-    public void setToasterState(ToasterState state) {
+    public void setToasterState(ToasterState state, Time t) {
+        ToasterState old = this.currentState;
         this.currentState = state;
-    }
+        if (old != state) {
+            this.consumptionHasChanged = true;
+        }
+
+        assert	glassBoxInvariants(this) :
+                new AssertionError("White-box invariants violation!");
+        assert	blackBoxInvariants(this) :
+                new AssertionError("Black-box invariants violation!");    }
 
     public ToasterState getToasterState() {
         return this.currentState;
     }
 
-    public void setToasterBrowningLevel(ToasterBrowningLevel bl) {
-        this.currentBrowningLevel = bl;
+    public void setToasterBrowningLevel(ToasterBrowningLevel bl, Time t) {
+        ToasterBrowningLevel old = this.currentBrowningLevel.getValue();
+        this.currentBrowningLevel.setNewValue(bl, t);
+        if (old != bl) {
+            this.consumptionHasChanged = true;
+        }
+
+        assert	glassBoxInvariants(this) :
+                new AssertionError("White-box invariants violation!");
+        assert	blackBoxInvariants(this) :
+                new AssertionError("Black-box invariants violation!");
     }
 
     public ToasterBrowningLevel getToasterBrowningLevel() {
-        return this.currentBrowningLevel;
+        return this.currentBrowningLevel.getValue();
     }
 
     public void toggleConsumptionHasChanged() {
@@ -228,8 +258,9 @@ public class ToasterElectricityModel extends AtomicHIOA {
 
     @Override
     public void initialiseState(Time startTime) {
+        super.initialiseState(startTime);
+
         this.currentState = ToasterState.OFF;
-        this.currentBrowningLevel = ToasterBrowningLevel.DEFROST;
         this.totalConsumption = 0.0;
         this.consumptionHasChanged = false;
 
@@ -251,6 +282,43 @@ public class ToasterElectricityModel extends AtomicHIOA {
                 new AssertionError("Glass-box invariants violation!");
         assert blackBoxInvariants(this) :
                 new AssertionError("Black-box invariant violation!");
+    }
+
+    @Override
+    public boolean		useFixpointInitialiseVariables()
+    {
+        return true;
+    }
+
+    //TODO: Ask about this method
+    @Override
+    public Pair<Integer, Integer> fixpointInitialiseVariables()
+    {
+        Pair<Integer, Integer> ret = null;
+
+        if (!this.currentIntensity.isInitialised() ||
+                !this.currentBrowningLevel.isInitialised()) {
+            // initially, the heater is off, so its consumption is zero.
+            this.currentIntensity.initialise(0.0);
+            this.currentBrowningLevel.initialise(ToasterBrowningLevel.DEFROST);
+
+            StringBuffer sb = new StringBuffer("new consumption: ");
+            sb.append(this.currentIntensity.getValue());
+            sb.append(" amperes at ");
+            sb.append(this.currentIntensity.getTime());
+            sb.append(" seconds.\n");
+            this.logMessage(sb.toString());
+            ret = new Pair<>(2, 0);
+        } else {
+            ret = new Pair<>(0, 0);
+        }
+
+        assert	glassBoxInvariants(this) :
+                new AssertionError("White-box invariants violation!");
+        assert	blackBoxInvariants(this) :
+                new AssertionError("Black-box invariants violation!");
+
+        return ret;
     }
 
     @Override
@@ -285,31 +353,24 @@ public class ToasterElectricityModel extends AtomicHIOA {
 
     @Override
     public void userDefinedInternalTransition(Duration elapsedTime) {
-        Time t = this.getCurrentStateTime();
-        switch (this.currentState) {
-            case ON:
-                switch (this.currentBrowningLevel) {
-                    case DEFROST:
-                        this.totalConsumption = DEFROSING_CONSUMPTION;
-                        break;
-                    case LOW:
-                        this.totalConsumption = LOW_CONSUMPTION;
-                        break;
-                    case MEDIUM:
-                        this.totalConsumption = MEDIUM_CONSUMPTION;
-                        break;
-                    case HIGH:
-                        this.totalConsumption = HIGH_CONSUMPTION;
-                        break;
-                    default:
-                        break;
-                }
-                break;
-            case OFF:
-                this.totalConsumption = 0.0;
-                break;
-        }
 
+        super.userDefinedInternalTransition(elapsedTime);
+
+        Time t = this.getCurrentStateTime();
+        if (this.currentState == ToasterState.ON) {
+            if (this.currentBrowningLevel.getValue() == ToasterBrowningLevel.DEFROST) {
+                this.currentIntensity.setNewValue(DEFROSING_CONSUMPTION / TENSION, t);
+            } else if (this.currentBrowningLevel.getValue() == ToasterBrowningLevel.LOW) {
+                this.currentIntensity.setNewValue(LOW_CONSUMPTION / TENSION, t);
+            } else if (this.currentBrowningLevel.getValue() == ToasterBrowningLevel.MEDIUM) {
+                this.currentIntensity.setNewValue(MEDIUM_CONSUMPTION / TENSION, t);
+            } else if (this.currentBrowningLevel.getValue() == ToasterBrowningLevel.HIGH) {
+                this.currentIntensity.setNewValue(HIGH_CONSUMPTION / TENSION, t);
+            }
+        } else {
+            assert this.currentState == ToasterState.OFF;
+            this.currentIntensity.setNewValue(0.0, t);
+        }
         // Tracing
         StringBuffer message =
                 new StringBuffer("executes an internal transition ");
@@ -339,6 +400,7 @@ public class ToasterElectricityModel extends AtomicHIOA {
         assert currentEvents != null && currentEvents.size() == 1;
 
         Event ce = (Event) currentEvents.get(0);
+        assert ce instanceof ToasterEventI;
 
         // optional: compute the total consumption (in kwh) for the simulation
         // report.
@@ -348,16 +410,11 @@ public class ToasterElectricityModel extends AtomicHIOA {
                         TENSION * this.currentIntensity.getValue());
 
         // Tracing
-        StringBuffer message =
-                new StringBuffer("executes an external transition ");
-        message.append(ce.toString());
-        message.append(")\n");
-        this.logMessage(message.toString());
+        StringBuffer sb = new StringBuffer("execute the external event: ");
+        sb.append(ce.eventAsString());
+        sb.append(".\n");
+        this.logMessage(sb.toString());
 
-        assert ce instanceof AbstractToasterEvent :
-                new RuntimeException(
-                        ce + " is not an event that an AbstractToasterEvent"
-                                + " can receive and process.");
         ce.executeOn(this);
 
         assert glassBoxInvariants(this) :
