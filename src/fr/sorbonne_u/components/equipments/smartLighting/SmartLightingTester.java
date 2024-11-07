@@ -19,37 +19,38 @@ import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@RequiredInterfaces(required = {SmartLightingUserCI.class, SmartLightingInternalControlCI.class, SmartLightingExternalControlCI.class, ClocksServerCI.class})
+@RequiredInterfaces(required = {
+                                SmartLightingUserCI.class,
+                                SmartLightingInternalControlCI.class,
+                                SmartLightingExternalControlCI.class,
+                                ClocksServerCI.class
+                                })
 public class SmartLightingTester extends AbstractComponent {
 
     // ------------------------------------------------------------------------
     // Constants and variables
     // ------------------------------------------------------------------------
 
-    public static final int		SWITCH_ON_DELAY = 2;
+    public static final int SWITCH_ON_DELAY = 2;
+    public static final int SWITCH_OFF_DELAY = 8;
 
-    public static final int		SWITCH_OFF_DELAY = 8 ;
+    public static boolean VERBOSE = false;
 
-    public static boolean       VERBOSE = false;
+    // Tracing
+    public static int X_RELATIVE_POSITION = 0;
+    public static int Y_RELATIVE_POSITION = 0;
 
-    public static int			X_RELATIVE_POSITION = 0;
+    // Unit test
+    protected boolean isUnitTest;
 
-    public static int			Y_RELATIVE_POSITION = 0;
+    // Inbound ports URI
+    protected String smartLightingUserInboundPortURI;
+    protected String smartLignthingInternalControlInboundPortURI;
+    protected String smartLightingExternalControlInboundPortURI;
 
-    /** true if the component must perform unit tests, otherwise it
-     *  executes integration tests actions.									*/
-    protected  boolean		isUnitTest;
-    /** URI of the user component interface inbound port.					*/
-    protected String			smartLightingUserInboundPortURI;
-    /** URI of the internal control component interface inbound port.		*/
-    protected String			smartLignthingInternalControlInboundPortURI;
-    /** URI of the external control component interface inbound port.		*/
-    protected String			smartLightingExternalControlInboundPortURI;
-
+    // Outbound ports
     protected SmartLightingUserOutboundPort slop;
-
     protected SmartLightingExternalControlOutboundPort slecop;
-
     protected SmartLightingInternalControlOutboundPort slicop;
 
     // ------------------------------------------------------------------------
@@ -57,22 +58,43 @@ public class SmartLightingTester extends AbstractComponent {
     // ------------------------------------------------------------------------
 
     protected SmartLightingTester(boolean isUnitTest) throws Exception {
-        this(isUnitTest, SmartLighting.USER_INBOUND_PORT_URI, SmartLighting.INTERNAL_CONTROL_INBOUND_PORT_URI, SmartLighting.EXTERNAL_CONTROL_INBOUND_PORT_URI);
+        this(isUnitTest,
+             SmartLighting.USER_INBOUND_PORT_URI,
+             SmartLighting.INTERNAL_CONTROL_INBOUND_PORT_URI,
+             SmartLighting.EXTERNAL_CONTROL_INBOUND_PORT_URI
+            );
     }
 
-    protected SmartLightingTester(boolean isUnitTest, String smartLightingUserInboundPortURI, String smartLightingInternalControlInboundPortURI, String smartLightingExternalControlInboundPortURI) throws Exception {
+    protected SmartLightingTester(boolean isUnitTest,
+                                  String smartLightingUserInboundPortURI,
+                                  String smartLightingInternalControlInboundPortURI,
+                                  String smartLightingExternalControlInboundPortURI
+                                 ) throws Exception {
         super(1, 1);
         this.isUnitTest = isUnitTest;
-        this.initialise(smartLightingUserInboundPortURI, smartLightingInternalControlInboundPortURI, smartLightingExternalControlInboundPortURI);
+        this.initialise(smartLightingUserInboundPortURI,
+                        smartLightingInternalControlInboundPortURI,
+                        smartLightingExternalControlInboundPortURI);
     }
 
-    protected SmartLightingTester(boolean isUnitTest, String reflectionInboundPortURI, String smartLightingUserInboundPortURI, String smartLightingInternalControlInboundPortURI, String smartLightingExternalControlInboundPortURI) throws Exception {
+    protected SmartLightingTester(boolean isUnitTest,
+                                  String reflectionInboundPortURI,
+                                  String smartLightingUserInboundPortURI,
+                                  String smartLightingInternalControlInboundPortURI,
+                                  String smartLightingExternalControlInboundPortURI
+                                 ) throws Exception {
         super(reflectionInboundPortURI, 1, 1);
         this.isUnitTest = false;
-        this.initialise(smartLightingUserInboundPortURI, smartLightingInternalControlInboundPortURI, smartLightingExternalControlInboundPortURI);
+        this.initialise(smartLightingUserInboundPortURI,
+                        smartLightingInternalControlInboundPortURI,
+                        smartLightingExternalControlInboundPortURI
+                       );
     }
 
-    protected void initialise(String smartLightingUserInboundPortURI, String smartLightingInternalControlInboundPortURI, String smartLightingExternalControlInboundPortURI) throws Exception {
+    protected void initialise(String smartLightingUserInboundPortURI,
+                              String smartLightingInternalControlInboundPortURI,
+                              String smartLightingExternalControlInboundPortURI
+                             ) throws Exception {
 
         this.smartLightingUserInboundPortURI = smartLightingUserInboundPortURI;
         this.slop = new SmartLightingUserOutboundPort(this);
@@ -86,7 +108,7 @@ public class SmartLightingTester extends AbstractComponent {
         this.slecop = new SmartLightingExternalControlOutboundPort(this);
         this.slecop.publishPort();
 
-        if(VERBOSE){
+        if (VERBOSE) {
             this.tracer.get().setTitle("SmartLightingTester component");
             this.tracer.get().setRelativePosition(X_RELATIVE_POSITION, Y_RELATIVE_POSITION);
             this.toggleTracing();
@@ -100,13 +122,13 @@ public class SmartLightingTester extends AbstractComponent {
 
     protected void testSwitchStates() {
         this.traceMessage("Testing switch states...\n");
-        try{
+        try {
             this.slop.switchOn();
         } catch (Exception e) {
             this.traceMessage("...KO. " + e + "\n");
             fail();
         }
-        try{
+        try {
             this.slop.switchOff();
         } catch (Exception e) {
             this.traceMessage("...KO. " + e + "\n");
@@ -115,9 +137,9 @@ public class SmartLightingTester extends AbstractComponent {
         this.traceMessage("...testSwitchStatesDone.\n");
     }
 
-    protected void testOn(){
+    protected void testOn() {
         this.traceMessage("Testing isOn...\n");
-        try{
+        try {
             assertFalse(this.slop.isOn());
         } catch (Exception e) {
             this.traceMessage("...KO. " + e + "\n");
@@ -134,9 +156,9 @@ public class SmartLightingTester extends AbstractComponent {
         this.traceMessage("...testOn() Done.\n");
     }
 
-    protected void testTargetIllumination(){
+    protected void testTargetIllumination() {
         this.traceMessage("Testing setTargetIllumination...\n");
-        try{
+        try {
             this.slop.switchOn();
             this.slop.setTargetIllumination(200.0);
             assertEquals(200.0, this.slop.getTargetIllumination());
@@ -149,9 +171,9 @@ public class SmartLightingTester extends AbstractComponent {
         this.traceMessage("...testTargetIllumination() Done.\n");
     }
 
-    protected void testCurrentIllumination(){
+    protected void testCurrentIllumination() {
         this.traceMessage("Testing currentIllumination...\n");
-        try{
+        try {
             this.slop.switchOn();
             assertEquals(0, this.slop.getCurrentIllumination());
             this.slop.switchOff();
@@ -162,13 +184,13 @@ public class SmartLightingTester extends AbstractComponent {
         this.traceMessage("...testCurrentIllumination() Done.\n");
     }
 
-    public void testPowerLevel(){
+    public void testPowerLevel() {
         this.traceMessage("Testing powerLevel...\n");
-        try{
+        try {
             assertEquals(SmartLighting.MAX_POWER_LEVEL, this.slop.getMaxPowerLevel());
             this.slop.switchOn();
-            this.slop.setCurrentPowerLevel(SmartLighting.MAX_POWER_LEVEL/2.0);
-            assertEquals(SmartLighting.MAX_POWER_LEVEL/2.0, this.slop.getCurrentPowerLevel());
+            this.slop.setCurrentPowerLevel(SmartLighting.MAX_POWER_LEVEL / 2.0);
+            assertEquals(SmartLighting.MAX_POWER_LEVEL / 2.0, this.slop.getCurrentPowerLevel());
             this.slop.switchOff();
         } catch (Exception e) {
             this.traceMessage("...KO. " + e + "\n");
@@ -177,9 +199,9 @@ public class SmartLightingTester extends AbstractComponent {
         this.traceMessage("...testPowerLevel() Done.\n");
     }
 
-    protected void testInternalControl(){
+    protected void testInternalControl() {
         this.traceMessage("Testing internal control...\n");
-        try{
+        try {
             this.slop.switchOn();
             assertEquals(SmartLighting.STANDARD_TARGET_ILLUMINATION, this.slop.getTargetIllumination());
             assertTrue(this.slop.isOn());
@@ -194,13 +216,13 @@ public class SmartLightingTester extends AbstractComponent {
         this.traceMessage("...testInternalControl() Done.\n");
     }
 
-    protected void testExternalControl(){
+    protected void testExternalControl() {
         this.traceMessage("Testing external control...\n");
-        try{
+        try {
             assertEquals(SmartLighting.MAX_POWER_LEVEL, this.slop.getMaxPowerLevel());
             this.slop.switchOn();
-            this.slecop.setCurrentPowerLevel(SmartLighting.MAX_POWER_LEVEL/2.0);
-            assertEquals(SmartLighting.MAX_POWER_LEVEL/2.0, this.slop.getCurrentPowerLevel());
+            this.slecop.setCurrentPowerLevel(SmartLighting.MAX_POWER_LEVEL / 2.0);
+            assertEquals(SmartLighting.MAX_POWER_LEVEL / 2.0, this.slop.getCurrentPowerLevel());
             this.slop.switchOff();
         } catch (Exception e) {
             this.traceMessage("...KO. " + e + "\n");
@@ -222,28 +244,29 @@ public class SmartLightingTester extends AbstractComponent {
     // -------------------------------------------------------------------------
     // Component life-cycle
     // -------------------------------------------------------------------------
+
     /**
      * @see fr.sorbonne_u.components.AbstractComponent#start()
      */
     @Override
     public synchronized void start() throws ComponentStartException {
         super.start();
-        try{
+        try {
             this.doPortConnection(
-                this.slop.getPortURI(),
-                this.smartLightingUserInboundPortURI,
-                SmartLightingUserConnector.class.getCanonicalName()
-            );
+                    this.slop.getPortURI(),
+                    this.smartLightingUserInboundPortURI,
+                    SmartLightingUserConnector.class.getCanonicalName()
+                                 );
             this.doPortConnection(
-                this.slicop.getPortURI(),
-                this.smartLignthingInternalControlInboundPortURI,
-                SmartLightingInternalControlConnector.class.getCanonicalName()
-            );
+                    this.slicop.getPortURI(),
+                    this.smartLignthingInternalControlInboundPortURI,
+                    SmartLightingInternalControlConnector.class.getCanonicalName()
+                                 );
             this.doPortConnection(
-                this.slecop.getPortURI(),
-                this.smartLightingExternalControlInboundPortURI,
-                SmartLightingExternalControlConnector.class.getCanonicalName()
-            );
+                    this.slecop.getPortURI(),
+                    this.smartLightingExternalControlInboundPortURI,
+                    SmartLightingExternalControlConnector.class.getCanonicalName()
+                                 );
         } catch (Exception e) {
             throw new ComponentStartException(e);
         }
@@ -260,17 +283,17 @@ public class SmartLightingTester extends AbstractComponent {
             ClocksServerOutboundPort csop = new ClocksServerOutboundPort(this);
             csop.publishPort();
             this.doPortConnection(
-                csop.getPortURI(),
-                ClocksServer.STANDARD_INBOUNDPORT_URI,
-                ClocksServerOutboundPort.class.getCanonicalName()
-            );
+                    csop.getPortURI(),
+                    ClocksServer.STANDARD_INBOUNDPORT_URI,
+                    ClocksServerOutboundPort.class.getCanonicalName()
+                                 );
             this.traceMessage("Smart Lighting test gets the clocks\n");
             AcceleratedClock ac = csop.getClock(CVMIntegrationTest.TEST_CLOCK_URI);
             this.doPortDisconnection(csop.getPortURI());
             csop.unpublishPort();
             csop = null;
 
-            Instant startInstance =ac.getStartInstant();
+            Instant startInstance = ac.getStartInstant();
             Instant smartLightingSwitchOn = startInstance.plusSeconds(SWITCH_ON_DELAY);
             Instant smartLightingSwitchOff = startInstance.plusSeconds(SWITCH_OFF_DELAY);
 
@@ -296,8 +319,8 @@ public class SmartLightingTester extends AbstractComponent {
                                 e.printStackTrace();
                             }
                         }
-                    },delayToSwitchOn, TimeUnit.NANOSECONDS
-            );
+                    }, delayToSwitchOn, TimeUnit.NANOSECONDS
+                                        );
 
 
             //schedule switch off smart lighting
@@ -312,8 +335,8 @@ public class SmartLightingTester extends AbstractComponent {
                                 e.printStackTrace();
                             }
                         }
-                    },delayToSwitchOff, TimeUnit.NANOSECONDS
-            );
+                    }, delayToSwitchOff, TimeUnit.NANOSECONDS
+                                        );
         }
     }
 
@@ -333,7 +356,7 @@ public class SmartLightingTester extends AbstractComponent {
      */
     @Override
     public void shutdown() throws ComponentShutdownException {
-        try{
+        try {
             this.slop.unpublishPort();
             this.slicop.unpublishPort();
             this.slecop.unpublishPort();
