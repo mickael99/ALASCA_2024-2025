@@ -130,19 +130,6 @@ public class FridgeElectricityModel extends AtomicHIOA {
 		return ret;
 	}
 
-	/**
-	 * return true if the black-box invariants are observed, false otherwise.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code instance != null}
-	 * post	{@code true}	// no postcondition.
-	 * </pre>
-	 *
-	 * @param instance	instance to be tested.
-	 * @return			true if the black-box invariants are observed, false otherwise.
-	 */
 	protected static boolean blackBoxInvariants(FridgeElectricityModel instance) {
 		assert	instance != null :
 				new AssertionError("Precondition violation: instance != null");
@@ -243,7 +230,6 @@ public class FridgeElectricityModel extends AtomicHIOA {
 
 		if (!this.currentIntensity.isInitialised() ||
 								!this.currentCoolingPower.isInitialised()) {
-			// initially, the heater is off, so its consumption is zero.
 			this.currentIntensity.initialise(0.0);
 			this.currentCoolingPower.initialise(MAX_COOLING_POWER);
 

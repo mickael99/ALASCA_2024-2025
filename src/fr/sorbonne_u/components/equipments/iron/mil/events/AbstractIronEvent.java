@@ -16,20 +16,6 @@ public class AbstractIronEvent extends ES_Event {
 	// Constructors
 	// -------------------------------------------------------------------------
 
-	/**
-	 * used to create an event used by the hair dryer simulation model.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code timeOfOccurrence != null}
-	 * post	{@code getTimeOfOccurrence().equals(timeOfOccurrence)}
-	 * post	{@code content == null || getEventInformation().equals(content)}
-	 * </pre>
-	 *
-	 * @param timeOfOccurrence	time of occurrence of the event.
-	 * @param content			content (data) associated with the event.
-	 */
 	public AbstractIronEvent(Time timeOfOccurrence, EventInformationI content) {
 		super(timeOfOccurrence, content);
 	}
