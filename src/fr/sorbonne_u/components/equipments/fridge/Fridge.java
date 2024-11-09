@@ -352,7 +352,7 @@ public class Fridge extends AbstractComponent implements FridgeInternalControlI,
 			this.traceMessage("...KO.\n" + e);
 			assertTrue(false);
 		}
-		if(VERBOSE)
+		if(VERBOSE) 
 			this.traceMessage("Done...\n");
 	}
 	

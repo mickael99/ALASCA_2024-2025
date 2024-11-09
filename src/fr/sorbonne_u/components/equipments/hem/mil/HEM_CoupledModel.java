@@ -39,6 +39,14 @@ public class HEM_CoupledModel extends CoupledModel {
 			  imported, reexported, connections,
 			  importedVars, reexportedVars, bindings);
 	}
+	
+	public HEM_CoupledModel(String uri, TimeUnit simulatedTimeUnit, CoordinatorI simulationEngine, ModelI[] submodels,
+			Map<Class<? extends EventI>, EventSink[]> imported, Map<Class<? extends EventI>, ReexportedEvent> reexported,
+			Map<EventSource, EventSink[]> connections) throws Exception
+	{
+		super(uri, simulatedTimeUnit, simulationEngine, submodels,
+		imported, reexported, connections);
+	}
 
 	public static class	HEM_Report implements SimulationReportI, HEM_ReportI {
 		private static final long serialVersionUID = 1L;
