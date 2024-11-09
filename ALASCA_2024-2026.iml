@@ -18,5 +18,7 @@
       </library>
     </orderEntry>
     <orderEntry type="library" exported="" name="junit.jupiter" level="project" />
+    <orderEntry type="library" name="BCM4Java-08102024" level="project" />
+    <orderEntry type="library" name="junit" level="project" />
   </component>
 </module>

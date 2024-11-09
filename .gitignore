@@ -2,3 +2,5 @@
 /lib/
 # .idea
 /.idea/
+# Compiled source
+/out/
