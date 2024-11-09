@@ -29,11 +29,11 @@ public class SmartLighting extends AbstractComponent implements SmartLightingUse
 
     protected static final double STANDARD_TARGET_ILLUMINATION = 100.0;
 
-    protected static final String USER_INBOUND_PORT_URI = "SMART-LIGHTING-USER-INBOUND-PORT-URI";
+    public static final String USER_INBOUND_PORT_URI = "SMART-LIGHTING-USER-INBOUND-PORT-URI";
 
-    protected static final String INTERNAL_CONTROL_INBOUND_PORT_URI = "SMART-LIGHTING-INTERNAL-CONTROL-INBOUND-PORT-URI";
+    public static final String INTERNAL_CONTROL_INBOUND_PORT_URI = "SMART-LIGHTING-INTERNAL-CONTROL-INBOUND-PORT-URI";
 
-    protected static final String EXTERNAL_CONTROL_INBOUND_PORT_URI = "SMART-LIGHTING-EXTERNAL-CONTROL-INBOUND-PORT-URI";
+    public static final String EXTERNAL_CONTROL_INBOUND_PORT_URI = "SMART-LIGHTING-EXTERNAL-CONTROL-INBOUND-PORT-URI";
 
     protected static boolean VERBOSE = false;
 
@@ -41,7 +41,7 @@ public class SmartLighting extends AbstractComponent implements SmartLightingUse
 
     public static int Y_RELATIVE_POSITION = 0;
 
-    public static final double		FAKE_CURRENT_TEMPERATURE = 10.0;
+    public static final double FAKE_CURRENT_TEMPERATURE = 10.0;
 
     protected SmartLightingState currentState;
 
@@ -87,7 +87,7 @@ public class SmartLighting extends AbstractComponent implements SmartLightingUse
         this.sleip = new SmartLightingExternalControlInboundPort(smartLightingExternalControlInboundPortURI, this);
         this.sleip.publishPort();
 
-        if(VERBOSE) {
+        if (VERBOSE) {
             this.tracer.get().setTitle("SmartLighting component");
             this.tracer.get().setRelativePosition(X_RELATIVE_POSITION, Y_RELATIVE_POSITION);
             this.toggleLogging();
@@ -98,12 +98,12 @@ public class SmartLighting extends AbstractComponent implements SmartLightingUse
     // Component life-cycle
     // -------------------------------------------------------------------------
     @Override
-    public synchronized void shutdown() throws ComponentShutdownException{
+    public synchronized void shutdown() throws ComponentShutdownException {
         try {
             this.slip.unpublishPort();
             this.slcip.unpublishPort();
             this.sleip.unpublishPort();
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new ComponentShutdownException(e);
         }
         super.shutdown();
@@ -114,7 +114,7 @@ public class SmartLighting extends AbstractComponent implements SmartLightingUse
 
     @Override
     public boolean isOn() throws Exception {
-        if (SmartLighting.VERBOSE){
+        if (SmartLighting.VERBOSE) {
             this.traceMessage("SmartLighting returns its state: " + this.currentState + ".\n");
         }
         return this.currentState == SmartLightingState.ON || this.currentState == SmartLightingState.INCREASE || this.currentState == SmartLightingState.DECREASE;
@@ -123,7 +123,7 @@ public class SmartLighting extends AbstractComponent implements SmartLightingUse
 
     @Override
     public void switchOn() throws Exception {
-        if (SmartLighting.VERBOSE){
+        if (SmartLighting.VERBOSE) {
             this.traceMessage("SmartLighting switches on.\n");
         }
 
@@ -137,7 +137,7 @@ public class SmartLighting extends AbstractComponent implements SmartLightingUse
     @Override
     public void switchOff() throws Exception {
 
-        if (SmartLighting.VERBOSE){
+        if (SmartLighting.VERBOSE) {
             this.traceMessage("SmartLighting switches off.\n");
         }
 
@@ -150,7 +150,7 @@ public class SmartLighting extends AbstractComponent implements SmartLightingUse
 
     @Override
     public void setTargetIllumination(double targetIllumination) throws Exception {
-        if (SmartLighting.VERBOSE){
+        if (SmartLighting.VERBOSE) {
             this.traceMessage("SmartLighting sets its target illumination to " + targetIllumination + ".\n");
         }
 
@@ -165,7 +165,7 @@ public class SmartLighting extends AbstractComponent implements SmartLightingUse
 
     @Override
     public double getMaxPowerLevel() throws Exception {
-        if (SmartLighting.VERBOSE){
+        if (SmartLighting.VERBOSE) {
             this.traceMessage("SmartLighting returns its maximum power level: " + MAX_POWER_LEVEL + ".\n");
         }
         return MAX_POWER_LEVEL;
@@ -173,7 +173,7 @@ public class SmartLighting extends AbstractComponent implements SmartLightingUse
 
     @Override
     public double getCurrentPowerLevel() throws Exception {
-        if(SmartLighting.VERBOSE){
+        if (SmartLighting.VERBOSE) {
             this.traceMessage("SmartLighting returns its current power level: " + this.currentPowerLevel + ".\n");
         }
 
@@ -188,7 +188,7 @@ public class SmartLighting extends AbstractComponent implements SmartLightingUse
 
     @Override
     public void setCurrentPowerLevel(double powerLevel) throws Exception {
-        if(SmartLighting.VERBOSE){
+        if (SmartLighting.VERBOSE) {
             this.traceMessage("SmartLighting sets its current power level to " + powerLevel + ".\n");
         }
 
@@ -243,7 +243,7 @@ public class SmartLighting extends AbstractComponent implements SmartLightingUse
     public double getTargetIllumination() throws Exception {
         assert this.isOn() : new PreconditionException("SmartLighting is off.");
 
-        if (SmartLighting.VERBOSE){
+        if (SmartLighting.VERBOSE) {
             this.traceMessage("SmartLighting returns its target illumination: " + this.targetIllumination + ".\n");
         }
 
@@ -258,7 +258,7 @@ public class SmartLighting extends AbstractComponent implements SmartLightingUse
     public double getCurrentIllumination() throws Exception {
         assert this.isOn() : new PreconditionException("SmartLighting is off.");
 
-        if (SmartLighting.VERBOSE){
+        if (SmartLighting.VERBOSE) {
             this.traceMessage("SmartLighting returns its current illumination: " + this.targetIllumination + ".\n");
         }
 

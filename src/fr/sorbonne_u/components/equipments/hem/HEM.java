@@ -13,9 +13,11 @@ import fr.sorbonne_u.components.equipments.battery.Battery;
 import fr.sorbonne_u.components.equipments.battery.BatteryConnector;
 import fr.sorbonne_u.components.equipments.battery.BatteryOutboundPort;
 import fr.sorbonne_u.components.equipments.fridge.Fridge;
+import fr.sorbonne_u.components.equipments.smartLighting.SmartLighting;
 import fr.sorbonne_u.components.equipments.hem.adjustable.AdjustableCI;
 import fr.sorbonne_u.components.equipments.hem.adjustable.AdjustableOutboundPort;
 import fr.sorbonne_u.components.equipments.hem.adjustable.FridgeConnector;
+import fr.sorbonne_u.components.equipments.hem.adjustable.SmartLightingConnector;
 import fr.sorbonne_u.components.equipments.hem.registration.RegistrationCI;
 import fr.sorbonne_u.components.equipments.hem.registration.RegistrationI;
 import fr.sorbonne_u.components.equipments.hem.registration.RegistrationInboundPort;
@@ -49,6 +51,8 @@ public class HEM extends AbstractComponent implements RegistrationI {
 
 	protected AdjustableOutboundPort controlFridgePort;
 
+	protected AdjustableOutboundPort controlSmartLightingPort;
+
 	protected AcceleratedClock ac;
 	
 	public static final String URI_REGISTRATION_INBOUND_PORT = "URI_REGISTRATION_INBOUND_PORT";
@@ -60,6 +64,7 @@ public class HEM extends AbstractComponent implements RegistrationI {
 	public static boolean TEST_COMMUNICATION_WITH_SMART_LIGHTING;
 	protected boolean isTestElectricMetter;
 	protected boolean isTestFridge;
+	protected boolean isTestSmartLighting;
 	public static final boolean IS_INTEGRATION_TEST = false;
 	
 	// Battery (If it's an integration test)
@@ -76,10 +81,11 @@ public class HEM extends AbstractComponent implements RegistrationI {
 	// -------------------------------------------------------------------------
 
 	protected HEM() {
-		super(2, 1);
+		super(3, 1);
 		
 		this.isTestElectricMetter = true;
 		this.isTestFridge = true;
+		this.isTestSmartLighting = true;
 		
 		registeredUriModularEquipement = new HashMap<String, AdjustableOutboundPort>();
 
@@ -96,6 +102,7 @@ public class HEM extends AbstractComponent implements RegistrationI {
 		
 		this.isTestElectricMetter = isTestElectricMetter;
 		this.isTestFridge = false;
+		this.isTestSmartLighting = false;
 		
 		this.initialisePorts();
 
@@ -107,12 +114,13 @@ public class HEM extends AbstractComponent implements RegistrationI {
 		}
 	}
 	
-	protected HEM(boolean isTestElectricMetter, boolean isTestFridge) throws Exception {
+	protected HEM(boolean isTestElectricMetter, boolean isTestFridge, boolean isTestSmartLighting) throws Exception {
 		super(1, 1);
 		
 		this.isTestElectricMetter = isTestElectricMetter;
 		this.isTestFridge = isTestFridge;
-		
+		this.isTestSmartLighting = isTestSmartLighting;
+
 		this.initialisePorts();
 
 		if (VERBOSE) {
@@ -165,6 +173,15 @@ public class HEM extends AbstractComponent implements RegistrationI {
 						Fridge.EXTERNAL_CONTROL_INBOUND_PORT_URI,
 						FridgeConnector.class.getCanonicalName());	
 			}
+
+			if(this.isTestSmartLighting) {
+				this.controlSmartLightingPort = new AdjustableOutboundPort(this);
+				this.controlSmartLightingPort.publishPort();
+				this.doPortConnection(
+						this.controlSmartLightingPort.getPortURI(),
+						SmartLighting.EXTERNAL_CONTROL_INBOUND_PORT_URI,
+						SmartLightingConnector.class.getCanonicalName());
+			}
 			
 			if(IS_INTEGRATION_TEST) {
 				this.doPortConnection(
@@ -207,6 +224,9 @@ public class HEM extends AbstractComponent implements RegistrationI {
 		
 		if(this.isTestFridge)
 			this.testFridge();
+
+		if(this.isTestSmartLighting)
+			this.testSmartLighting();
 	}
 	
 	@Override
@@ -214,6 +234,9 @@ public class HEM extends AbstractComponent implements RegistrationI {
 	{
 		if(this.isTestFridge)
 			this.doPortDisconnection(this.controlFridgePort.getPortURI());
+
+		if(this.isTestSmartLighting)
+			this.doPortDisconnection(this.controlSmartLightingPort.getPortURI());
 		
 		if(this.isTestElectricMetter)
 			this.doPortDisconnection(this.electricMeterPort.getPortURI());
@@ -235,6 +258,10 @@ public class HEM extends AbstractComponent implements RegistrationI {
 		try {
 			if(this.isTestFridge) 
 				this.controlFridgePort.unpublishPort();
+			if(this.isTestSmartLighting)
+				this.controlSmartLightingPort.unpublishPort();
+			if(this.isTestSmartLighting)
+				this.controlSmartLightingPort.unpublishPort();
 			
 			this.registrationPort.unpublishPort();
 			if(this.isTestElectricMetter)
@@ -306,6 +333,48 @@ public class HEM extends AbstractComponent implements RegistrationI {
 						this.controlFridgePort.currentMode() + "\n");
 		
 		this.traceMessage("testFridge done...\n");
+	}
+
+	public void testSmartLighting() throws Exception {
+		this.traceMessage("testSmartLighting()\n");
+
+		traceMessage("SmartLighting maxMode index? " +
+						this.controlSmartLightingPort.maxMode() + "\n");
+		traceMessage("SmartLighting current mode index? " +
+						this.controlSmartLightingPort.currentMode() + "\n");
+		traceMessage("SmartLighting going down one mode? " +
+						this.controlSmartLightingPort.downMode() + "\n");
+		traceMessage("SmartLighting current mode is? " +
+						this.controlSmartLightingPort.currentMode() + "\n");
+		traceMessage("SmartLighting going up one mode? " +
+						this.controlSmartLightingPort.upMode() + "\n");
+		traceMessage("SmartLighting current mode is? " +
+						this.controlSmartLightingPort.currentMode() + "\n");
+		traceMessage("SmartLighting setting current mode? " +
+						this.controlSmartLightingPort.setMode(1) + "\n");
+		traceMessage("SmartLighting current mode is? " +
+						this.controlSmartLightingPort.currentMode() + "\n");
+		traceMessage("SmartLighting is suspended? " +
+						this.controlSmartLightingPort.suspended() + "\n");
+		traceMessage("SmartLighting suspends? " +
+						this.controlSmartLightingPort.suspend() + "\n");
+		traceMessage("SmartLighting is suspended? " +
+						this.controlSmartLightingPort.suspended() + "\n");
+		traceMessage("SmartLighting emergency? " +
+						this.controlSmartLightingPort.emergency() + "\n");
+
+		Thread.sleep(1000);
+
+		traceMessage("SmartLighting emergency? " +
+						this.controlSmartLightingPort.emergency() + "\n");
+		traceMessage("SmartLighting resumes? " +
+						this.controlSmartLightingPort.resume() + "\n");
+		traceMessage("SmartLighting is suspended? " +
+						this.controlSmartLightingPort.suspended() + "\n");
+		traceMessage("SmartLighting current mode is? " +
+						this.controlSmartLightingPort.currentMode() + "\n");
+
+		this.traceMessage("testSmartLighting done...\n");
 	}
 
 	@Override
