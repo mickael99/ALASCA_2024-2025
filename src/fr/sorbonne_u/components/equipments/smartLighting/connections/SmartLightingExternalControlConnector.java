@@ -44,6 +44,4 @@ public class SmartLightingExternalControlConnector extends AbstractConnector imp
     public double getCurrentIllumination() throws Exception {
         return ((SmartLightingExternalControlCI)this.offering).getCurrentIllumination();
     }
-
-
 }

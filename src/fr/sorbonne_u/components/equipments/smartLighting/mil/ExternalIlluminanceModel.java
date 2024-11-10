@@ -15,9 +15,33 @@ import fr.sorbonne_u.devs_simulation.utils.StandardLogger;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
+// -------------------------------------------------------------------------
+/**
+ * The class <code>ExternalIlluminanceModel</code> defines a simulation model
+ * for the environment, namely the external illuminance of the house.
+ *
+ * <p><strong>Description</strong></p>
+ *
+ * <p>
+ * The model makes the illuminance vary over some period representing typically
+ * a day. The illuminance is computed as a sinusoidal function of the time of
+ * the day. The illuminance is at its minimum at 6:00 and 18:00 and at its
+ * maximum at 12:00. The illuminance is computed as follows:
+ *     illuminance = MIN_EXTERNAL_ILLUMINANCE + (MAX_EXTERNAL_ILLUMINANCE - MIN_EXTERNAL_ILLUMINANCE) * sin((cycleTime - 6) * PI / 12)
+ *     where cycleTime is the current time of the day in hours.
+ *     The cycleTime is computed as the sum of the current time and the elapsed time since the last evaluation step.
+ *     The cycleTime is reset to 0 when it reaches 24.
+ *     The MIN_EXTERNAL_ILLUMINANCE and MAX_EXTERNAL_ILLUMINANCE are the minimum and maximum illuminance values.
+ *     The MIN_EXTERNAL_ILLUMINANCE is 0 and the MAX_EXTERNAL_ILLUMINANCE is 100000.
+ * </p>
+ * <p>Created on : 2024-11-09</p>
+ *
+ * @author	<a href="mailto:yukai_luo@yahoo.com">Yukai Luo</a>
+ */
 
 @ModelExportedVariable(name = "externalIlluminance", type = Double.class)
 //-------------------------------------------------------------------------
+
 public class ExternalIlluminanceModel extends AtomicHIOA {
 
     // ------------------------------------------------------------------------
@@ -48,6 +72,7 @@ public class ExternalIlluminanceModel extends AtomicHIOA {
     // ------------------------------------------------------------------------
     // Invariants
     // ------------------------------------------------------------------------
+
     protected static boolean	glassBoxInvariants(
             ExternalIlluminanceModel instance
                                                   )
@@ -121,6 +146,10 @@ public class ExternalIlluminanceModel extends AtomicHIOA {
     // -------------------------------------------------------------------------
     // DEVS simulation protocol
     // -------------------------------------------------------------------------
+
+    /**
+     * @see fr.sorbonne_u.devs_simulation.hioa.models.AtomicHIOA#initialiseState(fr.sorbonne_u.devs_simulation.models.time.Time)
+     */
     @Override
     public void			initialiseState(Time initialTime)
     {
@@ -134,12 +163,18 @@ public class ExternalIlluminanceModel extends AtomicHIOA {
                 new AssertionError("Black-box invariants violation!");
     }
 
+    /**
+     * @see fr.sorbonne_u.devs_simulation.hioa.models.interfaces.VariableInitialisationI#useFixpointInitialiseVariables()
+     */
     @Override
     public boolean		useFixpointInitialiseVariables()
     {
         return true;
     }
 
+    /**
+     * @see fr.sorbonne_u.devs_simulation.hioa.models.interfaces.VariableInitialisationI#fixpointInitialiseVariables()
+     */
     @Override
     public Pair<Integer, Integer> fixpointInitialiseVariables()
     {
@@ -170,6 +205,9 @@ public class ExternalIlluminanceModel extends AtomicHIOA {
         return ret;
     }
 
+    /**
+     * @see fr.sorbonne_u.devs_simulation.hioa.models.interfaces.VariableInitialisationI#initialiseVariables()
+     */
     @Override
     public void			initialiseVariables()
     {
@@ -181,18 +219,27 @@ public class ExternalIlluminanceModel extends AtomicHIOA {
                 new AssertionError("Black-box invariants violation!");
     }
 
+    /**
+     * @see fr.sorbonne_u.devs_simulation.models.interfaces.AtomicModelI#output()
+     */
     @Override
     public ArrayList<EventI> output()
     {
         return null;
     }
 
+    /**
+     * @see fr.sorbonne_u.devs_simulation.models.interfaces.ModelI#timeAdvance()
+     */
     @Override
     public Duration		timeAdvance()
     {
         return this.evaluationStep;
     }
 
+    /**
+     * @see fr.sorbonne_u.devs_simulation.hioa.models.AtomicHIOA#endSimulation(fr.sorbonne_u.devs_simulation.models.time.Time)
+     */
     @Override
     public void			endSimulation(Time endTime)
     {
@@ -200,6 +247,9 @@ public class ExternalIlluminanceModel extends AtomicHIOA {
         super.endSimulation(endTime);
     }
 
+    /**
+     * @see fr.sorbonne_u.devs_simulation.models.AtomicModel#userDefinedInternalTransition(fr.sorbonne_u.devs_simulation.models.time.Duration)
+     */
     @Override
     public void			userDefinedInternalTransition(Duration elapsedTime)
     {
@@ -224,7 +274,7 @@ public class ExternalIlluminanceModel extends AtomicHIOA {
 
         // Tracing
         StringBuffer message =
-                new StringBuffer("current external temperature: ");
+                new StringBuffer("current external illuminance: ");
         message.append(this.externalIlluminance.getValue());
         message.append(" at ");
         message.append(this.getCurrentStateTime());

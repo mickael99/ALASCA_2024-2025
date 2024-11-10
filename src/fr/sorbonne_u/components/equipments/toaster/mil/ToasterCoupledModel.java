@@ -18,12 +18,14 @@ public class ToasterCoupledModel extends CoupledModel {
     // -------------------------------------------------------------------------
     // Constants and variables
     // -------------------------------------------------------------------------
+
     private static final long serialVersionUID = 1L;
     public static final String URI = ToasterCoupledModel.class.getSimpleName();
 
     // -------------------------------------------------------------------------
     // Constructors
     // -------------------------------------------------------------------------
+
     public	ToasterCoupledModel(
             String uri,
             TimeUnit simulatedTimeUnit,

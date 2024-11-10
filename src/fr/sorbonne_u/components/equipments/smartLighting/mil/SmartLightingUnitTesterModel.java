@@ -47,6 +47,9 @@ public class SmartLightingUnitTesterModel extends AtomicModel {
     // DEVS simulation protocol
     // -------------------------------------------------------------------------
 
+    /**
+     * @see fr.sorbonne_u.devs_simulation.models.AtomicModel#initialiseState(fr.sorbonne_u.devs_simulation.models.time.Time)
+     */
     @Override
     public void initialiseState(Time initialTime) {
         super.initialiseState(initialTime);
@@ -55,6 +58,9 @@ public class SmartLightingUnitTesterModel extends AtomicModel {
         this.logMessage("simulation begins.\n");
     }
 
+    /**
+     * @see fr.sorbonne_u.devs_simulation.models.interfaces.AtomicModelI#output()
+     */
     @Override
     public ArrayList<EventI> output()
     {
@@ -101,12 +107,12 @@ public class SmartLightingUnitTesterModel extends AtomicModel {
         }
     }
 
+    /**
+     * @see fr.sorbonne_u.devs_simulation.models.interfaces.ModelI#timeAdvance()
+     */
     @Override
     public Duration timeAdvance()
     {
-        // As long as events have to be created and sent, the next internal
-        // transition is set at one second later, otherwise, no more internal
-        // transitions are triggered (delay = infinity).
         if (this.step < 10) {
             return new Duration(1.0, this.getSimulatedTimeUnit());
         } else {
@@ -114,6 +120,9 @@ public class SmartLightingUnitTesterModel extends AtomicModel {
         }
     }
 
+    /**
+     * @see fr.sorbonne_u.devs_simulation.models.AtomicModel#userDefinedInternalTransition(fr.sorbonne_u.devs_simulation.models.time.Duration)
+     */
     @Override
     public void			userDefinedInternalTransition(Duration elapsedTime)
     {
@@ -123,6 +132,9 @@ public class SmartLightingUnitTesterModel extends AtomicModel {
         this.step++;
     }
 
+    /**
+     * @see fr.sorbonne_u.devs_simulation.models.interfaces.ModelI#endSimulation(fr.sorbonne_u.devs_simulation.models.time.Time)
+     */
     @Override
     public void			endSimulation(Time endTime)
     {
@@ -130,6 +142,9 @@ public class SmartLightingUnitTesterModel extends AtomicModel {
         super.endSimulation(endTime);
     }
 
+    /**
+     * @see fr.sorbonne_u.devs_simulation.models.interfaces.ModelI#getFinalReport()
+     */
     @Override
     public SimulationReportI getFinalReport()
     {

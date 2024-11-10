@@ -25,6 +25,7 @@ public class ToasterUnitTesterModel extends AtomicModel {
     // -------------------------------------------------------------------------
     // Constants and variables
     // -------------------------------------------------------------------------
+
     private static final long serialVersionUID = 1L;
     public static final String URI = ToasterUnitTesterModel.class.getSimpleName();
     public int step;
@@ -32,6 +33,7 @@ public class ToasterUnitTesterModel extends AtomicModel {
     // -------------------------------------------------------------------------
     // Constructors
     // -------------------------------------------------------------------------
+
     public ToasterUnitTesterModel(String uri, TimeUnit simulatedTimeUnit, AtomicSimulatorI simulatorEngine) throws Exception {
         super(uri, simulatedTimeUnit, simulatorEngine);
         this.getSimulationEngine().setLogger(new StandardLogger());

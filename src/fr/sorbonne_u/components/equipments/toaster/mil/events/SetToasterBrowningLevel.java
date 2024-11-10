@@ -38,6 +38,7 @@ public class SetToasterBrowningLevel extends ES_Event implements ToasterEventI {
     // -------------------------------------------------------------------------
     // Constants and variables
     // -------------------------------------------------------------------------
+
     private static final long serialVersionUID = 1L;
     protected final BrowningLevelValue browningLevel;
 

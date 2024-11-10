@@ -41,13 +41,15 @@ public class SmartLightingElectricityModel extends AtomicHIOA {
     // ------------------------------------------------------------------------
     // Inner classes and types
     // ------------------------------------------------------------------------
-    public static enum State {
+
+    public enum State {
         ON, OFF, INCREASE, DECREASE
     }
 
     // ------------------------------------------------------------------------
     // Constants and variables
     // ------------------------------------------------------------------------
+
     private static final long serialVersionUID = 1L;
     public static final String URI = SmartLightingElectricityModel.class.getSimpleName();
     public static double NOT_LIGHTING_POWER = 1.0;
@@ -62,6 +64,7 @@ public class SmartLightingElectricityModel extends AtomicHIOA {
     // -------------------------------------------------------------------------
     // HIOA model variables
     // -------------------------------------------------------------------------
+
     @ExportedVariable(type = Double.class)
     protected final Value<Double> currentPowerLevel =
             new Value<Double>(this);
@@ -73,6 +76,7 @@ public class SmartLightingElectricityModel extends AtomicHIOA {
     // -------------------------------------------------------------------------
     // Invariants
     // -------------------------------------------------------------------------
+
     protected static boolean glassBoxInvariants(SmartLightingElectricityModel instance) {
         assert instance != null :
                 new AssertionError("Precondition violation: instance != null");
@@ -158,6 +162,7 @@ public class SmartLightingElectricityModel extends AtomicHIOA {
     // ------------------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------------------
+
     public SmartLightingElectricityModel(
              String uri,
              TimeUnit simulatedTimeUnit,
@@ -175,6 +180,7 @@ public class SmartLightingElectricityModel extends AtomicHIOA {
     // ------------------------------------------------------------------------
     // Methods
     // ------------------------------------------------------------------------
+
     public void setState(State state, Time time) {
         State old = this.currentState;
         this.currentState = state;
@@ -214,6 +220,10 @@ public class SmartLightingElectricityModel extends AtomicHIOA {
     // -------------------------------------------------------------------------
     // DEVS simulation protocol
     // -------------------------------------------------------------------------
+
+    /**
+     * @see fr.sorbonne_u.devs_simulation.hioa.models.AtomicHIOA#initialiseState(fr.sorbonne_u.devs_simulation.models.time.Time)
+     */
     @Override
     public void initialiseState(Time initialTime) {
         super.initialiseState(initialTime);
@@ -231,12 +241,18 @@ public class SmartLightingElectricityModel extends AtomicHIOA {
                 new AssertionError("Black box invariants violation!");
     }
 
+    /**
+     * @see fr.sorbonne_u.devs_simulation.hioa.models.interfaces.VariableInitialisationI#useFixpointInitialiseVariables()
+     */
     @Override
     public boolean		useFixpointInitialiseVariables()
     {
         return true;
     }
 
+    /**
+     * @see fr.sorbonne_u.devs_simulation.hioa.models.interfaces.VariableInitialisationI#fixpointInitialiseVariables()
+     */
     @Override
     public Pair<Integer, Integer> fixpointInitialiseVariables()
     {
@@ -266,12 +282,18 @@ public class SmartLightingElectricityModel extends AtomicHIOA {
         return ret;
     }
 
+    /**
+     * @see fr.sorbonne_u.devs_simulation.models.interfaces.AtomicModelI#output()
+     */
     @Override
     public ArrayList<EventI> output()
     {
         return null;
     }
 
+    /**
+     * @see fr.sorbonne_u.devs_simulation.models.interfaces.ModelI#timeAdvance()
+     */
     @Override
     public Duration timeAdvance()
     {
@@ -292,6 +314,9 @@ public class SmartLightingElectricityModel extends AtomicHIOA {
         return ret;
     }
 
+    /**
+     * @see fr.sorbonne_u.devs_simulation.models.AtomicModel#userDefinedInternalTransition(fr.sorbonne_u.devs_simulation.models.time.Duration)
+     */
     @Override
     public void			userDefinedInternalTransition(Duration elapsedTime)
     {
@@ -327,6 +352,9 @@ public class SmartLightingElectricityModel extends AtomicHIOA {
                 new AssertionError("Black-box invariants violation!");
     }
 
+    /**
+     * @see fr.sorbonne_u.devs_simulation.models.AtomicModel#userDefinedExternalTransition(fr.sorbonne_u.devs_simulation.models.time.Duration)
+     */
     @Override
     public void userDefinedExternalTransition(Duration elapsedTime) {
         super.userDefinedExternalTransition(elapsedTime);
@@ -357,6 +385,9 @@ public class SmartLightingElectricityModel extends AtomicHIOA {
                 new AssertionError("Black-box invariants violation!");
     }
 
+    /**
+     * @see fr.sorbonne_u.devs_simulation.hioa.models.AtomicHIOA#endSimulation(fr.sorbonne_u.devs_simulation.models.time.Time)
+     */
     @Override
     public void			endSimulation(Time endTime)
     {
@@ -378,6 +409,9 @@ public class SmartLightingElectricityModel extends AtomicHIOA {
     public static final String	MAX_LIGHTING_POWER_RUNPNAME = "MAX_LIGHTING_POWER";
     public static final String	TENSION_RUNPNAME = "TENSION";
 
+    /**
+     * @see fr.sorbonne_u.devs_simulation.models.interfaces.ModelI#setSimulationRunParameters(Map)
+     */
     @Override
     public void			setSimulationRunParameters(
             Map<String, Object> simParams
@@ -449,6 +483,9 @@ public class SmartLightingElectricityModel extends AtomicHIOA {
         }
     }
 
+    /**
+     * @see fr.sorbonne_u.devs_simulation.models.interfaces.ModelI#getFinalReport()
+     */
     @Override
     public SimulationReportI	getFinalReport()
     {

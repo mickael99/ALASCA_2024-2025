@@ -76,9 +76,6 @@ public class ToasterElectricityModel extends AtomicHIOA {
     @ExportedVariable(type = ToasterBrowningLevel.class)
     protected final Value<ToasterBrowningLevel> currentBrowningLevel = new Value<ToasterBrowningLevel>(this);
 
-    /**
-     * current intensity in amperes; intensity is power/tension.
-     */
     @ExportedVariable(type = Double.class)
     protected final Value<Double> currentIntensity = new Value<Double>(this);
 

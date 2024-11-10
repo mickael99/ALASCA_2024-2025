@@ -11,11 +11,13 @@ public class TurnOffToaster extends ES_Event implements ToasterEventI {
     // -------------------------------------------------------------------------
     // Constants and variables
     // -------------------------------------------------------------------------
+
     private static final long serialVersionUID = 1L;
 
     // -------------------------------------------------------------------------
     // Constructors
     // -------------------------------------------------------------------------
+
     public TurnOffToaster(Time timeOfOccurrence) {
         super(timeOfOccurrence, null);
     }

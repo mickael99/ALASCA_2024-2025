@@ -46,7 +46,9 @@ public class SmartLightingIlluminanceModel extends AtomicHIOA {
     public static String URI = SmartLightingIlluminanceModel.class.getSimpleName();
 
     public static double INITIAL_ILLUMINANCE = 1000.0;
+    // The tolerance for the update of the illuminance value.
     protected static double		ILLUMINANCE_UPDATE_TOLERANCE = 1.0;
+    // The parameter for the transition between two illuminance values.
     protected static double     ILLUMINANCE_TRANSITION_PARAM = 0.05;
     protected static double		STEP = 60.0/3600.0;	// 60 seconds
 
@@ -155,6 +157,7 @@ public class SmartLightingIlluminanceModel extends AtomicHIOA {
     // ------------------------------------------------------------------------
     // Methods
     // ------------------------------------------------------------------------
+
     public void setState(State s){
         this.currentState = s;
 
@@ -183,6 +186,10 @@ public class SmartLightingIlluminanceModel extends AtomicHIOA {
     // -------------------------------------------------------------------------
     // DEVS simulation protocol
     // -------------------------------------------------------------------------
+
+    /**
+     * @see fr.sorbonne_u.devs_simulation.hioa.models.AtomicHIOA#initialiseState(fr.sorbonne_u.devs_simulation.models.time.Time)
+     */
     @Override
     public void initialiseState(Time initialTime)
     {
@@ -199,12 +206,18 @@ public class SmartLightingIlluminanceModel extends AtomicHIOA {
                 new AssertionError("Black-box invariants violation!");
     }
 
+    /**
+     * @see fr.sorbonne_u.devs_simulation.models.interfaces.ModelI#isStateInitialised()
+     */
     @Override
     public boolean		useFixpointInitialiseVariables()
     {
         return true;
     }
 
+    /**
+     * @see fr.sorbonne_u.devs_simulation.models.interfaces.ModelI#initialiseVariables()
+     */
     @Override
     public Pair<Integer, Integer> fixpointInitialiseVariables()
     {
@@ -229,27 +242,32 @@ public class SmartLightingIlluminanceModel extends AtomicHIOA {
         return new Pair<>(justInitialised, notInitialisedYet);
     }
 
+    /**
+     * @see fr.sorbonne_u.devs_simulation.models.interfaces.AtomicModelI#output()
+     */
     @Override
     public ArrayList<EventI> output()
     {
         return null;
     }
 
+    /**
+     * @see fr.sorbonne_u.devs_simulation.models.interfaces.ModelI#timeAdvance()
+     */
     @Override
     public Duration		timeAdvance()
     {
         return this.integrationStep;
     }
 
+    /**
+     * @see fr.sorbonne_u.devs_simulation.models.AtomicModel#userDefinedInternalTransition(fr.sorbonne_u.devs_simulation.models.time.Duration)
+     */
     @Override
     public void			userDefinedInternalTransition(Duration elapsedTime)
     {
-        // First, update the temperature (i.e., the value of the continuous
-        // variable) until the current time.
         double newTemp =
                 this.computeNewIlluminance(elapsedTime.getSimulatedDuration());
-        // Next, compute the new derivative
-        // Finally, set the new temperature value and derivative
         this.currentIlluminance.setNewValue(
                 newTemp,
                 new Time(this.getCurrentStateTime().getSimulatedTime(),
@@ -280,14 +298,13 @@ public class SmartLightingIlluminanceModel extends AtomicHIOA {
                 new AssertionError("Black-box invariants violation!");
     }
 
+    /**
+     * @see fr.sorbonne_u.devs_simulation.models.AtomicModel#userDefinedExternalTransition(fr.sorbonne_u.devs_simulation.models.time.Duration)
+     */
     @Override
     public void			userDefinedExternalTransition(Duration elapsedTime)
     {
-        // get the vector of current external events
         ArrayList<EventI> currentEvents = this.getStoredEventAndReset();
-        // when this method is called, there is at least one external event,
-        // and for the heater model, there will be exactly one by
-        // construction.
         assert	currentEvents != null && currentEvents.size() == 1;
 
         Event ce = (Event) currentEvents.get(0);
@@ -315,6 +332,9 @@ public class SmartLightingIlluminanceModel extends AtomicHIOA {
                 new AssertionError("Black-box invariants violation!");
     }
 
+    /**
+     * @see fr.sorbonne_u.devs_simulation.hioa.models.AtomicHIOA#endSimulation(fr.sorbonne_u.devs_simulation.models.time.Time)
+     */
     @Override
     public void			endSimulation(Time endTime)
     {
@@ -329,6 +349,7 @@ public class SmartLightingIlluminanceModel extends AtomicHIOA {
     // -------------------------------------------------------------------------
     // Optional DEVS simulation protocol: simulation report
     // -------------------------------------------------------------------------
+
     public static class SmartLightingIlluminanceReport
     implements SimulationReportI, HEM_ReportI{
         private static final long serialVersionUID = 1L;
@@ -370,6 +391,9 @@ public class SmartLightingIlluminanceModel extends AtomicHIOA {
         }
     }
 
+    /**
+     * @see fr.sorbonne_u.devs_simulation.models.interfaces.ModelI#getFinalReport()
+     */
     @Override
     public SimulationReportI getFinalReport()
     {
