@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 @ModelExportedVariable(name = "externalIlluminance", type = Double.class)
+//-------------------------------------------------------------------------
 public class ExternalIlluminanceModel extends AtomicHIOA {
 
     // ------------------------------------------------------------------------
@@ -209,13 +210,16 @@ public class ExternalIlluminanceModel extends AtomicHIOA {
         if (this.cycleTime > PERIOD) {
             this.cycleTime -= PERIOD;
         }
-        // compute the new temperature
-        double c = Math.cos((1.0 + this.cycleTime/(PERIOD/2.0))*Math.PI);
-        double newTemp =
-                MIN_EXTERNAL_ILLUMINANCE +
-                (MAX_EXTERNAL_ILLUMINANCE - MIN_EXTERNAL_ILLUMINANCE)*
-                ((1.0 + c)/2.0);
-        this.externalIlluminance.setNewValue(newTemp,
+        double newIlluminance;
+        // compute the new illuminance
+        if(cycleTime < 6 || cycleTime > 18) {
+            newIlluminance = MIN_EXTERNAL_ILLUMINANCE;
+        } else {
+            double adjustedCycleTime = cycleTime - 6;
+            double sineValue = Math.sin(adjustedCycleTime * Math.PI / 12);
+            newIlluminance = MIN_EXTERNAL_ILLUMINANCE + (MAX_EXTERNAL_ILLUMINANCE - MIN_EXTERNAL_ILLUMINANCE) * sineValue;
+        }
+        this.externalIlluminance.setNewValue(newIlluminance,
                                              this.getCurrentStateTime());
 
         // Tracing
