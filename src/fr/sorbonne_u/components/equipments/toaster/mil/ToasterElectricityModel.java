@@ -299,7 +299,7 @@ public class ToasterElectricityModel extends AtomicHIOA {
 
         if (!this.currentIntensity.isInitialised() ||
                 !this.currentBrowningLevel.isInitialised()) {
-            // initially, the heater is off, so its consumption is zero.
+
             this.currentIntensity.initialise(0.0);
             this.currentBrowningLevel.initialise(ToasterBrowningLevel.DEFROST);
 

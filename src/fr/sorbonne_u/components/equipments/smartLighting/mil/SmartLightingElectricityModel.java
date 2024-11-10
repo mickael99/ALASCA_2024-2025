@@ -33,6 +33,7 @@ import java.util.concurrent.TimeUnit;
         TurnOnSmartLighting.class,
         SetPowerSmartLighting.class
 })
+@ModelExportedVariable(name = "currentIntensity", type = Double.class)
 @ModelExportedVariable(name = "currentPowerLevel", type = Double.class)
 // -------------------------------------------------------------------------
 public class SmartLightingElectricityModel extends AtomicHIOA {

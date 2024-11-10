@@ -48,7 +48,6 @@ public class SmartLightingIlluminanceModel extends AtomicHIOA {
     public static double INITIAL_ILLUMINANCE = 1000.0;
     protected static double		ILLUMINANCE_UPDATE_TOLERANCE = 1.0;
     protected static double     ILLUMINANCE_TRANSITION_PARAM = 0.05;
-    //TODO: add more variables here
     protected static double		STEP = 60.0/3600.0;	// 60 seconds
 
     protected State currentState = State.ON;
