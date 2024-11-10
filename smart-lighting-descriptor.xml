@@ -1,0 +1,127 @@
+<control-adapter
+        xmlns="http://www.sorbonne-universite.fr/alasca/control-adapter"
+        uid="SmartLightingRegistration"
+        offered="fr.sorbonne_u.components.equipments.smartLighting.interfaces.SmartLightingExternalControlCI">
+    <consumption nominal="500" min="0" max="500"/>
+    <required>java.lang.Math</required>
+    <instance-var modifiers= "protected static" type="int" name="MAX_MODE"
+                  static-init="3"/>
+    <instance-var modifiers= "protected static" type="double"
+                  name="MIN_ADMISSIBLE_ILLUMINANCE" static-init="0.0"/>
+    <instance-var modifiers= "protected static" type="double"
+                  name="MAX_ADMISSIBLE_DELTA" static-init="5.0"/>
+    <instance-var modifiers= "protected" type="int" name="currentMode"
+                  static-init="MAX_MODE"/>
+    <instance-var modifiers= "protected" type="boolean" name="isSuspended"
+                  static-init="false"/>
+    <internal modifiers= "protected" type="void"
+              name="computeAndSetNewPowerLevel">
+        <parameter type="int" name="newMode"/>
+        <thrown>java.lang.Exception</thrown>
+        <body equipmentRef="smart-lighting">
+            double MaxPowerLevel = 100.0;
+            double newPowerLevel = (newMode - 1) * MaxPowerLevel / (MAX_MODE - 1);
+            ((SmartLightingExternalControlCI)this.offering).setCurrentPowerLevel(newPowerLevel);
+        </body>
+    </internal>
+    <maxMode type="int">
+        <thrown>java.lang.Exception</thrown>
+        <body>
+            return MAX_MODE;
+        </body>
+    </maxMode>
+    <upMode type="boolean">
+        <thrown>java.lang.Exception</thrown>
+        <body>
+            try {
+            computeAndSetNewPowerLevel(currentMode + 1);
+            currentMode++;
+            } catch(Exception e) {
+            return false;
+            }
+            return true;
+        </body>
+    </upMode>
+    <downMode type="boolean">
+        <thrown>java.lang.Exception</thrown>
+        <body>
+            try {
+            computeAndSetNewPowerLevel(currentMode - 1);
+            currentMode--;
+            } catch(Exception e) {
+            return false;
+            }
+            return true;
+        </body>
+    </downMode>
+    <setMode type="boolean">
+        <parameter name="modeIndex" type="int"/>
+        <thrown>java.lang.Exception</thrown>
+        <body>
+            try {
+            computeAndSetNewPowerLevel(modeIndex);
+            currentMode = modeIndex;
+            } catch(Exception e) {
+            System.out.println(e);
+            return false;
+            }
+            return true;
+        </body>
+    </setMode>
+    <currentMode type="int">
+        <thrown>java.lang.Exception</thrown>
+        <body>
+            if (suspended()) {
+            return 0;
+            } else {
+            return currentMode;
+            }
+        </body>
+    </currentMode>
+    <suspended type="boolean">
+        <thrown>java.lang.Exception</thrown>
+        <body>
+            return isSuspended;
+        </body>
+    </suspended>
+    <suspend type="boolean">
+        <thrown>java.lang.Exception</thrown>
+        <body equipmentRef="smart-lighting">
+            try {
+            ((SmartLightingExternalControlCI)this.offering).setCurrentPowerLevel(0.0);
+            isSuspended = true;
+            } catch(Exception e) {
+            return false;
+            }
+            return true;
+        </body>
+    </suspend>
+    <resume type="boolean">
+        <thrown>java.lang.Exception</thrown>
+        <body equipmentRef="smart-lighting">
+            try {
+            computeAndSetNewPowerLevel(currentMode);
+            isSuspended = false;
+            } catch(Exception e) {
+            return false;
+            }
+            return true;
+        </body>
+    </resume>
+    <emergency type="double">
+        <thrown>java.lang.Exception</thrown>
+        <body equipmentRef="smart-lighting">
+            double currentIlluminance = ((SmartLightingExternalControlCI)this.offering).getCurrentIllumination();
+            double targetIlluminance = ((SmartLightingExternalControlCI)this.offering).getTargetIllumination();
+            double delta = Math.abs(targetIlluminance - currentIlluminance);
+            double ret = -1.0;
+            if (currentIlluminance &lt; MIN_ADMISSIBLE_ILLUMINANCE ||
+            delta &gt;= MAX_ADMISSIBLE_DELTA) {
+            ret = 1.0;
+            } else {
+            ret = delta/MAX_ADMISSIBLE_DELTA;
+            }
+            return ret;
+        </body>
+    </emergency>
+</control-adapter>

@@ -41,7 +41,7 @@ public class SmartLightingTester extends AbstractComponent {
     public static int Y_RELATIVE_POSITION = 0;
 
     // Unit test
-    protected boolean isUnitTest;
+    protected boolean isUnitTest = true;
 
     // Inbound ports URI
     protected String smartLightingUserInboundPortURI;
@@ -277,67 +277,70 @@ public class SmartLightingTester extends AbstractComponent {
      */
     @Override
     public synchronized void execute() throws Exception {
-        if (this.isUnitTest) {
-            this.runAllTests();
-        } else {
-            ClocksServerOutboundPort csop = new ClocksServerOutboundPort(this);
-            csop.publishPort();
-            this.doPortConnection(
-                    csop.getPortURI(),
-                    ClocksServer.STANDARD_INBOUNDPORT_URI,
-                    ClocksServerOutboundPort.class.getCanonicalName()
-                                 );
-            this.traceMessage("Smart Lighting test gets the clocks\n");
-            AcceleratedClock ac = csop.getClock(CVMIntegrationTest.TEST_CLOCK_URI);
-            this.doPortDisconnection(csop.getPortURI());
-            csop.unpublishPort();
-            csop = null;
+//        if (this.isUnitTest) {
+//            this.runAllTests();
+//        } else {
+//            ClocksServerOutboundPort csop = new ClocksServerOutboundPort(this);
+//            csop.publishPort();
+//            this.doPortConnection(
+//                    csop.getPortURI(),
+//                    ClocksServer.STANDARD_INBOUNDPORT_URI,
+//                    ClocksServerOutboundPort.class.getCanonicalName()
+//                                 );
+//            this.traceMessage("Smart Lighting test gets the clocks\n");
+//            AcceleratedClock ac = csop.getClock(CVMIntegrationTest.TEST_CLOCK_URI);
+//            this.doPortDisconnection(csop.getPortURI());
+//            csop.unpublishPort();
+//            csop = null;
+//
+//            Instant startInstance = ac.getStartInstant();
+//            Instant smartLightingSwitchOn = startInstance.plusSeconds(SWITCH_ON_DELAY);
+//            Instant smartLightingSwitchOff = startInstance.plusSeconds(SWITCH_OFF_DELAY);
+//
+//            this.traceMessage("Smart Lighting tester waits until start.\n");
+//            ac.waitUntilStart();
+//            this.traceMessage("Smart Lighting tester schedules switch on and off.\n");
+//            long delayToSwitchOn = ac.nanoDelayUntilInstant(smartLightingSwitchOn);
+//            long delayToSwitchOff = ac.nanoDelayUntilInstant(smartLightingSwitchOff);
+//
+//            // This is to avoid mixing the 'this' of the task object with the 'this'
+//            // representing the component object in the code of the next methods run
+//            AbstractComponent o = this;
+//
+//            //schedule switch on smart lighting
+//            this.scheduleTaskOnComponent(
+//                    new AbstractComponent.AbstractTask() {
+//                        @Override
+//                        public void run() {
+//                            try {
+//                                o.traceMessage("Smart Lighting switches on.\n");
+//                                slop.switchOn();
+//                            } catch (Exception e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                    }, delayToSwitchOn, TimeUnit.NANOSECONDS
+//                                        );
+//
+//
+//            //schedule switch off smart lighting
+//            this.scheduleTaskOnComponent(
+//                    new AbstractComponent.AbstractTask() {
+//                        @Override
+//                        public void run() {
+//                            try {
+//                                o.traceMessage("Smart Lighting switches off.\n");
+//                                slop.switchOff();
+//                            } catch (Exception e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                    }, delayToSwitchOff, TimeUnit.NANOSECONDS
+//                                        );
+//        }
 
-            Instant startInstance = ac.getStartInstant();
-            Instant smartLightingSwitchOn = startInstance.plusSeconds(SWITCH_ON_DELAY);
-            Instant smartLightingSwitchOff = startInstance.plusSeconds(SWITCH_OFF_DELAY);
-
-            this.traceMessage("Smart Lighting tester waits until start.\n");
-            ac.waitUntilStart();
-            this.traceMessage("Smart Lighting tester schedules switch on and off.\n");
-            long delayToSwitchOn = ac.nanoDelayUntilInstant(smartLightingSwitchOn);
-            long delayToSwitchOff = ac.nanoDelayUntilInstant(smartLightingSwitchOff);
-
-            // This is to avoid mixing the 'this' of the task object with the 'this'
-            // representing the component object in the code of the next methods run
-            AbstractComponent o = this;
-
-            //schedule switch on smart lighting
-            this.scheduleTaskOnComponent(
-                    new AbstractComponent.AbstractTask() {
-                        @Override
-                        public void run() {
-                            try {
-                                o.traceMessage("Smart Lighting switches on.\n");
-                                slop.switchOn();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }, delayToSwitchOn, TimeUnit.NANOSECONDS
-                                        );
-
-
-            //schedule switch off smart lighting
-            this.scheduleTaskOnComponent(
-                    new AbstractComponent.AbstractTask() {
-                        @Override
-                        public void run() {
-                            try {
-                                o.traceMessage("Smart Lighting switches off.\n");
-                                slop.switchOff();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }, delayToSwitchOff, TimeUnit.NANOSECONDS
-                                        );
-        }
+        this.runAllTests();
+        System.out.println("Smart Lighting Tester ends");
     }
 
     /**

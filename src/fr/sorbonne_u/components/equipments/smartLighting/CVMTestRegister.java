@@ -21,7 +21,7 @@ public class CVMTestRegister extends AbstractCVM {
 
         AbstractComponent.createComponent(
                 HEM.class.getCanonicalName(),
-                new Object[]{false, false});
+                new Object[]{false, false, false});
 
         super.deploy();
     }

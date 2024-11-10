@@ -27,7 +27,7 @@ public class CVMUnitTest extends AbstractCVM {
      */
     @Override
     public void deploy() throws Exception {
-        AbstractComponent.createComponent(SmartLighting.class.getCanonicalName(), new Object[] {});
+        AbstractComponent.createComponent(SmartLighting.class.getCanonicalName(), new Object[] {false});
         AbstractComponent.createComponent(SmartLightingTester.class.getCanonicalName(), new Object[] {true});
         super.deploy();
     }

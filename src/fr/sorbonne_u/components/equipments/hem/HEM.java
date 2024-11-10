@@ -260,8 +260,6 @@ public class HEM extends AbstractComponent implements RegistrationI {
 				this.controlFridgePort.unpublishPort();
 			if(this.isTestSmartLighting)
 				this.controlSmartLightingPort.unpublishPort();
-			if(this.isTestSmartLighting)
-				this.controlSmartLightingPort.unpublishPort();
 			
 			this.registrationPort.unpublishPort();
 			if(this.isTestElectricMetter)
@@ -417,7 +415,12 @@ public class HEM extends AbstractComponent implements RegistrationI {
 		
 		if(TEST_COMMUNICATION_WITH_FRIDGE)
 			this.scenarioCommunicationWithFridge(uid);
-		
+
+		System.out.println("TEST_COMMUNICATION_WITH_SMART_LIGHTING : " + TEST_COMMUNICATION_WITH_SMART_LIGHTING);
+
+		if(TEST_COMMUNICATION_WITH_SMART_LIGHTING)
+			this.scenarioCommunicationWithSmartLighting(uid);
+
 		return true;
 	}
 
@@ -500,6 +503,78 @@ public class HEM extends AbstractComponent implements RegistrationI {
 		if(VERBOSE)
 			this.traceMessage("done...\n");
 		
+		if(VERBOSE)
+			this.traceMessage("End of scenario between the HEM and the fridge \n\n");
+	}
+
+	public void scenarioCommunicationWithSmartLighting(String SmartLightingURI) throws Exception {
+		if(VERBOSE)
+			this.traceMessage("\n\nStart scenario between the HEM and the smart lighting\n");
+
+		assert this.registeredUriModularEquipement.containsKey(SmartLightingURI) :
+				new PreconditionException("Impossible test the commmunication with the fridge because it's not connect to the HEM");
+
+		AdjustableOutboundPort ao = this.registeredUriModularEquipement.get(SmartLightingURI);
+
+		if(VERBOSE)
+			this.traceMessage("maxMode()\n");
+		assertEquals(ao.maxMode(), 3);
+		if(VERBOSE)
+			this.traceMessage("done...\n");
+
+		if(VERBOSE)
+			this.traceMessage("currentMode()\n");
+		assertEquals(ao.currentMode(), 3);
+		if(VERBOSE)
+			this.traceMessage("done...\n");
+
+		if(VERBOSE)
+			this.traceMessage("downMode()\n");
+		assertTrue(ao.downMode());
+		assertEquals(ao.currentMode(), 2);
+
+		if(VERBOSE)
+			this.traceMessage("done...\n");
+
+		if(VERBOSE)
+			this.traceMessage("upMode()\n");
+		assertTrue(ao.upMode());
+		assertEquals(ao.currentMode(), 3);
+		if(VERBOSE)
+			this.traceMessage("done...\n");
+
+		if(VERBOSE)
+			this.traceMessage("setMode()\n");
+		assertTrue(ao.setMode(1));
+		assertEquals(ao.currentMode(), 1);
+		if(VERBOSE)
+			this.traceMessage("done...\n");
+
+		if(VERBOSE)
+			this.traceMessage("suspended()\n");
+		assertFalse(ao.suspended());
+		if(VERBOSE)
+			this.traceMessage("done...\n");
+
+		if(VERBOSE)
+			this.traceMessage("suspend()\n");
+		assertTrue(ao.suspend());
+		assertTrue(ao.suspended());
+		if(VERBOSE)
+			this.traceMessage("done...\n");
+
+		if(VERBOSE)
+			this.traceMessage("resume()\n");
+		assertTrue(ao.resume());
+		assertFalse(ao.suspended());
+		if(VERBOSE)
+			this.traceMessage("done...\n");
+
+		if(VERBOSE)
+			this.traceMessage("emergency...\n");
+		if(VERBOSE)
+			this.traceMessage("done...\n");
+
 		if(VERBOSE)
 			this.traceMessage("End of scenario between the HEM and the fridge \n\n");
 	}
