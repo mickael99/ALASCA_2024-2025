@@ -1,10 +1,10 @@
 package fr.sorbonne_u.components.equipments.toaster.mil;
 
+import fr.sorbonne_u.components.equipments.hem.mil.HEM_ReportI;
 import fr.sorbonne_u.components.equipments.toaster.mil.events.SetToasterBrowningLevel;
 import fr.sorbonne_u.components.equipments.toaster.mil.events.ToasterEventI;
 import fr.sorbonne_u.components.equipments.toaster.mil.events.TurnOffToaster;
 import fr.sorbonne_u.components.equipments.toaster.mil.events.TurnOnToaster;
-import fr.sorbonne_u.components.hem2024e2.HEM_ReportI;
 import fr.sorbonne_u.components.utils.Electricity;
 import fr.sorbonne_u.devs_simulation.exceptions.MissingRunParameterException;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ExportedVariable;

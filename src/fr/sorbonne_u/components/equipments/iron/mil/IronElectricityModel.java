@@ -3,7 +3,6 @@ package fr.sorbonne_u.components.equipments.iron.mil;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
 import fr.sorbonne_u.components.equipments.hem.mil.HEM_ReportI;
 import fr.sorbonne_u.components.equipments.iron.mil.events.AbstractIronEvent;
 import fr.sorbonne_u.components.utils.Electricity;
@@ -71,7 +70,6 @@ public class IronElectricityModel extends AtomicHIOA {
 	
 	@ExportedVariable(type = Double.class)
 	protected final Value<Double> currentIntensity = new Value<Double>(this);
-	
 	
 	// -------------------------------------------------------------------------
 	// Constructor

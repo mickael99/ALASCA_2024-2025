@@ -141,7 +141,7 @@ public class RunHemMILSimulation {
                     AtomicHIOA_Descriptor.create(
                             WindTurbineElectricityModel.class,
                             WindTurbineElectricityModel.URI,
-                            TimeUnit.HOURS,
+                            TimeUnit.SECONDS,
                             null
                     )
             );
@@ -151,7 +151,7 @@ public class RunHemMILSimulation {
                     AtomicHIOA_Descriptor.create(
                             ExternalWindModel.class,
                             ExternalWindModel.URI,
-                            TimeUnit.HOURS,
+                            TimeUnit.SECONDS,
                             null
                     )
             );
@@ -161,7 +161,7 @@ public class RunHemMILSimulation {
                     AtomicModelDescriptor.create(
                             WindTurbineUserModel.class,
                             WindTurbineUserModel.URI,
-                            TimeUnit.HOURS,
+                            TimeUnit.SECONDS,
                             null
                     )
             );
@@ -333,10 +333,19 @@ public class RunHemMILSimulation {
                     new EventSink[] {
                             new EventSink(WindTurbineElectricityModel.URI, SetWindSpeedEvent.class)
                     }
-            );
-
-            
+            );            
             Map<VariableSource, VariableSink[]> bindings = new HashMap<>();
+            
+            // Add iron bindings
+           
+            /*bindings.put(new VariableSource("currentIntensity",
+					Double.class,
+					IronElectricityModel.URI),
+			 new VariableSink[] {
+					 new VariableSink("currentIronConsumption",
+							 		  Double.class,
+							 		  MeterElectricityModel.URI)
+			 }); */
             
             // Add fridge bindings
             bindings.put(new VariableSource("externalTemperature",
@@ -356,6 +365,15 @@ public class RunHemMILSimulation {
 							 		  FridgeTemperatureModel.URI)
 			 });
 			
+			/*bindings.put(new VariableSource("currentIntensity",
+							Double.class,
+							FridgeElectricityModel.URI),
+			new VariableSink[] {
+					new VariableSink("currentFridgeConsumption",
+							 		  Double.class,
+							 		  MeterElectricityModel.URI)
+			}); */
+			
 			// Add battery bindings
 			bindings.put(
                     new VariableSource("currentChargeLevel", Double.class, BatteryChargeLevelModel.URI),
@@ -363,6 +381,18 @@ public class RunHemMILSimulation {
                             new VariableSink("currentChargeLevel", Double.class, BatteryElectricityModel.URI)
                     }
             );
+			/* bindings.put(
+                    new VariableSource("currentProduction", Double.class, BatteryElectricityModel.URI),
+                    new VariableSink[] {
+                            new VariableSink("currentBatteryProduction", Double.class, MeterElectricityModel.URI)
+                    }
+            );
+			bindings.put(
+                    new VariableSource("currentConsumption", Double.class, BatteryElectricityModel.URI),
+                    new VariableSink[] {
+                            new VariableSink("currentBatteryConsumption", Double.class, MeterElectricityModel.URI)
+                    }
+            ); */
 
 			// Add wind turbine bindings
 			bindings.put(
@@ -374,8 +404,15 @@ public class RunHemMILSimulation {
                                     Double.class,
                                     WindTurbineElectricityModel.URI)
                     });
-			
-			
+			/*bindings.put(
+                    new VariableSource("currentProduction",
+                            Double.class,
+                            WindTurbineElectricityModel.URI),
+                    new VariableSink[] {
+                            new VariableSink("currentWindTurbineProduction",
+                                    Double.class,
+                                    MeterElectricityModel.URI)
+                    });*/
 			
 			 Map<String, CoupledModelDescriptor> coupledModelDescriptors = new HashMap<>();
 

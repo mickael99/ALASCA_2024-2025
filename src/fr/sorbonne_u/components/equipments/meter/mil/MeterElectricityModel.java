@@ -26,8 +26,8 @@ public class MeterElectricityModel extends AtomicHIOA {
 	protected final Duration evaluationStep;
 	
 	// House devices (consumption only)
-	@ImportedVariable(type = Double.class)
-	protected Value<Double> currentToasterConsumption;
+	//@ImportedVariable(type = Double.class)
+	//protected Value<Double> currentToasterConsumption;
 	 
 	@ImportedVariable(type = Double.class)
 	protected Value<Double> currentIronConsumption;
@@ -35,8 +35,8 @@ public class MeterElectricityModel extends AtomicHIOA {
 	@ImportedVariable(type = Double.class)
 	 protected Value<Double> currentFridgeConsumption;
 	 
-	@ImportedVariable(type = Double.class)
-	protected Value<Double> currentSmartLightingConsumption;
+	//@ImportedVariable(type = Double.class)
+	//protected Value<Double> currentSmartLightingConsumption;
 	
 	// Production devices
 	@ImportedVariable(type = Double.class)
@@ -94,11 +94,11 @@ public class MeterElectricityModel extends AtomicHIOA {
 	
 	public void updateConsumption(Time t) {
         double consumption =
-                        (currentToasterConsumption == null ? 0.0 : currentToasterConsumption.getValue())
-                        + (currentIronConsumption == null ? 0.0 : currentIronConsumption.getValue())
+                        //(currentToasterConsumption == null ? 0.0 : currentToasterConsumption.getValue())
+                        (currentIronConsumption == null ? 0.0 : currentIronConsumption.getValue())
                         + (currentFridgeConsumption == null ? 0.0 : currentFridgeConsumption.getValue())
-                        + (currentBatteryConsumption == null ? 0.0 : currentBatteryConsumption.getValue())
-                        + (currentSmartLightingConsumption == null ? 0.0 : currentSmartLightingConsumption.getValue());
+                        + (currentBatteryConsumption == null ? 0.0 : currentBatteryConsumption.getValue());
+                        //+ (currentSmartLightingConsumption == null ? 0.0 : currentSmartLightingConsumption.getValue());
         
         currentConsumption.setNewValue(consumption, t);
     }
