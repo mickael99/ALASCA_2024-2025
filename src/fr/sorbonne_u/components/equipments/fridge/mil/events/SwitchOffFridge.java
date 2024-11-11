@@ -23,11 +23,11 @@ public class SwitchOffFridge extends ES_Event implements FridgeEventI {
 	@Override
 	public void executeOn(AtomicModelI model) {
 		assert	model instanceof FridgeElectricityModel ||
-									model instanceof FridgeElectricityModel :
+									model instanceof FridgeTemperatureModel :
 				new AssertionError(
 						"Precondition violation: model instanceof "
-						+ "HeaterElectricityModel || "
-						+ "model instanceof HeaterTemperatureModel");
+						+ "FridgeElectricityModel || "
+						+ "model instanceof FridgeTemperatureModel");
 
 		if (model instanceof FridgeElectricityModel) {
 			FridgeElectricityModel fridge = (FridgeElectricityModel)model;
