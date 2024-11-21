@@ -140,6 +140,11 @@ public class ExternalWindModel extends AtomicHIOA {
         message.append("\n");
         this.logMessage(message.toString());
     }
+
+    @Override
+    public boolean useFixpointInitialiseVariables() {
+        return true;
+    }
 	
 	@Override
     public void endSimulation(Time endTime) {
