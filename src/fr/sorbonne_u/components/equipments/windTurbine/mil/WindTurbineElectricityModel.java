@@ -4,10 +4,14 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import fr.sorbonne_u.components.equipments.windTurbine.mil.events.AbstractWindTurbineEvent;
+import fr.sorbonne_u.components.equipments.windTurbine.mil.events.SetWindSpeedEvent;
+import fr.sorbonne_u.components.equipments.windTurbine.mil.events.StartWindTurbineEvent;
+import fr.sorbonne_u.components.equipments.windTurbine.mil.events.StopWindTurbineEvent;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ExportedVariable;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ImportedVariable;
 import fr.sorbonne_u.devs_simulation.hioa.models.AtomicHIOA;
 import fr.sorbonne_u.devs_simulation.hioa.models.vars.Value;
+import fr.sorbonne_u.devs_simulation.models.annotations.ModelExternalEvents;
 import fr.sorbonne_u.devs_simulation.models.events.Event;
 import fr.sorbonne_u.devs_simulation.models.events.EventI;
 import fr.sorbonne_u.devs_simulation.models.time.Duration;
@@ -15,6 +19,11 @@ import fr.sorbonne_u.devs_simulation.models.time.Time;
 import fr.sorbonne_u.devs_simulation.simulators.interfaces.AtomicSimulatorI;
 import fr.sorbonne_u.devs_simulation.utils.StandardLogger;
 
+@ModelExternalEvents(imported = {
+        SetWindSpeedEvent.class,
+        StartWindTurbineEvent.class,
+        StopWindTurbineEvent.class
+})
 public class WindTurbineElectricityModel extends AtomicHIOA {
 
 	// -------------------------------------------------------------------------

@@ -8,6 +8,7 @@ import fr.sorbonne_u.devs_simulation.hioa.annotations.ExportedVariable;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ModelExportedVariable;
 import fr.sorbonne_u.devs_simulation.hioa.models.AtomicHIOA;
 import fr.sorbonne_u.devs_simulation.hioa.models.vars.Value;
+import fr.sorbonne_u.devs_simulation.models.annotations.ModelExternalEvents;
 import fr.sorbonne_u.devs_simulation.models.events.EventI;
 import fr.sorbonne_u.devs_simulation.models.time.Duration;
 import fr.sorbonne_u.devs_simulation.models.time.Time;
@@ -15,6 +16,9 @@ import fr.sorbonne_u.devs_simulation.simulators.interfaces.AtomicSimulatorI;
 import fr.sorbonne_u.devs_simulation.utils.Pair;
 import fr.sorbonne_u.devs_simulation.utils.StandardLogger;
 
+@ModelExternalEvents(exported = {
+        SetWindSpeedEvent.class
+})
 @ModelExportedVariable(name = "externalWindSpeed", type = Double.class)
 public class ExternalWindModel extends AtomicHIOA {
 	
@@ -135,6 +139,11 @@ public class ExternalWindModel extends AtomicHIOA {
         message.append(this.externalWindSpeed.getTime());
         message.append("\n");
         this.logMessage(message.toString());
+    }
+
+    @Override
+    public boolean useFixpointInitialiseVariables() {
+        return true;
     }
 	
 	@Override
