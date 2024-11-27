@@ -2,7 +2,6 @@ package fr.sorbonne_u.components.equipments.smartLighting;
 
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
-import fr.sorbonne_u.components.equipments.fridge.Fridge;
 import fr.sorbonne_u.components.equipments.hem.HEM;
 
 public class CVMTestRegister extends AbstractCVM {

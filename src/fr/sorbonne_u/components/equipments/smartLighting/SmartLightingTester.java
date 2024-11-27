@@ -1,7 +1,6 @@
 package fr.sorbonne_u.components.equipments.smartLighting;
 
 import fr.sorbonne_u.components.AbstractComponent;
-import fr.sorbonne_u.components.CVMIntegrationTest;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.equipments.smartLighting.connections.*;
 import fr.sorbonne_u.components.equipments.smartLighting.interfaces.SmartLightingExternalControlCI;
@@ -9,13 +8,7 @@ import fr.sorbonne_u.components.equipments.smartLighting.interfaces.SmartLightin
 import fr.sorbonne_u.components.equipments.smartLighting.interfaces.SmartLightingUserCI;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
-import fr.sorbonne_u.utils.aclocks.AcceleratedClock;
-import fr.sorbonne_u.utils.aclocks.ClocksServer;
 import fr.sorbonne_u.utils.aclocks.ClocksServerCI;
-import fr.sorbonne_u.utils.aclocks.ClocksServerOutboundPort;
-
-import java.time.Instant;
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
