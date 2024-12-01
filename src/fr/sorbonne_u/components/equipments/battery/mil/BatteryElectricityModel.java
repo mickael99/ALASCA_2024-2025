@@ -17,7 +17,6 @@ import fr.sorbonne_u.devs_simulation.models.events.EventI;
 import fr.sorbonne_u.devs_simulation.models.time.Duration;
 import fr.sorbonne_u.devs_simulation.models.time.Time;
 import fr.sorbonne_u.devs_simulation.simulators.interfaces.AtomicSimulatorI;
-import fr.sorbonne_u.devs_simulation.utils.Pair;
 import fr.sorbonne_u.devs_simulation.utils.StandardLogger;
 
 @ModelExternalEvents(imported = {
@@ -83,21 +82,12 @@ public class BatteryElectricityModel extends AtomicHIOA {
     @Override
     public void initialiseState(Time initialTime) {
         super.initialiseState(initialTime);
-
-        this.currentState = BatteryI.STATE.CONSUME;
-        this.hasChanged = false;
-
-        this.getSimulationEngine().toggleDebugMode();
-        logMessage("Simulation starts...\n");
-    }
-    
-    @Override
-	public Pair<Integer, Integer> fixpointInitialiseVariables() {
-		if (!this.currentProduction.isInitialised() ||
-								!this.currentConsumption.isInitialised()) {
+        
+        if (!this.currentProduction.isInitialised() ||
+				!this.currentConsumption.isInitialised()) {
 			this.currentProduction.initialise(0.0);
 			this.currentConsumption.initialise(0.0);
-
+			
 			StringBuffer sbp = new StringBuffer("new production: ");
 			sbp.append(this.currentProduction.getValue());
 			sbp.append(" amperes at ");
@@ -112,12 +102,14 @@ public class BatteryElectricityModel extends AtomicHIOA {
 			
 			this.logMessage(sbp.toString());
 			this.logMessage(sbc.toString());
-			
-			return new Pair<>(2, 0);
 		} 
+		
+        this.currentState = BatteryI.STATE.CONSUME;
+        this.hasChanged = false;
 
-		return new Pair<>(0, 0);
-	}
+        this.getSimulationEngine().toggleDebugMode();
+        logMessage("Simulation starts...\n");
+    }
     
     @Override
     public ArrayList<EventI> output() {

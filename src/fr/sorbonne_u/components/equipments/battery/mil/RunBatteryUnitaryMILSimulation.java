@@ -118,7 +118,7 @@ public class RunBatteryUnitaryMILSimulation {
 
 	            SimulatorI engine = architecture.constructSimulator();
 	            SimulationEngine.SIMULATION_STEP_SLEEP_TIME = 0L;
-	            engine.doStandAloneSimulation(0.0, 24.0);
+	            engine.doStandAloneSimulation(0.0, 100.0);
 	            System.exit(0);
 
 	        } catch (Exception e) {

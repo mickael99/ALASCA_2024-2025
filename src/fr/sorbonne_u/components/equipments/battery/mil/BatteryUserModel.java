@@ -37,7 +37,7 @@ public class BatteryUserModel extends AtomicES_Model {
     
     public BatteryUserModel(String uri, TimeUnit simulatedTimeUnit, AtomicSimulatorI simulationEngine) throws Exception {
 		super(uri, simulatedTimeUnit, simulationEngine);
-		this.generator = new RandomDataGenerator();
+    	this.generator = new RandomDataGenerator();
 		this.getSimulationEngine().setLogger(new StandardLogger());
 	}
     
