@@ -6,13 +6,13 @@ import fr.sorbonne_u.components.equipments.toaster.mil.events.TurnOnToaster;
 import fr.sorbonne_u.devs_simulation.architectures.Architecture;
 import fr.sorbonne_u.devs_simulation.architectures.ArchitectureI;
 import fr.sorbonne_u.devs_simulation.hioa.architectures.AtomicHIOA_Descriptor;
-import fr.sorbonne_u.devs_simulation.hioa.architectures.CoupledHIOA_Descriptor;
 import fr.sorbonne_u.devs_simulation.models.architectures.AbstractAtomicModelDescriptor;
 import fr.sorbonne_u.devs_simulation.models.architectures.AtomicModelDescriptor;
 import fr.sorbonne_u.devs_simulation.models.architectures.CoupledModelDescriptor;
 import fr.sorbonne_u.devs_simulation.models.events.EventSink;
 import fr.sorbonne_u.devs_simulation.models.events.EventSource;
 import fr.sorbonne_u.devs_simulation.simulators.SimulationEngine;
+import fr.sorbonne_u.devs_simulation.simulators.interfaces.SimulationReportI;
 import fr.sorbonne_u.devs_simulation.simulators.interfaces.SimulatorI;
 
 import java.util.HashMap;
@@ -69,22 +69,21 @@ public class RunToasterUnaryMILSimulation {
                     new EventSink[] {
                             new EventSink(ToasterElectricityModel.URI, SetToasterBrowningLevel.class)
                     });
+            
+            
 
             // coupled model descriptor
             coupledModelDescriptors.put(
                     ToasterCoupledModel.URI,
-                    new CoupledHIOA_Descriptor(
+                    new CoupledModelDescriptor(
                             ToasterCoupledModel.class,
                             ToasterCoupledModel.URI,
                             submodels,
                             null,
                             null,
                             connections,
-                            null,
-                            null,
-                            null,
                             null));
-
+                    
             // simulation architecture
             ArchitectureI architecture =
                     new Architecture(
@@ -100,6 +99,8 @@ public class RunToasterUnaryMILSimulation {
             // run a simulation with the simulation beginning at 0.0 and
             // ending at 24.0
             se.doStandAloneSimulation(0.0, 24.0);
+            SimulationReportI sr = se.getSimulatedModel().getFinalReport();
+			System.out.println(sr);
             System.exit(0);
         } catch (Exception e) {
             throw new RuntimeException(e) ;

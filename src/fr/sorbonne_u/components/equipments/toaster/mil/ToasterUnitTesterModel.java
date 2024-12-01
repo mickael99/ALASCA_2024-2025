@@ -3,7 +3,7 @@ package fr.sorbonne_u.components.equipments.toaster.mil;
 import fr.sorbonne_u.components.equipments.toaster.mil.events.SetToasterBrowningLevel;
 import fr.sorbonne_u.components.equipments.toaster.mil.events.TurnOffToaster;
 import fr.sorbonne_u.components.equipments.toaster.mil.events.TurnOnToaster;
-import fr.sorbonne_u.devs_simulation.models.AtomicModel;
+import fr.sorbonne_u.devs_simulation.es.models.AtomicES_Model;
 import fr.sorbonne_u.devs_simulation.models.annotations.ModelExternalEvents;
 import fr.sorbonne_u.devs_simulation.models.events.EventI;
 import fr.sorbonne_u.devs_simulation.models.time.Duration;
@@ -15,12 +15,12 @@ import fr.sorbonne_u.devs_simulation.utils.StandardLogger;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-@ModelExternalEvents(imported = {
+@ModelExternalEvents(exported = {
         TurnOnToaster.class,
         TurnOffToaster.class,
         SetToasterBrowningLevel.class
 })
-public class ToasterUnitTesterModel extends AtomicModel {
+public class ToasterUnitTesterModel extends AtomicES_Model {
 
     // -------------------------------------------------------------------------
     // Constants and variables
