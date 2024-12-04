@@ -226,6 +226,7 @@ public class FridgeElectricityModel extends AtomicHIOA {
 	
 	@Override
 	public Pair<Integer, Integer> fixpointInitialiseVariables() {
+		System.out.println("on va initialisé la consommation du frigo");
 		Pair<Integer, Integer> ret = null;
 
 		if (!this.currentIntensity.isInitialised() ||
@@ -290,6 +291,8 @@ public class FridgeElectricityModel extends AtomicHIOA {
 	        this.currentIntensity.setNewValue(0.0, t);
 	    }
 
+	    if(this.currentIntensity.getValue() == null)
+	    	System.out.println("c'est nul");
 	    StringBuffer sb = new StringBuffer("new consumption: ");
 	    sb.append(this.currentIntensity.getValue());
 	    sb.append(" amperes at ");

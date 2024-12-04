@@ -32,7 +32,6 @@ import fr.sorbonne_u.components.equipments.iron.mil.events.*;
 								 EnableLinenModeIron.class,
 								 TurnOnIron.class,
 								 TurnOffIron.class})
-@ModelExportedVariable(name = "currentIntensity", type = Double.class)
 public class IronElectricityModel extends AtomicHIOA {
 
 	// -------------------------------------------------------------------------

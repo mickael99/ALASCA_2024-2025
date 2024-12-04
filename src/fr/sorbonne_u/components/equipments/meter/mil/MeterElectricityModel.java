@@ -30,31 +30,31 @@ public class MeterElectricityModel extends AtomicHIOA {
 	//protected Value<Double> currentToasterConsumption;
 	 
 	@ImportedVariable(type = Double.class)
-	protected Value<Double> currentIronConsumption;
+	protected Value<Double> currentIronConsumption = new Value<Double>(this);
 	 
 	@ImportedVariable(type = Double.class)
-	 protected Value<Double> currentFridgeConsumption;
-	 
-	//@ImportedVariable(type = Double.class)
-	//protected Value<Double> currentSmartLightingConsumption;
-	
-	// Production devices
+	protected Value<Double> currentFridgeConsumption = new Value<Double>(this);
+//	 
+//	//@ImportedVariable(type = Double.class)
+//	//protected Value<Double> currentSmartLightingConsumption;
+//	
+//	// Production devices
+//	@ImportedVariable(type = Double.class)
+//	protected Value<Double> currentWindTurbineProduction;
+//	
+//	// Battery
 	@ImportedVariable(type = Double.class)
-	protected Value<Double> currentWindTurbineProduction;
-	
-	// Battery
-	@ImportedVariable(type = Double.class)
-	protected Value<Double> currentBatteryConsumption;
+	protected Value<Double> currentBatteryConsumption = new Value<Double>(this);
 	
 	@ImportedVariable(type = Double.class)
-	protected Value<Double> currentBatteryProduction;
+	protected Value<Double> currentBatteryProduction = new Value<Double>(this);
 	
 	// Total values
 	@InternalVariable(type = Double.class)
-	protected Value<Double> currentConsumption;
+	protected Value<Double> currentConsumption = new Value<Double>(this);
 	
 	@InternalVariable(type = Double.class)
-	protected Value<Double> currentProduction;
+	protected Value<Double> currentProduction = new Value<Double>(this);
 	
 	
 	// -------------------------------------------------------------------------
@@ -76,8 +76,8 @@ public class MeterElectricityModel extends AtomicHIOA {
     public void initialiseState(Time initialTime) {
         super.initialiseState(initialTime);
 
-        currentConsumption.setNewValue(0.0, initialTime);
-        currentProduction.setNewValue(0.0, initialTime);
+        this.currentConsumption.initialise(0.0);
+        this.currentProduction.initialise(0.0);
 
         this.getSimulationEngine().toggleDebugMode();
         
@@ -92,24 +92,68 @@ public class MeterElectricityModel extends AtomicHIOA {
 		return this.currentConsumption.getValue();
 	}
 	
-	public void updateConsumption(Time t) {
+	public boolean updateConsumption(Time t) {
         double consumption =
                         //(currentToasterConsumption == null ? 0.0 : currentToasterConsumption.getValue())
-                        (currentIronConsumption == null ? 0.0 : currentIronConsumption.getValue())
-                        + (currentFridgeConsumption == null ? 0.0 : currentFridgeConsumption.getValue())
-                        + (currentBatteryConsumption == null ? 0.0 : currentBatteryConsumption.getValue());
+                        (this.currentIronConsumption == null || this.currentFridgeConsumption.getValue() == null
+                        		? 0.0 : currentIronConsumption.getValue()) +
+                        (this.currentFridgeConsumption == null || this.currentFridgeConsumption.getValue() == null
+                        		? 0.0 : currentFridgeConsumption.getValue()) +
+                        (this.currentBatteryConsumption == null || this.currentBatteryConsumption.getValue() == null 
+                        		? 0.0 : currentBatteryConsumption.getValue());
                         //+ (currentSmartLightingConsumption == null ? 0.0 : currentSmartLightingConsumption.getValue());
         
-        currentConsumption.setNewValue(consumption, t);
+        // Verification
+//        if(this.currentIronConsumption != null & this.currentIronConsumption.getValue() != null && this.currentIronConsumption.getValue() > 0) 
+//        	System.out.println("current iron consumption -> " + this.currentIronConsumption.getValue());
+//        
+//        if(this.currentFridgeConsumption != null & this.currentFridgeConsumption.getValue() != null && this.currentFridgeConsumption.getValue() > 0) {
+//        	System.out.println("current fridge consumption -> " + this.currentFridgeConsumption.getValue());
+//        }
+        
+//        if(this.currentBatteryConsumption != null & this.currentBatteryConsumption.getValue() != null && this.currentBatteryConsumption.getValue() > 0) {
+//        	System.out.println("current battery consumption -> " + this.currentBatteryConsumption.getValue());
+//        	try {
+//				Thread.sleep(1000);
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//        }
+        	
+        
+        // Update consumption
+        if(consumption != this.currentConsumption.getValue()) {
+        	currentConsumption.setNewValue(consumption, t);
+        	return true;
+        }
+        
+        return false;
     }
 	
-	public void updateProduction(Time t) {
+	public boolean updateProduction(Time t) {
 
         double production =
-                        (currentWindTurbineProduction == null ? 0.0 : currentWindTurbineProduction.getValue())
-                        + (currentBatteryProduction == null ? 0.0 : currentBatteryProduction.getValue());
+                        //(currentWindTurbineProduction == null ? 0.0 : currentWindTurbineProduction.getValue())
+                        (currentBatteryProduction == null || this.currentBatteryProduction.getValue() == null
+                        		? 0.0 : currentBatteryProduction.getValue());
         
-        currentProduction.setNewValue(production, t);
+//        if(this.currentBatteryProduction != null & this.currentBatteryProduction.getValue() != null && this.currentBatteryProduction.getValue() > 0) {
+//        	System.out.println("current battery production -> " + this.currentBatteryProduction.getValue());
+//        	try {
+//				Thread.sleep(1000);
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//        }
+        
+        if(production != this.currentProduction.getValue()) {
+        	currentProduction.setNewValue(production, t);
+        	return true;
+        }
+        
+        return false;
     }
 	
 	 @Override
@@ -126,8 +170,11 @@ public class MeterElectricityModel extends AtomicHIOA {
     public void userDefinedInternalTransition(Duration elapsedTime) {
         super.userDefinedInternalTransition(elapsedTime);
         
-        logMessage("Current global consumption : " + currentConsumption.getValue() + " watts. \n");
-        logMessage("Current global production : " + currentProduction.getValue() + " watts. \n");
+        Time t = this.getCurrentStateTime();
+        if(updateConsumption(t) || this.updateProduction(t)) {
+        	logMessage("Current global consumption : " + currentConsumption.getValue() + " watts. \n");
+            logMessage("Current global production : " + currentProduction.getValue() + " watts. \n");
+        }
     }
 
     @Override

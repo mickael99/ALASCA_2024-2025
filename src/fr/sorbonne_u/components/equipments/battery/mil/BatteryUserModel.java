@@ -58,10 +58,10 @@ public class BatteryUserModel extends AtomicES_Model {
 
         ES_EventI next = null;
         if(current instanceof SetProductBatteryEvent) {
-            next = new SetProductBatteryEvent(nextTime);
+            next = new SetConsumeBatteryEvent(nextTime);
         }
         else if(current instanceof SetConsumeBatteryEvent) {
-            next = new SetConsumeBatteryEvent(nextTime);
+            next = new SetProductBatteryEvent(nextTime);
         }
 
         scheduleEvent(next);
@@ -85,7 +85,8 @@ public class BatteryUserModel extends AtomicES_Model {
     
     @Override
     public ArrayList<EventI> output() {
-        if(eventList.peek() != null) generateNextEvent();
+        if(eventList.peek() != null) 
+        	generateNextEvent();
 
         return super.output();
     }
