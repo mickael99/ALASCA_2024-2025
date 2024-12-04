@@ -20,6 +20,11 @@ import fr.sorbonne_u.components.equipments.fridge.mil.events.DoNotCool;
 import fr.sorbonne_u.components.equipments.fridge.mil.events.SetPowerFridge;
 import fr.sorbonne_u.components.equipments.fridge.mil.events.SwitchOffFridge;
 import fr.sorbonne_u.components.equipments.fridge.mil.events.SwitchOnFridge;
+import fr.sorbonne_u.components.equipments.generator.mil.GeneratorElectricityModel;
+import fr.sorbonne_u.components.equipments.generator.mil.GeneratorFuelModel;
+import fr.sorbonne_u.components.equipments.generator.mil.GeneratorUserModel;
+import fr.sorbonne_u.components.equipments.generator.mil.events.ActivateGeneratorEvent;
+import fr.sorbonne_u.components.equipments.generator.mil.events.StopGeneratorEvent;
 import fr.sorbonne_u.components.equipments.iron.mil.IronElectricityModel;
 import fr.sorbonne_u.components.equipments.iron.mil.IronUserModel;
 import fr.sorbonne_u.components.equipments.iron.mil.events.DisableEnergySavingModeIron;
@@ -166,6 +171,37 @@ public class RunHemMILSimulation {
                     )
             );
             
+            // Add Generator
+            atomicModelDescriptors.put(
+	                GeneratorElectricityModel.URI,
+	                AtomicHIOA_Descriptor.create(
+	                        GeneratorElectricityModel.class,
+	                        GeneratorElectricityModel.URI,
+	                        TimeUnit.SECONDS,
+	                        null
+	                )
+	        );
+
+	        atomicModelDescriptors.put(
+	                GeneratorFuelModel.URI,
+	                AtomicHIOA_Descriptor.create(
+	                        GeneratorFuelModel.class,
+	                        GeneratorFuelModel.URI,
+	                        TimeUnit.SECONDS,
+	                        null
+	                )
+	        );
+
+	        atomicModelDescriptors.put(
+	                GeneratorUserModel.URI,
+	                AtomicModelDescriptor.create(
+	                        GeneratorUserModel.class,
+	                        GeneratorUserModel.URI,
+	                        TimeUnit.SECONDS,
+	                        null
+	                )
+	        );
+            
             // Add Metter
             atomicModelDescriptors.put(
                     MeterElectricityModel.URI,
@@ -195,6 +231,10 @@ public class RunHemMILSimulation {
 			submodels.add(WindTurbineUserModel.URI);
 			submodels.add(ExternalWindModel.URI);
 			
+			submodels.add(GeneratorElectricityModel.URI);
+	        submodels.add(GeneratorFuelModel.URI);
+	        submodels.add(GeneratorUserModel.URI);
+	        
 			submodels.add(MeterElectricityModel.URI);
 
             Map<EventSource, EventSink[]> connections = new HashMap<>();
@@ -333,7 +373,31 @@ public class RunHemMILSimulation {
                     new EventSink[] {
                             new EventSink(WindTurbineElectricityModel.URI, SetWindSpeedEvent.class)
                     }
-            );      
+            );    
+            
+            // Add generator
+            connections.put(
+	                new EventSource(GeneratorUserModel.URI, ActivateGeneratorEvent.class),
+	                new EventSink[] {
+	                        new EventSink(GeneratorElectricityModel.URI, ActivateGeneratorEvent.class),
+	                        new EventSink(GeneratorFuelModel.URI, ActivateGeneratorEvent.class)
+	                }
+	        );
+
+	        connections.put(
+	                new EventSource(GeneratorUserModel.URI, StopGeneratorEvent.class),
+	                new EventSink[] {
+	                        new EventSink(GeneratorElectricityModel.URI, StopGeneratorEvent.class),
+	                        new EventSink(GeneratorFuelModel.URI, StopGeneratorEvent.class),
+	                }
+	        );
+
+	        connections.put(
+	                new EventSource(GeneratorFuelModel.URI, StopGeneratorEvent.class),
+	                new EventSink[] {
+	                        new EventSink(GeneratorElectricityModel.URI, StopGeneratorEvent.class),
+	                }
+	        );
             
             Map<VariableSource, VariableSink[]> bindings = new HashMap<>();
             
@@ -348,7 +412,7 @@ public class RunHemMILSimulation {
 							 		  MeterElectricityModel.URI)
 			 }); 
             
-//            // Add fridge bindings
+            // Add fridge bindings
             bindings.put(new VariableSource("externalTemperature",
 					Double.class,
 					ExternalTemperatureModel.URI),
@@ -416,6 +480,20 @@ public class RunHemMILSimulation {
                                     Double.class,
                                     MeterElectricityModel.URI)
                     });
+			
+			// Add generator bindings
+			bindings.put(
+	                new VariableSource("currentFuelLevel", Double.class, GeneratorFuelModel.URI),
+	                new VariableSink[] {
+	                        new VariableSink("currentFuelLevel", Double.class, GeneratorElectricityModel.URI)
+	                }
+	        );
+			bindings.put(
+	                new VariableSource("currentProduction", Double.class, GeneratorElectricityModel.URI),
+	                new VariableSink[] {
+	                        new VariableSink("currentGeneratorProduction", Double.class, MeterElectricityModel.URI)
+	                }
+	        );
 			
 			 Map<String, CoupledModelDescriptor> coupledModelDescriptors = new HashMap<>();
 

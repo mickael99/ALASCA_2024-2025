@@ -34,6 +34,10 @@ public class MeterElectricityModel extends AtomicHIOA {
 	 
 	@ImportedVariable(type = Double.class)
 	protected Value<Double> currentFridgeConsumption = new Value<Double>(this);
+	
+	@ImportedVariable(type = Double.class)
+	protected Value<Double> currentBatteryConsumption = new Value<Double>(this);
+	
 //	 
 //	//@ImportedVariable(type = Double.class)
 //	//protected Value<Double> currentSmartLightingConsumption;
@@ -42,12 +46,11 @@ public class MeterElectricityModel extends AtomicHIOA {
 	@ImportedVariable(type = Double.class)
 	protected Value<Double> currentWindTurbineProduction = new Value<Double>(this);
 	
-	// Battery
-	@ImportedVariable(type = Double.class)
-	protected Value<Double> currentBatteryConsumption = new Value<Double>(this);
-	
 	@ImportedVariable(type = Double.class)
 	protected Value<Double> currentBatteryProduction = new Value<Double>(this);
+	
+	@ImportedVariable(type = Double.class)
+	protected Value<Double> currentGeneratorProduction = new Value<Double>(this);
 	
 	// Total values
 	@InternalVariable(type = Double.class)
@@ -137,7 +140,9 @@ public class MeterElectricityModel extends AtomicHIOA {
                         (this.currentWindTurbineProduction == null || this.currentWindTurbineProduction.getValue() == null
                         		? 0.0 : currentWindTurbineProduction.getValue()) +
                         (this.currentBatteryProduction == null || this.currentBatteryProduction.getValue() == null
-                        		? 0.0 : currentBatteryProduction.getValue());
+                        		? 0.0 : currentBatteryProduction.getValue()) +
+                        (this.currentGeneratorProduction == null || this.currentGeneratorProduction.getValue() == null
+                		? 0.0 : currentGeneratorProduction.getValue());
         
 //        if(this.currentBatteryProduction != null & this.currentBatteryProduction.getValue() != null && this.currentBatteryProduction.getValue() > 0) {
 //        	System.out.println("current battery production -> " + this.currentBatteryProduction.getValue());
@@ -149,8 +154,8 @@ public class MeterElectricityModel extends AtomicHIOA {
 //			}
 //        }
         
-//        if(this.currentWindTurbineProduction != null && this.currentWindTurbineProduction.getValue() != null && this.currentWindTurbineProduction.getValue() > 0) {
-//        	System.out.println("current wind turbine production -> " + this.currentWindTurbineProduction.getValue());
+//        if(this.currentGeneratorProduction != null && this.currentGeneratorProduction.getValue() != null && this.currentGeneratorProduction.getValue() > 0) {
+//        	System.out.println("current generator production -> " + this.currentGeneratorProduction.getValue());
 //        	try {
 //				Thread.sleep(200);
 //			} catch (InterruptedException e) {
