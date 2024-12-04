@@ -37,6 +37,16 @@ import fr.sorbonne_u.components.equipments.iron.mil.events.EnableSteamModeIron;
 import fr.sorbonne_u.components.equipments.iron.mil.events.TurnOffIron;
 import fr.sorbonne_u.components.equipments.iron.mil.events.TurnOnIron;
 import fr.sorbonne_u.components.equipments.meter.mil.MeterElectricityModel;
+import fr.sorbonne_u.components.equipments.smartLighting.mil.ExternalIlluminanceModel;
+import fr.sorbonne_u.components.equipments.smartLighting.mil.SmartLightingElectricityModel;
+import fr.sorbonne_u.components.equipments.smartLighting.mil.SmartLightingIlluminanceModel;
+import fr.sorbonne_u.components.equipments.smartLighting.mil.SmartLightingUnitTesterModel;
+import fr.sorbonne_u.components.equipments.smartLighting.mil.events.DecreaseLighting;
+import fr.sorbonne_u.components.equipments.smartLighting.mil.events.IncreaseLighting;
+import fr.sorbonne_u.components.equipments.smartLighting.mil.events.SetPowerSmartLighting;
+import fr.sorbonne_u.components.equipments.smartLighting.mil.events.StopAdjustingLighting;
+import fr.sorbonne_u.components.equipments.smartLighting.mil.events.TurnOffSmartLighting;
+import fr.sorbonne_u.components.equipments.smartLighting.mil.events.TurnOnSmartLighting;
 import fr.sorbonne_u.components.equipments.windTurbine.mil.ExternalWindModel;
 import fr.sorbonne_u.components.equipments.windTurbine.mil.WindTurbineElectricityModel;
 import fr.sorbonne_u.components.equipments.windTurbine.mil.WindTurbineUserModel;
@@ -93,6 +103,40 @@ public class RunHemMILSimulation {
 							TimeUnit.SECONDS,
 							null));
 
+			//Add smart lighting
+			atomicModelDescriptors.put(
+                    SmartLightingElectricityModel.URI,
+                    AtomicHIOA_Descriptor.create(
+                            SmartLightingElectricityModel.class,
+                            SmartLightingElectricityModel.URI,
+                            TimeUnit.SECONDS,
+                            null
+                            ));
+            atomicModelDescriptors.put(
+                    SmartLightingIlluminanceModel.URI,
+                    AtomicHIOA_Descriptor.create(
+                            SmartLightingIlluminanceModel.class,
+                            SmartLightingIlluminanceModel.URI,
+                            TimeUnit.SECONDS,
+                            null
+                            ));
+            atomicModelDescriptors.put(
+                    ExternalIlluminanceModel.URI,
+                    AtomicHIOA_Descriptor.create(
+                            ExternalIlluminanceModel.class,
+                            ExternalIlluminanceModel.URI,
+                            TimeUnit.SECONDS,
+                            null
+                            ));
+            atomicModelDescriptors.put(
+                    SmartLightingUnitTesterModel.URI,
+                    AtomicModelDescriptor.create(
+                            SmartLightingUnitTesterModel.class,
+                            SmartLightingUnitTesterModel.URI,
+                            TimeUnit.SECONDS,
+                            null
+                            ));
+			
             // Add iron
 			atomicModelDescriptors.put(
 					IronElectricityModel.URI,
@@ -220,6 +264,11 @@ public class RunHemMILSimulation {
             submodels.add(ExternalTemperatureModel.URI);
             submodels.add(FridgeUnitTestModel.URI);
             
+            submodels.add(SmartLightingElectricityModel.URI);
+            submodels.add(SmartLightingIlluminanceModel.URI);
+            submodels.add(ExternalIlluminanceModel.URI);
+            submodels.add(SmartLightingUnitTesterModel.URI);
+            
             submodels.add(IronElectricityModel.URI);
 			submodels.add(IronUserModel.URI);
 			
@@ -280,6 +329,86 @@ public class RunHemMILSimulation {
 										  DoNotCool.class)
 					});
 			
+			// Add smart lighting events
+			connections.put(
+                    new EventSource(
+                            SmartLightingUnitTesterModel.URI,
+                            TurnOnSmartLighting.class
+                    ),
+                    new EventSink[]{
+                            new EventSink(
+                                    SmartLightingElectricityModel.URI,
+                                    TurnOnSmartLighting.class
+                            )
+                    });
+            connections.put(
+                    new EventSource(
+                            SmartLightingUnitTesterModel.URI,
+                            SetPowerSmartLighting.class
+                    ),
+                    new EventSink[]{
+                            new EventSink(
+                                    SmartLightingElectricityModel.URI,
+                                    SetPowerSmartLighting.class
+                            )
+                    });
+            connections.put(
+                    new EventSource(
+                            SmartLightingUnitTesterModel.URI,
+                            TurnOffSmartLighting.class
+                    ),
+                    new EventSink[]{
+                            new EventSink(
+                                    SmartLightingElectricityModel.URI,
+                                    TurnOffSmartLighting.class
+                            ),
+                    });
+            connections.put(
+                    new EventSource(
+                            SmartLightingUnitTesterModel.URI,
+                            IncreaseLighting.class
+                    ),
+                    new EventSink[]{
+                            new EventSink(
+                                    SmartLightingElectricityModel.URI,
+                                    IncreaseLighting.class
+                            ),
+                            new EventSink(
+                                    SmartLightingIlluminanceModel.URI,
+                                    IncreaseLighting.class
+                            )
+                    });
+            connections.put(
+                    new EventSource(
+                            SmartLightingUnitTesterModel.URI,
+                            DecreaseLighting.class
+                    ),
+                    new EventSink[]{
+                            new EventSink(
+                                    SmartLightingElectricityModel.URI,
+                                    DecreaseLighting.class
+                            ),
+                            new EventSink(
+                                    SmartLightingIlluminanceModel.URI,
+                                    DecreaseLighting.class
+                            )
+                    });
+            connections.put(
+                    new EventSource(
+                            SmartLightingUnitTesterModel.URI,
+                            StopAdjustingLighting.class
+                    ),
+                    new EventSink[]{
+                            new EventSink(
+                                    SmartLightingElectricityModel.URI,
+                                    StopAdjustingLighting.class
+                            ),
+                            new EventSink(
+                                    SmartLightingIlluminanceModel.URI,
+                                    StopAdjustingLighting.class
+                            )
+                    });
+            
 			// Add iron
 			connections.put(
 					new EventSource(IronUserModel.URI, TurnOnIron.class),
@@ -438,6 +567,47 @@ public class RunHemMILSimulation {
 							 		  Double.class,
 							 		  MeterElectricityModel.URI)
 			}); 
+			
+			// Add smart lighting bindings
+			bindings.put(
+                    new VariableSource(
+                            "externalIlluminance",
+                            Double.class,
+                            ExternalIlluminanceModel.URI
+                    ),
+                    new VariableSink[]{
+                            new VariableSink(
+                                    "externalIlluminance",
+                                    Double.class,
+                                    SmartLightingIlluminanceModel.URI
+                            )
+                    });
+            bindings.put(
+                    new VariableSource(
+                            "currentPowerLevel",
+                            Double.class,
+                            SmartLightingElectricityModel.URI
+                    ),
+                    new VariableSink[]{
+                            new VariableSink(
+                                    "currentPowerLevel",
+                                    Double.class,
+                                    SmartLightingIlluminanceModel.URI
+                            )
+                    });
+            bindings.put(
+                    new VariableSource(
+                            "currentIntensity",
+                            Double.class,
+                            SmartLightingElectricityModel.URI
+                    ),
+                    new VariableSink[]{
+                            new VariableSink(
+                                    "currentSmartLightingConsumption",
+                                    Double.class,
+                                    MeterElectricityModel.URI
+                            )
+                    });
 			
 			// Add battery bindings
 			bindings.put(

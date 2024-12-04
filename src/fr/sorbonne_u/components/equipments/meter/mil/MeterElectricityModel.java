@@ -38,10 +38,10 @@ public class MeterElectricityModel extends AtomicHIOA {
 	@ImportedVariable(type = Double.class)
 	protected Value<Double> currentBatteryConsumption = new Value<Double>(this);
 	
-//	 
-//	//@ImportedVariable(type = Double.class)
-//	//protected Value<Double> currentSmartLightingConsumption;
-//	
+	 
+	@ImportedVariable(type = Double.class)
+	protected Value<Double> currentSmartLightingConsumption = new Value<Double>(this);
+	
 	// Production devices
 	@ImportedVariable(type = Double.class)
 	protected Value<Double> currentWindTurbineProduction = new Value<Double>(this);
@@ -97,33 +97,14 @@ public class MeterElectricityModel extends AtomicHIOA {
 	
 	public boolean updateConsumption(Time t) {
         double consumption =
-                        //(currentToasterConsumption == null ? 0.0 : currentToasterConsumption.getValue())
+		        		(this.currentSmartLightingConsumption == null || this.currentSmartLightingConsumption.getValue() == null
+		        				? 0.0 : currentSmartLightingConsumption.getValue()) +
                         (this.currentIronConsumption == null || this.currentFridgeConsumption.getValue() == null
                         		? 0.0 : currentIronConsumption.getValue()) +
                         (this.currentFridgeConsumption == null || this.currentFridgeConsumption.getValue() == null
                         		? 0.0 : currentFridgeConsumption.getValue()) +
                         (this.currentBatteryConsumption == null || this.currentBatteryConsumption.getValue() == null 
                         		? 0.0 : currentBatteryConsumption.getValue());
-                        //+ (currentSmartLightingConsumption == null ? 0.0 : currentSmartLightingConsumption.getValue());
-        
-        // Verification
-//        if(this.currentIronConsumption != null & this.currentIronConsumption.getValue() != null && this.currentIronConsumption.getValue() > 0) 
-//        	System.out.println("current iron consumption -> " + this.currentIronConsumption.getValue());
-//        
-//        if(this.currentFridgeConsumption != null & this.currentFridgeConsumption.getValue() != null && this.currentFridgeConsumption.getValue() > 0) {
-//        	System.out.println("current fridge consumption -> " + this.currentFridgeConsumption.getValue());
-//        }
-        
-//        if(this.currentBatteryConsumption != null & this.currentBatteryConsumption.getValue() != null && this.currentBatteryConsumption.getValue() > 0) {
-//        	System.out.println("current battery consumption -> " + this.currentBatteryConsumption.getValue());
-//        	try {
-//				Thread.sleep(1000);
-//			} catch (InterruptedException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//        }
-        	
         
         // Update consumption
         if(consumption != this.currentConsumption.getValue()) {
@@ -143,26 +124,6 @@ public class MeterElectricityModel extends AtomicHIOA {
                         		? 0.0 : currentBatteryProduction.getValue()) +
                         (this.currentGeneratorProduction == null || this.currentGeneratorProduction.getValue() == null
                 		? 0.0 : currentGeneratorProduction.getValue());
-        
-//        if(this.currentBatteryProduction != null & this.currentBatteryProduction.getValue() != null && this.currentBatteryProduction.getValue() > 0) {
-//        	System.out.println("current battery production -> " + this.currentBatteryProduction.getValue());
-//        	try {
-//				Thread.sleep(1000);
-//			} catch (InterruptedException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//        }
-        
-//        if(this.currentGeneratorProduction != null && this.currentGeneratorProduction.getValue() != null && this.currentGeneratorProduction.getValue() > 0) {
-//        	System.out.println("current generator production -> " + this.currentGeneratorProduction.getValue());
-//        	try {
-//				Thread.sleep(200);
-//			} catch (InterruptedException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//        }
         
         if(production != this.currentProduction.getValue()) {
         	currentProduction.setNewValue(production, t);
