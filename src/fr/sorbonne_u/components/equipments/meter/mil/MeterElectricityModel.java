@@ -38,11 +38,11 @@ public class MeterElectricityModel extends AtomicHIOA {
 //	//@ImportedVariable(type = Double.class)
 //	//protected Value<Double> currentSmartLightingConsumption;
 //	
-//	// Production devices
-//	@ImportedVariable(type = Double.class)
-//	protected Value<Double> currentWindTurbineProduction;
-//	
-//	// Battery
+	// Production devices
+	@ImportedVariable(type = Double.class)
+	protected Value<Double> currentWindTurbineProduction = new Value<Double>(this);
+	
+	// Battery
 	@ImportedVariable(type = Double.class)
 	protected Value<Double> currentBatteryConsumption = new Value<Double>(this);
 	
@@ -134,14 +134,25 @@ public class MeterElectricityModel extends AtomicHIOA {
 	public boolean updateProduction(Time t) {
 
         double production =
-                        //(currentWindTurbineProduction == null ? 0.0 : currentWindTurbineProduction.getValue())
-                        (currentBatteryProduction == null || this.currentBatteryProduction.getValue() == null
+                        (this.currentWindTurbineProduction == null || this.currentWindTurbineProduction.getValue() == null
+                        		? 0.0 : currentWindTurbineProduction.getValue()) +
+                        (this.currentBatteryProduction == null || this.currentBatteryProduction.getValue() == null
                         		? 0.0 : currentBatteryProduction.getValue());
         
 //        if(this.currentBatteryProduction != null & this.currentBatteryProduction.getValue() != null && this.currentBatteryProduction.getValue() > 0) {
 //        	System.out.println("current battery production -> " + this.currentBatteryProduction.getValue());
 //        	try {
 //				Thread.sleep(1000);
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//        }
+        
+//        if(this.currentWindTurbineProduction != null && this.currentWindTurbineProduction.getValue() != null && this.currentWindTurbineProduction.getValue() > 0) {
+//        	System.out.println("current wind turbine production -> " + this.currentWindTurbineProduction.getValue());
+//        	try {
+//				Thread.sleep(200);
 //			} catch (InterruptedException e) {
 //				// TODO Auto-generated catch block
 //				e.printStackTrace();
@@ -179,9 +190,6 @@ public class MeterElectricityModel extends AtomicHIOA {
 
     @Override
     public void endSimulation(Time endTime) {
-        this.updateConsumption(endTime);
-        this.updateProduction(endTime);
-        
         logMessage("Simulation ends!\n");
         
         super.endSimulation(endTime);

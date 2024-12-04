@@ -134,37 +134,37 @@ public class RunHemMILSimulation {
                             null
                     )
             );
-//            
-//            // Add Wind turbine
-//            atomicModelDescriptors.put(
-//                    WindTurbineElectricityModel.URI,
-//                    AtomicHIOA_Descriptor.create(
-//                            WindTurbineElectricityModel.class,
-//                            WindTurbineElectricityModel.URI,
-//                            TimeUnit.SECONDS,
-//                            null
-//                    )
-//            );
-//
-//            atomicModelDescriptors.put(
-//                    ExternalWindModel.URI,
-//                    AtomicHIOA_Descriptor.create(
-//                            ExternalWindModel.class,
-//                            ExternalWindModel.URI,
-//                            TimeUnit.SECONDS,
-//                            null
-//                    )
-//            );
-//
-//            atomicModelDescriptors.put(
-//                    WindTurbineUserModel.URI,
-//                    AtomicModelDescriptor.create(
-//                            WindTurbineUserModel.class,
-//                            WindTurbineUserModel.URI,
-//                            TimeUnit.SECONDS,
-//                            null
-//                    )
-//            );
+            
+            // Add Wind turbine
+            atomicModelDescriptors.put(
+                    WindTurbineElectricityModel.URI,
+                    AtomicHIOA_Descriptor.create(
+                            WindTurbineElectricityModel.class,
+                            WindTurbineElectricityModel.URI,
+                            TimeUnit.SECONDS,
+                            null
+                    )
+            );
+
+            atomicModelDescriptors.put(
+                    ExternalWindModel.URI,
+                    AtomicHIOA_Descriptor.create(
+                            ExternalWindModel.class,
+                            ExternalWindModel.URI,
+                            TimeUnit.SECONDS,
+                            null
+                    )
+            );
+
+            atomicModelDescriptors.put(
+                    WindTurbineUserModel.URI,
+                    AtomicModelDescriptor.create(
+                            WindTurbineUserModel.class,
+                            WindTurbineUserModel.URI,
+                            TimeUnit.SECONDS,
+                            null
+                    )
+            );
             
             // Add Metter
             atomicModelDescriptors.put(
@@ -190,10 +190,10 @@ public class RunHemMILSimulation {
 			submodels.add(BatteryElectricityModel.URI);
 			submodels.add(BatteryChargeLevelModel.URI);
 			submodels.add(BatteryUserModel.URI);
-//			
-//			submodels.add(WindTurbineElectricityModel.URI);
-//			submodels.add(WindTurbineUserModel.URI);
-//			submodels.add(ExternalWindModel.URI);
+			
+			submodels.add(WindTurbineElectricityModel.URI);
+			submodels.add(WindTurbineUserModel.URI);
+			submodels.add(ExternalWindModel.URI);
 			
 			submodels.add(MeterElectricityModel.URI);
 
@@ -312,28 +312,29 @@ public class RunHemMILSimulation {
                             new EventSink(BatteryChargeLevelModel.URI, SetConsumeBatteryEvent.class)
                     }
             );
-//            
-//            // Add wind turbine evnts
-//            connections.put(
-//                    new EventSource(WindTurbineUserModel.URI, StartWindTurbineEvent.class),
-//                    new EventSink[] {
-//                            new EventSink(WindTurbineElectricityModel.URI, StartWindTurbineEvent.class)
-//                    }
-//            );
-//
-//            connections.put(
-//                    new EventSource(WindTurbineUserModel.URI, StopWindTurbineEvent.class),
-//                    new EventSink[] {
-//                            new EventSink(WindTurbineElectricityModel.URI, StopWindTurbineEvent.class)
-//                    }
-//            );
-//
-//            connections.put(
-//                    new EventSource(ExternalWindModel.URI, SetWindSpeedEvent.class),
-//                    new EventSink[] {
-//                            new EventSink(WindTurbineElectricityModel.URI, SetWindSpeedEvent.class)
-//                    }
-//            );            
+            
+            // Add wind turbine events
+            connections.put(
+                    new EventSource(WindTurbineUserModel.URI, StartWindTurbineEvent.class),
+                    new EventSink[] {
+                            new EventSink(WindTurbineElectricityModel.URI, StartWindTurbineEvent.class)
+                    }
+            );
+
+            connections.put(
+                    new EventSource(WindTurbineUserModel.URI, StopWindTurbineEvent.class),
+                    new EventSink[] {
+                            new EventSink(WindTurbineElectricityModel.URI, StopWindTurbineEvent.class)
+                    }
+            );
+
+            connections.put(
+                    new EventSource(ExternalWindModel.URI, SetWindSpeedEvent.class),
+                    new EventSink[] {
+                            new EventSink(WindTurbineElectricityModel.URI, SetWindSpeedEvent.class)
+                    }
+            );      
+            
             Map<VariableSource, VariableSink[]> bindings = new HashMap<>();
             
             // Add iron bindings
@@ -395,26 +396,26 @@ public class RunHemMILSimulation {
                             new VariableSink("currentBatteryConsumption", Double.class, MeterElectricityModel.URI)
                     }
             ); 
-//
-//			// Add wind turbine bindings
-//			bindings.put(
-//                    new VariableSource("externalWindSpeed",
-//                            Double.class,
-//                            ExternalWindModel.URI),
-//                    new VariableSink[] {
-//                            new VariableSink("externalWindSpeed",
-//                                    Double.class,
-//                                    WindTurbineElectricityModel.URI)
-//                    });
-//			bindings.put(
-//                    new VariableSource("currentProduction",
-//                            Double.class,
-//                            WindTurbineElectricityModel.URI),
-//                    new VariableSink[] {
-//                            new VariableSink("currentWindTurbineProduction",
-//                                    Double.class,
-//                                    MeterElectricityModel.URI)
-//                    });
+
+			// Add wind turbine bindings
+			bindings.put(
+                    new VariableSource("externalWindSpeed",
+                            Double.class,
+                            ExternalWindModel.URI),
+                    new VariableSink[] {
+                            new VariableSink("externalWindSpeed",
+                                    Double.class,
+                                    WindTurbineElectricityModel.URI)
+                    });
+			bindings.put(
+                    new VariableSource("currentProduction",
+                            Double.class,
+                            WindTurbineElectricityModel.URI),
+                    new VariableSink[] {
+                            new VariableSink("currentWindTurbineProduction",
+                                    Double.class,
+                                    MeterElectricityModel.URI)
+                    });
 			
 			 Map<String, CoupledModelDescriptor> coupledModelDescriptors = new HashMap<>();
 

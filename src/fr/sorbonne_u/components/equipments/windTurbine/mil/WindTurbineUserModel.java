@@ -72,9 +72,9 @@ public class WindTurbineUserModel extends AtomicES_Model {
 
         ES_EventI next = null;
         if(current instanceof StartWindTurbineEvent) 
-            next = new StartWindTurbineEvent(nextTime);
-        else if(current instanceof StopWindTurbineEvent) 
             next = new StopWindTurbineEvent(nextTime);
+        else if(current instanceof StopWindTurbineEvent) 
+            next = new StartWindTurbineEvent(nextTime);
         
         scheduleEvent(next);
     }
