@@ -11,8 +11,9 @@ public class Battery extends AbstractComponent implements BatteryI {
 	public static int X_RELATIVE_POSITION = 2;
 	public static int Y_RELATIVE_POSITION = 1;
 	
-	protected static final STATE INIT_STATE = STATE.CONSUME;
+	protected static final STATE INIT_STATE = STATE.STANDBY;
 	protected STATE currentState;
+	protected double batteryLevel;
 	
 	public static final String INTERNAL_INBOUND_PORT = "INTERNAL_INBOUND_PORT";
 	protected BatteryInboundPort inboundPort;
@@ -22,6 +23,7 @@ public class Battery extends AbstractComponent implements BatteryI {
 		super(1, 0);
 		try {
 			this.currentState = INIT_STATE;
+			this.batteryLevel = 0.0;
 			
 			this.inboundPort = new BatteryInboundPort(INTERNAL_INBOUND_PORT, this);
 			this.inboundPort.publishPort();
@@ -62,5 +64,13 @@ public class Battery extends AbstractComponent implements BatteryI {
 			this.logMessage("Battery new state -> " + state.toString() + "\n");
 		
 		this.currentState = state;
+	}
+	
+	@Override
+	public double getBatteryLevel() throws Exception {
+		if(VERBOSE) 
+			this.logMessage("Battery returns its level \n");
+		
+		return this.batteryLevel;
 	}
 }

@@ -1,4 +1,4 @@
-package fr.sorbonne_u.components.equipments.generator;
+package fr.sorbonne_u.components.equipments.generator.interfaces;
 
 import fr.sorbonne_u.components.interfaces.OfferedCI;
 import fr.sorbonne_u.components.interfaces.RequiredCI;

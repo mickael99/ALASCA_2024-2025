@@ -1,6 +1,7 @@
-package fr.sorbonne_u.components.equipments.generator;
+package fr.sorbonne_u.components.equipments.generator.ports;
 
 import fr.sorbonne_u.components.ComponentI;
+import fr.sorbonne_u.components.equipments.generator.interfaces.GeneratorCI;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 
 public class GeneratorOutboundPort extends AbstractOutboundPort implements GeneratorCI {

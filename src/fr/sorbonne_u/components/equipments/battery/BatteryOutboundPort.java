@@ -24,4 +24,9 @@ public class BatteryOutboundPort extends AbstractOutboundPort implements Battery
 	public void setState(STATE state) throws Exception {
 		((BatteryCI)this.getConnector()).setState(state);
 	}
+	
+	@Override
+	public double getBatteryLevel() throws Exception {
+		return ((BatteryCI)this.getConnector()).getBatteryLevel();
+	}
 }

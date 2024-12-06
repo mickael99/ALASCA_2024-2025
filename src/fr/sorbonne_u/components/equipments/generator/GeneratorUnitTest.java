@@ -2,6 +2,9 @@ package fr.sorbonne_u.components.equipments.generator;
 
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
+import fr.sorbonne_u.components.equipments.generator.connectors.GeneratorConnector;
+import fr.sorbonne_u.components.equipments.generator.interfaces.GeneratorCI;
+import fr.sorbonne_u.components.equipments.generator.ports.GeneratorOutboundPort;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
 

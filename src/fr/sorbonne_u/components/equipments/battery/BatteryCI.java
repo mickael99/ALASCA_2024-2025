@@ -7,4 +7,5 @@ public interface BatteryCI extends OfferedCI, RequiredCI, BatteryI {
 
 	public STATE getState() throws Exception;
 	public void setState(STATE state) throws Exception;
+	public double getBatteryLevel() throws Exception;
 }

@@ -1,6 +1,7 @@
-package fr.sorbonne_u.components.equipments.generator;
+package fr.sorbonne_u.components.equipments.generator.connectors;
 
 import fr.sorbonne_u.components.connectors.AbstractConnector;
+import fr.sorbonne_u.components.equipments.generator.interfaces.GeneratorCI;
 
 public class GeneratorConnector extends AbstractConnector implements GeneratorCI {
 

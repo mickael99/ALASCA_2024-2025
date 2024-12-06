@@ -1,4 +1,4 @@
-package fr.sorbonne_u.components.equipments.generator;
+package fr.sorbonne_u.components.equipments.generator.interfaces;
 
 public interface GeneratorImplementationI {
 	

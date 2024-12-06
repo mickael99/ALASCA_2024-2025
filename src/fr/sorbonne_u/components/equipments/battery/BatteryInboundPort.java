@@ -28,4 +28,10 @@ public class BatteryInboundPort extends AbstractInboundPort implements BatteryCI
 						return null;
 				});
 	}
+	
+	@Override
+	public double getBatteryLevel() throws Exception {
+		return this.getOwner().handleRequest(
+				o -> ((BatteryI)o).getBatteryLevel());
+	}
 }

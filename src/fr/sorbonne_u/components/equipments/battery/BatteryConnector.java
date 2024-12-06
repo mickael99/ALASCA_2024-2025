@@ -13,4 +13,9 @@ public class BatteryConnector extends AbstractConnector implements BatteryCI {
 	public void setState(STATE state) throws Exception {
 		((BatteryCI)this.offering).setState(state);
 	}
+	
+	@Override
+	public double getBatteryLevel() throws Exception {
+		return ((BatteryCI)this.offering).getBatteryLevel();
+	}
 }

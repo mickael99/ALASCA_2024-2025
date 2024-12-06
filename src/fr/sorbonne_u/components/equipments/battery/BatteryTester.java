@@ -71,7 +71,7 @@ public class BatteryTester extends AbstractComponent {
 		if(VERBOSE)
 			this.traceMessage("testGetState() \n");
 		try {
-			assertEquals(BatteryI.STATE.CONSUME, this.outboundPort.getState());
+			assertEquals(BatteryI.STATE.STANDBY, this.outboundPort.getState());
 		} catch(Exception e) {
 			assertTrue(false);
 		}
@@ -95,14 +95,29 @@ public class BatteryTester extends AbstractComponent {
 			this.traceMessage("done... \n");
 	}
 	
+	protected void testGetBatteryLevel() throws Exception {
+		if(VERBOSE)
+			this.traceMessage("testGetPowerLevel() \n");
+		
+		try {
+			assertEquals(this.outboundPort.getBatteryLevel(), 0.0);
+		} catch(Exception e) {
+			assertTrue(false);
+		}
+		
+		if(VERBOSE)
+			this.traceMessage("done... \n");
+	}
+	
 	protected void runAllTests() throws Exception {
 		if(VERBOSE)
 			this.traceMessage("Tests start... \n");
 		
 		this.testGetState();
 		this.testSetState();
+		this.testGetBatteryLevel();
 		
 		if(VERBOSE)
-			this.traceMessage("Tests end... \n");
+			this.traceMessage("Battery tests end... \n");
 	}
 }
