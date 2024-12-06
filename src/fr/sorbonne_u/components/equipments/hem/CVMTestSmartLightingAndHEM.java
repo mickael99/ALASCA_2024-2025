@@ -1,18 +1,23 @@
-package fr.sorbonne_u.components.equipments.smartLighting;
+package fr.sorbonne_u.components.equipments.hem;
 
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
-import fr.sorbonne_u.components.equipments.hem.HEM;
+import fr.sorbonne_u.components.equipments.smartLighting.SmartLighting;
 
-public class CVMTestRegister extends AbstractCVM {
+public class CVMTestSmartLightingAndHEM extends AbstractCVM {
 
-    public CVMTestRegister() throws Exception {
+    public CVMTestSmartLightingAndHEM() throws Exception {
         SmartLighting.TEST_REGISTRATION = true;
-        HEM.TEST_COMMUNICATION_WITH_SMART_LIGHTING = true;
+        
+        HEM.X_RELATIVE_POSITION = 0;
+		HEM.Y_RELATIVE_POSITION = 0;
+		
+		SmartLighting.X_RELATIVE_POSITION = 1;
+		SmartLighting.Y_RELATIVE_POSITION = 0;
     }
 
     @Override
-    public void			deploy() throws Exception
+    public void	deploy() throws Exception
     {
         AbstractComponent.createComponent(
                 SmartLighting.class.getCanonicalName(),
@@ -20,7 +25,7 @@ public class CVMTestRegister extends AbstractCVM {
 
         AbstractComponent.createComponent(
                 HEM.class.getCanonicalName(),
-                new Object[]{false, false, false});
+                new Object[]{HEM.TestType.SMART_LIGHTING});
 
         super.deploy();
     }
@@ -28,7 +33,7 @@ public class CVMTestRegister extends AbstractCVM {
     public static void	main(String[] args)
     {
         try {
-            fr.sorbonne_u.components.equipments.smartLighting.CVMTestRegister cvm = new fr.sorbonne_u.components.equipments.smartLighting.CVMTestRegister();
+            CVMTestSmartLightingAndHEM cvm = new CVMTestSmartLightingAndHEM();
             cvm.startStandardLifeCycle(1000L);
             Thread.sleep(100000L);
             System.exit(0);

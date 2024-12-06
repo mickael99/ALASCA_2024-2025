@@ -15,15 +15,10 @@ import fr.sorbonne_u.components.equipments.battery.BatteryI;
 import fr.sorbonne_u.components.equipments.battery.BatteryOutboundPort;
 import fr.sorbonne_u.components.equipments.fridge.Fridge;
 import fr.sorbonne_u.components.equipments.generator.Generator;
-import fr.sorbonne_u.components.equipments.generator.connectors.GeneratorConnector;
 import fr.sorbonne_u.components.equipments.generator.connectors.GeneratorHEMConnector;
 import fr.sorbonne_u.components.equipments.generator.ports.GeneratorHEMOutboundPort;
-import fr.sorbonne_u.components.equipments.generator.ports.GeneratorOutboundPort;
-import fr.sorbonne_u.components.equipments.smartLighting.SmartLighting;
 import fr.sorbonne_u.components.equipments.hem.adjustable.AdjustableCI;
 import fr.sorbonne_u.components.equipments.hem.adjustable.AdjustableOutboundPort;
-import fr.sorbonne_u.components.equipments.hem.adjustable.FridgeConnector;
-import fr.sorbonne_u.components.equipments.hem.adjustable.SmartLightingConnector;
 import fr.sorbonne_u.components.equipments.hem.registration.RegistrationCI;
 import fr.sorbonne_u.components.equipments.hem.registration.RegistrationI;
 import fr.sorbonne_u.components.equipments.hem.registration.RegistrationInboundPort;
@@ -38,8 +33,8 @@ import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
 import fr.sorbonne_u.components.xmlReader.ClassCreator;
 import fr.sorbonne_u.exceptions.PreconditionException;
-import fr.sorbonne_u.utils.aclocks.AcceleratedClock;
 import fr.sorbonne_u.components.equipments.meter.interfaces.ElectricMeterCI;
+import fr.sorbonne_u.components.equipments.smartLighting.SmartLighting;
 import fr.sorbonne_u.components.equipments.battery.BatteryCI;
 import fr.sorbonne_u.components.equipments.generator.interfaces.GeneratorHEMCI;
 
@@ -53,8 +48,8 @@ public class HEM extends AbstractComponent implements RegistrationI {
 	
 	public static enum TestType {
 		INTEGRATION,
-		FRIDGE,
-		SMART_LIGHT,
+		FRIDGE, // Done
+		SMART_LIGHTING,
 		GENERATOR, // Done
 		WIND_TURBINE, // Done
 		METER, // Done
@@ -66,27 +61,16 @@ public class HEM extends AbstractComponent implements RegistrationI {
 	public static int Y_RELATIVE_POSITION = 0;
 
 	protected TestType testType;
-	
-	protected ElectricMeterOutboundPort electricMeterPort;
 
-	protected AdjustableOutboundPort controlFridgePort;
-
-	protected AdjustableOutboundPort controlSmartLightingPort;
-
-	protected AcceleratedClock ac;
-	
+	// Registration ports
 	public static final String URI_REGISTRATION_INBOUND_PORT = "URI_REGISTRATION_INBOUND_PORT";
 	protected RegistrationInboundPort registrationPort;
 	protected HashMap<String, AdjustableOutboundPort> registeredUriModularEquipement;
 	
-	// Test
-	public static boolean TEST_COMMUNICATION_WITH_FRIDGE;
-	public static boolean TEST_COMMUNICATION_WITH_SMART_LIGHTING;
-	protected boolean isTestElectricMetter;
-	protected boolean isTestFridge;
-	protected boolean isTestSmartLighting;
-	public static final boolean IS_INTEGRATION_TEST = false;
-	
+	// Components ports
+	protected ElectricMeterOutboundPort electricMeterPort;
+	protected AdjustableOutboundPort controlFridgePort;
+	protected AdjustableOutboundPort controlSmartLightingPort;
 	protected BatteryOutboundPort batteryOutboundPort;
 	protected WindTurbineOutboundPort windTurbineOutboundPort;
 	protected GeneratorHEMOutboundPort generatorHEMOutboundPort;
@@ -97,7 +81,7 @@ public class HEM extends AbstractComponent implements RegistrationI {
 	// -------------------------------------------------------------------------
 	
 	protected HEM(TestType testType) throws Exception {
-		super(1, 1);
+		super(1, 0);
 		
 		this.testType = testType;
 		this.initialisePorts();
@@ -134,7 +118,7 @@ public class HEM extends AbstractComponent implements RegistrationI {
 			this.generatorHEMOutboundPort.publishPort();
 		}
 		
-		if(testType == TestType.INTEGRATION || testType == TestType.FRIDGE || testType == TestType.SMART_LIGHT) {
+		if(testType == TestType.INTEGRATION || testType == TestType.FRIDGE || testType == TestType.SMART_LIGHTING) {
 			this.registrationPort = new RegistrationInboundPort(URI_REGISTRATION_INBOUND_PORT, this);
 			this.registrationPort.publishPort();
 		}
@@ -178,45 +162,6 @@ public class HEM extends AbstractComponent implements RegistrationI {
 						GeneratorHEMConnector.class.getCanonicalName());
 			}
 			
-//			if(this.isTestElectricMetter) {
-//				this.electricMeterPort = new ElectricMeterOutboundPort(this);
-//				this.electricMeterPort.publishPort();
-//				this.doPortConnection(
-//						this.electricMeterPort.getPortURI(),
-//						ElectricMeter.ELECTRIC_METER_INBOUND_PORT_URI,
-//						ElectricMeterConnector.class.getCanonicalName());	
-//			}
-//
-//			if(this.isTestFridge) {
-//				this.controlFridgePort = new AdjustableOutboundPort(this);
-//				this.controlFridgePort.publishPort();
-//				this.doPortConnection(
-//						this.controlFridgePort.getPortURI(),
-//						Fridge.EXTERNAL_CONTROL_INBOUND_PORT_URI,
-//						FridgeConnector.class.getCanonicalName());	
-//			}
-//
-//			if(this.isTestSmartLighting) {
-//				this.controlSmartLightingPort = new AdjustableOutboundPort(this);
-//				this.controlSmartLightingPort.publishPort();
-//				this.doPortConnection(
-//						this.controlSmartLightingPort.getPortURI(),
-//						SmartLighting.EXTERNAL_CONTROL_INBOUND_PORT_URI,
-//						SmartLightingConnector.class.getCanonicalName());
-//			}
-//			
-//			if(IS_INTEGRATION_TEST) {
-//				this.doPortConnection(
-//						this.windTurbineOutboundPort.getPortURI(),
-//						WindTurbine.INBOUND_PORT_URI,
-//						WindTurbineConnector.class.getCanonicalName());
-//				
-//				this.doPortConnection(
-//						this.batteryOutboundPort.getPortURI(),
-//						Battery.INTERNAL_INBOUND_PORT,
-//						BatteryConnector.class.getCanonicalName());
-//			}
-			
 		} catch (Exception e) {
 			throw new ComponentStartException(e) ;
 		}
@@ -224,32 +169,6 @@ public class HEM extends AbstractComponent implements RegistrationI {
 	
 	@Override
 	public synchronized void execute() throws Exception {
-		/*
-		this.ac = null;
-		ClocksServerOutboundPort clocksServerOutboundPort =
-											new ClocksServerOutboundPort(this);
-		clocksServerOutboundPort.publishPort();
-		this.doPortConnection(
-					clocksServerOutboundPort.getPortURI(),
-					ClocksServer.STANDARD_INBOUNDPORT_URI,
-					ClocksServerConnector.class.getCanonicalName());
-		this.traceMessage("HEM gets the clock.\n");
-		this.ac = clocksServerOutboundPort.getClock(CVMIntegrationTest.CLOCK_URI);
-		this.doPortDisconnection(clocksServerOutboundPort.getPortURI());
-		clocksServerOutboundPort.unpublishPort();
-		this.traceMessage("HEM waits until start time.\n");
-		this.ac.waitUntilStart();
-		this.traceMessage("HEM starts.\n");*/
-		
-//		if(this.isTestElectricMetter)
-//			this.testMeter();
-//		
-//		if(this.isTestFridge)
-//			this.testFridge();
-//
-//		if(this.isTestSmartLighting)
-//			this.testSmartLighting();
-		
 		if(testType == TestType.INTEGRATION || testType == TestType.METER) 
 			this.testMeter();
 		
@@ -261,26 +180,11 @@ public class HEM extends AbstractComponent implements RegistrationI {
 		
 		if(testType == TestType.INTEGRATION || testType == TestType.GENERATOR) 
 			this.testGenerator();
-		
 	}
 	
 	@Override
 	public synchronized void finalise() throws Exception
-	{
-//		if(this.isTestFridge)
-//			this.doPortDisconnection(this.controlFridgePort.getPortURI());
-//
-//		if(this.isTestSmartLighting)
-//			this.doPortDisconnection(this.controlSmartLightingPort.getPortURI());
-//		
-//		if(this.isTestElectricMetter)
-//			this.doPortDisconnection(this.electricMeterPort.getPortURI());
-//		
-//		if(IS_INTEGRATION_TEST) {
-//			this.doPortDisconnection(this.windTurbineOutboundPort.getPortURI());
-//			this.doPortDisconnection(this.batteryOutboundPort.getPortURI());
-//		}
-		
+	{	
 		if(testType == TestType.INTEGRATION || testType == TestType.METER) 
 			this.doPortDisconnection(this.electricMeterPort.getPortURI());
 		
@@ -304,19 +208,6 @@ public class HEM extends AbstractComponent implements RegistrationI {
 	public synchronized void	shutdown() throws ComponentShutdownException
 	{
 		try {
-//			if(this.isTestFridge) 
-//				this.controlFridgePort.unpublishPort();
-//			if(this.isTestSmartLighting)
-//				this.controlSmartLightingPort.unpublishPort();
-//			
-//			this.registrationPort.unpublishPort();
-//			if(this.isTestElectricMetter)
-//				this.electricMeterPort.unpublishPort();
-//			if(IS_INTEGRATION_TEST) {
-//				this.windTurbineOutboundPort.unpublishPort();
-//				this.batteryOutboundPort.unpublishPort();
-//			}
-			
 			if(testType == TestType.INTEGRATION || testType == TestType.METER) 
 				this.electricMeterPort.unpublishPort();
 			
@@ -329,7 +220,7 @@ public class HEM extends AbstractComponent implements RegistrationI {
 			if(testType == TestType.INTEGRATION || testType == TestType.GENERATOR) 
 				this.generatorHEMOutboundPort.unpublishPort();
 			
-			if(testType == TestType.INTEGRATION || testType == TestType.FRIDGE || testType == TestType.SMART_LIGHT) 
+			if(testType == TestType.INTEGRATION || testType == TestType.FRIDGE || testType == TestType.SMART_LIGHTING) 
 				this.registrationPort.unpublishPort();
 				
 		} catch (Exception e) {
@@ -340,7 +231,7 @@ public class HEM extends AbstractComponent implements RegistrationI {
 	
 	
 	// -------------------------------------------------------------------------
-	// Internal methods
+	// Tests methods
 	// -------------------------------------------------------------------------
 
 	protected void	testMeter() throws Exception {
@@ -407,150 +298,7 @@ public class HEM extends AbstractComponent implements RegistrationI {
 		this.traceMessage("testGenerator() done...\n");
 	}
 	
-	protected void testFridge() throws Exception {
-		this.traceMessage("testFridge()\n");
-		
-		traceMessage("Fridge maxMode index? " +
-						this.controlFridgePort.maxMode() + "\n");
-		traceMessage("Fridge current mode index? " +
-						this.controlFridgePort.currentMode() + "\n");
-		traceMessage("Fridge going down one mode? " +
-						this.controlFridgePort.downMode() + "\n");
-		traceMessage("Fridge current mode is? " +
-						this.controlFridgePort.currentMode() + "\n");
-		traceMessage("Fridge going up one mode? " +
-						this.controlFridgePort.upMode() + "\n");
-		traceMessage("Fridge current mode is? " +
-						this.controlFridgePort.currentMode() + "\n");
-		traceMessage("Fridge setting current mode? " +
-						this.controlFridgePort.setMode(1) + "\n");
-		traceMessage("Fridge current mode is? " +
-						this.controlFridgePort.currentMode() + "\n");
-		traceMessage("Fridge is suspended? " +
-						this.controlFridgePort.suspended() + "\n");
-		traceMessage("Fridge suspends? " +
-						this.controlFridgePort.suspend() + "\n");
-		traceMessage("Fridge is suspended? " +
-						this.controlFridgePort.suspended() + "\n");
-		traceMessage("Fridge emergency? " +
-						this.controlFridgePort.emergency() + "\n");
-		
-		Thread.sleep(1000);
-		
-		traceMessage("Fridge emergency? " +
-						this.controlFridgePort.emergency() + "\n");
-		traceMessage("Fridge resumes? " +
-						this.controlFridgePort.resume() + "\n");
-		traceMessage("Fridge is suspended? " +
-						this.controlFridgePort.suspended() + "\n");
-		traceMessage("Fridge current mode is? " +
-						this.controlFridgePort.currentMode() + "\n");
-		
-		this.traceMessage("testFridge done...\n");
-	}
-
-	public void testSmartLighting() throws Exception {
-		this.traceMessage("testSmartLighting()\n");
-
-		traceMessage("SmartLighting maxMode index? " +
-						this.controlSmartLightingPort.maxMode() + "\n");
-		traceMessage("SmartLighting current mode index? " +
-						this.controlSmartLightingPort.currentMode() + "\n");
-		traceMessage("SmartLighting going down one mode? " +
-						this.controlSmartLightingPort.downMode() + "\n");
-		traceMessage("SmartLighting current mode is? " +
-						this.controlSmartLightingPort.currentMode() + "\n");
-		traceMessage("SmartLighting going up one mode? " +
-						this.controlSmartLightingPort.upMode() + "\n");
-		traceMessage("SmartLighting current mode is? " +
-						this.controlSmartLightingPort.currentMode() + "\n");
-		traceMessage("SmartLighting setting current mode? " +
-						this.controlSmartLightingPort.setMode(1) + "\n");
-		traceMessage("SmartLighting current mode is? " +
-						this.controlSmartLightingPort.currentMode() + "\n");
-		traceMessage("SmartLighting is suspended? " +
-						this.controlSmartLightingPort.suspended() + "\n");
-		traceMessage("SmartLighting suspends? " +
-						this.controlSmartLightingPort.suspend() + "\n");
-		traceMessage("SmartLighting is suspended? " +
-						this.controlSmartLightingPort.suspended() + "\n");
-		traceMessage("SmartLighting emergency? " +
-						this.controlSmartLightingPort.emergency() + "\n");
-
-		Thread.sleep(1000);
-
-		traceMessage("SmartLighting emergency? " +
-						this.controlSmartLightingPort.emergency() + "\n");
-		traceMessage("SmartLighting resumes? " +
-						this.controlSmartLightingPort.resume() + "\n");
-		traceMessage("SmartLighting is suspended? " +
-						this.controlSmartLightingPort.suspended() + "\n");
-		traceMessage("SmartLighting current mode is? " +
-						this.controlSmartLightingPort.currentMode() + "\n");
-
-		this.traceMessage("testSmartLighting done...\n");
-	}
-
-	@Override
-	public boolean registered(String uid) throws Exception {
-		if(VERBOSE)
-			this.traceMessage("registered \n");
-		
-		if(this.registeredUriModularEquipement.containsKey(uid)) {
-			if(VERBOSE)
-				this.traceMessage(uid + " is registered \n");
-			return true;
-		}
-		
-		if(VERBOSE)
-			this.traceMessage(uid + " is not registered \n");
-		return false;
-	}
-
-	@Override
-	public boolean register(String uid, String controlPortURI, String xmlControlAdapter) throws Exception {
-		if(VERBOSE)
-			this.traceMessage("register of " + uid + "\n");
-		
-		if(registered(uid)) {
-			if(VERBOSE)
-				this.traceMessage("Impossible to register " + uid + " because it's not registered\n");
-			
-			return false;
-		}
-	
-		AdjustableOutboundPort ao = new AdjustableOutboundPort(this);
-		ao.publishPort();
-		this.registeredUriModularEquipement.put(uid, ao);
-		ClassCreator classCreator = new ClassCreator(xmlControlAdapter);
-		Class<?> classConnector = classCreator.createClass();
-
-		this.doPortConnection(ao.getPortURI(), 
-				controlPortURI, 
-				classConnector.getCanonicalName());
-		
-		if(this.testType == TestType.INTEGRATION || this.testType == TestType.FRIDGE) 
-			this.scenarioCommunicationWithFridge(uid);
-
-
-		if(this.testType == TestType.INTEGRATION || this.testType == TestType.SMART_LIGHT)
-			this.scenarioCommunicationWithSmartLighting(uid);
-
-		return true;
-	}
-
-	@Override
-	public void unregister(String uid) throws Exception {
-		if(VERBOSE)
-			this.traceMessage("unregister of" + uid + "\n");
-		if(registered(uid)) {
-			this.doPortDisconnection(this.registeredUriModularEquipement.get(uid).getPortURI());
-			this.registeredUriModularEquipement.get(uid).unpublishPort();
-			this.registeredUriModularEquipement.remove(uid);
-		}
-	}
-	
-	public void scenarioCommunicationWithFridge(String fridgeURI) throws Exception {
+	public void testFridge(String fridgeURI) throws Exception {
 		if(VERBOSE)
 			this.traceMessage("\n\nStart scenario between the HEM and the fridge\n");
 		
@@ -622,15 +370,15 @@ public class HEM extends AbstractComponent implements RegistrationI {
 			this.traceMessage("End of scenario between the HEM and the fridge \n\n");
 	}
 
-	public void scenarioCommunicationWithSmartLighting(String SmartLightingURI) throws Exception {
+	public void testSmartLighting(String SmartLightingURI) throws Exception {
 		if(VERBOSE)
 			this.traceMessage("\n\nStart scenario between the HEM and the smart lighting\n");
 
 		assert this.registeredUriModularEquipement.containsKey(SmartLightingURI) :
 				new PreconditionException("Impossible test the commmunication with the fridge because it's not connect to the HEM");
 
-		AdjustableOutboundPort ao = this.registeredUriModularEquipement.get(SmartLightingURI);
-
+		AdjustableOutboundPort ao = this.registeredUriModularEquipement.get(SmartLightingURI);		
+	
 		if(VERBOSE)
 			this.traceMessage("maxMode()\n");
 		assertEquals(ao.maxMode(), 3);
@@ -692,5 +440,68 @@ public class HEM extends AbstractComponent implements RegistrationI {
 
 		if(VERBOSE)
 			this.traceMessage("End of scenario between the HEM and the fridge \n\n");
+	}
+	
+
+	// -------------------------------------------------------------------------
+	// Registration methods
+	// -------------------------------------------------------------------------
+	
+	@Override
+	public boolean registered(String uid) throws Exception {
+		if(VERBOSE)
+			this.traceMessage("registered \n");
+		
+		if(this.registeredUriModularEquipement.containsKey(uid)) {
+			if(VERBOSE)
+				this.traceMessage(uid + " is registered \n");
+			return true;
+		}
+		
+		if(VERBOSE)
+			this.traceMessage(uid + " is not registered \n");
+		return false;
+	}
+
+	@Override
+	public boolean register(String uid, String controlPortURI, String xmlControlAdapter) throws Exception {
+		if(VERBOSE)
+			this.traceMessage("register of " + uid + "\n");
+		
+		if(registered(uid)) {
+			if(VERBOSE)
+				this.traceMessage("Impossible to register " + uid + " because it's not registered\n");
+			
+			return false;
+		}
+	
+		AdjustableOutboundPort ao = new AdjustableOutboundPort(this);
+		ao.publishPort();
+		this.registeredUriModularEquipement.put(uid, ao);
+		ClassCreator classCreator = new ClassCreator(xmlControlAdapter);
+		Class<?> classConnector = classCreator.createClass();
+
+		this.doPortConnection(ao.getPortURI(), 
+				controlPortURI, 
+				classConnector.getCanonicalName());
+		
+		if(uid == Fridge.URI) 
+			this.testFridge(uid);
+
+		if(uid == SmartLighting.URI)
+			this.testSmartLighting(uid);
+
+		return true;
+	}
+
+	@Override
+	public void unregister(String uid) throws Exception {
+		if(VERBOSE)
+			this.traceMessage("unregister of" + uid + "\n");
+		if(registered(uid)) {
+			this.doPortDisconnection(this.registeredUriModularEquipement.get(uid).getPortURI());
+			this.registeredUriModularEquipement.get(uid).unpublishPort();
+			this.registeredUriModularEquipement.remove(uid);
+		}
 	}
 }

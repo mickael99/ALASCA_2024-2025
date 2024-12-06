@@ -1,36 +1,52 @@
 package fr.sorbonne_u.components;
 
 import fr.sorbonne_u.components.cvm.AbstractCVM;
+import fr.sorbonne_u.components.equipments.battery.Battery;
 import fr.sorbonne_u.components.equipments.fridge.Fridge;
-import fr.sorbonne_u.components.equipments.fridge.FridgeTester;
+import fr.sorbonne_u.components.equipments.generator.Generator;
+import fr.sorbonne_u.components.equipments.hem.HEM;
 import fr.sorbonne_u.components.equipments.iron.Iron;
 import fr.sorbonne_u.components.equipments.iron.IronTester;
-import fr.sorbonne_u.components.equipments.toaster.Toaster;
-import fr.sorbonne_u.components.equipments.toaster.ToasterTester;
-import fr.sorbonne_u.exceptions.ContractException;
-import fr.sorbonne_u.utils.aclocks.ClocksServer;
+import fr.sorbonne_u.components.equipments.meter.ElectricMeter;
+import fr.sorbonne_u.components.equipments.smartLighting.SmartLighting;
+import fr.sorbonne_u.components.equipments.windTurbine.WindTurbine;
 
 public class CVMIntegrationTest extends AbstractCVM {
 	
-	public static final String	CLOCK_URI = "test-clock";
-	public static final String	TEST_CLOCK_URI = "test-clock";
-	public static final long	DELAY_TO_START_IN_MILLIS = 3000;
-	
 	public CVMIntegrationTest() throws Exception {
-		ContractException.VERBOSE = true;
-		ClocksServer.VERBOSE = true;
-		ClocksServer.X_RELATIVE_POSITION = 2;
-		ClocksServer.Y_RELATIVE_POSITION = 0;
+		Fridge.TEST_REGISTRATION = true;
+		SmartLighting.TEST_REGISTRATION = true;
 		
-		Fridge.TEST_REGISTRATION = false;
+		HEM.X_RELATIVE_POSITION = 0;
+		HEM.Y_RELATIVE_POSITION = 0;
+		
+		Fridge.X_RELATIVE_POSITION = 1;
+		Fridge.Y_RELATIVE_POSITION = 0;
+		
+		SmartLighting.X_RELATIVE_POSITION = 2;
+		SmartLighting.Y_RELATIVE_POSITION = 0;
+		
+		WindTurbine.X_RELATIVE_POSITION = 1;
+		WindTurbine.Y_RELATIVE_POSITION = 1;
+		
+		Generator.X_RELATIVE_POSITION = 2;
+		Generator.Y_RELATIVE_POSITION = 1;
+		
+		Battery.X_RELATIVE_POSITION = 0;
+		Battery.Y_RELATIVE_POSITION = 2;
+		
+		ElectricMeter.X_RELATIVE_POSITION = 0;
+		ElectricMeter.Y_RELATIVE_POSITION = 3;
+		
+		Iron.X_RELATIVE_POSITION = 2;
+		Iron.Y_RELATIVE_POSITION = 3;
+		
+		IronTester.X_RELATIVE_POSITION = 3;
+		IronTester.Y_RELATIVE_POSITION = 3;
 	}
 	
 	@Override
 	public void	deploy() throws Exception {
-		
-		AbstractComponent.createComponent(
-				ClocksServer.class.getCanonicalName(),
-				new Object[]{});
 
 		AbstractComponent.createComponent(
 				Iron.class.getCanonicalName(),
@@ -38,32 +54,43 @@ public class CVMIntegrationTest extends AbstractCVM {
 
 		AbstractComponent.createComponent(
 					IronTester.class.getCanonicalName(),
-					new Object[]{true});
+					new Object[]{});
+		
+//		AbstractComponent.createComponent(
+//				Toaster.class.getCanonicalName(),
+//				new Object[]{});
+//	
+//		AbstractComponent.createComponent(
+//				ToasterTester.class.getCanonicalName(),
+//				new Object[]{true});
 		
 		AbstractComponent.createComponent(
-				Toaster.class.getCanonicalName(),
-				new Object[]{});
-	
-		AbstractComponent.createComponent(
-				ToasterTester.class.getCanonicalName(),
-				new Object[]{true});
+				HEM.class.getCanonicalName(),
+				new Object[]{HEM.TestType.INTEGRATION});
 		
 		AbstractComponent.createComponent(
 				Fridge.class.getCanonicalName(),
-				new Object[]{false});
+				new Object[]{true});
 	
 		AbstractComponent.createComponent(
-				FridgeTester.class.getCanonicalName(),
-				new Object[]{true});
+                SmartLighting.class.getCanonicalName(),
+                new Object[]{true});
 		
-		/*
 		AbstractComponent.createComponent(
-				HEM.class.getCanonicalName(),
+				WindTurbine.class.getCanonicalName(),
+				new Object[]{});
+		
+		AbstractComponent.createComponent(
+				Generator.class.getCanonicalName(),
 				new Object[]{});
 		
 		AbstractComponent.createComponent(
 				ElectricMeter.class.getCanonicalName(),
-				new Object[]{});*/
+				new Object[]{});
+		
+		AbstractComponent.createComponent(
+				Battery.class.getCanonicalName(),
+				new Object[]{});
 
 		super.deploy();
 	}

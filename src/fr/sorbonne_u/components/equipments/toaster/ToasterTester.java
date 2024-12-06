@@ -4,15 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import fr.sorbonne_u.components.AbstractComponent;
-import fr.sorbonne_u.components.CVMIntegrationTest;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.equipments.toaster.ToasterImplementationI.ToasterBrowningLevel;
 import fr.sorbonne_u.components.equipments.toaster.ToasterImplementationI.ToasterState;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
-import fr.sorbonne_u.utils.aclocks.AcceleratedClock;
-import fr.sorbonne_u.utils.aclocks.ClocksServer;
-import fr.sorbonne_u.utils.aclocks.ClocksServerConnector;
 import fr.sorbonne_u.utils.aclocks.ClocksServerOutboundPort;
 
 @RequiredInterfaces(required = {ToasterUserCI.class})
@@ -90,27 +86,27 @@ public class ToasterTester extends AbstractComponent {
 	@Override
 	public synchronized void execute() throws Exception {
 		
-		if (!this.isUnitTest) {
-			
-			this.clocksServerOutboundPort = new ClocksServerOutboundPort(this);
-			this.clocksServerOutboundPort.publishPort();
-			this.doPortConnection(
-					this.clocksServerOutboundPort.getPortURI(),
-					ClocksServer.STANDARD_INBOUNDPORT_URI,
-					ClocksServerConnector.class.getCanonicalName());
-			System.out.println("Toaster Tester gets the clock");
-			AcceleratedClock ac =
-					this.clocksServerOutboundPort.getClock(
-										CVMIntegrationTest.TEST_CLOCK_URI);
-
-			System.out.println("Toaster Tester waits until start");
-			ac.waitUntilStart();
-			System.out.println("Toaster Tester waits to perform tests");
-			this.doPortDisconnection(
-						this.clocksServerOutboundPort.getPortURI());
-			this.clocksServerOutboundPort.unpublishPort();
-			Thread.sleep(3000);
-		}
+//		if (!this.isUnitTest) {
+//			
+//			this.clocksServerOutboundPort = new ClocksServerOutboundPort(this);
+//			this.clocksServerOutboundPort.publishPort();
+//			this.doPortConnection(
+//					this.clocksServerOutboundPort.getPortURI(),
+//					ClocksServer.STANDARD_INBOUNDPORT_URI,
+//					ClocksServerConnector.class.getCanonicalName());
+//			System.out.println("Toaster Tester gets the clock");
+//			AcceleratedClock ac =
+//					this.clocksServerOutboundPort.getClock(
+//										CVMIntegrationTest.TEST_CLOCK_URI);
+//
+//			System.out.println("Toaster Tester waits until start");
+//			ac.waitUntilStart();
+//			System.out.println("Toaster Tester waits to perform tests");
+//			this.doPortDisconnection(
+//						this.clocksServerOutboundPort.getPortURI());
+//			this.clocksServerOutboundPort.unpublishPort();
+//			Thread.sleep(3000);
+//		}
 		this.runAllTests();
 		System.out.println("Toaster Tester ends");
 	}

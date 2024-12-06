@@ -39,7 +39,7 @@ public class Fridge extends AbstractComponent implements FridgeInternalControlI,
 	// Constants and variables
 	// -------------------------------------------------------------------------
 	
-		protected static final String URI = "FRIDGE-URI";
+	public static final String URI = "FRIDGE-URI";
 	
 	// Tracing
 	public static final boolean VERBOSE = true;
@@ -156,7 +156,7 @@ public class Fridge extends AbstractComponent implements FridgeInternalControlI,
 	
 	@Override
 	public synchronized void execute() throws Exception {
-		if (this.isHEMConnectionRequired && TEST_REGISTRATION)
+		if (this.isHEMConnectionRequired && TEST_REGISTRATION) 
 			this.runAllRegistrationTest();
 	}
 	

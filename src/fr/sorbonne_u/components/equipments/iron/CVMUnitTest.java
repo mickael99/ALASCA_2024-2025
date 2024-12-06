@@ -17,12 +17,12 @@ public class CVMUnitTest extends AbstractCVM {
 	@Override
 	public void deploy() throws Exception {
 		AbstractComponent.createComponent(
-					Iron.class.getCanonicalName(),
-					new Object[]{});
+				Iron.class.getCanonicalName(),
+				new Object[]{});
 
 		AbstractComponent.createComponent(
 					IronTester.class.getCanonicalName(),
-					new Object[]{true});
+					new Object[]{});
 
 		super.deploy();
 	}

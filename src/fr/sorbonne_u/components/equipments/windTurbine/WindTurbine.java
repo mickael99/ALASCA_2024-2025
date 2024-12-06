@@ -53,7 +53,6 @@ public class WindTurbine extends AbstractComponent implements WindTurbineI {
 		if(VERBOSE)
 			this.traceMessage("Wind turbine says if it's activate or not -> " + this.currentState.toString() + "\n");
 		
-		System.out.println(this.currentState == STATE.ACTIVE);
 		return this.currentState == STATE.ACTIVE;
 	}
 

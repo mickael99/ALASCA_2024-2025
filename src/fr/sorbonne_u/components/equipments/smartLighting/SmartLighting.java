@@ -40,7 +40,7 @@ public class SmartLighting extends AbstractComponent implements SmartLightingUse
     // Constants and variables
     // ------------------------------------------------------------------------
     public static final String REFLECTION_INBOUND_PORT_URI = "Smart-Lighting-RIP-URI";
-    protected static final String URI = "SMART-LIGHTING-URI";
+    public static final String URI = "SMART-LIGHTING-URI";
 
     //power level and illumination
     protected static final double MAX_POWER_LEVEL = 100.0;
