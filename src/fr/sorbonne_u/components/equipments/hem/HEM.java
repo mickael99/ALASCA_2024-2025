@@ -53,9 +53,9 @@ public class HEM extends AbstractComponent implements RegistrationI {
 	
 	public static enum TestType {
 		INTEGRATION,
-		FRIDGE_REGISTER,
-		SMART_LIGHT_REGISTER,
-		GENERATOR,
+		FRIDGE,
+		SMART_LIGHT,
+		GENERATOR, // Done
 		WIND_TURBINE, // Done
 		METER, // Done
 		BATTERY // Done
@@ -99,7 +99,10 @@ public class HEM extends AbstractComponent implements RegistrationI {
 	protected HEM(TestType testType) throws Exception {
 		super(1, 1);
 		
-		this.initialisePorts(testType);
+		this.testType = testType;
+		this.initialisePorts();
+		
+		this.registeredUriModularEquipement = new HashMap<String, AdjustableOutboundPort>();
 		
 		if (VERBOSE) {
 			this.tracer.get().setTitle("Home Energy Manager component");
@@ -110,9 +113,7 @@ public class HEM extends AbstractComponent implements RegistrationI {
 	}
 	
 	
-	protected void initialisePorts(TestType testType) throws Exception {
-		this.testType = testType;
-		
+	protected void initialisePorts() throws Exception {
 		if(testType == TestType.INTEGRATION || testType == TestType.METER) {
 			this.electricMeterPort = new ElectricMeterOutboundPort(this);
 			this.electricMeterPort.publishPort();
@@ -131,6 +132,11 @@ public class HEM extends AbstractComponent implements RegistrationI {
 		if(testType == TestType.INTEGRATION || testType == TestType.GENERATOR) {
 			this.generatorHEMOutboundPort = new GeneratorHEMOutboundPort(this);
 			this.generatorHEMOutboundPort.publishPort();
+		}
+		
+		if(testType == TestType.INTEGRATION || testType == TestType.FRIDGE || testType == TestType.SMART_LIGHT) {
+			this.registrationPort = new RegistrationInboundPort(URI_REGISTRATION_INBOUND_PORT, this);
+			this.registrationPort.publishPort();
 		}
 	}
 	
@@ -287,6 +293,7 @@ public class HEM extends AbstractComponent implements RegistrationI {
 		if(testType == TestType.INTEGRATION || testType == TestType.GENERATOR) 
 			this.doPortDisconnection(this.generatorHEMOutboundPort.getPortURI());
 		
+		
 		super.finalise();
 	}
 
@@ -322,6 +329,9 @@ public class HEM extends AbstractComponent implements RegistrationI {
 			if(testType == TestType.INTEGRATION || testType == TestType.GENERATOR) 
 				this.generatorHEMOutboundPort.unpublishPort();
 			
+			if(testType == TestType.INTEGRATION || testType == TestType.FRIDGE || testType == TestType.SMART_LIGHT) 
+				this.registrationPort.unpublishPort();
+				
 		} catch (Exception e) {
 			throw new ComponentShutdownException(e) ;
 		}
@@ -519,12 +529,11 @@ public class HEM extends AbstractComponent implements RegistrationI {
 				controlPortURI, 
 				classConnector.getCanonicalName());
 		
-		if(TEST_COMMUNICATION_WITH_FRIDGE)
+		if(this.testType == TestType.INTEGRATION || this.testType == TestType.FRIDGE) 
 			this.scenarioCommunicationWithFridge(uid);
 
-		System.out.println("TEST_COMMUNICATION_WITH_SMART_LIGHTING : " + TEST_COMMUNICATION_WITH_SMART_LIGHTING);
 
-		if(TEST_COMMUNICATION_WITH_SMART_LIGHTING)
+		if(this.testType == TestType.INTEGRATION || this.testType == TestType.SMART_LIGHT)
 			this.scenarioCommunicationWithSmartLighting(uid);
 
 		return true;
