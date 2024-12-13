@@ -11,13 +11,13 @@ import fr.sorbonne_u.devs_simulation.models.events.ReexportedEvent;
 import fr.sorbonne_u.devs_simulation.models.interfaces.ModelI;
 import fr.sorbonne_u.devs_simulation.simulators.interfaces.CoordinatorI;
 
-public class IronCoupleModel extends CoupledModel {
+public class IronCoupledModel extends CoupledModel {
 
 	private static final long serialVersionUID = 1L;														
-	public static final String URI = IronCoupleModel.class.getSimpleName();
-	
+	public static final String MIL_URI = IronCoupledModel.class.getSimpleName() + "-MIL";
+	public static final String SIL_URI = IronCoupledModel.class.getSimpleName() + "-SIL";
 
-	public IronCoupleModel(String uri, TimeUnit simulatedTimeUnit, CoordinatorI simulationEngine, ModelI[] submodels,
+	public IronCoupledModel(String uri, TimeUnit simulatedTimeUnit, CoordinatorI simulationEngine, ModelI[] submodels,
 							Map<Class<? extends EventI>,EventSink[]> imported, 
 							Map<Class<? extends EventI>, ReexportedEvent> reexported, Map<EventSource, EventSink[]> connections) throws Exception 
 	{

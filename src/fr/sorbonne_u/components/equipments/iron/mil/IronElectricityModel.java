@@ -7,8 +7,8 @@ import fr.sorbonne_u.components.equipments.hem.mil.HEM_ReportI;
 import fr.sorbonne_u.components.equipments.iron.mil.events.AbstractIronEvent;
 import fr.sorbonne_u.components.utils.Electricity;
 import fr.sorbonne_u.devs_simulation.exceptions.MissingRunParameterException;
+import fr.sorbonne_u.devs_simulation.exceptions.NeoSim4JavaException;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ExportedVariable;
-import fr.sorbonne_u.devs_simulation.hioa.annotations.ModelExportedVariable;
 import fr.sorbonne_u.devs_simulation.hioa.models.AtomicHIOA;
 import fr.sorbonne_u.devs_simulation.hioa.models.vars.Value;
 import fr.sorbonne_u.devs_simulation.models.annotations.ModelExternalEvents;
@@ -51,7 +51,8 @@ public class IronElectricityModel extends AtomicHIOA {
 	
 	// URI
 	private static final long serialVersionUID = 1L;
-	public static final String URI = IronElectricityModel.class.getSimpleName();
+	public static final String MIL_URI = IronElectricityModel.class.getSimpleName() + "-MIL";
+	public static final String SIL_URI = IronElectricityModel.class.getSimpleName() + "-SIL";
 	
 	// Modes energy consumption
 	protected static double DELICATE_CONSUMPTION = 600.0;
@@ -80,9 +81,9 @@ public class IronElectricityModel extends AtomicHIOA {
 		this.getSimulationEngine().setLogger(new StandardLogger());
 		
 		assert	glassBoxInvariants(this) :
-			new AssertionError("Glass-box invariants violation!");
+			new NeoSim4JavaException("Glass-box invariants violation!");
 		assert	blackBoxInvariants(this) :
-			new AssertionError("Black-box invariant violation!");
+			new NeoSim4JavaException("Black-box invariant violation!");
 	}
 	
 	
@@ -92,7 +93,7 @@ public class IronElectricityModel extends AtomicHIOA {
 	
 	protected static boolean glassBoxInvariants(IronElectricityModel instance) {
 		assert instance != null :
-				new AssertionError("Precondition violation: instance != null");
+				new NeoSim4JavaException("Precondition violation: instance != null");
 
 		boolean ret = true;
 		ret &= InvariantChecking.checkGlassBoxInvariant(
@@ -148,14 +149,19 @@ public class IronElectricityModel extends AtomicHIOA {
 	
 	protected static boolean blackBoxInvariants(IronElectricityModel instance) {
 		assert instance != null :
-				new AssertionError("Precondition violation: instance != null");
+				new NeoSim4JavaException("Precondition violation: instance != null");
 
 		boolean ret = true;
 		ret &= InvariantChecking.checkBlackBoxInvariant(
-				URI != null && !URI.isEmpty(),
+				MIL_URI != null && !MIL_URI.isEmpty(),
 				IronElectricityModel.class,
 				instance,
-				"URI != null && !URI.isEmpty()");
+				"MIL_URI != null && !MIL_URI.isEmpty()");
+		ret &= InvariantChecking.checkBlackBoxInvariant(
+				SIL_URI != null && !SIL_URI.isEmpty(),
+				IronElectricityModel.class,
+				instance,
+				"SIL_URI != null && !SIL_URI.isEmpty()");
 		ret &= InvariantChecking.checkBlackBoxInvariant(
 				DELICATE_CONSUMPTION_RPNAME != null &&
 										!DELICATE_CONSUMPTION_RPNAME.isEmpty(),
@@ -262,9 +268,9 @@ public class IronElectricityModel extends AtomicHIOA {
 		this.logMessage("simulation begins.\n");
 
 		assert	glassBoxInvariants(this) :
-				new AssertionError("Glass-box invariants violation!");
+				new NeoSim4JavaException("Glass-box invariants violation!");
 		assert	blackBoxInvariants(this) :
-				new AssertionError("Black-box invariant violation!");
+				new NeoSim4JavaException("Black-box invariant violation!");
 	}
 	
 	@Override
@@ -274,9 +280,9 @@ public class IronElectricityModel extends AtomicHIOA {
 		this.currentIntensity.initialise(0.0);
 
 		assert glassBoxInvariants(this) :
-				new AssertionError("Glass-box invariants violation!");
+				new NeoSim4JavaException("Glass-box invariants violation!");
 		assert blackBoxInvariants(this) :
-				new AssertionError("Black-box invariant violation!");
+				new NeoSim4JavaException("Black-box invariant violation!");
 	}
 	
 	@Override
@@ -297,9 +303,9 @@ public class IronElectricityModel extends AtomicHIOA {
 			ret = Duration.INFINITY;
 		
 		assert	glassBoxInvariants(this) :
-			new AssertionError("Glass-box invariants violation!");
+			new NeoSim4JavaException("Glass-box invariants violation!");
 		assert	blackBoxInvariants(this) :
-			new AssertionError("Black-box invariant violation!");
+			new NeoSim4JavaException("Black-box invariant violation!");
 	
 		return ret;
 	}
@@ -334,9 +340,9 @@ public class IronElectricityModel extends AtomicHIOA {
 		this.logMessage(message.toString());
 
 		assert	glassBoxInvariants(this) :
-				new AssertionError("Glass-box invariants violation!");
+				new NeoSim4JavaException("Glass-box invariants violation!");
 		assert	blackBoxInvariants(this) :
-				new AssertionError("Black-box invariant violation!");
+				new NeoSim4JavaException("Black-box invariant violation!");
 	}
 	
 	@Override
@@ -367,9 +373,9 @@ public class IronElectricityModel extends AtomicHIOA {
 		// Execute the event
 		ce.executeOn(this);
 		assert	glassBoxInvariants(this) :
-				new AssertionError("Glass-box invariants violation!");
+				new NeoSim4JavaException("Glass-box invariants violation!");
 		assert	blackBoxInvariants(this) :
-				new AssertionError("Black-box invariant violation!");
+				new NeoSim4JavaException("Black-box invariant violation!");
 	}
 	
 	@Override
@@ -390,16 +396,16 @@ public class IronElectricityModel extends AtomicHIOA {
 	// -------------------------------------------------------------------------
 	
 	public static final String DELICATE_CONSUMPTION_RPNAME =
-												URI + ":DELICATE_CONSUMPTION";
+												MIL_URI + ":DELICATE_CONSUMPTION";
 	public static final String COTTON_CONSUMPTION_RPNAME =
-												URI + ":COTTON_CONSUMPTION_CONSUMPTION";
+												MIL_URI + ":COTTON_CONSUMPTION_CONSUMPTION";
 	public static final String LINEN_CONSUMPTION_RPNAME =
-												URI + ":LINEN_CONSUMPTION";
+												MIL_URI + ":LINEN_CONSUMPTION";
 	public static final String ENERGY_SAVING_CONSUMPTION_RPNAME =
-												URI + ":ENERGY_SAVING_CONSUMPTION";
+												MIL_URI + ":ENERGY_SAVING_CONSUMPTION";
 	public static final String STEAM_CONSUMPTION_RPNAME =
-												URI + ":STEAM_CONSUMPTION";
-	public static final String TENSION_RPNAME = URI + ":TENSION";
+												MIL_URI + ":STEAM_CONSUMPTION";
+	public static final String TENSION_RPNAME = MIL_URI + ":TENSION";
 	
 	
 	@Override
@@ -438,9 +444,9 @@ public class IronElectricityModel extends AtomicHIOA {
 		}
 
 		assert	glassBoxInvariants(this) :
-				new AssertionError("Glass-box invariants violation!");
+				new NeoSim4JavaException("Glass-box invariants violation!");
 		assert	blackBoxInvariants(this) :
-				new AssertionError("Black-box invariant violation!");
+				new NeoSim4JavaException("Black-box invariant violation!");
 	}
 
 	
