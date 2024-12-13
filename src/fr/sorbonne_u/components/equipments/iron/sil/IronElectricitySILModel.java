@@ -8,7 +8,7 @@ import fr.sorbonne_u.components.equipments.iron.mil.IronElectricityModel;
 import fr.sorbonne_u.devs_simulation.exceptions.MissingRunParameterException;
 import fr.sorbonne_u.devs_simulation.simulators.interfaces.AtomicSimulatorI;
 
-public class IronElectricitySILModel extends IronElectricityModel {
+public class IronElectricitySILModel extends IronElectricityModel implements IronOperationI{
 
 	private static final long serialVersionUID = 1L;
 

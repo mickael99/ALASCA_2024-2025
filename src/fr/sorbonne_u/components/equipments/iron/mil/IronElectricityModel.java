@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import fr.sorbonne_u.components.equipments.hem.mil.HEM_ReportI;
 import fr.sorbonne_u.components.equipments.iron.mil.events.AbstractIronEvent;
+import fr.sorbonne_u.components.equipments.iron.sil.IronOperationI;
 import fr.sorbonne_u.components.utils.Electricity;
 import fr.sorbonne_u.devs_simulation.exceptions.MissingRunParameterException;
 import fr.sorbonne_u.devs_simulation.exceptions.NeoSim4JavaException;
@@ -21,6 +22,7 @@ import fr.sorbonne_u.devs_simulation.simulators.interfaces.AtomicSimulatorI;
 import fr.sorbonne_u.devs_simulation.simulators.interfaces.SimulationReportI;
 import fr.sorbonne_u.devs_simulation.utils.InvariantChecking;
 import fr.sorbonne_u.devs_simulation.utils.StandardLogger;
+import fr.sorbonne_u.components.equipments.iron.IronImplementationI.IronTemperature;
 import fr.sorbonne_u.components.equipments.iron.mil.events.*;
 
 @ModelExternalEvents(imported = {DisableEnergySavingModeIron.class,
@@ -32,7 +34,7 @@ import fr.sorbonne_u.components.equipments.iron.mil.events.*;
 								 EnableLinenModeIron.class,
 								 TurnOnIron.class,
 								 TurnOffIron.class})
-public class IronElectricityModel extends AtomicHIOA {
+public class IronElectricityModel extends AtomicHIOA implements IronOperationI {
 
 	// -------------------------------------------------------------------------
 	// Attributes
@@ -52,6 +54,7 @@ public class IronElectricityModel extends AtomicHIOA {
 	// URI
 	private static final long serialVersionUID = 1L;
 	public static final String MIL_URI = IronElectricityModel.class.getSimpleName() + "-MIL";
+	public static final String MIL_RT_URI = IronElectricityModel.class.getSimpleName() + "-MIL-RT";
 	public static final String SIL_URI = IronElectricityModel.class.getSimpleName() + "-SIL";
 	
 	// Modes energy consumption
@@ -209,6 +212,26 @@ public class IronElectricityModel extends AtomicHIOA {
 	// -------------------------------------------------------------------------
 	// Methods
 	// -------------------------------------------------------------------------
+	
+	@Override
+	public void turnOn() throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void turnOff() throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void setTemperature(IronTemperature t) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
 
 	public IronState getState() {
 		return this.currentState;

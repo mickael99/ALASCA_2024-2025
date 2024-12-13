@@ -48,5 +48,4 @@ public class IronConnector extends AbstractConnector implements IronUserCI {
 	public void setEnergySavingMode(IronEnergySavingMode e) throws Exception {
 		((IronUserCI)this.offering).setEnergySavingMode(e);
 	}
-
 }
