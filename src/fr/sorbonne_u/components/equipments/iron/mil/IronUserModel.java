@@ -45,6 +45,8 @@ public class IronUserModel extends AtomicES_Model {
 	
 	private static final long serialVersionUID = 1L;											
 	public static final String URI = IronUserModel.class.getSimpleName();
+	public static final String MIL_URI = IronUserModel.class.getSimpleName() + "-MIL";
+	public static final String MIL_RT_URI = IronUserModel.class.getSimpleName() + "-MIL-RT";
 
 	protected static double	STEP_MEAN_DURATION = 5.0/60.0;
 	protected static double	DELAY_MEAN_DURATION = 4.0;

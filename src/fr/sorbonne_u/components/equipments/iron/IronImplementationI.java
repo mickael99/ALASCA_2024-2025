@@ -24,15 +24,15 @@ public interface IronImplementationI {
 	    INACTIVE
 	}
 	
-	public IronState getState() throws Exception; //ok
-	public void turnOn() throws Exception; //ok
-	public void turnOff() throws Exception; //ok
+	public IronState getState() throws Exception; 
+	public void turnOn() throws Exception; 
+	public void turnOff() throws Exception; 
 	
-	public IronTemperature getTemperature() throws Exception; //ok
-	public void setTemperature(IronTemperature t) throws Exception; //ok
+	public IronTemperature getTemperature() throws Exception; 
+	public void setTemperature(IronTemperature t) throws Exception; 
 	
-	public IronSteam getSteam() throws Exception; //ok
-	public void setSteam(IronSteam s) throws Exception; //ok
+	public IronSteam getSteam() throws Exception; 
+	public void setSteam(IronSteam s) throws Exception; 
 	
 	public IronEnergySavingMode getEnergySavingMode() throws Exception;
 	public void setEnergySavingMode(IronEnergySavingMode e) throws Exception;
