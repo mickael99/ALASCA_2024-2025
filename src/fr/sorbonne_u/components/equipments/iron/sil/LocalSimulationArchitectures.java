@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import fr.sorbonne_u.components.equipments.iron.mil.IronCoupledModel;
+import fr.sorbonne_u.components.equipments.iron.mil.IronElectricityModel;
 import fr.sorbonne_u.components.equipments.iron.mil.IronUserModel;
 import fr.sorbonne_u.components.equipments.iron.mil.events.DisableEnergySavingModeIron;
 import fr.sorbonne_u.components.equipments.iron.mil.events.DisableSteamModeIron;
@@ -39,10 +40,10 @@ public class LocalSimulationArchitectures {
 																new HashMap<>();
 
 			atomicModelDescriptors.put(
-					IronElectricitySILModel.MIL_URI,
+					IronElectricityModel.MIL_URI,
 					AtomicHIOA_Descriptor.create(
-							IronElectricitySILModel.class,
-							IronElectricitySILModel.MIL_URI,
+							IronElectricityModel.class,
+							IronElectricityModel.MIL_URI,
 							simulatedTimeUnit,
 							null));
 
@@ -57,7 +58,7 @@ public class LocalSimulationArchitectures {
 			Map<String,CoupledModelDescriptor> coupledModelDescriptors = new HashMap<>();
 
 			Set<String> submodels = new HashSet<String>();
-			submodels.add(IronElectricitySILModel.MIL_URI);
+			submodels.add(IronElectricityModel.MIL_URI);
 			submodels.add(IronStateModel.MIL_URI);
 
 			Map<Class<? extends EventI>,EventSink[]> imported = new HashMap<Class<? extends EventI>,EventSink[]>();
@@ -124,63 +125,63 @@ public class LocalSimulationArchitectures {
 				new EventSource(IronStateModel.MIL_URI,
 						TurnOnIron.class),
 				new EventSink[] {
-					new EventSink(IronElectricitySILModel.MIL_URI,
+					new EventSink(IronElectricityModel.MIL_URI,
 							TurnOnIron.class)
 				});
 			connections.put(
 				new EventSource(IronStateModel.MIL_URI,
 						TurnOffIron.class),
 				new EventSink[] {
-					new EventSink(IronElectricitySILModel.MIL_URI,
+					new EventSink(IronElectricityModel.MIL_URI,
 							TurnOffIron.class)
 				});
 			connections.put(
 				new EventSource(IronStateModel.MIL_URI,
 						DisableEnergySavingModeIron.class),
 				new EventSink[] {
-					new EventSink(IronElectricitySILModel.MIL_URI,
+					new EventSink(IronElectricityModel.MIL_URI,
 								DisableEnergySavingModeIron.class)
 				});
 			connections.put(
 				new EventSource(IronStateModel.MIL_URI,
 						DisableSteamModeIron.class),
 				new EventSink[] {
-					new EventSink(IronElectricitySILModel.MIL_URI,
+					new EventSink(IronElectricityModel.MIL_URI,
 							DisableSteamModeIron.class)
 				});
 			connections.put(
 					new EventSource(IronStateModel.MIL_URI,
 							EnableCottonModeIron.class),
 					new EventSink[] {
-						new EventSink(IronElectricitySILModel.MIL_URI,
+						new EventSink(IronElectricityModel.MIL_URI,
 								EnableCottonModeIron.class)
 					});
 			connections.put(
 					new EventSource(IronStateModel.MIL_URI,
 							EnableDelicateModeIron.class),
 					new EventSink[] {
-						new EventSink(IronElectricitySILModel.MIL_URI,
+						new EventSink(IronElectricityModel.MIL_URI,
 								EnableDelicateModeIron.class)
 					});
 			connections.put(
 					new EventSource(IronStateModel.MIL_URI,
 							EnableLinenModeIron.class),
 					new EventSink[] {
-						new EventSink(IronElectricitySILModel.MIL_URI,
+						new EventSink(IronElectricityModel.MIL_URI,
 								EnableLinenModeIron.class)
 					});
 			connections.put(
 					new EventSource(IronStateModel.MIL_URI,
 							EnableEnergySavingModeIron.class),
 					new EventSink[] {
-						new EventSink(IronElectricitySILModel.MIL_URI,
+						new EventSink(IronElectricityModel.MIL_URI,
 								EnableEnergySavingModeIron.class)
 					});
 			connections.put(
 					new EventSource(IronStateModel.MIL_URI,
 							EnableSteamModeIron.class),
 					new EventSink[] {
-						new EventSink(IronElectricitySILModel.MIL_URI,
+						new EventSink(IronElectricityModel.MIL_URI,
 								EnableSteamModeIron.class)
 					});
 
@@ -219,10 +220,10 @@ public class LocalSimulationArchitectures {
 
 
 		atomicModelDescriptors.put(
-			IronElectricitySILModel.MIL_RT_URI,
+			IronElectricityModel.MIL_RT_URI,
 			AtomicHIOA_Descriptor.create(
-				IronElectricitySILModel.class,
-				IronElectricitySILModel.MIL_RT_URI,
+				IronElectricityModel.class,
+				IronElectricityModel.MIL_RT_URI,
 				simulatedTimeUnit,
 				null));
 		
@@ -237,7 +238,7 @@ public class LocalSimulationArchitectures {
 		Map<String,CoupledModelDescriptor> coupledModelDescriptors = new HashMap<>();
 		
 		Set<String> submodels = new HashSet<String>();
-		submodels.add(IronElectricitySILModel.MIL_RT_URI);
+		submodels.add(IronElectricityModel.MIL_RT_URI);
 		submodels.add(IronStateModel.MIL_RT_URI);
 		
 		Map<Class<? extends EventI>,EventSink[]> imported = new HashMap<Class<? extends EventI>,EventSink[]>();
@@ -305,63 +306,63 @@ public class LocalSimulationArchitectures {
 			new EventSource(IronStateModel.MIL_RT_URI,
 					TurnOnIron.class),
 			new EventSink[] {
-				new EventSink(IronElectricitySILModel.MIL_RT_URI,
+				new EventSink(IronElectricityModel.MIL_RT_URI,
 						TurnOnIron.class)
 		});
 		connections.put(
 			new EventSource(IronStateModel.MIL_RT_URI,
 					TurnOffIron.class),
 			new EventSink[] {
-				new EventSink(IronElectricitySILModel.MIL_RT_URI,
+				new EventSink(IronElectricityModel.MIL_RT_URI,
 						TurnOffIron.class)
 		});
 		connections.put(
 			new EventSource(IronStateModel.MIL_RT_URI,
 					DisableEnergySavingModeIron.class),
 			new EventSink[] {
-					new EventSink(IronElectricitySILModel.MIL_RT_URI,
+					new EventSink(IronElectricityModel.MIL_RT_URI,
 							DisableEnergySavingModeIron.class)
 		});
 		connections.put(
 			new EventSource(IronStateModel.MIL_RT_URI,
 					DisableSteamModeIron.class),
 			new EventSink[] {
-				new EventSink(IronElectricitySILModel.MIL_RT_URI,
+				new EventSink(IronElectricityModel.MIL_RT_URI,
 						DisableSteamModeIron.class)
 		});
 		connections.put(
 			new EventSource(IronStateModel.MIL_RT_URI,
 					EnableCottonModeIron.class),
 			new EventSink[] {
-				new EventSink(IronElectricitySILModel.MIL_RT_URI,
+				new EventSink(IronElectricityModel.MIL_RT_URI,
 						EnableCottonModeIron.class)
 		});
 		connections.put(
 			new EventSource(IronStateModel.MIL_RT_URI,
 					EnableDelicateModeIron.class),
 			new EventSink[] {
-				new EventSink(IronElectricitySILModel.MIL_RT_URI,
+				new EventSink(IronElectricityModel.MIL_RT_URI,
 						EnableDelicateModeIron.class)
 		});
 		connections.put(
 			new EventSource(IronStateModel.MIL_RT_URI,
 					EnableLinenModeIron.class),
 			new EventSink[] {
-				new EventSink(IronElectricitySILModel.MIL_RT_URI,
+				new EventSink(IronElectricityModel.MIL_RT_URI,
 						EnableLinenModeIron.class)
 		});
 		connections.put(
 			new EventSource(IronStateModel.MIL_RT_URI,
 					EnableEnergySavingModeIron.class),
 			new EventSink[] {
-				new EventSink(IronElectricitySILModel.MIL_RT_URI,
+				new EventSink(IronElectricityModel.MIL_RT_URI,
 						EnableEnergySavingModeIron.class)
 		});
 		connections.put(
 			new EventSource(IronStateModel.MIL_RT_URI,
 					EnableSteamModeIron.class),
 			new EventSink[] {
-				new EventSink(IronElectricitySILModel.MIL_RT_URI,
+				new EventSink(IronElectricityModel.MIL_RT_URI,
 						EnableSteamModeIron.class)
 		});
 		

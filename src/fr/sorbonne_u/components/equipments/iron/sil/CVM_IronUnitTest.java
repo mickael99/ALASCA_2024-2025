@@ -3,7 +3,6 @@ package fr.sorbonne_u.components.equipments.iron.sil;
 import java.util.concurrent.TimeUnit;
 
 import fr.sorbonne_u.components.cvm.AbstractCVM;
-import fr.sorbonne_u.components.cyphy.examples.molene.components.CoordinatorComponent;
 import fr.sorbonne_u.components.equipments.iron.Iron;
 import fr.sorbonne_u.components.utils.ExecutionType;
 import fr.sorbonne_u.components.utils.SimulationType;

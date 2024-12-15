@@ -139,10 +139,10 @@ public class RunHemMILSimulation {
 			
             // Add iron
 			atomicModelDescriptors.put(
-					IronElectricityModel.URI,
+					IronElectricityModel.MIL_URI,
 					AtomicHIOA_Descriptor.create(
 							IronElectricityModel.class,
-							IronElectricityModel.URI,
+							IronElectricityModel.MIL_URI,
 							TimeUnit.SECONDS,
 							null));
 			atomicModelDescriptors.put(
@@ -269,7 +269,7 @@ public class RunHemMILSimulation {
             submodels.add(ExternalIlluminanceModel.URI);
             submodels.add(SmartLightingUnitTesterModel.URI);
             
-            submodels.add(IronElectricityModel.URI);
+            submodels.add(IronElectricityModel.MIL_URI);
 			submodels.add(IronUserModel.URI);
 			
 			submodels.add(BatteryElectricityModel.URI);
@@ -413,55 +413,55 @@ public class RunHemMILSimulation {
 			connections.put(
 					new EventSource(IronUserModel.URI, TurnOnIron.class),
 					new EventSink[] {
-							new EventSink(IronElectricityModel.URI,
+							new EventSink(IronElectricityModel.MIL_URI,
 										  TurnOnIron.class)
 					});
 			connections.put(
 					new EventSource(IronUserModel.URI, TurnOffIron.class),
 					new EventSink[] {
-							new EventSink(IronElectricityModel.URI,
+							new EventSink(IronElectricityModel.MIL_URI,
 									TurnOffIron.class)
 					});
 			connections.put(
 					new EventSource(IronUserModel.URI, EnableDelicateModeIron.class),
 					new EventSink[] {
-							new EventSink(IronElectricityModel.URI,
+							new EventSink(IronElectricityModel.MIL_URI,
 									EnableDelicateModeIron.class)
 					});
 			connections.put(
 					new EventSource(IronUserModel.URI, EnableCottonModeIron.class),
 					new EventSink[] {
-							new EventSink(IronElectricityModel.URI,
+							new EventSink(IronElectricityModel.MIL_URI,
 										EnableCottonModeIron.class)
 					});
 			connections.put(
 					new EventSource(IronUserModel.URI, EnableLinenModeIron.class),
 					new EventSink[] {
-							new EventSink(IronElectricityModel.URI,
+							new EventSink(IronElectricityModel.MIL_URI,
 									EnableLinenModeIron.class)
 					});
 			connections.put(
 					new EventSource(IronUserModel.URI, EnableEnergySavingModeIron.class),
 					new EventSink[] {
-							new EventSink(IronElectricityModel.URI,
+							new EventSink(IronElectricityModel.MIL_URI,
 									EnableEnergySavingModeIron.class)
 					});
 			connections.put(
 					new EventSource(IronUserModel.URI, EnableSteamModeIron.class),
 					new EventSink[] {
-							new EventSink(IronElectricityModel.URI,
+							new EventSink(IronElectricityModel.MIL_URI,
 									EnableSteamModeIron.class)
 					});
 			connections.put(
 					new EventSource(IronUserModel.URI, DisableEnergySavingModeIron.class),
 					new EventSink[] {
-							new EventSink(IronElectricityModel.URI,
+							new EventSink(IronElectricityModel.MIL_URI,
 									DisableEnergySavingModeIron.class)
 					});
 			connections.put(
 					new EventSource(IronUserModel.URI, DisableSteamModeIron.class),
 					new EventSink[] {
-							new EventSink(IronElectricityModel.URI,
+							new EventSink(IronElectricityModel.MIL_URI,
 									DisableSteamModeIron.class)
 					});
 			
@@ -534,7 +534,7 @@ public class RunHemMILSimulation {
            
             bindings.put(new VariableSource("currentIntensity",
 					Double.class,
-					IronElectricityModel.URI),
+					IronElectricityModel.MIL_URI),
 			 new VariableSink[] {
 					 new VariableSink("currentIronConsumption",
 							 		  Double.class,

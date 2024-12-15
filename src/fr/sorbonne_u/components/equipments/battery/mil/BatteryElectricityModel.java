@@ -141,6 +141,8 @@ public class BatteryElectricityModel extends AtomicHIOA {
             	this.currentProduction.setNewValue(0.0, t);
                 this.currentConsumption.setNewValue(CONSUMPTION, t);
                 break;
+		default:
+			break;
         }
 
         logMessage("Current production " + this.currentProduction.getValue() + " at " + this.currentProduction.getTime()
