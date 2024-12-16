@@ -58,10 +58,12 @@ public class IronStateModel extends AtomicModel implements IronOperationI {
 	private static final long serialVersionUID = 1L;
 	
 	public static final String MIL_URI = IronStateModel.class.getSimpleName() + "-MIL";
-	public static final String MIL_RT_URI = IronStateModel.class.getSimpleName() + "-MIL/SIL_RT";
-	public static final String SIL_URI = IronStateModel.class. getSimpleName() + "-MIL/SIL_RT";
+	public static final String MIL_RT_URI = IronStateModel.class.getSimpleName() + "-MIL_RT";
+	public static final String SIL_URI = IronStateModel.class. getSimpleName() + "-SIL";
 
 	protected IronState currentState;
+	protected boolean isSteamMode;
+	protected boolean isEnergySavingMode;
 	protected AbstractIronEvent lastReceived;
 	
 	
@@ -149,22 +151,22 @@ public class IronStateModel extends AtomicModel implements IronOperationI {
 
 	@Override
 	public void enableSteamMode() {
-		
+		this.isSteamMode = true;
 	}
 
 	@Override
 	public void disableSteamMode() {
-
+		this.isSteamMode = false;
 	}
 
 	@Override
 	public void enableEnergySavingMode() {
-
+		this.isEnergySavingMode = true;
 	}
 
 	@Override
 	public void disableEnergySavingMode() {
-
+		this.isEnergySavingMode = false;
 	}
 	
 	
@@ -178,6 +180,8 @@ public class IronStateModel extends AtomicModel implements IronOperationI {
 
 		this.lastReceived = null;
 		this.currentState = IronState.OFF;
+		this.isSteamMode = false;
+		this.isEnergySavingMode = false;
 
 		this.getSimulationEngine() .toggleDebugMode();
 		this.logMessage("simulation begins.");
@@ -213,7 +217,10 @@ public class IronStateModel extends AtomicModel implements IronOperationI {
 
 		StringBuffer message = new StringBuffer(this.uri);
 		message.append(" executes the external event ");
-		message.append(this.lastReceived);
+		message.append(" - Received event: ").append(this.lastReceived);
+	    message.append(", Current state: ").append(this.currentState);
+	    message.append(", Steam Mode: ").append(this.isSteamMode);
+	    message.append(", Energy Saving Mode: ").append(this.isEnergySavingMode);
 		this.logMessage(message.toString());
 	}
 	

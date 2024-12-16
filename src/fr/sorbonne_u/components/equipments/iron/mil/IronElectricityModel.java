@@ -63,7 +63,7 @@ public class IronElectricityModel extends AtomicHIOA implements IronOperationI {
 	protected static double DELICATE_CONSUMPTION = 600.0;
 	protected static double COTTON_CONSUMPTION = 800.0;
 	protected static double LINEN_CONSUMPTION = 1000.0;
-	protected static double ENERGY_SAVING_CONSUMPTION = 50.0; // -50
+	protected static double ENERGY_SAVING_CONSUMPTION = 0.2; // 20% of consumption
 	protected static double STEAM_CONSUMPTION = 100.0;
 	
 	protected static double TENSION = 230.0;
@@ -117,7 +117,7 @@ public class IronElectricityModel extends AtomicHIOA implements IronOperationI {
 				instance,
 				"COTTON_CONSUMPTION <= LINEN_CONSUMPTION");
 		ret &= InvariantChecking.checkGlassBoxInvariant(
-				ENERGY_SAVING_CONSUMPTION >= 0.0,
+				ENERGY_SAVING_CONSUMPTION >= 0.0 && ENERGY_SAVING_CONSUMPTION <= 1.0,
 				IronElectricityModel.class,
 				instance,
 				"ENERGY_SAVING_CONSUMPTION >= 0.0");
@@ -341,18 +341,22 @@ public class IronElectricityModel extends AtomicHIOA implements IronOperationI {
 		
 		Time t = this.getCurrentStateTime();
 		
-		double i = 0.0;
-		if(this.isEnergySavingMode)
-			i -= ENERGY_SAVING_CONSUMPTION;
-		if(this.isSteamMode)
-			i += STEAM_CONSUMPTION;
+		double intensity = 0.0;
 		
 		switch(this.currentState) {
-			case OFF : this.currentIntensity.setNewValue(0.0 + i, t); break;
-			case DELICATE: this.currentIntensity.setNewValue(DELICATE_CONSUMPTION + i, t); break;
-			case COTTON: this.currentIntensity.setNewValue(COTTON_CONSUMPTION + i, t); break;
-			case LINEN: this.currentIntensity.setNewValue(LINEN_CONSUMPTION + i, t); break;
+			case OFF : intensity = 0.0; break;
+			case DELICATE: intensity = DELICATE_CONSUMPTION; break;
+			case COTTON: intensity = COTTON_CONSUMPTION; break;
+			case LINEN: intensity = LINEN_CONSUMPTION; break;
 		}
+		
+		if(this.currentState != IronState.OFF && this.isSteamMode)
+			intensity += STEAM_CONSUMPTION;
+		
+		if(this.currentState != IronState.OFF && this.isEnergySavingMode)
+			intensity *= (1 - ENERGY_SAVING_CONSUMPTION);
+		
+		this.currentIntensity.setNewValue(intensity / TENSION, t);
 		
 		// Tracing
 		StringBuffer message =

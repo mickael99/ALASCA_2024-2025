@@ -48,7 +48,7 @@ public class IronUserModel extends AtomicES_Model {
 	public static final String MIL_URI = IronUserModel.class.getSimpleName() + "-MIL";
 	public static final String MIL_RT_URI = IronUserModel.class.getSimpleName() + "-MIL-RT";
 
-	protected static double	STEP_MEAN_DURATION = 5.0/60.0;
+	protected static double	STEP_MEAN_DURATION = 5.0 / 60.0;
 	protected static double	DELAY_MEAN_DURATION = 4.0;
 
 	protected final RandomDataGenerator	rg ;
@@ -134,6 +134,7 @@ public class IronUserModel extends AtomicES_Model {
 		Time t = this.computeTimeOfNextEvent(this.getCurrentStateTime());
 
 		this.scheduleEvent(new TurnOnIron(t));
+		
 		this.nextTimeAdvance = this.timeAdvance();
 		this.timeOfNextEvent = this.getCurrentStateTime().add(this.getNextTimeAdvance());
 
@@ -213,7 +214,7 @@ public class IronUserModel extends AtomicES_Model {
 	// -------------------------------------------------------------------------
 
 	public static final String MEAN_STEP_RPNAME = "STEP_MEAN_DURATION";	
-	public static final String MEAN_DELAY_RPNAME = "STEP_MEAN_DURATION";
+	public static final String MEAN_DELAY_RPNAME = "DELAY_MEAN_DURATION";
 	
 	@Override
 	public void	setSimulationRunParameters(Map<String, Object> simParams) throws MissingRunParameterException {
