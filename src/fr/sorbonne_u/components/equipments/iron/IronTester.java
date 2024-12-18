@@ -1,14 +1,12 @@
 package fr.sorbonne_u.components.equipments.iron;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
-import fr.sorbonne_u.components.equipments.iron.IronImplementationI.IronEnergySavingMode;
 import fr.sorbonne_u.components.equipments.iron.IronImplementationI.IronState;
-import fr.sorbonne_u.components.equipments.iron.IronImplementationI.IronSteam;
-import fr.sorbonne_u.components.equipments.iron.IronImplementationI.IronTemperature;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
 
@@ -118,7 +116,7 @@ public class IronTester extends AbstractComponent {
 		this.logMessage("testTurnOn()... ");
 		try {
 			this.outboundPort.turnOn();
-			assertEquals(IronState.ON, this.outboundPort.getState());
+			assertEquals(IronState.DELICATE, this.outboundPort.getState());
 		} catch (Exception e) {
 			assertTrue(false);
 		}
@@ -136,63 +134,75 @@ public class IronTester extends AbstractComponent {
 		this.logMessage("...done.");
 	}
 	
-	public void testGetTemperature() {
-		this.logMessage("testGetTemperature()... ");
+	public void testSetState() {
+		this.logMessage("testSetState()... ");
 		try {
-			assertEquals(IronTemperature.DELICATE, this.outboundPort.getTemperature());
+			this.outboundPort.setState(IronState.COTTON);
+			assertEquals(IronState.COTTON, this.outboundPort.getState());
 		} catch (Exception e) {
 			assertTrue(false);
 		}
 		this.logMessage("...done.");
 	}
 	
-	public void testSetTemperature() {
-		this.logMessage("testSetTemperature()... ");
+	public void testIsSteamModeEnable() {
+		this.logMessage("testIsSteamModeEnable()... ");
 		try {
-			this.outboundPort.setTemperature(IronTemperature.COTTON);
-			assertEquals(IronTemperature.COTTON, this.outboundPort.getTemperature());
-		} catch (Exception e) {
-			assertTrue(false);
-		}
-		this.logMessage("...done.");
-	}
-	
-	public void testGetSteam() {
-		this.logMessage("testGetSteam()... ");
-		try {
-			assertEquals(IronSteam.INACTIVE, this.outboundPort.getSteam());
+			assertFalse(this.outboundPort.isSteamModeEnable());
 		} catch (Exception e) {
 			assertTrue(false);
 		}
 		this.logMessage("...done.");
 	} 
 	
-	public void testSetSteam() {
-		this.logMessage("testSetSteam()... ");
+	public void testEnableSteamMode() {
+		this.logMessage("testEnableSteamMode()... ");
 		try {
-			this.outboundPort.setSteam(IronSteam.ACTIVE);
-			assertEquals(IronSteam.ACTIVE, this.outboundPort.getSteam());
+			this.outboundPort.EnableSteamMode();
+			assertTrue(this.outboundPort.isSteamModeEnable());
 		} catch (Exception e) {
 			assertTrue(false);
 		}
 		this.logMessage("...done.");
 	}
 	
-	public void testGetEnergySavingMode() {
-		this.logMessage("testGetEnergySavingMode()... ");
+	public void testeDisableSteamMode() {
+		this.logMessage("testeDisableSteamMode()... ");
 		try {
-			assertEquals(IronEnergySavingMode.INACTIVE, this.outboundPort.getEnergySavingMode());
+			this.outboundPort.DisableSteamMode();
+			assertFalse(this.outboundPort.isSteamModeEnable());
+		} catch (Exception e) {
+			assertTrue(false);
+		}
+		this.logMessage("...done.");
+	}
+	
+	public void testIsEnergySavingModeEnable() {
+		this.logMessage("testIsEnergySavingModeEnable()... ");
+		try {
+			assertFalse(this.outboundPort.isEnergySavingModeEnable());
 		} catch (Exception e) {
 			assertTrue(false);
 		}
 		this.logMessage("...done.");
 	} 
 	
-	public void testSetEnergySavingMode() {
-		this.logMessage("testSetEnergySavingMode()... ");
+	public void testEnableEnergySavingMode() {
+		this.logMessage("testEnableEnergySavingMode()... ");
 		try {
-			this.outboundPort.setEnergySavingMode(IronEnergySavingMode.ACTIVE);
-			assertEquals(IronEnergySavingMode.ACTIVE, this.outboundPort.getEnergySavingMode());
+			this.outboundPort.EnableEnergySavingMode();
+			assertTrue(this.outboundPort.isEnergySavingModeEnable());
+		} catch (Exception e) {
+			assertTrue(false);
+		}
+		this.logMessage("...done.");
+	}
+	
+	public void testDisableEnergySavingMode() {
+		this.logMessage("testDisableEnergySavingMode()... ");
+		try {
+			this.outboundPort.DisableEnergySavingMode();
+			assertFalse(this.outboundPort.isEnergySavingModeEnable());
 		} catch (Exception e) {
 			assertTrue(false);
 		}
@@ -203,11 +213,15 @@ public class IronTester extends AbstractComponent {
 		this.testGetState();
 		this.testTurnOn();
 		this.testTurnOff();
-		this.testGetTemperature();
-		this.testSetTemperature();
-		this.testGetSteam();
-		this.testSetSteam();
-		this.testGetEnergySavingMode();
-		this.testSetEnergySavingMode();
+		this.testGetState();
+		this.testSetState();
+		this.testIsSteamModeEnable();
+		this.testEnableSteamMode();
+		this.testeDisableSteamMode();
+		this.testIsEnergySavingModeEnable();
+		this.testEnableEnergySavingMode();
+		this.testDisableEnergySavingMode();
+		
+		this.logMessage("Iron tests successful");
 	}
 }

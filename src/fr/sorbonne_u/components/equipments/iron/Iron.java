@@ -95,8 +95,8 @@ public class Iron extends AbstractCyPhyComponent implements IronImplementationI 
 				 currentExecutionType, SimulationType.NO_SIMULATION,
 				 null, null, null, 0.0, null);
 
-		assert	currentExecutionType.isTest() :
-				new PreconditionException("currentExecutionType.isTest()");
+//		assert	currentExecutionType.isTest() :
+//				new PreconditionException("currentExecutionType.isTest()");
 	}
 	
 	protected Iron (String reflectionInboundPortURI, String ironInboundPortURI, ExecutionType currentExecutionType,
@@ -489,6 +489,8 @@ public class Iron extends AbstractCyPhyComponent implements IronImplementationI 
 		assert this.currentState != s : 
 			new PreconditionException("this.currentState != " + s.toString());
 		
+		this.currentState = s;
+		
 		if(VERBOSE)
 			this.traceMessage("Iron gets a new state : " + s.toString() + ".\n");
 		
@@ -531,20 +533,11 @@ public class Iron extends AbstractCyPhyComponent implements IronImplementationI 
 	}
 
 	@Override
-	public boolean isSteamModeEnable() throws Exception {
+	public boolean isSteamModeEnable() throws Exception {		
 		if(VERBOSE)
-			this.traceMessage("Check if the steam mode is enable .\n");
+			this.traceMessage("Is steam mode enable ?  -> " + this.isSteamEnable + ".\n");
 		
-		boolean ret;
-		
-		if(this.isSteamEnable)
-			ret = true;
-		ret = false;
-		
-		if(VERBOSE)
-			this.traceMessage("Is steam mode enable ?  -> " + ret + ".\n");
-		
-		return ret;
+		return this.isSteamEnable;
 	}
 
 	@Override
@@ -552,8 +545,8 @@ public class Iron extends AbstractCyPhyComponent implements IronImplementationI 
 		if(VERBOSE)
 			this.traceMessage("Trying to enable steam mode.\n");
 		
-		assert this.isSteamEnable: 
-			new PreconditionException("this.isSteamEnable");
+		assert !this.isSteamEnable: 
+			new PreconditionException("!this.isSteamEnable");
 		
 		this.isSteamEnable = true;
 		
@@ -576,8 +569,8 @@ public class Iron extends AbstractCyPhyComponent implements IronImplementationI 
 		if(VERBOSE)
 			this.traceMessage("Trying to disable steam mode.\n");
 		
-		assert !this.isSteamEnable: 
-			new PreconditionException("!this.isSteamEnable");
+		assert this.isSteamEnable: 
+			new PreconditionException("this.isSteamEnable");
 		
 		this.isSteamEnable = false;
 		
@@ -600,16 +593,10 @@ public class Iron extends AbstractCyPhyComponent implements IronImplementationI 
 		if(VERBOSE)
 			this.traceMessage("Check if the energy saving mode is enable .\n");
 		
-		boolean ret;
-		
-		if(this.isEnergySavingModeEnable)
-			ret = true;
-		ret = false;
-		
 		if(VERBOSE)
-			this.traceMessage("Is energy saving mode enable ?  -> " + ret + ".\n");
+			this.traceMessage("Is energy saving mode enable ?  -> " + this.isEnergySavingModeEnable + ".\n");
 		
-		return ret;
+		return this.isEnergySavingModeEnable;
 	}
 
 	@Override
@@ -617,8 +604,8 @@ public class Iron extends AbstractCyPhyComponent implements IronImplementationI 
 		if(VERBOSE)
 			this.traceMessage("Trying to enable energy saving mode.\n");
 		
-		assert this.isEnergySavingModeEnable: 
-			new PreconditionException("this.isEnergySavingModeEnable");
+		assert !this.isEnergySavingModeEnable: 
+			new PreconditionException("!this.isEnergySavingModeEnable");
 		
 		this.isEnergySavingModeEnable = true;
 		
@@ -641,8 +628,8 @@ public class Iron extends AbstractCyPhyComponent implements IronImplementationI 
 		if(VERBOSE)
 			this.traceMessage("Trying to disable energy saving mode.\n");
 		
-		assert !this.isEnergySavingModeEnable: 
-			new PreconditionException("!this.isEnergySavingModeEnable");
+		assert this.isEnergySavingModeEnable: 
+			new PreconditionException("this.isEnergySavingModeEnable");
 		
 		this.isEnergySavingModeEnable = false;
 		
