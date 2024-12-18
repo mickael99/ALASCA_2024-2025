@@ -1,6 +1,7 @@
 package fr.sorbonne_u.components.equipments.iron.mil.events;
 
-import fr.sorbonne_u.components.equipments.iron.mil.IronElectricityModel;
+import fr.sorbonne_u.components.equipments.iron.IronImplementationI.IronState;
+import fr.sorbonne_u.components.equipments.iron.mil.IronOperationI;
 import fr.sorbonne_u.devs_simulation.models.events.EventI;
 import fr.sorbonne_u.devs_simulation.models.interfaces.AtomicModelI;
 import fr.sorbonne_u.devs_simulation.models.time.Time;
@@ -22,16 +23,11 @@ public class EnableCottonModeIron extends AbstractIronEvent {
 
 	@Override
 	public void	executeOn(AtomicModelI model) {
-		assert	model instanceof IronElectricityModel :
-				new AssertionError(
-						"Precondition violation: model instanceof "
-						+ "IronElectricityModel");
+		assert	model instanceof IronOperationI :
+			new AssertionError(
+					"Precondition violation: model instanceof "
+					+ "IronOperationI");
 
-		IronElectricityModel m = (IronElectricityModel)model;
-		
-		if (m.getState() != IronElectricityModel.IronState.COTTON) {
-			m.setState(IronElectricityModel.IronState.COTTON);
-			m.toggleConsumptionHasChanged();
-		}
+		((IronOperationI)model).setState(IronState.COTTON);
 	}
 }

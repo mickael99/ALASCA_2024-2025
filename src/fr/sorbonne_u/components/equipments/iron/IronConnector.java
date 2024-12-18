@@ -8,6 +8,11 @@ public class IronConnector extends AbstractConnector implements IronUserCI {
 	public IronState getState() throws Exception {
 		return ((IronUserCI)this.offering).getState();
 	}
+	
+	@Override
+	public boolean isTurnOn() throws Exception {
+		return ((IronUserCI)this.offering).isTurnOn();	
+	}
 
 	@Override
 	public void turnOn() throws Exception {
@@ -20,32 +25,37 @@ public class IronConnector extends AbstractConnector implements IronUserCI {
 	}
 
 	@Override
-	public IronTemperature getTemperature() throws Exception {
-		return ((IronUserCI)this.offering).getTemperature();
+	public void setState(IronState s) throws Exception {
+		((IronUserCI)this.offering).setState(s);
 	}
 
 	@Override
-	public void setTemperature(IronTemperature t) throws Exception {
-		((IronUserCI)this.offering).setTemperature(t);
+	public boolean isSteamModeEnable() throws Exception {
+		return ((IronUserCI)this.offering).isSteamModeEnable();
 	}
 
 	@Override
-	public IronSteam getSteam() throws Exception {
-		return ((IronUserCI)this.offering).getSteam();
+	public void EnableSteamMode() throws Exception {
+		((IronUserCI)this.offering).EnableSteamMode();
 	}
 
 	@Override
-	public void setSteam(IronSteam s) throws Exception {
-		((IronUserCI)this.offering).setSteam(s);
+	public void DisableSteamMode() throws Exception {
+		((IronUserCI)this.offering).DisableSteamMode();
 	}
 
 	@Override
-	public IronEnergySavingMode getEnergySavingMode() throws Exception {
-		return ((IronUserCI)this.offering).getEnergySavingMode();
+	public boolean isEnergySavingModeEnable() throws Exception {
+		return ((IronUserCI)this.offering).isEnergySavingModeEnable();
 	}
 
 	@Override
-	public void setEnergySavingMode(IronEnergySavingMode e) throws Exception {
-		((IronUserCI)this.offering).setEnergySavingMode(e);
+	public void EnableEnergySavingMode() throws Exception {
+		((IronUserCI)this.offering).EnableEnergySavingMode();
+	}
+
+	@Override
+	public void DisableEnergySavingMode() throws Exception {
+		((IronUserCI)this.offering).DisableEnergySavingMode();
 	}
 }

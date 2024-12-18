@@ -1,4 +1,4 @@
-package fr.sorbonne_u.components.equipments.iron.sil;
+package fr.sorbonne_u.components.equipments.iron.mil;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -6,9 +6,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import fr.sorbonne_u.components.equipments.iron.mil.IronCoupledModel;
-import fr.sorbonne_u.components.equipments.iron.mil.IronElectricityModel;
-import fr.sorbonne_u.components.equipments.iron.mil.IronUserModel;
 import fr.sorbonne_u.components.equipments.iron.mil.events.DisableEnergySavingModeIron;
 import fr.sorbonne_u.components.equipments.iron.mil.events.DisableSteamModeIron;
 import fr.sorbonne_u.components.equipments.iron.mil.events.EnableCottonModeIron;

@@ -17,13 +17,26 @@ import fr.sorbonne_u.devs_simulation.architectures.Architecture;
 import fr.sorbonne_u.devs_simulation.models.time.Duration;
 import fr.sorbonne_u.devs_simulation.models.time.Time;
 import fr.sorbonne_u.devs_simulation.utils.InvariantChecking;
+import fr.sorbonne_u.exceptions.ImplementationInvariantException;
+import fr.sorbonne_u.exceptions.InvariantException;
+import fr.sorbonne_u.exceptions.PostconditionException;
 import fr.sorbonne_u.exceptions.PreconditionException;
 import fr.sorbonne_u.utils.aclocks.ClocksServer;
 import fr.sorbonne_u.components.cyphy.utils.aclocks.AcceleratedAndSimulationClock;
 import fr.sorbonne_u.components.cyphy.utils.aclocks.ClocksServerWithSimulationCI;
 import fr.sorbonne_u.components.cyphy.utils.aclocks.ClocksServerWithSimulationConnector;
 import fr.sorbonne_u.components.cyphy.utils.aclocks.ClocksServerWithSimulationOutboundPort;
-import fr.sorbonne_u.components.equipments.iron.sil.LocalSimulationArchitectures;
+import fr.sorbonne_u.components.equipments.iron.mil.IronStateModel;
+import fr.sorbonne_u.components.equipments.iron.mil.LocalSimulationArchitectures;
+import fr.sorbonne_u.components.equipments.iron.mil.events.DisableEnergySavingModeIron;
+import fr.sorbonne_u.components.equipments.iron.mil.events.DisableSteamModeIron;
+import fr.sorbonne_u.components.equipments.iron.mil.events.EnableCottonModeIron;
+import fr.sorbonne_u.components.equipments.iron.mil.events.EnableDelicateModeIron;
+import fr.sorbonne_u.components.equipments.iron.mil.events.EnableEnergySavingModeIron;
+import fr.sorbonne_u.components.equipments.iron.mil.events.EnableLinenModeIron;
+import fr.sorbonne_u.components.equipments.iron.mil.events.EnableSteamModeIron;
+import fr.sorbonne_u.components.equipments.iron.mil.events.TurnOffIron;
+import fr.sorbonne_u.components.equipments.iron.mil.events.TurnOnIron;
 
 
 @OfferedInterfaces(offered={IronUserCI.class})
@@ -40,18 +53,12 @@ public class Iron extends AbstractCyPhyComponent implements IronImplementationI 
 	
 	protected IronState currentState;
 	protected final static IronState INITIAL_STATE = IronState.OFF;
+		
+	protected boolean isSteamEnable;
 	
-	protected IronTemperature currentTemperature;
-	protected static final IronTemperature INITIAL_TEMPERATURE = IronTemperature.DELICATE;
+	protected boolean isEnergySavingModeEnable;
 	
-	protected IronSteam currentSteam;
-	protected static final IronSteam INITIAL_STEAM = IronSteam.INACTIVE;
-	
-	protected IronEnergySavingMode currentEnergySavingMode;
-	protected static final IronEnergySavingMode INITIAL_ENERGY_SAVING_MODE = IronEnergySavingMode.INACTIVE;
-	
-	public static final String REFLECTION_INBOUND_PORT_URI =
-										"IRON_RIP_URI";
+	public static final String REFLECTION_INBOUND_PORT_URI = "IRON_RIP_URI";
 	public static final String INBOUND_PORT_URI = "IRON-INBOUND-PORT";
 	protected IronInboundPort inboundPort;
 	
@@ -135,11 +142,11 @@ public class Iron extends AbstractCyPhyComponent implements IronImplementationI 
 		
 		this.initialise(ironInboundPortURI);
 		
-//		assert	HairDryer.glassBoxInvariants(this) :
-//			new ImplementationInvariantException(
-//					"HairDryer.glassBoxInvariants(this)");
-//		assert	HairDryer.blackBoxInvariants(this) :
-//			new InvariantException("HairDryer.blackBoxInvariants(this)");
+		assert	Iron.glassBoxInvariants(this) :
+			new ImplementationInvariantException(
+					"Iron.glassBoxInvariants(this)");
+		assert	Iron.blackBoxInvariants(this) :
+			new InvariantException("Iron.blackBoxInvariants(this)");
 	}
 	
 	protected void initialise(String inboundPortURI) throws Exception {
@@ -151,9 +158,8 @@ public class Iron extends AbstractCyPhyComponent implements IronImplementationI 
 								"the iron inbound port uri is empty, impossible to initialise");
 		
 		this.currentState = INITIAL_STATE;
-		this.currentTemperature = INITIAL_TEMPERATURE;
-		this.currentSteam = INITIAL_STEAM;
-		this.currentEnergySavingMode = INITIAL_ENERGY_SAVING_MODE;
+		this.isSteamEnable = false;
+		this.isEnergySavingModeEnable = false;
 		
 		this.inboundPort = new IronInboundPort(inboundPortURI, this);
 		this.inboundPort.publishPort();
@@ -167,6 +173,7 @@ public class Iron extends AbstractCyPhyComponent implements IronImplementationI 
 				} 
 				else {
 					assert this.currentExecutionType.isIntegrationTest();
+					
 					architecture = LocalSimulationArchitectures.createIronMILArchitecture4IntegrationTest(
 														this.localArchitectureURI, this.simulationTimeUnit);
 				}
@@ -229,10 +236,6 @@ public class Iron extends AbstractCyPhyComponent implements IronImplementationI 
 					iron.currentState != null,
 					Iron.class, iron,
 					"currentState != null");
-		ret &= InvariantChecking.checkGlassBoxInvariant(
-					iron.currentTemperature != null,
-					Iron.class, iron,
-					"currentTemperature != null");
 		ret &= InvariantChecking.checkGlassBoxInvariant(
 					iron.currentExecutionType != null,
 					Iron.class, iron,
@@ -300,10 +303,6 @@ public class Iron extends AbstractCyPhyComponent implements IronImplementationI 
 					INBOUND_PORT_URI != null && !INBOUND_PORT_URI.isEmpty(),
 					Iron.class, iron,
 					"INBOUND_PORT_URI != null && !INBOUND_PORT_URI.isEmpty()");
-		ret &= InvariantChecking.checkBlackBoxInvariant(
-					INITIAL_TEMPERATURE != null,
-					Iron.class, iron,
-					"INITIAL_TEMPERATURE != null");
 		ret &= InvariantChecking.checkBlackBoxInvariant(
 					INITIAL_STATE != null,
 					Iron.class, iron,
@@ -396,8 +395,7 @@ public class Iron extends AbstractCyPhyComponent implements IronImplementationI 
 	}
 	 
 	@Override
-	public synchronized void shutdown() throws ComponentShutdownException
-	{
+	public synchronized void shutdown() throws ComponentShutdownException {
 		try {
 			this.inboundPort.unpublishPort();
 		} catch (Exception e) {
@@ -421,83 +419,244 @@ public class Iron extends AbstractCyPhyComponent implements IronImplementationI 
 
 	@Override
 	public void turnOn() throws Exception {
+		assert	this.getState() == IronState.OFF :
+			new PreconditionException("getState() == IronState.OFF");
+		
 		if(VERBOSE)
 			this.traceMessage("Iron is turning on.\n");
 		
-		this.currentState = IronState.ON;
+		this.currentState = IronState.DELICATE;
+		
+		assert	this.getState() == IronState.DELICATE :
+			new PostconditionException("getState() == IronState.DELICATE");
+		
+		if(this.currentSimulationType.isSILSimulation()) 
+		{
+			if(VERBOSE)
+				this.traceMessage("Trigger new event for IronStateModel -> TurnOn().\n");
+			
+			((RTAtomicSimulatorPlugin)this.asp).triggerExternalEvent(
+					IronStateModel.SIL_URI,
+					t -> new TurnOnIron(t));
+		}
 	}
 
 	@Override
 	public void turnOff() throws Exception {
+		assert	this.getState() != IronState.OFF :
+			new PreconditionException("getState() != IronState.OFF");
+		
 		if(VERBOSE)
 			this.traceMessage("Iron is turning off.\n");
 		
 		this.currentState = IronState.OFF;
+		
+		assert	this.getState() == IronState.OFF :
+			new PostconditionException("getState() == IronState.OFF");
+		
+		if(this.currentSimulationType.isSILSimulation()) 
+		{
+			if(VERBOSE)
+				this.traceMessage("Trigger new event for IronStateModel -> TurnOff().\n");
+			
+			((RTAtomicSimulatorPlugin)this.asp).triggerExternalEvent(
+					IronStateModel.SIL_URI,
+					t -> new TurnOffIron(t));
+		}
 	}
 
 	@Override
-	public IronTemperature getTemperature() throws Exception {
+	public boolean isTurnOn() throws Exception {
 		if(VERBOSE)
-			this.traceMessage("Iron returns its temperature : " + this.currentTemperature.toString() + ".\n");
+			this.traceMessage("Check if the iron is turn on .\n");
 		
-		return this.currentTemperature;
+		boolean ret;
+		if(this.getState() != IronState.OFF)
+			ret = true;
+		ret = false;
+		
+		if(VERBOSE)
+			this.traceMessage("Is iron turn on ? ->  " + ret + ".\n");
+		
+		return ret;
 	}
 
 	@Override
-	public void setTemperature(IronTemperature t) throws Exception {
+	public void setState(IronState s) throws Exception {
 		if(VERBOSE)
-			this.traceMessage("Trying setting the temperature.\n");
+			this.traceMessage("Trying setting the stat  -> " + s.toString() + ".\n");
 		
-		assert this.currentState == IronState.OFF : 
-			new PreconditionException("Impossible to set the iron temperature because it's turning off\n.");
-		
-		this.currentTemperature = t;
+		assert this.currentState != s : 
+			new PreconditionException("this.currentState != " + s.toString());
 		
 		if(VERBOSE)
-			this.traceMessage("Iron gets a new temperature : " + this.currentTemperature.toString() + ".\n");
+			this.traceMessage("Iron gets a new state : " + s.toString() + ".\n");
+		
+		if(this.currentSimulationType.isSILSimulation()) 
+		{
+			switch(s) {
+				case DELICATE: 
+					if(VERBOSE)
+						this.traceMessage("Trigger new event for IronStateModel -> EnableDelicateModeIron().\n");
+					
+					((RTAtomicSimulatorPlugin)this.asp).triggerExternalEvent(
+							IronStateModel.SIL_URI,
+							time -> new EnableDelicateModeIron(time));
+					break;
+					
+				case COTTON:
+					if(VERBOSE)
+						this.traceMessage("Trigger new event for IronStateModel -> EnableCottonModeIron().\n");
+					
+					((RTAtomicSimulatorPlugin)this.asp).triggerExternalEvent(
+							IronStateModel.SIL_URI,
+							time -> new EnableCottonModeIron(time));
+					break;
+					
+				case LINEN:
+					if(VERBOSE)
+						this.traceMessage("Trigger new event for IronStateModel -> EnableLinenModeIron().\n");
+					
+					((RTAtomicSimulatorPlugin)this.asp).triggerExternalEvent(
+							IronStateModel.SIL_URI,
+							time -> new EnableLinenModeIron(time));
+					break;
+					
+				default: 
+					this.turnOff();
+					break;
+			}
+		}
+		
 	}
 
 	@Override
-	public IronSteam getSteam() throws Exception {
+	public boolean isSteamModeEnable() throws Exception {
 		if(VERBOSE)
-			this.traceMessage("Iron returns its steam mode : " + this.currentSteam.toString() + ".\n");
+			this.traceMessage("Check if the steam mode is enable .\n");
 		
-		return this.currentSteam;
+		boolean ret;
+		
+		if(this.isSteamEnable)
+			ret = true;
+		ret = false;
+		
+		if(VERBOSE)
+			this.traceMessage("Is steam mode enable ?  -> " + ret + ".\n");
+		
+		return ret;
 	}
 
 	@Override
-	public void setSteam(IronSteam s) throws Exception {
+	public void EnableSteamMode() throws Exception {
 		if(VERBOSE)
-			this.traceMessage("Trying setting the steam mode.\n");
+			this.traceMessage("Trying to enable steam mode.\n");
 		
-		assert this.currentState == IronState.OFF : 
-			new PreconditionException("Impossible to set the iron steam mode because it's turning off\n.");
+		assert this.isSteamEnable: 
+			new PreconditionException("this.isSteamEnable");
 		
-		this.currentSteam = s;
+		this.isSteamEnable = true;
 		
 		if(VERBOSE)
-			this.traceMessage("Iron gets a new steam mode : " + this.currentSteam.toString() + ".\n");
+			this.traceMessage("Steam mode enable success.\n");
+		
+		if(this.currentSimulationType.isSILSimulation()) 
+		{
+			if(VERBOSE)
+				this.traceMessage("Trigger new event for IronStateModel -> EnableSteamMode().\n");
+			
+			((RTAtomicSimulatorPlugin)this.asp).triggerExternalEvent(
+					IronStateModel.SIL_URI,
+					t -> new EnableSteamModeIron(t));
+		}
 	}
 
 	@Override
-	public IronEnergySavingMode getEnergySavingMode() throws Exception {
+	public void DisableSteamMode() throws Exception {
 		if(VERBOSE)
-			this.traceMessage("Iron returns its energy saving mode : " + this.currentEnergySavingMode.toString() + ".\n");
+			this.traceMessage("Trying to disable steam mode.\n");
 		
-		return this.currentEnergySavingMode;
+		assert !this.isSteamEnable: 
+			new PreconditionException("!this.isSteamEnable");
+		
+		this.isSteamEnable = false;
+		
+		if(VERBOSE)
+			this.traceMessage("Steam mode disable success.\n");
+		
+		if(this.currentSimulationType.isSILSimulation()) 
+		{
+			if(VERBOSE)
+				this.traceMessage("Trigger new event for IronStateModel -> DisableSteamMode().\n");
+			
+			((RTAtomicSimulatorPlugin)this.asp).triggerExternalEvent(
+					IronStateModel.SIL_URI,
+					t -> new DisableSteamModeIron(t));
+		}
 	}
 
 	@Override
-	public void setEnergySavingMode(IronEnergySavingMode e) throws Exception {
+	public boolean isEnergySavingModeEnable() throws Exception {
 		if(VERBOSE)
-			this.traceMessage("Trying setting the energy saving mode.\n");
+			this.traceMessage("Check if the energy saving mode is enable .\n");
 		
-		assert this.currentState == IronState.OFF : 
-			new PreconditionException("Impossible to set the iron energy saving mode because it's turning off\n.");
+		boolean ret;
 		
-		this.currentEnergySavingMode = e;
+		if(this.isEnergySavingModeEnable)
+			ret = true;
+		ret = false;
 		
 		if(VERBOSE)
-			this.traceMessage("Iron gets a new energu : " + this.currentEnergySavingMode.toString() + ".\n");
+			this.traceMessage("Is energy saving mode enable ?  -> " + ret + ".\n");
+		
+		return ret;
+	}
+
+	@Override
+	public void EnableEnergySavingMode() throws Exception {
+		if(VERBOSE)
+			this.traceMessage("Trying to enable energy saving mode.\n");
+		
+		assert this.isEnergySavingModeEnable: 
+			new PreconditionException("this.isEnergySavingModeEnable");
+		
+		this.isEnergySavingModeEnable = true;
+		
+		if(VERBOSE)
+			this.traceMessage("Energy saving mode enable success.\n");
+		
+		if(this.currentSimulationType.isSILSimulation()) 
+		{
+			if(VERBOSE)
+				this.traceMessage("Trigger new event for IronStateModel -> EnableEnergySavingMode().\n");
+			
+			((RTAtomicSimulatorPlugin)this.asp).triggerExternalEvent(
+					IronStateModel.SIL_URI,
+					t -> new EnableEnergySavingModeIron(t));
+		}
+	}
+
+	@Override
+	public void DisableEnergySavingMode() throws Exception {
+		if(VERBOSE)
+			this.traceMessage("Trying to disable energy saving mode.\n");
+		
+		assert !this.isEnergySavingModeEnable: 
+			new PreconditionException("!this.isEnergySavingModeEnable");
+		
+		this.isEnergySavingModeEnable = false;
+		
+		if(VERBOSE)
+			this.traceMessage("Energy saving mode disable success.\n");
+		
+		if(this.currentSimulationType.isSILSimulation()) 
+		{
+			if(VERBOSE)
+				this.traceMessage("Trigger new event for IronStateModel -> DisableEnergySavingMode().\n");
+			
+			((RTAtomicSimulatorPlugin)this.asp).triggerExternalEvent(
+					IronStateModel.SIL_URI,
+					t -> new DisableEnergySavingModeIron(t));
+		}
 	}
 }

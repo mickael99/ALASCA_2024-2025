@@ -7,7 +7,6 @@ import java.util.concurrent.TimeUnit;
 import fr.sorbonne_u.components.cyphy.plugins.devs.AtomicSimulatorPlugin;
 import fr.sorbonne_u.components.equipments.hem.mil.HEM_ReportI;
 import fr.sorbonne_u.components.equipments.iron.mil.events.AbstractIronEvent;
-import fr.sorbonne_u.components.equipments.iron.sil.IronOperationI;
 import fr.sorbonne_u.components.utils.Electricity;
 import fr.sorbonne_u.devs_simulation.exceptions.MissingRunParameterException;
 import fr.sorbonne_u.devs_simulation.exceptions.NeoSim4JavaException;
@@ -24,7 +23,7 @@ import fr.sorbonne_u.devs_simulation.simulators.interfaces.AtomicSimulatorI;
 import fr.sorbonne_u.devs_simulation.simulators.interfaces.SimulationReportI;
 import fr.sorbonne_u.devs_simulation.utils.InvariantChecking;
 import fr.sorbonne_u.devs_simulation.utils.StandardLogger;
-import fr.sorbonne_u.components.equipments.iron.IronImplementationI.IronTemperature;
+import fr.sorbonne_u.components.equipments.iron.IronImplementationI.IronState;
 import fr.sorbonne_u.components.equipments.iron.mil.events.*;
 
 @ModelExternalEvents(imported = {DisableEnergySavingModeIron.class,
@@ -41,14 +40,6 @@ public class IronElectricityModel extends AtomicHIOA implements IronOperationI {
 	// -------------------------------------------------------------------------
 	// Attributes
 	// -------------------------------------------------------------------------
-	
-	// Modes
-	public static enum IronState {
-		OFF,
-		DELICATE,
-		COTTON,
-		LINEN
-	}
 	
 	protected boolean isSteamMode = false;
 	protected boolean isEnergySavingMode = false;
@@ -69,7 +60,8 @@ public class IronElectricityModel extends AtomicHIOA implements IronOperationI {
 	protected static double TENSION = 230.0;
 	
 	// Consumption
-	protected IronState currentState = IronState.OFF;
+	protected static final IronState INITIALISE_CURRENT_STATE = IronState.OFF;
+	protected IronState currentState;
 	protected boolean consumptionHasChanged = false;
 	protected double totalConsumption = 0.0;
 	
@@ -101,6 +93,11 @@ public class IronElectricityModel extends AtomicHIOA implements IronOperationI {
 				new NeoSim4JavaException("Precondition violation: instance != null");
 
 		boolean ret = true;
+		ret &= InvariantChecking.checkGlassBoxInvariant(
+				INITIALISE_CURRENT_STATE != null,
+				IronElectricityModel.class,
+				instance,
+				"INITIALISE_CURRENT_STATE == null");
 		ret &= InvariantChecking.checkGlassBoxInvariant(
 				DELICATE_CONSUMPTION > 0.0,
 				IronElectricityModel.class,
@@ -136,11 +133,6 @@ public class IronElectricityModel extends AtomicHIOA implements IronOperationI {
 				IronElectricityModel.class,
 				instance,
 				"totalConsumption >= 0.0");
-		ret &= InvariantChecking.checkGlassBoxInvariant(
-				instance.currentState != null,
-				IronElectricityModel.class,
-				instance,
-				"currentState != null");
 		ret &= InvariantChecking.checkGlassBoxInvariant(
 				!instance.currentIntensity.isInitialised() ||
 									instance.currentIntensity.getValue() >= 0.0,
@@ -216,39 +208,76 @@ public class IronElectricityModel extends AtomicHIOA implements IronOperationI {
 	// -------------------------------------------------------------------------
 	
 	@Override
-	public void turnOn() throws Exception {
-		// TODO Auto-generated method stub
-		
+	public void turnOn()  {
+		if(this.currentState == IronState.OFF) {
+			this.currentState = IronState.DELICATE;
+			this.toggleConsumptionHasChanged();
+		}
 	}
 
 
 	@Override
-	public void turnOff() throws Exception {
-		// TODO Auto-generated method stub
-		
+	public void turnOff()  {
+		if(this.currentState != IronState.OFF) {
+			this.currentState = IronState.OFF;
+			this.toggleConsumptionHasChanged();
+		}
 	}
 
-
+//	public IronState getState() {
+//		return this.currentState;
+//	}
+//	
+//	public boolean isEnergySavingModeEnabled() {
+//		return this.isEnergySavingMode;
+//	}
+//	
+//	public boolean isSteamModeEnabled() {
+//		return this.isSteamMode;
+//	}
+	
 	@Override
-	public void setTemperature(IronTemperature t) throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public IronState getState() {
-		return this.currentState;
-	}
-	
-	public boolean isEnergySavingModeEnabled() {
-		return this.isEnergySavingMode;
-	}
-	
-	public boolean isSteamModeEnabled() {
-		return this.isSteamMode;
-	}
-	
 	public void setState(IronState s) {
-		this.currentState = s;
+		if(s == IronState.OFF)
+			this.turnOff();
+		else {
+			if(s != this.currentState) {
+				this.currentState = s;
+				this.toggleConsumptionHasChanged();
+			}
+		}
+	}
+	
+	@Override
+	public void enableSteamMode() {
+		if(!this.isSteamMode) {
+			this.isSteamMode = true;
+			this.toggleConsumptionHasChanged();
+		}
+	}
+	
+	@Override
+	public void disableSteamMode() {
+		if(this.isSteamMode) {
+			this.isSteamMode = false;
+			this.toggleConsumptionHasChanged();
+		}
+	}
+	
+	@Override
+	public void enableEnergySavingMode() {
+		if(!this.isEnergySavingMode) {
+			this.isEnergySavingMode = true;
+			this.toggleConsumptionHasChanged();
+		}
+	}
+	
+	@Override
+	public void disableEnergySavingMode() {
+		if(this.isEnergySavingMode) {
+			this.isEnergySavingMode = false;
+			this.toggleConsumptionHasChanged();
+		}
 	}
 	
 	public void toggleConsumptionHasChanged() {
@@ -256,22 +285,6 @@ public class IronElectricityModel extends AtomicHIOA implements IronOperationI {
 			this.consumptionHasChanged = false;
 		else 
 			this.consumptionHasChanged = true;
-	}
-	
-	public void enableSteamMode() {
-		this.isSteamMode = true;
-	}
-	
-	public void disableSteamMode() {
-		this.isSteamMode = false;
-	}
-	
-	public void enableEnergySavingMode() {
-		this.isEnergySavingMode = true;
-	}
-	
-	public void disableEnergySavingMode() {
-		this.isEnergySavingMode = false;
 	}
 	
 	
@@ -283,7 +296,7 @@ public class IronElectricityModel extends AtomicHIOA implements IronOperationI {
 	public void initialiseState(Time startTime) {
 		super.initialiseState(startTime);
 		
-		this.currentState = IronState.OFF;
+		this.currentState = INITIALISE_CURRENT_STATE;
 		this.consumptionHasChanged = false;
 		this.totalConsumption = 0.0;
 		this.isEnergySavingMode = false;

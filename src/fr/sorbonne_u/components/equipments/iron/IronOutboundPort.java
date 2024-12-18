@@ -31,33 +31,43 @@ public class IronOutboundPort extends AbstractOutboundPort implements IronUserCI
 	}
 
 	@Override
-	public IronTemperature getTemperature() throws Exception {
-		return ((IronUserCI)this.getConnector()).getTemperature();	
+	public boolean isTurnOn() throws Exception {
+		return ((IronUserCI)this.getConnector()).isTurnOn();
 	}
 
 	@Override
-	public void setTemperature(IronTemperature t) throws Exception {
-		((IronUserCI)this.getConnector()).setTemperature(t);
+	public void setState(IronState s) throws Exception {
+		((IronUserCI)this.getConnector()).setState(s);
 	}
 
 	@Override
-	public IronSteam getSteam() throws Exception {
-		return ((IronUserCI)this.getConnector()).getSteam();
+	public boolean isSteamModeEnable() throws Exception {
+		return ((IronUserCI)this.getConnector()).isSteamModeEnable();
 	}
 
 	@Override
-	public void setSteam(IronSteam s) throws Exception {
-		((IronUserCI)this.getConnector()).setSteam(s);
+	public void EnableSteamMode() throws Exception {
+		((IronUserCI)this.getConnector()).EnableSteamMode();
 	}
 
 	@Override
-	public IronEnergySavingMode getEnergySavingMode() throws Exception {
-		return ((IronUserCI)this.getConnector()).getEnergySavingMode();
+	public void DisableSteamMode() throws Exception {
+		((IronUserCI)this.getConnector()).DisableSteamMode();
 	}
 
 	@Override
-	public void setEnergySavingMode(IronEnergySavingMode e) throws Exception {
-		((IronUserCI)this.getConnector()).setEnergySavingMode(e);
+	public boolean isEnergySavingModeEnable() throws Exception {
+		return ((IronUserCI)this.getConnector()).isEnergySavingModeEnable();
+	}
+
+	@Override
+	public void EnableEnergySavingMode() throws Exception {
+		((IronUserCI)this.getConnector()).EnableEnergySavingMode();
+	}
+
+	@Override
+	public void DisableEnergySavingMode() throws Exception {
+		((IronUserCI)this.getConnector()).DisableEnergySavingMode();
 	}
 
 }

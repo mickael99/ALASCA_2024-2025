@@ -22,6 +22,8 @@ import fr.sorbonne_u.components.equipments.iron.IronImplementationI.IronEnergySa
 import fr.sorbonne_u.components.equipments.iron.IronImplementationI.IronState;
 import fr.sorbonne_u.components.equipments.iron.IronImplementationI.IronSteam;
 import fr.sorbonne_u.components.equipments.iron.IronImplementationI.IronTemperature;
+import fr.sorbonne_u.components.equipments.iron.mil.IronOperationI;
+import fr.sorbonne_u.components.equipments.iron.mil.LocalSimulationArchitectures;
 import fr.sorbonne_u.components.exceptions.BCMException;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;

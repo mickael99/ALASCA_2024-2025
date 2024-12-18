@@ -5,30 +5,18 @@ import fr.sorbonne_u.components.interfaces.RequiredCI;
 
 public interface IronUserCI extends OfferedCI, RequiredCI, IronImplementationI {
 	
-	@Override
-	public IronState getState() throws Exception;
-	
-	@Override
-	public void turnOn() throws Exception;
-	
-	@Override
+	public IronState getState() throws Exception; 
+	public boolean isTurnOn() throws Exception;
+	public void turnOn() throws Exception; 
 	public void turnOff() throws Exception;
 	
-	@Override
-	public IronTemperature getTemperature() throws Exception;
+	public void setState(IronState t) throws Exception; 
 	
-	@Override
-	public void setTemperature(IronTemperature t) throws Exception;
+	public boolean isSteamModeEnable() throws Exception; 
+	public void EnableSteamMode() throws Exception; 
+	public void DisableSteamMode() throws Exception;
 	
-	@Override
-	public IronSteam getSteam() throws Exception;
-	
-	@Override
-	public void setSteam(IronSteam s) throws Exception;
-	
-	@Override
-	public IronEnergySavingMode getEnergySavingMode() throws Exception;
-	
-	@Override
-	public void setEnergySavingMode(IronEnergySavingMode e) throws Exception;
+	public boolean isEnergySavingModeEnable() throws Exception; 
+	public void EnableEnergySavingMode() throws Exception; 
+	public void DisableEnergySavingMode() throws Exception;
 }

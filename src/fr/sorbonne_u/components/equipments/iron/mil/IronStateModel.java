@@ -1,13 +1,11 @@
-package fr.sorbonne_u.components.equipments.iron.sil;
+package fr.sorbonne_u.components.equipments.iron.mil;
 
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import fr.sorbonne_u.components.cyphy.plugins.devs.AtomicSimulatorPlugin;
-import fr.sorbonne_u.components.equipments.iron.IronImplementationI.IronTemperature;
-import fr.sorbonne_u.components.equipments.iron.mil.IronElectricityModel;
-import fr.sorbonne_u.components.equipments.iron.mil.IronElectricityModel.IronState;
+import fr.sorbonne_u.components.equipments.iron.IronImplementationI.IronState;
 import fr.sorbonne_u.components.equipments.iron.mil.events.AbstractIronEvent;
 import fr.sorbonne_u.components.equipments.iron.mil.events.DisableEnergySavingModeIron;
 import fr.sorbonne_u.components.equipments.iron.mil.events.DisableSteamModeIron;
@@ -61,9 +59,12 @@ public class IronStateModel extends AtomicModel implements IronOperationI {
 	public static final String MIL_RT_URI = IronStateModel.class.getSimpleName() + "-MIL_RT";
 	public static final String SIL_URI = IronStateModel.class. getSimpleName() + "-SIL";
 
+	protected static final IronState INITIALISE_CURRENT_STATE = IronState.OFF;
 	protected IronState currentState;
+	
 	protected boolean isSteamMode;
 	protected boolean isEnergySavingMode;
+	
 	protected AbstractIronEvent lastReceived;
 	
 	
@@ -123,50 +124,54 @@ public class IronStateModel extends AtomicModel implements IronOperationI {
 	}
 	
 	@Override
-	public void turnOn() throws Exception {
-		if(this.currentState == IronElectricityModel.IronState.OFF)
-			this.currentState = IronElectricityModel.IronState.DELICATE;
+	public void turnOn() {
+		if(this.currentState == IronState.OFF)
+			this.currentState = IronState.DELICATE;
 	}
 
 	@Override
-	public void turnOff() throws Exception {
-		if(this.currentState != IronElectricityModel.IronState.OFF)
-			this.currentState = IronElectricityModel.IronState.OFF;
+	public void turnOff() {
+		if(this.currentState != IronState.OFF)
+			this.currentState = IronState.OFF;
 	}
 	
 	@Override
-	public void setTemperature(IronTemperature t) throws Exception {
-		IronState s = null;
-		
-		switch(t) {
-			case DELICATE: s = IronState.DELICATE; break;
-			case LINEN: s = IronState.LINEN; break;
-			case COTTON: s = IronState.COTTON; break;
-			default: break;
+	public void setState(IronState s) {
+		if(s == IronState.OFF)
+			this.turnOff();
+		else {
+			if(s != this.currentState) {
+				this.currentState = s;
+			}
 		}
-		
-		if(this.currentState != s)
-			this.currentState = s;
 	}
 
+//	public IronState getState() {
+//		return this.currentState;
+//	}
+	
 	@Override
 	public void enableSteamMode() {
-		this.isSteamMode = true;
+		if(!this.isSteamMode) 
+			this.isSteamMode = true;		
 	}
 
 	@Override
 	public void disableSteamMode() {
-		this.isSteamMode = false;
+		if(this.isSteamMode) 
+			this.isSteamMode = false;
 	}
 
 	@Override
 	public void enableEnergySavingMode() {
-		this.isEnergySavingMode = true;
+		if(!this.isEnergySavingMode) 
+			this.isEnergySavingMode = true;
 	}
 
 	@Override
 	public void disableEnergySavingMode() {
-		this.isEnergySavingMode = false;
+		if(this.isEnergySavingMode) 
+			this.isEnergySavingMode = false;
 	}
 	
 	
@@ -179,7 +184,7 @@ public class IronStateModel extends AtomicModel implements IronOperationI {
 		super.initialiseState(initialTime);
 
 		this.lastReceived = null;
-		this.currentState = IronState.OFF;
+		this.currentState = INITIALISE_CURRENT_STATE;
 		this.isSteamMode = false;
 		this.isEnergySavingMode = false;
 

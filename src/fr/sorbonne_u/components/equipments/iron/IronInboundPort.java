@@ -42,43 +42,59 @@ public class IronInboundPort extends AbstractInboundPort implements IronUserCI {
 	}
 
 	@Override
-	public IronTemperature getTemperature() throws Exception {
+	public boolean isTurnOn() throws Exception {
 		return this.getOwner().handleRequest(
-				o -> ((IronImplementationI)o).getTemperature());
+				o -> ((IronImplementationI)o).isTurnOn());
 	}
-;
+
 	@Override
-	public void setTemperature(IronTemperature t) throws Exception {
+	public void setState(IronState s) throws Exception {
 		this.getOwner().handleRequest(
-				o -> {	((IronImplementationI)o).setTemperature(t);
+				o -> {	((IronImplementationI)o).setState(s);
 						return null;
 				});
 	}
 
 	@Override
-	public IronSteam getSteam() throws Exception {
+	public boolean isSteamModeEnable() throws Exception {
 		return this.getOwner().handleRequest(
-				o -> ((IronImplementationI)o).getSteam());
+				o -> ((IronImplementationI)o).isSteamModeEnable());
 	}
 
 	@Override
-	public void setSteam(IronSteam s) throws Exception {
+	public void EnableSteamMode() throws Exception {
 		this.getOwner().handleRequest(
-				o -> {	((IronImplementationI)o).setSteam(s);
+				o -> {	((IronImplementationI)o).EnableSteamMode();
 						return null;
 				});
 	}
 
 	@Override
-	public IronEnergySavingMode getEnergySavingMode() throws Exception {
-		return this.getOwner().handleRequest(
-				o -> ((IronImplementationI)o).getEnergySavingMode());
+	public void DisableSteamMode() throws Exception {
+		this.getOwner().handleRequest(
+				o -> {	((IronImplementationI)o).DisableSteamMode();
+						return null;
+				});
 	}
 
 	@Override
-	public void setEnergySavingMode(IronEnergySavingMode e) throws Exception {
+	public boolean isEnergySavingModeEnable() throws Exception {
+		return this.getOwner().handleRequest(
+				o -> ((IronImplementationI)o).isEnergySavingModeEnable());
+	}
+
+	@Override
+	public void EnableEnergySavingMode() throws Exception {
 		this.getOwner().handleRequest(
-				o -> {	((IronImplementationI)o).setEnergySavingMode(e);
+				o -> {	((IronImplementationI)o).EnableEnergySavingMode();
+						return null;
+				});
+	}
+
+	@Override
+	public void DisableEnergySavingMode() throws Exception {
+		this.getOwner().handleRequest(
+				o -> {	((IronImplementationI)o).DisableEnergySavingMode();
 						return null;
 				});
 	}
