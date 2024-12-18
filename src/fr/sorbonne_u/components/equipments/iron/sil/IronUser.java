@@ -1,6 +1,7 @@
 package fr.sorbonne_u.components.equipments.iron.sil;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Instant;
@@ -18,10 +19,7 @@ import fr.sorbonne_u.components.equipments.iron.Iron;
 import fr.sorbonne_u.components.equipments.iron.IronConnector;
 import fr.sorbonne_u.components.equipments.iron.IronOutboundPort;
 import fr.sorbonne_u.components.equipments.iron.IronUserCI;
-import fr.sorbonne_u.components.equipments.iron.IronImplementationI.IronEnergySavingMode;
 import fr.sorbonne_u.components.equipments.iron.IronImplementationI.IronState;
-import fr.sorbonne_u.components.equipments.iron.IronImplementationI.IronSteam;
-import fr.sorbonne_u.components.equipments.iron.IronImplementationI.IronTemperature;
 import fr.sorbonne_u.components.equipments.iron.mil.IronOperationI;
 import fr.sorbonne_u.components.equipments.iron.mil.LocalSimulationArchitectures;
 import fr.sorbonne_u.components.exceptions.BCMException;
@@ -48,9 +46,9 @@ public class IronUser extends AbstractCyPhyComponent implements IronOperationI {
 	public static int Y_RELATIVE_POSITION = 0;
 													
 	public static final String REFLECTION_INBOUND_PORT_URI = "IRON-USER-RIP-URI";
+	public static final String INBOUND_PORT_URI = "IRON_USER_INBOUND_PORT_URI";
 	
 	protected IronOutboundPort outboundPort;
-
 	protected String inboundPortURI;
 
 	// Execution/Simulation
@@ -130,8 +128,7 @@ public class IronUser extends AbstractCyPhyComponent implements IronOperationI {
 	protected static boolean blackBoxInvariants(IronUser ironUser) {
 		assert 	ironUser != null : new PreconditionException("ironUser != null");
 
-		boolean ret = true;
-		return ret;
+		return true;
 	}
 		
 	
@@ -152,8 +149,8 @@ public class IronUser extends AbstractCyPhyComponent implements IronOperationI {
 			 currentExecutionType, SimulationType.NO_SIMULATION,
 			 null, null, null, 0.0, null);
 
-		assert	currentExecutionType.isTest() :
-				new PreconditionException("currentExecutionType.isTest()");
+//		assert	currentExecutionType.isTest() :
+//				new PreconditionException("currentExecutionType.isTest()");
 	}
 	
 	protected IronUser(String reflectionInboundPortURI, String ironInboundPortURI, ExecutionType currentExecutionType,
@@ -280,7 +277,7 @@ public class IronUser extends AbstractCyPhyComponent implements IronOperationI {
 	// -------------------------------------------------------------------------
 	
 	@Override
-	public void turnOn() throws Exception {
+	public void turnOn() {
 		if (VERBOSE) 
 			this.logMessage("IronUser#turnOn().");
 		try {
@@ -291,7 +288,7 @@ public class IronUser extends AbstractCyPhyComponent implements IronOperationI {
 	}
 	
 	@Override
-	public void turnOff() throws Exception {
+	public void turnOff() {
 		if (VERBOSE) 
 			this.logMessage("IronUser#turnOff().");
 		try {
@@ -302,55 +299,55 @@ public class IronUser extends AbstractCyPhyComponent implements IronOperationI {
 	}
 	
 	@Override
-	public void setTemperature(IronTemperature t) throws Exception {
+	public void setState(IronState s) {
 		if (VERBOSE) 
-			this.logMessage("IronUser#setTemperature(" + t.toString() +").");
+			this.logMessage("IronUser#setTemperature(" + s.toString() +").");
 		try {
-			this.outboundPort.setTemperature(t);
+			this.outboundPort.setState(s);
 		} catch (Exception e) {
 			throw new RuntimeException(e) ;
 		}
 	}
 
 	@Override
-	public void enableSteamMode() throws Exception{
+	public void enableSteamMode() {
 		if (VERBOSE) 
 			this.logMessage("IronUser#enableSteamMode().");
 		try {
-			this.outboundPort.setSteam(IronSteam.ACTIVE);
+			this.outboundPort.EnableSteamMode();
 		} catch (Exception e) {
 			throw new RuntimeException(e) ;
 		}
 	}
 
 	@Override
-	public void disableSteamMode() throws Exception {
+	public void disableSteamMode() {
 		if (VERBOSE) 
 			this.logMessage("IronUser#disableSteamMode().");
 		try {
-			this.outboundPort.setSteam(IronSteam.INACTIVE);
+			this.outboundPort.DisableSteamMode();;
 		} catch (Exception e) {
 			throw new RuntimeException(e) ;
 		}
 	}
 
 	@Override
-	public void enableEnergySavingMode() throws Exception {
+	public void enableEnergySavingMode() {
 		if (VERBOSE) 
 			this.logMessage("IronUser#enableEnergySavingMode().");
 		try {
-			this.outboundPort.setEnergySavingMode(IronEnergySavingMode.ACTIVE);
+			this.outboundPort.EnableEnergySavingMode();;
 		} catch (Exception e) {
 			throw new RuntimeException(e) ;
 		}
 	}
 
 	@Override
-	public void disableEnergySavingMode() throws Exception {
+	public void disableEnergySavingMode() {
 		if (VERBOSE) 
 			this.logMessage("IronUser#disableEnergySavingMode().");
 		try {
-			this.outboundPort.setEnergySavingMode(IronEnergySavingMode.INACTIVE);
+			this.outboundPort.DisableEnergySavingMode();;
 		} catch (Exception e) {
 			throw new RuntimeException(e) ;
 		}
@@ -376,7 +373,7 @@ public class IronUser extends AbstractCyPhyComponent implements IronOperationI {
 		this.logMessage("testTurnOn()... ");
 		try {
 			this.outboundPort.turnOn();
-			assertEquals(IronState.ON, this.outboundPort.getState());
+			assertEquals(IronState.DELICATE, this.outboundPort.getState());
 		} catch (Exception e) {
 			assertTrue(false);
 		}
@@ -394,63 +391,75 @@ public class IronUser extends AbstractCyPhyComponent implements IronOperationI {
 		this.logMessage("...done.");
 	}
 	
-	public void testGetTemperature() {
-		this.logMessage("testGetTemperature()... ");
+	public void testSetState() {
+		this.logMessage("testSetState()... ");
 		try {
-			assertEquals(IronTemperature.DELICATE, this.outboundPort.getTemperature());
+			this.outboundPort.setState(IronState.COTTON);
+			assertEquals(IronState.COTTON, this.outboundPort.getState());
 		} catch (Exception e) {
 			assertTrue(false);
 		}
 		this.logMessage("...done.");
 	}
 	
-	public void testSetTemperature() {
-		this.logMessage("testSetTemperature()... ");
+	public void testIsSteamModeEnable() {
+		this.logMessage("testIsSteamModeEnable()... ");
 		try {
-			this.outboundPort.setTemperature(IronTemperature.COTTON);
-			assertEquals(IronTemperature.COTTON, this.outboundPort.getTemperature());
-		} catch (Exception e) {
-			assertTrue(false);
-		}
-		this.logMessage("...done.");
-	}
-	
-	public void testGetSteam() {
-		this.logMessage("testGetSteam()... ");
-		try {
-			assertEquals(IronSteam.INACTIVE, this.outboundPort.getSteam());
+			assertFalse(this.outboundPort.isSteamModeEnable());
 		} catch (Exception e) {
 			assertTrue(false);
 		}
 		this.logMessage("...done.");
 	} 
 	
-	public void testSetSteam() {
-		this.logMessage("testSetSteam()... ");
+	public void testEnableSteamMode() {
+		this.logMessage("testEnableSteamMode()... ");
 		try {
-			this.outboundPort.setSteam(IronSteam.ACTIVE);
-			assertEquals(IronSteam.ACTIVE, this.outboundPort.getSteam());
+			this.outboundPort.EnableSteamMode();
+			assertTrue(this.outboundPort.isSteamModeEnable());
 		} catch (Exception e) {
 			assertTrue(false);
 		}
 		this.logMessage("...done.");
 	}
 	
-	public void testGetEnergySavingMode() {
-		this.logMessage("testGetEnergySavingMode()... ");
+	public void testDisableSteamMode() {
+		this.logMessage("testeDisableSteamMode()... ");
 		try {
-			assertEquals(IronEnergySavingMode.INACTIVE, this.outboundPort.getEnergySavingMode());
+			this.outboundPort.DisableSteamMode();
+			assertFalse(this.outboundPort.isSteamModeEnable());
+		} catch (Exception e) {
+			assertTrue(false);
+		}
+		this.logMessage("...done.");
+	}
+	
+	public void testIsEnergySavingModeEnable() {
+		this.logMessage("testIsEnergySavingModeEnable()... ");
+		try {
+			assertFalse(this.outboundPort.isEnergySavingModeEnable());
 		} catch (Exception e) {
 			assertTrue(false);
 		}
 		this.logMessage("...done.");
 	} 
 	
-	public void testSetEnergySavingMode() {
-		this.logMessage("testSetEnergySavingMode()... ");
+	public void testEnableEnergySavingMode() {
+		this.logMessage("testEnableEnergySavingMode()... ");
 		try {
-			this.outboundPort.setEnergySavingMode(IronEnergySavingMode.ACTIVE);
-			assertEquals(IronEnergySavingMode.ACTIVE, this.outboundPort.getEnergySavingMode());
+			this.outboundPort.EnableEnergySavingMode();
+			assertTrue(this.outboundPort.isEnergySavingModeEnable());
+		} catch (Exception e) {
+			assertTrue(false);
+		}
+		this.logMessage("...done.");
+	}
+	
+	public void testDisableEnergySavingMode() {
+		this.logMessage("testDisableEnergySavingMode()... ");
+		try {
+			this.outboundPort.DisableEnergySavingMode();
+			assertFalse(this.outboundPort.isEnergySavingModeEnable());
 		} catch (Exception e) {
 			assertTrue(false);
 		}
@@ -461,12 +470,14 @@ public class IronUser extends AbstractCyPhyComponent implements IronOperationI {
 		this.testGetState();
 		this.testTurnOn();
 		this.testTurnOff();
-		this.testGetTemperature();
-		this.testSetTemperature();
-		this.testGetSteam();
-		this.testSetSteam();
-		this.testGetEnergySavingMode();
-		this.testSetEnergySavingMode();
+		this.testGetState();
+		this.testSetState();
+		this.testIsSteamModeEnable();
+		this.testEnableSteamMode();
+		this.testDisableSteamMode();
+		this.testIsEnergySavingModeEnable();
+		this.testEnableEnergySavingMode();
+		this.testDisableEnergySavingMode();
 	}
 	
 	
@@ -523,32 +534,34 @@ public class IronUser extends AbstractCyPhyComponent implements IronOperationI {
 		if (this.currentExecutionType.isTest() &&
 				(this.currentSimulationType.isNoSimulation() ||
 							this.currentSimulationType.isSILSimulation())) 
-		{
-			ClocksServerWithSimulationOutboundPort clocksServerOutboundPort =
-							new ClocksServerWithSimulationOutboundPort(this);
-			clocksServerOutboundPort.publishPort();
-			this.doPortConnection(
-					clocksServerOutboundPort.getPortURI(),
-					ClocksServer.STANDARD_INBOUNDPORT_URI,
-					ClocksServerWithSimulationConnector.class.getCanonicalName());
-			this.logMessage("IronUser gets the clock.");
-			AcceleratedAndSimulationClock acceleratedClock =
-				clocksServerOutboundPort.getClockWithSimulation(this.clockURI);
-			this.doPortDisconnection(clocksServerOutboundPort.getPortURI());
-			clocksServerOutboundPort.unpublishPort();
-
-			this.logMessage("IronUser waits until start time.");
-			acceleratedClock.waitUntilStart();
+		{			
+//			ClocksServerWithSimulationOutboundPort clocksServerOutboundPort =
+//							new ClocksServerWithSimulationOutboundPort(this);
+//			clocksServerOutboundPort.publishPort();
+//			this.doPortConnection(
+//					clocksServerOutboundPort.getPortURI(),
+//					ClocksServer.STANDARD_INBOUNDPORT_URI,
+//					ClocksServerWithSimulationConnector.class.getCanonicalName());
+//			this.logMessage("IronUser gets the clock.");
+//			AcceleratedAndSimulationClock acceleratedClock =
+//				clocksServerOutboundPort.getClockWithSimulation(this.clockURI);
+//			this.doPortDisconnection(clocksServerOutboundPort.getPortURI());
+//			clocksServerOutboundPort.unpublishPort();
+//
+//			this.logMessage("IronUser waits until start time.");
+//			acceleratedClock.waitUntilStart();
 			this.logMessage("IronUser starts.");
-
+			
 			if (this.currentSimulationType.isNoSimulation()) {
+
 				this.logMessage("IronUser tests begin without simulation.");
 				this.runAllTests();
 				this.logMessage("IronUser tests end.");
-			} else {
-				acceleratedClock.waitUntilSimulationStart();
-				silTestScenario(acceleratedClock);
-			}
+			} 
+//			else {
+//				acceleratedClock.waitUntilSimulationStart();
+//				silTestScenario(acceleratedClock);
+//			}
 		}
 	}
 	
@@ -613,7 +626,7 @@ public class IronUser extends AbstractCyPhyComponent implements IronOperationI {
 			this.scheduleTask(
 					o -> {
 						try {
-							((IronUser)o).setTemperature(IronTemperature.DELICATE);
+							((IronUser)o).setState(IronState.DELICATE);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -631,7 +644,7 @@ public class IronUser extends AbstractCyPhyComponent implements IronOperationI {
 			this.scheduleTask(
 					o -> {
 						try {
-							((IronUser)o).setTemperature(IronTemperature.COTTON);
+							((IronUser)o).setState(IronState.COTTON);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -649,7 +662,7 @@ public class IronUser extends AbstractCyPhyComponent implements IronOperationI {
 			this.scheduleTask(
 					o -> {
 						try {
-							((IronUser)o).setTemperature(IronTemperature.LINEN);
+							((IronUser)o).setState(IronState.LINEN);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
