@@ -1,6 +1,7 @@
 package fr.sorbonne_u.components.equipments.fridge.mil.events;
 
-import fr.sorbonne_u.components.equipments.fridge.mil.FridgeElectricityModel;
+import fr.sorbonne_u.components.equipments.fridge.mil.FridgeOperationI;
+import fr.sorbonne_u.components.equipments.fridge.mil.FridgeElectricityModel.FridgeState;
 import fr.sorbonne_u.devs_simulation.es.events.ES_Event;
 import fr.sorbonne_u.devs_simulation.models.events.EventI;
 import fr.sorbonne_u.devs_simulation.models.interfaces.AtomicModelI;
@@ -20,19 +21,13 @@ public class SwitchOnFridge extends ES_Event implements FridgeEventI {
 	}
 
 	@Override
-	public void	executeOn(AtomicModelI model) {
-		assert	model instanceof FridgeElectricityModel :
-				new AssertionError(
+	public void executeOn(AtomicModelI model) {
+		assert	model instanceof FridgeOperationI:
+					new AssertionError(
 						"Precondition violation: model instanceof "
-						+ "HeaterElectricityModel");
+						+ "FridgeOperationI");
 
-		FridgeElectricityModel fridge = (FridgeElectricityModel)model;
-		assert	fridge.getState() == FridgeElectricityModel.State.OFF :
-				new AssertionError(
-						"model not in the right state, should be "
-						+ "FridgeElectricityModel.State.OFF but is "
-						+ fridge.getState());
-		fridge.setState(FridgeElectricityModel.State.ON,
-						this.getTimeOfOccurrence());
+		FridgeOperationI fridge = (FridgeOperationI)model;
+		fridge.setState(FridgeState.ON);
 	}
 }

@@ -10,6 +10,7 @@ import fr.sorbonne_u.components.utils.Electricity;
 import fr.sorbonne_u.devs_simulation.exceptions.MissingRunParameterException;
 import fr.sorbonne_u.devs_simulation.exceptions.NeoSim4JavaException;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ExportedVariable;
+import fr.sorbonne_u.devs_simulation.hioa.annotations.InternalVariable;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ModelExportedVariable;
 import fr.sorbonne_u.devs_simulation.hioa.models.AtomicHIOA;
 import fr.sorbonne_u.devs_simulation.hioa.models.vars.Value;
@@ -32,19 +33,20 @@ import fr.sorbonne_u.components.equipments.fridge.mil.events.*;
 								 SwitchOffFridge.class,
 								 SetPowerFridge.class,
 								 CoolFridge.class,
-								 DoNotCoolFridge.class})
+								 DoNotCoolFridge.class,
+								 OpenDoorFridge.class,
+								 CloseDoorFridge.class})
 @ModelExportedVariable(name = "currentIntensity", type = Double.class)
-@ModelExportedVariable(name = "currentHeatingPower", type = Double.class)
-public class FridgeElectricityModel extends AtomicHIOA {
+public class FridgeElectricityModel extends AtomicHIOA implements FridgeOperationI{
 
 	// -------------------------------------------------------------------------
 	// Constants and variables
 	// -------------------------------------------------------------------------
 	
-	public static enum	State {
+	public static enum FridgeState {
+		OFF,
 		ON,
 		COOLING,
-		OFF,
 		DOOR_OPEN
 	}
 	
@@ -59,12 +61,12 @@ public class FridgeElectricityModel extends AtomicHIOA {
 	protected static double DOOR_OPEN_EXTRA_CONSUMPTION_FACTOR = 1.2;
 	protected static double TENSION = 220.0;
 
-	protected State currentState = State.OFF;
+	protected FridgeState currentState = FridgeState.OFF;
 	protected boolean consumptionHasChanged = false;
 	protected double totalConsumption;
 
 	
-	@ExportedVariable(type = Double.class)
+	@InternalVariable(type = Double.class)
 	protected final Value<Double> currentCoolingPower = new Value<Double>(this);
 	
 	@ExportedVariable(type = Double.class)
@@ -184,8 +186,9 @@ public class FridgeElectricityModel extends AtomicHIOA {
 	// Methods
 	// -------------------------------------------------------------------------
 	
-	public void	setState(State s, Time t) {
-		State old = this.currentState;
+	@Override
+	public void	setState(FridgeState s) {
+		FridgeState old = this.currentState;
 		this.currentState = s;
 		if (old != s) 
 			this.consumptionHasChanged = true;					
@@ -196,10 +199,12 @@ public class FridgeElectricityModel extends AtomicHIOA {
 				new NeoSim4JavaException("Black-box invariants violation!");
 	}
 	
-	public State getState() {
+	@Override
+	public FridgeState getState() {
 		return this.currentState;
 	}
 	
+	@Override
 	public void setCurrentCoolingPower(double newPower, Time t) {
 		assert	newPower >= 0.0 &&
 				newPower <= FridgeElectricityModel.MAX_COOLING_POWER :
@@ -223,7 +228,7 @@ public class FridgeElectricityModel extends AtomicHIOA {
 	public void	initialiseState(Time initialTime) {
 		super.initialiseState(initialTime);
 
-		this.currentState = State.OFF;
+		this.currentState = FridgeState.OFF;
 		this.consumptionHasChanged = false;
 		this.totalConsumption = 0.0;
 
@@ -319,14 +324,14 @@ public class FridgeElectricityModel extends AtomicHIOA {
 	    super.userDefinedInternalTransition(elapsedTime);
 
 	    Time t = this.getCurrentStateTime();
-	    if (this.currentState == State.ON) 
+	    if (this.currentState == FridgeState.ON) 
 	        this.currentIntensity.setNewValue(FridgeElectricityModel.IDLE_POWER / 
 	        									FridgeElectricityModel.TENSION, t);
-	    else if (this.currentState == State.COOLING) 
+	    else if (this.currentState == FridgeState.COOLING) 
 	        this.currentIntensity.setNewValue(this.currentCoolingPower.getValue() / 
 	                							FridgeElectricityModel.TENSION,t);
 	    else {
-	        assert this.currentState == State.OFF;
+	        assert this.currentState == FridgeState.OFF;
 	        this.currentIntensity.setNewValue(0.0, t);
 	    }
 

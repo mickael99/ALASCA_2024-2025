@@ -3,8 +3,17 @@ package fr.sorbonne_u.components.equipments.fridge.mil;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+import fr.sorbonne_u.components.equipments.fridge.mil.FridgeElectricityModel.FridgeState;
+import fr.sorbonne_u.components.equipments.fridge.mil.events.CloseDoorFridge;
+import fr.sorbonne_u.components.equipments.fridge.mil.events.CoolFridge;
+import fr.sorbonne_u.components.equipments.fridge.mil.events.DoNotCoolFridge;
 import fr.sorbonne_u.components.equipments.fridge.mil.events.FridgeEventI;
+import fr.sorbonne_u.components.equipments.fridge.mil.events.OpenDoorFridge;
+import fr.sorbonne_u.components.equipments.fridge.mil.events.SetPowerFridge;
+import fr.sorbonne_u.components.equipments.fridge.mil.events.SwitchOffFridge;
+import fr.sorbonne_u.components.equipments.fridge.mil.events.SwitchOnFridge;
 import fr.sorbonne_u.components.equipments.hem.mil.HEM_ReportI;
+import fr.sorbonne_u.devs_simulation.exceptions.NeoSim4JavaException;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ImportedVariable;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.InternalVariable;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ModelImportedVariable;
@@ -21,38 +30,40 @@ import fr.sorbonne_u.devs_simulation.simulators.interfaces.SimulationReportI;
 import fr.sorbonne_u.devs_simulation.utils.InvariantChecking;
 import fr.sorbonne_u.devs_simulation.utils.Pair;
 import fr.sorbonne_u.devs_simulation.utils.StandardLogger;
-import fr.sorbonne_u.components.equipments.fridge.mil.events.*;
 
 @ModelExternalEvents(imported = {SwitchOffFridge.class,
+								 SwitchOnFridge.class,
 								 CoolFridge.class,
-								 DoNotCoolFridge.class})
+								 DoNotCoolFridge.class,
+								 SetPowerFridge.class,
+								 CloseDoorFridge.class,
+								 OpenDoorFridge.class})
 @ModelImportedVariable(name = "externalTemperature", type = Double.class)
-@ModelImportedVariable(name = "currentCoolingPower", type = Double.class)
-public class FridgeTemperatureModel extends AtomicHIOA {
+public class FridgeTemperatureModel extends AtomicHIOA implements FridgeOperationI {
 	
 	// -------------------------------------------------------------------------
 	// Constants and variables
 	// -------------------------------------------------------------------------
-
-	public static enum	State {
-		NOT_COOLING,
-		COOLING
-	}
 	
 	private static final long serialVersionUID = 1L;
-	public static String URI = FridgeTemperatureModel.class.getSimpleName();
+	
+	public static String MIL_URI = FridgeTemperatureModel.class.getSimpleName() + "-MIL";													
+	public static String MIL_RT_URI = FridgeTemperatureModel.class.getSimpleName() + "-MIL-RT";
+	public static String SIL_URI = FridgeTemperatureModel.class.getSimpleName() + "-SIL";
 	
 	public static double INITIAL_TEMPERATURE = 22.0;
+	protected static double MIN_INTERNAL_TEMPERATURE = 0.0;
 	protected static double INSULATION_TRANSFER_CONSTANT = 8.0;
 											
-	protected static double MAX_COOLING_TRANSFER_CONSTANT = 50.0;
+	protected static double MAX_COOLING_RATE_CONSTANT  = 50.0;
 	
+	protected static final double DOOR_OPEN_TRANSFER_MULTIPLIER = 2.0;
+	protected static final double ON_STATE_INSULATION_MULTIPLIER = 2.0;
 	protected static double	TEMPERATURE_UPDATE_TOLERANCE = 0.0001;
 	protected static double	COOLING_POWER_TRANSFER_TOLERANCE = 0.0001;
 	protected static double	STEP = 15.0 / 24.0;	// 15 minutes
 
-	protected State	currentState = State.NOT_COOLING;
-
+	protected FridgeState currentState = FridgeState.OFF;
 
 	protected final Duration integrationStep;
 	protected double temperatureAcc;
@@ -62,7 +73,7 @@ public class FridgeTemperatureModel extends AtomicHIOA {
 	@ImportedVariable(type = Double.class)
 	protected Value<Double>	externalTemperature;
 	
-	@ImportedVariable(type = Double.class)
+	@InternalVariable(type = Double.class)
 	protected Value<Double>	currentCoolingPower;
 	
 	@InternalVariable(type = Double.class)
@@ -80,9 +91,9 @@ public class FridgeTemperatureModel extends AtomicHIOA {
 		this.getSimulationEngine().setLogger(new StandardLogger());
 
 		assert	glassBoxInvariants(this) :
-				new AssertionError("White-box invariants violation!");
+				new NeoSim4JavaException("White-box invariants violation!");
 		assert	blackBoxInvariants(this) :
-				new AssertionError("Black-box invariants violation!");
+				new NeoSim4JavaException("Black-box invariants violation!");
 	}
 	
 	
@@ -111,7 +122,7 @@ public class FridgeTemperatureModel extends AtomicHIOA {
 				instance,
 				"INSULATION_TRANSFER_CONSTANT > 0.0");
 		ret &= InvariantChecking.checkGlassBoxInvariant(
-				MAX_COOLING_TRANSFER_CONSTANT > 0.0,
+				MAX_COOLING_RATE_CONSTANT  > 0.0,
 				FridgeTemperatureModel.class,
 				instance,
 				"MIN_COOLING_TRANSFER_CONSTANT > 0.0");
@@ -158,10 +169,20 @@ public class FridgeTemperatureModel extends AtomicHIOA {
 
 		boolean ret = true;
 		ret &= InvariantChecking.checkBlackBoxInvariant(
-				URI != null && !URI.isEmpty(),
+				MIL_URI != null && !MIL_URI.isEmpty(),
 				FridgeTemperatureModel.class,
 				instance,
-				"URI != null && !URI.isEmpty()");
+				"MIL_URI != null && !MIL_URI.isEmpty()");
+		ret &= InvariantChecking.checkBlackBoxInvariant(
+				MIL_RT_URI != null && !MIL_RT_URI.isEmpty(),
+				FridgeTemperatureModel.class,
+				instance,
+				"MIL_RT_URI != null && !MIL_RT_URI.isEmpty()");
+		ret &= InvariantChecking.checkBlackBoxInvariant(
+				SIL_URI != null && !SIL_URI.isEmpty(),
+				FridgeTemperatureModel.class,
+				instance,
+				"SIL_URI != null && !SIL_URI.isEmpty()");
 		return ret;
 	}
 	
@@ -170,37 +191,84 @@ public class FridgeTemperatureModel extends AtomicHIOA {
 	// Methods
 	// -------------------------------------------------------------------------
 
-	public void setState(State s) {
+	@Override
+	public void setState(FridgeState s) {
 		this.currentState = s;
 
 		assert	glassBoxInvariants(this) :
-				new AssertionError("White-box invariants violation!");
+				new NeoSim4JavaException("White-box invariants violation!");
 		assert	blackBoxInvariants(this) :
-				new AssertionError("Black-box invariants violation!");
+				new NeoSim4JavaException("Black-box invariants violation!");
 	}
 
-	public State getState() {
+	@Override
+	public FridgeState getState() {
 		return this.currentState;
 	}
 	
+	@Override
+	public void setCurrentCoolingPower(double newPower, Time t) {
+		assert	newPower >= 0.0 &&
+				newPower <= FridgeElectricityModel.MAX_COOLING_POWER :
+			new NeoSim4JavaException(
+					"Precondition violation: newPower >= 0.0 && "
+					+ "newPower <= FridgeElectricityModel.MAX_COOLING_POWER,"
+					+ " but newPower = " + newPower);
+
+		this.currentCoolingPower.setNewValue(newPower, t);
+
+		assert	glassBoxInvariants(this) :
+				new NeoSim4JavaException("White-box invariants violation!");
+		assert	blackBoxInvariants(this) :
+				new NeoSim4JavaException("Black-box invariants violation!");
+	}
+	
+	public double getCurrentTemperature() {
+		return this.currentTemperature.getValue();
+	}
+	
 	protected double currentCoolTransfertConstant()  {
-		double c = 1.0 / (MAX_COOLING_TRANSFER_CONSTANT * FridgeElectricityModel.MAX_COOLING_POWER);
+		double c = 1.0 / (MAX_COOLING_RATE_CONSTANT  * FridgeElectricityModel.MAX_COOLING_POWER);
 	    return c * this.currentCoolingPower.getValue();
 	}
 	
 	protected double computeDerivatives(Double current) {
-		double currentTempDerivative = 0.0;
-		if (this.currentState == State.COOLING) {
-	        if (this.currentCoolingPower.getValue() > COOLING_POWER_TRANSFER_TOLERANCE) 
-	            currentTempDerivative =  -current / this.currentCoolTransfertConstant();
+	    double currentTempDerivative = 0.0;
+	    Time t = this.getCurrentStateTime();
+
+	    switch (this.currentState) {
+	        case COOLING:
+	            if (this.currentCoolingPower.getValue() > COOLING_POWER_TRANSFER_TOLERANCE) {
+	                currentTempDerivative = -current / this.currentCoolTransfertConstant();
+	            }
+	            break;
+
+	        case DOOR_OPEN:
+	            currentTempDerivative = 
+	                (this.externalTemperature.evaluateAt(t) - current) / 
+	                (INSULATION_TRANSFER_CONSTANT / DOOR_OPEN_TRANSFER_MULTIPLIER);
+	            break;
+
+	        case ON:
+	            currentTempDerivative = 
+	                (this.externalTemperature.evaluateAt(t) - current) / 
+	                (INSULATION_TRANSFER_CONSTANT * ON_STATE_INSULATION_MULTIPLIER);
+	            break;
+
+	        case OFF:
+	            currentTempDerivative = 
+	                (this.externalTemperature.evaluateAt(t) - current) / 
+	                INSULATION_TRANSFER_CONSTANT;
+	            break;
+
+	        default:
+	            throw new IllegalStateException("Unhandled state: " + this.currentState);
 	    }
 
-		Time t = this.getCurrentStateTime();
-	    currentTempDerivative += (this.externalTemperature.evaluateAt(t) - current) /
-	            					INSULATION_TRANSFER_CONSTANT;
-	    
 	    return currentTempDerivative;
 	}
+
+
 	
 	protected double computeNewTemperature(double deltaT) {
 		Time t = this.currentTemperature.getTime();
@@ -213,6 +281,10 @@ public class FridgeTemperatureModel extends AtomicHIOA {
 		} 
 		else 
 			newTemp = oldTemp;
+		
+		// The internal temperature cannot be lower than the minimum
+		if(newTemp < MIN_INTERNAL_TEMPERATURE)
+			newTemp = MIN_INTERNAL_TEMPERATURE;
 		
 		this.temperatureAcc += ((oldTemp + newTemp)/2.0) * deltaT;
 		
@@ -230,9 +302,9 @@ public class FridgeTemperatureModel extends AtomicHIOA {
 		super.initialiseState(initialTime);
 
 		assert	glassBoxInvariants(this) :
-				new AssertionError("White-box invariants violation!");
+				new NeoSim4JavaException("White-box invariants violation!");
 		assert	blackBoxInvariants(this) :
-				new AssertionError("Black-box invariants violation!");
+				new NeoSim4JavaException("Black-box invariants violation!");
 	}
 	
 	@Override
@@ -256,9 +328,9 @@ public class FridgeTemperatureModel extends AtomicHIOA {
 		
 
 		assert	glassBoxInvariants(this) :
-				new AssertionError("White-box invariants violation!");
+				new NeoSim4JavaException("White-box invariants violation!");
 		assert	blackBoxInvariants(this) :
-				new AssertionError("Black-box invariants violation!");
+				new NeoSim4JavaException("Black-box invariants violation!");
 
 		return new Pair<>(justInitialised, notInitialisedYet);
 	}
@@ -285,7 +357,7 @@ public class FridgeTemperatureModel extends AtomicHIOA {
 	                    new Time(this.getCurrentStateTime().getSimulatedTime(),
 	                             this.getSimulatedTimeUnit()));
 	    
-	    String mark = this.currentState == State.COOLING ? " (c)" : " (-)";
+	    String mark = this.currentState == FridgeState.COOLING ? " (c)" : " (-)";
 	    StringBuffer message = new StringBuffer();
 	    message.append(this.currentTemperature.getTime().getSimulatedTime());
 	    message.append(mark);
@@ -297,9 +369,9 @@ public class FridgeTemperatureModel extends AtomicHIOA {
 	    super.userDefinedInternalTransition(elapsedTime);
 
 	    assert glassBoxInvariants(this) :
-	            new AssertionError("White-box invariants violation!");
+	            new NeoSim4JavaException("White-box invariants violation!");
 	    assert blackBoxInvariants(this) :
-	            new AssertionError("Black-box invariants violation!");
+	            new NeoSim4JavaException("Black-box invariants violation!");
 	}
 	
 	@Override
@@ -331,9 +403,9 @@ public class FridgeTemperatureModel extends AtomicHIOA {
 	    super.userDefinedExternalTransition(elapsedTime);
 
 	    assert glassBoxInvariants(this) :
-	           new AssertionError("White-box invariants violation!");
+	           new NeoSim4JavaException("White-box invariants violation!");
 	    assert blackBoxInvariants(this) :
-	           new AssertionError("Black-box invariants violation!");
+	           new NeoSim4JavaException("Black-box invariants violation!");
 	}
 	
 	@Override
