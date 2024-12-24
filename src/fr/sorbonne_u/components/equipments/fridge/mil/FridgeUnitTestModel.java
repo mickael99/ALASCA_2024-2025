@@ -16,8 +16,8 @@ import fr.sorbonne_u.devs_simulation.utils.StandardLogger;
 
 @ModelExternalEvents(exported = {SwitchOnFridge.class,
 								 SwitchOffFridge.class,
-								 Cool.class,
-								 DoNotCool.class,
+								 CoolFridge.class,
+								 DoNotCoolFridge.class,
 								 SetPowerFridge.class})
 public class FridgeUnitTestModel extends AtomicModel {
 
@@ -63,13 +63,13 @@ public class FridgeUnitTestModel extends AtomicModel {
 				ret.add(new SwitchOnFridge(this.getTimeOfNextEvent()));
 				break;
 			case 2:
-				ret.add(new Cool(this.getTimeOfNextEvent()));
+				ret.add(new CoolFridge(this.getTimeOfNextEvent()));
 				break;
 			case 3:
-				ret.add(new DoNotCool(this.getTimeOfNextEvent()));
+				ret.add(new DoNotCoolFridge(this.getTimeOfNextEvent()));
 				break;
 			case 4:
-				ret.add(new Cool(this.getTimeOfNextEvent()));
+				ret.add(new CoolFridge(this.getTimeOfNextEvent()));
 				break;
 			case 5:
 				ret.add(new SetPowerFridge(this.getTimeOfNextEvent(),

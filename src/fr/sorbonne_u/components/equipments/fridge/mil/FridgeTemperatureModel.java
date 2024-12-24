@@ -24,8 +24,8 @@ import fr.sorbonne_u.devs_simulation.utils.StandardLogger;
 import fr.sorbonne_u.components.equipments.fridge.mil.events.*;
 
 @ModelExternalEvents(imported = {SwitchOffFridge.class,
-								 Cool.class,
-								 DoNotCool.class})
+								 CoolFridge.class,
+								 DoNotCoolFridge.class})
 @ModelImportedVariable(name = "externalTemperature", type = Double.class)
 @ModelImportedVariable(name = "currentCoolingPower", type = Double.class)
 public class FridgeTemperatureModel extends AtomicHIOA {

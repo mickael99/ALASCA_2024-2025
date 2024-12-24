@@ -7,24 +7,23 @@ import fr.sorbonne_u.devs_simulation.models.events.EventI;
 import fr.sorbonne_u.devs_simulation.models.interfaces.AtomicModelI;
 import fr.sorbonne_u.devs_simulation.models.time.Time;
 
-public class Cool extends Event implements FridgeEventI {
+public class DoNotCoolFridge extends Event implements FridgeEventI {
 
 	private static final long serialVersionUID = 1L;
 
-	public Cool(Time timeOfOccurrence) {
+	public DoNotCoolFridge(Time timeOfOccurrence) {
 		super(timeOfOccurrence, null);
 	}
 
 	@Override
 	public boolean hasPriorityOver(EventI e) {
-		if (e instanceof SwitchOnFridge || e instanceof DoNotCool) 
-			return false;
-		else 
-			return true;
+		if (e instanceof SwitchOnFridge) 
+			return false; 
+		return true;
 	}
 
 	@Override
-	public void executeOn(AtomicModelI model) {
+	public void	executeOn(AtomicModelI model) {
 		assert	model instanceof FridgeElectricityModel ||
 									model instanceof FridgeTemperatureModel :
 				new AssertionError(
@@ -34,22 +33,22 @@ public class Cool extends Event implements FridgeEventI {
 
 		if (model instanceof FridgeElectricityModel) {
 			FridgeElectricityModel fridge = (FridgeElectricityModel)model;
-			assert	fridge.getState() == FridgeElectricityModel.State.ON:
-					new AssertionError(
-							"model not in the right state, should be "
-							+ "FridgeElectricityModel.State.ON but is "
-							+ fridge.getState());
-			fridge.setState(FridgeElectricityModel.State.COOLING,
+			assert	fridge.getState() == FridgeElectricityModel.State.COOLING:
+				new AssertionError(
+						"model not in the right state, should be "
+								+ "FridgeElectricityModel.State.COOLING but is "
+								+ fridge.getState());
+			fridge.setState(FridgeElectricityModel.State.ON,
 							this.getTimeOfOccurrence());
 		} 
 		else {
 			FridgeTemperatureModel fridge = (FridgeTemperatureModel)model;
-			assert	fridge.getState() == FridgeTemperatureModel.State.NOT_COOLING:
-					new AssertionError(
-							"model not in the right state, should be "
-							+ "FridgeTemperatureModel.State.NOT_COOLING but is "
-							+ fridge.getState());
-			fridge.setState(FridgeTemperatureModel.State.COOLING);
+			assert	fridge.getState() == FridgeTemperatureModel.State.COOLING:
+				new AssertionError(
+						"model not in the right state, should be "
+								+ "FridgeTemperatureModel.State.COOLING but is "
+								+ fridge.getState());
+			fridge.setState(FridgeTemperatureModel.State.NOT_COOLING);
 		}
 	}
 }

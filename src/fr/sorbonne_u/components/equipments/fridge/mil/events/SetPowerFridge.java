@@ -57,11 +57,10 @@ public class SetPowerFridge extends ES_Event implements FridgeEventI {
 
 	@Override
 	public boolean hasPriorityOver(EventI e) {
-		if (e instanceof SwitchOnFridge) 
+		if (e instanceof SwitchOffFridge) 
 			return true;
 		
 		return false;
-		
 	}
 
 	@Override

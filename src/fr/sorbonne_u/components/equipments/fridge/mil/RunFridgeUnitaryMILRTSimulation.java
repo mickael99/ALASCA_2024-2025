@@ -6,7 +6,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import fr.sorbonne_u.components.equipments.fridge.mil.events.*;
+import fr.sorbonne_u.components.equipments.fridge.mil.events.CoolFridge;
+import fr.sorbonne_u.components.equipments.fridge.mil.events.DoNotCoolFridge;
+import fr.sorbonne_u.components.equipments.fridge.mil.events.SetPowerFridge;
+import fr.sorbonne_u.components.equipments.fridge.mil.events.SwitchOffFridge;
+import fr.sorbonne_u.components.equipments.fridge.mil.events.SwitchOnFridge;
 import fr.sorbonne_u.devs_simulation.architectures.Architecture;
 import fr.sorbonne_u.devs_simulation.architectures.ArchitectureI;
 import fr.sorbonne_u.devs_simulation.hioa.architectures.AtomicHIOA_Descriptor;
@@ -19,13 +23,13 @@ import fr.sorbonne_u.devs_simulation.models.architectures.CoupledModelDescriptor
 import fr.sorbonne_u.devs_simulation.models.events.EventSink;
 import fr.sorbonne_u.devs_simulation.models.events.EventSource;
 import fr.sorbonne_u.devs_simulation.simulators.SimulationEngine;
-import fr.sorbonne_u.devs_simulation.simulators.interfaces.SimulationReportI;
 import fr.sorbonne_u.devs_simulation.simulators.interfaces.SimulatorI;
 
-public class RunFridgeUnitaryMILSimulation {
+public class RunFridgeUnitaryMILRTSimulation {
 	
-	public static void main(String[] args)
-	{
+	public static final double ACCELERATION_FACTOR = 1800.0;
+
+	public static void main(String[] args){		
 		try {
 			Map<String,AbstractAtomicModelDescriptor> atomicModelDescriptors =
 															new HashMap<>();
@@ -153,9 +157,6 @@ public class RunFridgeUnitaryMILSimulation {
 
 			SimulatorI se = architecture.constructSimulator();
 			SimulationEngine.SIMULATION_STEP_SLEEP_TIME = 0L;
-			SimulationReportI sr = se.getSimulatedModel().getFinalReport();
-			System.out.println(sr);
-			
 			se.doStandAloneSimulation(0.0, 24.0);
 			System.exit(0);
 		} catch (Exception e) {

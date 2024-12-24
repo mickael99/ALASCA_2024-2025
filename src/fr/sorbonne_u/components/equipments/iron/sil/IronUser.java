@@ -535,21 +535,21 @@ public class IronUser extends AbstractCyPhyComponent implements IronOperationI {
 				(this.currentSimulationType.isNoSimulation() ||
 							this.currentSimulationType.isSILSimulation())) 
 		{			
-//			ClocksServerWithSimulationOutboundPort clocksServerOutboundPort =
-//							new ClocksServerWithSimulationOutboundPort(this);
-//			clocksServerOutboundPort.publishPort();
-//			this.doPortConnection(
-//					clocksServerOutboundPort.getPortURI(),
-//					ClocksServer.STANDARD_INBOUNDPORT_URI,
-//					ClocksServerWithSimulationConnector.class.getCanonicalName());
-//			this.logMessage("IronUser gets the clock.");
-//			AcceleratedAndSimulationClock acceleratedClock =
-//				clocksServerOutboundPort.getClockWithSimulation(this.clockURI);
-//			this.doPortDisconnection(clocksServerOutboundPort.getPortURI());
-//			clocksServerOutboundPort.unpublishPort();
-//
-//			this.logMessage("IronUser waits until start time.");
-//			acceleratedClock.waitUntilStart();
+			ClocksServerWithSimulationOutboundPort clocksServerOutboundPort =
+							new ClocksServerWithSimulationOutboundPort(this);
+			clocksServerOutboundPort.publishPort();
+			this.doPortConnection(
+					clocksServerOutboundPort.getPortURI(),
+					ClocksServer.STANDARD_INBOUNDPORT_URI,
+					ClocksServerWithSimulationConnector.class.getCanonicalName());
+			this.logMessage("IronUser gets the clock.");
+			AcceleratedAndSimulationClock acceleratedClock =
+				clocksServerOutboundPort.getClockWithSimulation(this.clockURI);
+			this.doPortDisconnection(clocksServerOutboundPort.getPortURI());
+			clocksServerOutboundPort.unpublishPort();
+
+			this.logMessage("IronUser waits until start time.");
+			acceleratedClock.waitUntilStart();
 			this.logMessage("IronUser starts.");
 			
 			if (this.currentSimulationType.isNoSimulation()) {

@@ -16,7 +16,7 @@ import fr.sorbonne_u.components.equipments.fridge.mil.FridgeElectricityModel;
 import fr.sorbonne_u.components.equipments.fridge.mil.FridgeTemperatureModel;
 import fr.sorbonne_u.components.equipments.fridge.mil.FridgeUnitTestModel;
 import fr.sorbonne_u.components.equipments.fridge.mil.events.Cool;
-import fr.sorbonne_u.components.equipments.fridge.mil.events.DoNotCool;
+import fr.sorbonne_u.components.equipments.fridge.mil.events.DoNotCoolFridge;
 import fr.sorbonne_u.components.equipments.fridge.mil.events.SetPowerFridge;
 import fr.sorbonne_u.components.equipments.fridge.mil.events.SwitchOffFridge;
 import fr.sorbonne_u.components.equipments.fridge.mil.events.SwitchOnFridge;
@@ -321,12 +321,12 @@ public class RunHemMILSimulation {
 										  Cool.class)
 					});
 			connections.put(
-					new EventSource(FridgeUnitTestModel.URI, DoNotCool.class),
+					new EventSource(FridgeUnitTestModel.URI, DoNotCoolFridge.class),
 					new EventSink[] {
 							new EventSink(FridgeElectricityModel.URI,
-										  DoNotCool.class),
+										  DoNotCoolFridge.class),
 							new EventSink(FridgeTemperatureModel.URI,
-										  DoNotCool.class)
+										  DoNotCoolFridge.class)
 					});
 			
 			// Add smart lighting events

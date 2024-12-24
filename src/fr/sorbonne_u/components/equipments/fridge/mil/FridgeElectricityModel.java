@@ -8,6 +8,7 @@ import fr.sorbonne_u.components.equipments.fridge.mil.events.FridgeEventI;
 import fr.sorbonne_u.components.equipments.hem.mil.HEM_ReportI;
 import fr.sorbonne_u.components.utils.Electricity;
 import fr.sorbonne_u.devs_simulation.exceptions.MissingRunParameterException;
+import fr.sorbonne_u.devs_simulation.exceptions.NeoSim4JavaException;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ExportedVariable;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ModelExportedVariable;
 import fr.sorbonne_u.devs_simulation.hioa.models.AtomicHIOA;
@@ -23,14 +24,15 @@ import fr.sorbonne_u.devs_simulation.simulators.interfaces.SimulationReportI;
 import fr.sorbonne_u.devs_simulation.utils.InvariantChecking;
 import fr.sorbonne_u.devs_simulation.utils.Pair;
 import fr.sorbonne_u.devs_simulation.utils.StandardLogger;
+import fr.sorbonne_u.components.cyphy.plugins.devs.AtomicSimulatorPlugin;
 import fr.sorbonne_u.components.equipments.fridge.mil.events.*;
 
 
 @ModelExternalEvents(imported = {SwitchOnFridge.class,
 								 SwitchOffFridge.class,
 								 SetPowerFridge.class,
-								 Cool.class,
-								 DoNotCool.class})
+								 CoolFridge.class,
+								 DoNotCoolFridge.class})
 @ModelExportedVariable(name = "currentIntensity", type = Double.class)
 @ModelExportedVariable(name = "currentHeatingPower", type = Double.class)
 public class FridgeElectricityModel extends AtomicHIOA {
@@ -42,14 +44,19 @@ public class FridgeElectricityModel extends AtomicHIOA {
 	public static enum	State {
 		ON,
 		COOLING,
-		OFF
+		OFF,
+		DOOR_OPEN
 	}
 	
 	private static final long serialVersionUID = 1L;
-	public static final String URI = FridgeElectricityModel.class.getSimpleName();
+	
+	public static final String	MIL_URI = FridgeElectricityModel.class.getSimpleName() + "-MIL";
+	public static final String	MIL_RT_URI = FridgeElectricityModel.class.getSimpleName() + "-MIL-RT";
+	public static final String	SIL_URI = FridgeElectricityModel.class.getSimpleName() + "-SIL";
 
 	protected static double	IDLE_POWER = 5.0;
 	public static double MAX_COOLING_POWER = 500.0;
+	protected static double DOOR_OPEN_EXTRA_CONSUMPTION_FACTOR = 1.2;
 	protected static double TENSION = 220.0;
 
 	protected State currentState = State.OFF;
@@ -73,9 +80,9 @@ public class FridgeElectricityModel extends AtomicHIOA {
 		this.getSimulationEngine().setLogger(new StandardLogger());
 
 		assert	glassBoxInvariants(this) :
-				new AssertionError("White-box invariants violation!");
+				new NeoSim4JavaException("White-box invariants violation!");
 		assert	blackBoxInvariants(this) :
-				new AssertionError("Black-box invariants violation!");
+				new NeoSim4JavaException("Black-box invariants violation!");
 	}
 	
 	
@@ -136,10 +143,20 @@ public class FridgeElectricityModel extends AtomicHIOA {
 
 		boolean ret = true;
 		ret &= InvariantChecking.checkBlackBoxInvariant(
-				URI != null && !URI.isEmpty(),
+				MIL_URI != null && !MIL_URI.isEmpty(),
 				FridgeElectricityModel.class,
 				instance,
-				"URI != null && !URI.isEmpty()");
+				"MIL_URI != null && !mil_URI.isEmpty()");
+		ret &= InvariantChecking.checkBlackBoxInvariant(
+				SIL_URI != null && !SIL_URI.isEmpty(),
+				FridgeElectricityModel.class,
+				instance,
+				"SIL_URI != null && !sil_URI.isEmpty()");
+		ret &= InvariantChecking.checkBlackBoxInvariant(
+				MIL_RT_URI != null && !MIL_RT_URI.isEmpty(),
+				FridgeElectricityModel.class,
+				instance,
+				"MIL_RT_URI != null && !mil_rt_URI.isEmpty()");
 		ret &= InvariantChecking.checkBlackBoxInvariant(
 				IDLE_POWER_RUNPNAME != null &&
 									!IDLE_POWER_RUNPNAME.isEmpty(),
@@ -174,9 +191,9 @@ public class FridgeElectricityModel extends AtomicHIOA {
 			this.consumptionHasChanged = true;					
 
 		assert	glassBoxInvariants(this) :
-				new AssertionError("White-box invariants violation!");
+				new NeoSim4JavaException("White-box invariants violation!");
 		assert	blackBoxInvariants(this) :
-				new AssertionError("Black-box invariants violation!");
+				new NeoSim4JavaException("Black-box invariants violation!");
 	}
 	
 	public State getState() {
@@ -186,9 +203,9 @@ public class FridgeElectricityModel extends AtomicHIOA {
 	public void setCurrentCoolingPower(double newPower, Time t) {
 		assert	newPower >= 0.0 &&
 				newPower <= FridgeElectricityModel.MAX_COOLING_POWER :
-			new AssertionError(
+			new NeoSim4JavaException(
 					"Precondition violation: newPower >= 0.0 && "
-					+ "newPower <= HeaterElectricityModel.MAX_HEATING_POWER,"
+					+ "newPower <= FridgeElectricityModel.MAX_COOLING_POWER,"
 					+ " but newPower = " + newPower);
 
 		double oldPower = this.currentCoolingPower.getValue();
@@ -197,9 +214,9 @@ public class FridgeElectricityModel extends AtomicHIOA {
 			this.consumptionHasChanged = true;
 		
 		assert	glassBoxInvariants(this) :
-				new AssertionError("White-box invariants violation!");
+				new NeoSim4JavaException("White-box invariants violation!");
 		assert	blackBoxInvariants(this) :
-				new AssertionError("Black-box invariants violation!");
+				new NeoSim4JavaException("Black-box invariants violation!");
 	}
 	
 	@Override
@@ -214,9 +231,9 @@ public class FridgeElectricityModel extends AtomicHIOA {
 		this.logMessage("simulation begins.\n");
 
 		assert	glassBoxInvariants(this) :
-				new AssertionError("White-box invariants violation!");
+				new NeoSim4JavaException("White-box invariants violation!");
 		assert	blackBoxInvariants(this) :
-				new AssertionError("Black-box invariants violation!");
+				new NeoSim4JavaException("Black-box invariants violation!");
 	}
 	
 	@Override
@@ -226,7 +243,6 @@ public class FridgeElectricityModel extends AtomicHIOA {
 	
 	@Override
 	public Pair<Integer, Integer> fixpointInitialiseVariables() {
-		System.out.println("on va initialisé la consommation du frigo");
 		Pair<Integer, Integer> ret = null;
 
 		if (!this.currentIntensity.isInitialised() ||
@@ -245,9 +261,9 @@ public class FridgeElectricityModel extends AtomicHIOA {
 			ret = new Pair<>(0, 0);
 		
 		assert	glassBoxInvariants(this) :
-				new AssertionError("White-box invariants violation!");
+				new NeoSim4JavaException("White-box invariants violation!");
 		assert	blackBoxInvariants(this) :
-				new AssertionError("Black-box invariants violation!");
+				new NeoSim4JavaException("Black-box invariants violation!");
 
 		return ret;
 	}
@@ -268,11 +284,34 @@ public class FridgeElectricityModel extends AtomicHIOA {
 			ret = Duration.INFINITY;
 
 		assert	glassBoxInvariants(this) :
-				new AssertionError("White-box invariants violation!");
+				new NeoSim4JavaException("White-box invariants violation!");
 		assert	blackBoxInvariants(this) :
-				new AssertionError("Black-box invariants violation!");
+				new NeoSim4JavaException("Black-box invariants violation!");
 
 		return ret;
+	}
+	
+	protected void updateTotalConsumption(Duration elapsedTime) {
+	    switch (this.currentState) {
+	        case ON:
+	            this.totalConsumption += Electricity.computeConsumption(
+	                elapsedTime, TENSION * IDLE_POWER);
+	            break;
+
+	        case COOLING:
+	            this.totalConsumption += Electricity.computeConsumption(
+	                elapsedTime, TENSION * this.currentCoolingPower.getValue());
+	            break;
+	         
+	        case DOOR_OPEN:
+	        	this.totalConsumption += Electricity.computeConsumption(
+		                elapsedTime, TENSION * IDLE_POWER * DOOR_OPEN_EXTRA_CONSUMPTION_FACTOR);
+		            break;
+
+	        case OFF:
+	            // No consumption if the fridge is turning off
+	            break;
+	    }
 	}
 	
 	@Override
@@ -301,9 +340,9 @@ public class FridgeElectricityModel extends AtomicHIOA {
 	    this.logMessage(sb.toString());
 
 	    assert glassBoxInvariants(this) :
-	            new AssertionError("Glass-box invariants violation!");
+	            new NeoSim4JavaException("Glass-box invariants violation!");
 	    assert blackBoxInvariants(this) :
-	            new AssertionError("Black-box invariants violation!");
+	            new NeoSim4JavaException("Black-box invariants violation!");
 	}
 	
 	@Override
@@ -316,8 +355,7 @@ public class FridgeElectricityModel extends AtomicHIOA {
 	    Event ce = (Event)currentEvents.get(0);
 	    assert ce instanceof FridgeEventI;
 
-	    this.totalConsumption +=
-	            Electricity.computeConsumption(elapsedTime, TENSION * this.currentIntensity.getValue());
+	    this.updateTotalConsumption(elapsedTime);
 
 	    StringBuffer sb = new StringBuffer("execute the external event: ");
 	    sb.append(ce.eventAsString());
@@ -327,18 +365,19 @@ public class FridgeElectricityModel extends AtomicHIOA {
 	    ce.executeOn(this);
 
 	    assert glassBoxInvariants(this) :
-	            new AssertionError("Glass-box invariants violation!");
+	            new NeoSim4JavaException("Glass-box invariants violation!");
 	    assert blackBoxInvariants(this) :
-	            new AssertionError("Black-box invariants violation!");
+	            new NeoSim4JavaException("Black-box invariants violation!");
 	}
 	
 	@Override
 	public void endSimulation(Time endTime) {
 		Duration d = endTime.subtract(this.getCurrentStateTime());
-		this.totalConsumption +=
-				Electricity.computeConsumption(d, TENSION * this.currentIntensity.getValue());
+		
+		this.updateTotalConsumption(d);
 
 		this.logMessage("simulation ends.\n");
+		
 		super.endSimulation(endTime);
 	}
 
@@ -355,6 +394,11 @@ public class FridgeElectricityModel extends AtomicHIOA {
 	public void setSimulationRunParameters(Map<String, Object> simParams) throws MissingRunParameterException {
 		super.setSimulationRunParameters(simParams);
 
+		if(simParams.containsKey(AtomicSimulatorPlugin.OWNER_RUNTIME_PARAMETER_NAME)) {
+			this.getSimulationEngine().setLogger(
+					AtomicSimulatorPlugin.createComponentLogger(simParams));
+		}
+		
 		String idleName =
 			ModelI.createRunParameterName(getURI(), IDLE_POWER_RUNPNAME);
 		if (simParams.containsKey(idleName)) 
@@ -371,9 +415,9 @@ public class FridgeElectricityModel extends AtomicHIOA {
 			TENSION = (double) simParams.get(tensionName);
 		
 		assert	glassBoxInvariants(this) :
-				new AssertionError("White-box invariants violation!");
+				new NeoSim4JavaException("White-box invariants violation!");
 		assert	blackBoxInvariants(this) :
-				new AssertionError("Black-box invariants violation!");
+				new NeoSim4JavaException("Black-box invariants violation!");
 	}
 	
 	public static class FridgeElectricityReport implements SimulationReportI, HEM_ReportI {
