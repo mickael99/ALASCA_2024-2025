@@ -1,8 +1,12 @@
 package fr.sorbonne_u.components.equipments.fridge.mil;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import fr.sorbonne_u.components.cyphy.plugins.devs.AtomicSimulatorPlugin;
+import fr.sorbonne_u.devs_simulation.exceptions.MissingRunParameterException;
+import fr.sorbonne_u.devs_simulation.exceptions.NeoSim4JavaException;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ExportedVariable;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ModelExportedVariable;
 import fr.sorbonne_u.devs_simulation.hioa.models.AtomicHIOA;
@@ -23,21 +27,22 @@ public class ExternalTemperatureModel extends AtomicHIOA {
 	// Constants and variables
 	// -------------------------------------------------------------------------
 	private static final long serialVersionUID = 1L;
-	public static final String		URI = ExternalTemperatureModel.class.
-															getSimpleName();
+	
+	public static final String MIL_URI = ExternalTemperatureModel.class.getSimpleName() + "-MIL";
+	public static final String MIL_RT_URI = ExternalTemperatureModel.class.getSimpleName() + "-MIL-RT";
+	public static final String SIL_URI = ExternalTemperatureModel.class.getSimpleName() + "-SIL";
 					
-	protected static double			MIN_EXTERNAL_TEMPERATURE = 0.0;
-	protected static double			MAX_EXTERNAL_TEMPERATURE = 40.0;
+	protected static double MIN_EXTERNAL_TEMPERATURE = 0.0;
+	protected static double	MAX_EXTERNAL_TEMPERATURE = 20.0;
 
-	protected static double			PERIOD = 24.0;
-	protected static double			STEP = 15.0 / 24.0;	// 15 minutes
+	protected static double PERIOD = 24.0;
+	protected static double	STEP = 15.0 / 24.0;	// 15 minutes
 
-	protected final Duration		evaluationStep;
-	protected double				cycleTime;
+	protected final Duration evaluationStep;
+	protected double cycleTime;
 	
 	@ExportedVariable(type = Double.class)
-	protected final Value<Double>	externalTemperature =
-												new Value<Double>(this);
+	protected final Value<Double> externalTemperature = new Value<Double>(this);
 
 	
 	// -------------------------------------------------------------------------
@@ -50,9 +55,9 @@ public class ExternalTemperatureModel extends AtomicHIOA {
 		this.getSimulationEngine().setLogger(new StandardLogger());
 
 		assert glassBoxInvariants(this):
-				new AssertionError("White-box invariants violation!");
+				new NeoSim4JavaException("White-box invariants violation!");
 		assert blackBoxInvariants(this):
-				new AssertionError("Black-box invariants violation!");
+				new NeoSim4JavaException("Black-box invariants violation!");
 	}
 	
 	
@@ -103,10 +108,20 @@ public class ExternalTemperatureModel extends AtomicHIOA {
 
 		boolean ret = true;
 		ret &= InvariantChecking.checkBlackBoxInvariant(
-					URI != null && !URI.isEmpty(),
+					MIL_URI != null && !MIL_URI.isEmpty(),
 					ExternalTemperatureModel.class,
 					instance,
-					"URI != null && !URI.isEmpty()");
+					"MIL_URI != null && !MIL_URI.isEmpty()");
+		ret &= InvariantChecking.checkBlackBoxInvariant(
+					MIL_RT_URI != null && !MIL_RT_URI.isEmpty(),
+					ExternalTemperatureModel.class,
+					instance,
+					"MIL_RT_URI != null && !MIL_RT_URI.isEmpty()");
+		ret &= InvariantChecking.checkBlackBoxInvariant(
+					SIL_URI != null && !SIL_URI.isEmpty(),
+					ExternalTemperatureModel.class,
+					instance,
+					"SIL_URI != null && !SIL_URI.isEmpty()");
 		ret &= InvariantChecking.checkBlackBoxInvariant(
 					MAX_EXTERNAL_TEMPERATURE > MIN_EXTERNAL_TEMPERATURE,
 					ExternalTemperatureModel.class,
@@ -132,9 +147,9 @@ public class ExternalTemperatureModel extends AtomicHIOA {
 		this.cycleTime = 0.0;
 
 		assert	glassBoxInvariants(this) :
-			new AssertionError("White-box invariants violation!");
+				new NeoSim4JavaException("White-box invariants violation!");
 		assert	blackBoxInvariants(this) :
-				new AssertionError("Black-box invariants violation!");
+				new NeoSim4JavaException("Black-box invariants violation!");
 	}
 	
 	@Override
@@ -164,9 +179,9 @@ public class ExternalTemperatureModel extends AtomicHIOA {
 		}
 
 		assert	glassBoxInvariants(this) :
-				new AssertionError("White-box invariants violation!");
+				new NeoSim4JavaException("White-box invariants violation!");
 		assert	blackBoxInvariants(this) :
-				new AssertionError("Black-box invariants violation!");
+				new NeoSim4JavaException("Black-box invariants violation!");
 
 		return ret;
 	}
@@ -176,9 +191,9 @@ public class ExternalTemperatureModel extends AtomicHIOA {
 		super.initialiseVariables();
 
 		assert	glassBoxInvariants(this) :
-				new AssertionError("Glass-box invariants violation!");
+				new NeoSim4JavaException("Glass-box invariants violation!");
 		assert	blackBoxInvariants(this) :
-				new AssertionError("Black-box invariants violation!");
+				new NeoSim4JavaException("Black-box invariants violation!");
 	}
 	
 	@Override
@@ -218,15 +233,25 @@ public class ExternalTemperatureModel extends AtomicHIOA {
 		this.logMessage(message.toString());
 
 		assert	glassBoxInvariants(this) :
-				new AssertionError("White-box invariants violation!");
+				new NeoSim4JavaException("White-box invariants violation!");
 		assert	blackBoxInvariants(this) :
-				new AssertionError("Black-box invariants violation!");
+				new NeoSim4JavaException("Black-box invariants violation!");
 	}
 	
 	@Override
 	public void	endSimulation(Time endTime) {
 		this.logMessage("simulation ends.\n");
 		super.endSimulation(endTime);
+	}
+	
+	@Override
+	public void setSimulationRunParameters(Map<String, Object> simParams) throws MissingRunParameterException {
+		if (simParams.containsKey(
+						AtomicSimulatorPlugin.OWNER_RUNTIME_PARAMETER_NAME)) 
+		{
+			this.getSimulationEngine().setLogger(
+					AtomicSimulatorPlugin.createComponentLogger(simParams));
+		}
 	}
 	
 	@Override
