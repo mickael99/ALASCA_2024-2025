@@ -18,7 +18,9 @@ import fr.sorbonne_u.devs_simulation.utils.StandardLogger;
 								 SwitchOffFridge.class,
 								 CoolFridge.class,
 								 DoNotCoolFridge.class,
-								 SetPowerFridge.class})
+								 SetPowerFridge.class,
+								 OpenDoorFridge.class,
+								 CloseDoorFridge.class})
 public class FridgeUnitTestModel extends AtomicModel {
 
 	// -------------------------------------------------------------------------
@@ -26,10 +28,12 @@ public class FridgeUnitTestModel extends AtomicModel {
 	// -------------------------------------------------------------------------
 
 	private static final long serialVersionUID = 1L;
-	public static final String	URI = FridgeUnitTestModel.class.getSimpleName();
-		
-	protected int	step;
 
+	public static final String MIL_URI = FridgeUnitTestModel.class.getSimpleName() + "-MIL";
+	public static final String MIL_RT_URI = FridgeUnitTestModel.class.getSimpleName() + "-MIL-RT";
+	public static final String SIL_URI = FridgeUnitTestModel.class.getSimpleName() + "-SIL";
+			
+	protected int	step;
 	
 	// -------------------------------------------------------------------------
 	// Constructors
@@ -56,41 +60,48 @@ public class FridgeUnitTestModel extends AtomicModel {
 	
 	@Override
 	public ArrayList<EventI> output() {
-		if (this.step > 0 && this.step < 10) {
+		if (this.step > 0 && this.step < 12) {
 			ArrayList<EventI> ret = new ArrayList<EventI>();
 			switch (this.step) {
-			case 1:
-				ret.add(new SwitchOnFridge(this.getTimeOfNextEvent()));
-				break;
-			case 2:
-				ret.add(new CoolFridge(this.getTimeOfNextEvent()));
-				break;
-			case 3:
-				ret.add(new DoNotCoolFridge(this.getTimeOfNextEvent()));
-				break;
-			case 4:
-				ret.add(new CoolFridge(this.getTimeOfNextEvent()));
-				break;
-			case 5:
-				ret.add(new SetPowerFridge(this.getTimeOfNextEvent(),
-										   new PowerValue(500.0)));
-				break;
-			case 6:
-				ret.add(new SetPowerFridge(this.getTimeOfNextEvent(),
-										   new PowerValue(400.0)));
-				break;
-			case 7:
-				ret.add(new SetPowerFridge(this.getTimeOfNextEvent(),
-										   new PowerValue(300.0)));
-				break;
-			case 8:
-				ret.add(new SetPowerFridge(this.getTimeOfNextEvent(),
-										   new PowerValue(200.0)));
-				break;
-			case 9:
-				ret.add(new SwitchOffFridge(this.getTimeOfNextEvent()));
-				break;
+				case 1:
+					ret.add(new SwitchOnFridge(this.getTimeOfNextEvent()));
+					break;
+				case 2:
+					ret.add(new OpenDoorFridge(this.getTimeOfNextEvent()));
+					break;
+				case 3:
+					ret.add(new CloseDoorFridge(this.getTimeOfNextEvent()));
+					break;
+				case 4:
+					ret.add(new CoolFridge(this.getTimeOfNextEvent()));
+					break;
+				case 5:
+					ret.add(new DoNotCoolFridge(this.getTimeOfNextEvent()));
+					break;
+				case 6:
+					ret.add(new CoolFridge(this.getTimeOfNextEvent()));
+					break;
+				case 7:
+					ret.add(new SetPowerFridge(this.getTimeOfNextEvent(),
+											   new PowerValue(500.0)));
+					break;
+				case 8:
+					ret.add(new SetPowerFridge(this.getTimeOfNextEvent(),
+											   new PowerValue(400.0)));
+					break;
+				case 9:
+					ret.add(new SetPowerFridge(this.getTimeOfNextEvent(),
+											   new PowerValue(300.0)));
+					break;
+				case 10:
+					ret.add(new SetPowerFridge(this.getTimeOfNextEvent(),
+											   new PowerValue(200.0)));
+					break;
+				case 11:
+					ret.add(new SwitchOffFridge(this.getTimeOfNextEvent()));
+					break;
 			}
+			this.logMessage("emitting " + ret.get(ret.size() - 1) + ".");
 			return ret;
 		} 
 		else 
@@ -99,7 +110,7 @@ public class FridgeUnitTestModel extends AtomicModel {
 	
 	@Override
 	public Duration timeAdvance() {
-		if (this.step < 10) 
+		if (this.step < 12) 
 			return new Duration(1.0, this.getSimulatedTimeUnit());
 		else 
 			return Duration.INFINITY;

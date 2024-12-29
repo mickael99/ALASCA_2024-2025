@@ -10,7 +10,6 @@ import fr.sorbonne_u.components.utils.Electricity;
 import fr.sorbonne_u.devs_simulation.exceptions.MissingRunParameterException;
 import fr.sorbonne_u.devs_simulation.exceptions.NeoSim4JavaException;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ExportedVariable;
-import fr.sorbonne_u.devs_simulation.hioa.annotations.InternalVariable;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ModelExportedVariable;
 import fr.sorbonne_u.devs_simulation.hioa.models.AtomicHIOA;
 import fr.sorbonne_u.devs_simulation.hioa.models.vars.Value;
@@ -37,6 +36,7 @@ import fr.sorbonne_u.components.equipments.fridge.mil.events.*;
 								 OpenDoorFridge.class,
 								 CloseDoorFridge.class})
 @ModelExportedVariable(name = "currentIntensity", type = Double.class)
+@ModelExportedVariable(name = "currentCoolingPower", type = Double.class)
 public class FridgeElectricityModel extends AtomicHIOA implements FridgeOperationI{
 
 	// -------------------------------------------------------------------------
@@ -58,6 +58,8 @@ public class FridgeElectricityModel extends AtomicHIOA implements FridgeOperatio
 
 	protected static double	IDLE_POWER = 5.0;
 	public static double MAX_COOLING_POWER = 500.0;
+	protected static double DOOR_OPEN_POWER = 50.0;
+	
 	protected static double DOOR_OPEN_EXTRA_CONSUMPTION_FACTOR = 1.2;
 	protected static double TENSION = 220.0;
 
@@ -66,7 +68,7 @@ public class FridgeElectricityModel extends AtomicHIOA implements FridgeOperatio
 	protected double totalConsumption;
 
 	
-	@InternalVariable(type = Double.class)
+	@ExportedVariable(type = Double.class)
 	protected final Value<Double> currentCoolingPower = new Value<Double>(this);
 	
 	@ExportedVariable(type = Double.class)
@@ -324,19 +326,28 @@ public class FridgeElectricityModel extends AtomicHIOA implements FridgeOperatio
 	    super.userDefinedInternalTransition(elapsedTime);
 
 	    Time t = this.getCurrentStateTime();
-	    if (this.currentState == FridgeState.ON) 
-	        this.currentIntensity.setNewValue(FridgeElectricityModel.IDLE_POWER / 
-	        									FridgeElectricityModel.TENSION, t);
-	    else if (this.currentState == FridgeState.COOLING) 
-	        this.currentIntensity.setNewValue(this.currentCoolingPower.getValue() / 
-	                							FridgeElectricityModel.TENSION,t);
-	    else {
-	        assert this.currentState == FridgeState.OFF;
-	        this.currentIntensity.setNewValue(0.0, t);
+	    
+	    switch(this.currentState) {
+		    case ON:
+		    	 this.currentIntensity.setNewValue(FridgeElectricityModel.IDLE_POWER / 
+							FridgeElectricityModel.TENSION, t);
+		    	 break;
+		    	 
+		    case COOLING:
+		    	this.currentIntensity.setNewValue(this.currentCoolingPower.getValue() / 
+						FridgeElectricityModel.TENSION,t);
+		    	break;
+		    	
+		    case DOOR_OPEN:
+		    	this.currentIntensity.setNewValue(FridgeElectricityModel.DOOR_OPEN_POWER / 
+						FridgeElectricityModel.TENSION,t);
+		    	break;
+		    	
+		    case OFF:
+		    	 this.currentIntensity.setNewValue(0.0, t);
+		    	 break;
 	    }
-
-	    if(this.currentIntensity.getValue() == null)
-	    	System.out.println("c'est nul");
+	    
 	    StringBuffer sb = new StringBuffer("new consumption: ");
 	    sb.append(this.currentIntensity.getValue());
 	    sb.append(" amperes at ");
@@ -457,7 +468,11 @@ public class FridgeElectricityModel extends AtomicHIOA implements FridgeOperatio
 			ret.append(indent);
 			ret.append("---\n");
 			return ret.toString();
-		}		
+		}	
+		
+		public String toString() {
+		    return this.printout(""); 
+		}
 	}
 
 	@Override

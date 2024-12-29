@@ -39,6 +39,7 @@ import fr.sorbonne_u.devs_simulation.utils.StandardLogger;
 								 CloseDoorFridge.class,
 								 OpenDoorFridge.class})
 @ModelImportedVariable(name = "externalTemperature", type = Double.class)
+@ModelImportedVariable(name = "currentCoolingPower", type = Double.class)
 public class FridgeTemperatureModel extends AtomicHIOA implements FridgeOperationI {
 	
 	// -------------------------------------------------------------------------
@@ -73,7 +74,7 @@ public class FridgeTemperatureModel extends AtomicHIOA implements FridgeOperatio
 	@ImportedVariable(type = Double.class)
 	protected Value<Double>	externalTemperature;
 	
-	@InternalVariable(type = Double.class)
+	@ImportedVariable(type = Double.class)
 	protected Value<Double>	currentCoolingPower;
 	
 	@InternalVariable(type = Double.class)
@@ -448,6 +449,10 @@ public class FridgeTemperatureModel extends AtomicHIOA implements FridgeOperatio
 			ret.append(indent);
 			ret.append("---\n");
 			return ret.toString();
+		}
+		
+		public String toString() {
+		    return this.printout(""); 
 		}
 	}
 

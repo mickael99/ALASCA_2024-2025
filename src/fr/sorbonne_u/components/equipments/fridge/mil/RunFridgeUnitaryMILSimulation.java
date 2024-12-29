@@ -31,6 +31,13 @@ public class RunFridgeUnitaryMILSimulation {
 															new HashMap<>();
 
 			atomicModelDescriptors.put(
+					FridgeStateModel.MIL_URI,
+					AtomicModelDescriptor.create(
+							FridgeStateModel.class,
+							FridgeStateModel.MIL_URI,
+							TimeUnit.HOURS,
+							null));
+			atomicModelDescriptors.put(
 					FridgeElectricityModel.MIL_URI,
 					AtomicHIOA_Descriptor.create(
 							FridgeElectricityModel.class,
@@ -38,24 +45,24 @@ public class RunFridgeUnitaryMILSimulation {
 							TimeUnit.HOURS,
 							null));
 			atomicModelDescriptors.put(
-					FridgeTemperatureModel.URI,
+					FridgeTemperatureModel.MIL_URI,
 					AtomicHIOA_Descriptor.create(
 							FridgeTemperatureModel.class,
-							FridgeTemperatureModel.URI,
+							FridgeTemperatureModel.MIL_URI,
 							TimeUnit.HOURS,
 							null));
 			atomicModelDescriptors.put(
-					ExternalTemperatureModel.URI,
+					ExternalTemperatureModel.MIL_URI,
 					AtomicHIOA_Descriptor.create(
 							ExternalTemperatureModel.class,
-							ExternalTemperatureModel.URI,
+							ExternalTemperatureModel.MIL_URI,
 							TimeUnit.HOURS,
 							null));
 			atomicModelDescriptors.put(
-					FridgeUnitTestModel.URI,
+					FridgeUnitTestModel.MIL_URI,
 					AtomicModelDescriptor.create(
 							FridgeUnitTestModel.class,
-							FridgeUnitTestModel.URI,
+							FridgeUnitTestModel.MIL_URI,
 							TimeUnit.HOURS,
 							null));
 
@@ -63,78 +70,150 @@ public class RunFridgeUnitaryMILSimulation {
 
 			Set<String> submodels = new HashSet<String>();
 			submodels.add(FridgeElectricityModel.MIL_URI);
-			submodels.add(FridgeTemperatureModel.URI);
-			submodels.add(ExternalTemperatureModel.URI);
-			submodels.add(FridgeUnitTestModel.URI);
+			submodels.add(FridgeTemperatureModel.MIL_URI);
+			submodels.add(ExternalTemperatureModel.MIL_URI);
+			submodels.add(FridgeUnitTestModel.MIL_URI);
+			submodels.add(FridgeStateModel.MIL_URI);
 			
 			Map<EventSource,EventSink[]> connections = new HashMap<EventSource,EventSink[]>();
 
+			// UnitTestModel => StateModel
 			connections.put(
-					new EventSource(FridgeUnitTestModel.URI,
-									SetPowerFridge.class),
-					new EventSink[] {
-							new EventSink(FridgeElectricityModel.MIL_URI,
-										  SetPowerFridge.class)
-					});
-			connections.put(
-					new EventSource(FridgeUnitTestModel.URI,
+					new EventSource(FridgeUnitTestModel.MIL_URI,
 									SwitchOnFridge.class),
 					new EventSink[] {
-							new EventSink(FridgeElectricityModel.MIL_URI,
+							new EventSink(FridgeStateModel.MIL_URI,
 										  SwitchOnFridge.class)
 					});
 			connections.put(
-					new EventSource(FridgeUnitTestModel.URI,
+					new EventSource(FridgeUnitTestModel.MIL_URI,
 									SwitchOffFridge.class),
 					new EventSink[] {
-							new EventSink(FridgeElectricityModel.MIL_URI,
-										  SwitchOffFridge.class),
-							new EventSink(FridgeTemperatureModel.URI,
+							new EventSink(FridgeStateModel.MIL_URI,
 										  SwitchOffFridge.class)
 					});
 			connections.put(
-					new EventSource(FridgeUnitTestModel.URI, CoolFridge.class),
+					new EventSource(FridgeUnitTestModel.MIL_URI,
+									OpenDoorFridge.class),
 					new EventSink[] {
-							new EventSink(FridgeElectricityModel.MIL_URI,
-										  CoolFridge.class),
-							new EventSink(FridgeTemperatureModel.URI,
+							new EventSink(FridgeStateModel.MIL_URI,
+										  OpenDoorFridge.class)
+					});
+			connections.put(
+					new EventSource(FridgeUnitTestModel.MIL_URI,
+									CloseDoorFridge.class),
+					new EventSink[] {
+							new EventSink(FridgeStateModel.MIL_URI,
+										  CloseDoorFridge.class)
+					});
+			connections.put(
+					new EventSource(FridgeUnitTestModel.MIL_URI,
+									CoolFridge.class),
+					new EventSink[] {
+							new EventSink(FridgeStateModel.MIL_URI,
 										  CoolFridge.class)
 					});
 			connections.put(
-					new EventSource(FridgeUnitTestModel.URI, DoNotCoolFridge.class),
+					new EventSource(FridgeUnitTestModel.MIL_URI,
+									DoNotCoolFridge.class),
+					new EventSink[] {
+							new EventSink(FridgeStateModel.MIL_URI,
+										  DoNotCoolFridge.class)
+					});
+			connections.put(
+					new EventSource(FridgeUnitTestModel.MIL_URI,
+									SetPowerFridge.class),
+					new EventSink[] {
+							new EventSink(FridgeStateModel.MIL_URI,
+										  SetPowerFridge.class)
+					});
+			
+			
+			// StateModel => ElectricityModel
+			// StateModel => TemperatureModel
+			connections.put(
+					new EventSource(FridgeStateModel.MIL_URI, SwitchOffFridge.class),
+					new EventSink[] {
+							new EventSink(FridgeElectricityModel.MIL_URI,
+										  SwitchOffFridge.class),
+							new EventSink(FridgeTemperatureModel.MIL_URI,
+										  SwitchOffFridge.class)
+					});
+			connections.put(
+					new EventSource(FridgeStateModel.MIL_URI, CoolFridge.class),
+					new EventSink[] {
+							new EventSink(FridgeElectricityModel.MIL_URI,
+										  CoolFridge.class),
+							new EventSink(FridgeTemperatureModel.MIL_URI,
+										  CoolFridge.class)
+					});
+			connections.put(
+					new EventSource(FridgeStateModel.MIL_URI, DoNotCoolFridge.class),
 					new EventSink[] {
 							new EventSink(FridgeElectricityModel.MIL_URI,
 										  DoNotCoolFridge.class),
-							new EventSink(FridgeTemperatureModel.URI,
+							new EventSink(FridgeTemperatureModel.MIL_URI,
 										  DoNotCoolFridge.class)
 					});
+			connections.put(
+					new EventSource(FridgeStateModel.MIL_URI, SwitchOnFridge.class),
+					new EventSink[] {
+							new EventSink(FridgeElectricityModel.MIL_URI,
+										  SwitchOnFridge.class),
+							new EventSink(FridgeTemperatureModel.MIL_URI,
+										  SwitchOnFridge.class)
+					});
+			connections.put(
+					new EventSource(FridgeStateModel.MIL_URI, OpenDoorFridge.class),
+					new EventSink[] {
+							new EventSink(FridgeElectricityModel.MIL_URI,
+										  OpenDoorFridge.class),
+							new EventSink(FridgeTemperatureModel.MIL_URI,
+										  OpenDoorFridge.class)
+					});
+			connections.put(
+					new EventSource(FridgeStateModel.MIL_URI, CloseDoorFridge.class),
+					new EventSink[] {
+							new EventSink(FridgeElectricityModel.MIL_URI,
+										  CloseDoorFridge.class),
+							new EventSink(FridgeTemperatureModel.MIL_URI,
+										  CloseDoorFridge.class)
+					});
+			connections.put(
+					new EventSource(FridgeStateModel.MIL_URI, SetPowerFridge.class),
+					new EventSink[] {
+							new EventSink(FridgeElectricityModel.MIL_URI,
+										  SetPowerFridge.class),
+							new EventSink(FridgeTemperatureModel.MIL_URI,
+										  SetPowerFridge.class)
+					});
 
-			// variable bindings between exporting and importing models
+			// Variable bindings between exporting and importing models
 			Map<VariableSource,VariableSink[]> bindings =
 								new HashMap<VariableSource,VariableSink[]>();
 
 			bindings.put(new VariableSource("externalTemperature",
 											Double.class,
-											ExternalTemperatureModel.URI),
+											ExternalTemperatureModel.MIL_URI),
 						 new VariableSink[] {
 								 new VariableSink("externalTemperature",
 										 		  Double.class,
-										 		  FridgeTemperatureModel.URI)
+										 		  FridgeTemperatureModel.MIL_URI)
 						 });
 			bindings.put(new VariableSource("currentCoolingPower",
-											Double.class,
-											FridgeElectricityModel.MIL_URI),
-						 new VariableSink[] {
-								 new VariableSink("currentCoolingPower",
-										 		  Double.class,
-										 		  FridgeTemperatureModel.URI)
-						 });
+					Double.class,
+					FridgeElectricityModel.MIL_URI),
+			 new VariableSink[] {
+					 new VariableSink("currentCoolingPower",
+							 		  Double.class,
+							 		  FridgeTemperatureModel.MIL_URI)
+			 });
 
 			coupledModelDescriptors.put(
-					FridgeCoupledModel.URI,
+					FridgeCoupledModel.MIL_URI,
 					new CoupledHIOA_Descriptor(
 							FridgeCoupledModel.class,
-							FridgeCoupledModel.URI,
+							FridgeCoupledModel.MIL_URI,
 							submodels,
 							null,
 							null,
@@ -146,17 +225,19 @@ public class RunFridgeUnitaryMILSimulation {
 
 			ArchitectureI architecture =
 					new Architecture(
-							FridgeCoupledModel.URI,
+							FridgeCoupledModel.MIL_URI,
 							atomicModelDescriptors,
 							coupledModelDescriptors,
 							TimeUnit.HOURS);
 
 			SimulatorI se = architecture.constructSimulator();
 			SimulationEngine.SIMULATION_STEP_SLEEP_TIME = 0L;
+			
+			se.doStandAloneSimulation(0.0, 24.0);
+			
 			SimulationReportI sr = se.getSimulatedModel().getFinalReport();
 			System.out.println(sr);
 			
-			se.doStandAloneSimulation(0.0, 24.0);
 			System.exit(0);
 		} catch (Exception e) {
 			throw new RuntimeException(e) ;
