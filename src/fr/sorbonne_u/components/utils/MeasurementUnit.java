@@ -62,6 +62,7 @@ public enum	MeasurementUnit
 	WATTS,
 	VOLTS,
 	CELSIUS,
+	LUX,
 	RAW				// no unit, for data that do not have units, like booleans
 }
 // -----------------------------------------------------------------------------
