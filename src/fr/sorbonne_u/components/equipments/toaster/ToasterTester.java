@@ -7,6 +7,7 @@ import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.equipments.toaster.ToasterImplementationI.ToasterBrowningLevel;
 import fr.sorbonne_u.components.equipments.toaster.ToasterImplementationI.ToasterState;
+import fr.sorbonne_u.components.equipments.toaster.mil.ToasterStateModel;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
 import fr.sorbonne_u.utils.aclocks.ClocksServerOutboundPort;
@@ -200,7 +201,7 @@ public class ToasterTester extends AbstractComponent {
 	{
 		this.logMessage("testSetBrowningLevel()... ");
 		try {
-			this.outboundPort.setBrowningLevel(ToasterBrowningLevel.HIGH);
+			this.outboundPort.setBrowningLevel(ToasterStateModel.ToasterBrowningLevel.HIGH);
 			assertEquals(ToasterBrowningLevel.HIGH, this.outboundPort.getBrowningLevel());
 		} catch (Exception e) {
 			assertTrue(false);

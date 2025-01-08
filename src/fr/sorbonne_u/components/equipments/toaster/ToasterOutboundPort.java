@@ -1,6 +1,7 @@
 package fr.sorbonne_u.components.equipments.toaster;
 
 import fr.sorbonne_u.components.ComponentI;
+import fr.sorbonne_u.components.equipments.toaster.mil.ToasterStateModel;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 
 public class ToasterOutboundPort extends AbstractOutboundPort implements ToasterUserCI {
@@ -16,7 +17,7 @@ public class ToasterOutboundPort extends AbstractOutboundPort implements Toaster
 	}
 			
 	@Override
-	public ToasterState getState() throws Exception {
+	public ToasterStateModel.ToasterState getState() throws Exception {
 		return ((ToasterUserCI)this.getConnector()).getState();
 	}
 	
@@ -26,7 +27,7 @@ public class ToasterOutboundPort extends AbstractOutboundPort implements Toaster
 	}
 
 	@Override
-	public ToasterBrowningLevel getBrowningLevel() throws Exception {
+	public ToasterStateModel.ToasterBrowningLevel getBrowningLevel() throws Exception {
 		return ((ToasterUserCI)this.getConnector()).getBrowningLevel();
 	}
 
@@ -46,7 +47,7 @@ public class ToasterOutboundPort extends AbstractOutboundPort implements Toaster
 	}
 
 	@Override
-	public void setBrowningLevel(ToasterBrowningLevel bl) throws Exception {
+	public void setBrowningLevel(ToasterStateModel.ToasterBrowningLevel bl) throws Exception {
 		((ToasterUserCI)this.getConnector()).setBrowningLevel(bl);
 	}
 

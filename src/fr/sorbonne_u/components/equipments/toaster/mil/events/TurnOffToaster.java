@@ -1,6 +1,8 @@
 package fr.sorbonne_u.components.equipments.toaster.mil.events;
 
 import fr.sorbonne_u.components.equipments.toaster.mil.ToasterElectricityModel;
+import fr.sorbonne_u.components.equipments.toaster.mil.ToasterOperationI;
+import fr.sorbonne_u.components.equipments.toaster.mil.ToasterStateModel;
 import fr.sorbonne_u.devs_simulation.es.events.ES_Event;
 import fr.sorbonne_u.devs_simulation.models.events.EventI;
 import fr.sorbonne_u.devs_simulation.models.interfaces.AtomicModelI;
@@ -36,12 +38,12 @@ public class TurnOffToaster extends ES_Event implements ToasterEventI {
                 new AssertionError(
                         "Precondition violation: model instanceof "
                                 + "ToasterElectricityModel");
-        ToasterElectricityModel m = (ToasterElectricityModel)model;
-        assert m.getToasterState() == ToasterElectricityModel.ToasterState.ON :
+        ToasterOperationI m = (ToasterOperationI)model;
+        assert m.getToasterState() == ToasterStateModel.ToasterState.ON :
                 new AssertionError(
                         "model not in the right state, should be "
                                 + "HeaterElectricityModel.State.ON but is "
                                 + m.getToasterState());
-        m.setToasterState(ToasterElectricityModel.ToasterState.OFF, this.getTimeOfOccurrence());
+        m.setToasterState(ToasterStateModel.ToasterState.OFF, this.getTimeOfOccurrence());
     }
 }

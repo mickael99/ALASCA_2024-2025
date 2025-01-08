@@ -1,6 +1,8 @@
 package fr.sorbonne_u.components.equipments.toaster.mil.events;
 
 import fr.sorbonne_u.components.equipments.toaster.mil.ToasterElectricityModel;
+import fr.sorbonne_u.components.equipments.toaster.mil.ToasterOperationI;
+import fr.sorbonne_u.components.equipments.toaster.mil.ToasterStateModel;
 import fr.sorbonne_u.devs_simulation.es.events.ES_Event;
 import fr.sorbonne_u.devs_simulation.models.events.EventI;
 import fr.sorbonne_u.devs_simulation.models.events.EventInformationI;
@@ -14,14 +16,14 @@ public class SetToasterBrowningLevel extends ES_Event implements ToasterEventI {
     // -------------------------------------------------------------------------
     public static class BrowningLevelValue implements EventInformationI{
         private static final long serialVersionUID = 1L;
-        protected final ToasterElectricityModel.ToasterBrowningLevel browningLevel;
+        protected final ToasterStateModel.ToasterBrowningLevel browningLevel;
 
-        public BrowningLevelValue(ToasterElectricityModel.ToasterBrowningLevel browningLevel) {
+        public BrowningLevelValue(ToasterStateModel.ToasterBrowningLevel browningLevel) {
             super();
             this.browningLevel = browningLevel;
         }
 
-        public ToasterElectricityModel.ToasterBrowningLevel getBrowningLevel() {
+        public ToasterStateModel.ToasterBrowningLevel getBrowningLevel() {
             return this.browningLevel;
         }
 
@@ -73,8 +75,8 @@ public class SetToasterBrowningLevel extends ES_Event implements ToasterEventI {
                 new AssertionError(
                         "Precondition violation: model instanceof "
                                 + "ToasterElectricityModel");
-        ToasterElectricityModel model = (ToasterElectricityModel) modelI;
-        assert model.getToasterState() == ToasterElectricityModel.ToasterState.ON :
+        ToasterOperationI model = (ToasterOperationI) modelI;
+        assert model.getToasterState() == ToasterStateModel.ToasterState.ON :
                 new AssertionError(
                         "model not in the right state, should be "
                                 + "ToasterElectricityModel.ToasterState.ON but is "

@@ -1,15 +1,16 @@
 package fr.sorbonne_u.components.equipments.toaster;
 
+import fr.sorbonne_u.components.equipments.toaster.mil.ToasterStateModel;
 import fr.sorbonne_u.components.interfaces.OfferedCI;
 import fr.sorbonne_u.components.interfaces.RequiredCI;
 
 public interface ToasterUserCI extends OfferedCI, RequiredCI, ToasterImplementationI {
 	
 	@Override
-	public ToasterState getState() throws Exception;
+	public ToasterStateModel.ToasterState getState() throws Exception;
 	
 	@Override
-	public ToasterBrowningLevel getBrowningLevel() throws Exception;
+	public ToasterStateModel.ToasterBrowningLevel getBrowningLevel() throws Exception;
 	
 	@Override
 	public int getSliceCount() throws Exception;
@@ -24,5 +25,5 @@ public interface ToasterUserCI extends OfferedCI, RequiredCI, ToasterImplementat
 	public void setSliceCount(int sliceCount) throws Exception;
 		
 	@Override
-	public void setBrowningLevel(ToasterBrowningLevel bl) throws Exception;
+	public void setBrowningLevel(ToasterStateModel.ToasterBrowningLevel bl) throws Exception;
 }

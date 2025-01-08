@@ -7,6 +7,7 @@ import fr.sorbonne_u.components.equipments.toaster.mil.events.TurnOffToaster;
 import fr.sorbonne_u.components.equipments.toaster.mil.events.TurnOnToaster;
 import fr.sorbonne_u.components.utils.Electricity;
 import fr.sorbonne_u.devs_simulation.exceptions.MissingRunParameterException;
+import fr.sorbonne_u.devs_simulation.exceptions.NeoSim4JavaException;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ExportedVariable;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ModelExportedVariable;
 import fr.sorbonne_u.devs_simulation.hioa.models.AtomicHIOA;
@@ -33,30 +34,19 @@ import java.util.concurrent.TimeUnit;
         SetToasterBrowningLevel.class
 })
 @ModelExportedVariable(name = "currentIntensity", type = Double.class)
-@ModelExportedVariable(name = "currentBrowningLevel", type = ToasterElectricityModel.ToasterBrowningLevel.class)
-public class ToasterElectricityModel extends AtomicHIOA {
-
-    // -------------------------------------------------------------------------
-    // Inner classes and types
-    // -------------------------------------------------------------------------
-
-    public static enum ToasterState {
-        ON,
-        OFF
-    }
-
-    public static enum ToasterBrowningLevel {
-        DEFROST,
-        LOW,
-        MEDIUM,
-        HIGH
-    }
+@ModelExportedVariable(name = "currentBrowningLevel", type = ToasterStateModel.ToasterBrowningLevel.class)
+public class ToasterElectricityModel extends AtomicHIOA implements ToasterOperationI {
 
     //-------------------------------------------------------------------------
     // Constants and variables
     //-------------------------------------------------------------------------
 
     private static final long serialVersionUID = 1L;
+
+    public static final String MIL_URI = ToasterElectricityModel.class.getSimpleName() + "-MIL";
+    public static final String MIL_RT_URI = ToasterElectricityModel.class.getSimpleName() + "-MIL_RT";
+    public static final String SIL_URI = ToasterElectricityModel.class.getSimpleName() + "-SIL";
+
     public static final String URI = ToasterElectricityModel.class.getSimpleName();
     protected static double DEFROSING_CONSUMPTION = 400; // Watts
     protected static double LOW_CONSUMPTION = 600; // Watts
@@ -64,7 +54,7 @@ public class ToasterElectricityModel extends AtomicHIOA {
     protected static double HIGH_CONSUMPTION = 1500; // Watts
     protected static double TENSION = 220; // Volts
 
-    protected ToasterState currentState = ToasterState.OFF;
+    protected ToasterStateModel.ToasterState currentState = ToasterStateModel.ToasterState.OFF;
 
     protected boolean consumptionHasChanged = false;
     protected double totalConsumption;
@@ -73,8 +63,8 @@ public class ToasterElectricityModel extends AtomicHIOA {
     // HIOA model variables
     //-------------------------------------------------------------------------
 
-    @ExportedVariable(type = ToasterBrowningLevel.class)
-    protected final Value<ToasterBrowningLevel> currentBrowningLevel = new Value<ToasterBrowningLevel>(this);
+    @ExportedVariable(type = ToasterStateModel.ToasterBrowningLevel.class)
+    protected final Value<ToasterStateModel.ToasterBrowningLevel> currentBrowningLevel = new Value<ToasterStateModel.ToasterBrowningLevel>(this);
 
     @ExportedVariable(type = Double.class)
     protected final Value<Double> currentIntensity = new Value<Double>(this);
@@ -85,7 +75,7 @@ public class ToasterElectricityModel extends AtomicHIOA {
 
     protected static boolean glassBoxInvariants(ToasterElectricityModel instance) {
         assert instance != null :
-                new AssertionError("Precondition violation: instance != null");
+                new NeoSim4JavaException("Precondition violation: instance != null");
         boolean ret = true;
         ret &= InvariantChecking.checkGlassBoxInvariant(
                 DEFROSING_CONSUMPTION > 0.0,
@@ -147,13 +137,31 @@ public class ToasterElectricityModel extends AtomicHIOA {
 
     protected static boolean blackBoxInvariants(ToasterElectricityModel instance) {
         assert instance != null :
-                new AssertionError("Precondition violation: instance != null");
+                new NeoSim4JavaException("Precondition violation: instance != null");
         boolean ret = true;
         ret &= InvariantChecking.checkBlackBoxInvariant(
                 URI != null && !URI.isEmpty(),
                 ToasterElectricityModel.class,
                 instance,
                 "URI != null && !URI.isEmpty()"
+        );
+        ret &= InvariantChecking.checkBlackBoxInvariant(
+                MIL_URI != null && !MIL_URI.isEmpty(),
+                ToasterElectricityModel.class,
+                instance,
+                "MIL_URI != null && !MIL_URI.isEmpty()"
+        );
+        ret &= InvariantChecking.checkBlackBoxInvariant(
+                MIL_RT_URI != null && !MIL_RT_URI.isEmpty(),
+                ToasterElectricityModel.class,
+                instance,
+                "MIL_RT_URI != null && !MIL_RT_URI.isEmpty()"
+        );
+        ret &= InvariantChecking.checkBlackBoxInvariant(
+                SIL_URI != null && !SIL_URI.isEmpty(),
+                ToasterElectricityModel.class,
+                instance,
+                "SIL_URI != null && !SIL_URI.isEmpty()"
         );
         ret &= InvariantChecking.checkBlackBoxInvariant(
                 DEFROSING_CONSUMPTION_RPNAME != null && !DEFROSING_CONSUMPTION_RPNAME.isEmpty(),
@@ -200,17 +208,16 @@ public class ToasterElectricityModel extends AtomicHIOA {
         this.getSimulationEngine().setLogger(new StandardLogger());
 
         assert glassBoxInvariants(this) :
-                new AssertionError("Glass-box invariants violation!");
+                new NeoSim4JavaException("Glass-box invariants violation!");
         assert blackBoxInvariants(this) :
-                new AssertionError("Black-box invariant violation!");
+                new NeoSim4JavaException("Black-box invariant violation!");
     }
 
     //-------------------------------------------------------------------------
     // Methods
     //-------------------------------------------------------------------------
-
-    public void setToasterState(ToasterState state, Time t) {
-        ToasterState old = this.currentState;
+    public void setToasterState(ToasterStateModel.ToasterState state, Time t) {
+        ToasterStateModel.ToasterState old = this.currentState;
         this.currentState = state;
         if (old != state) {
             this.consumptionHasChanged = true;
@@ -221,12 +228,12 @@ public class ToasterElectricityModel extends AtomicHIOA {
         assert	blackBoxInvariants(this) :
                 new AssertionError("Black-box invariants violation!");    }
 
-    public ToasterState getToasterState() {
+    public ToasterStateModel.ToasterState getToasterState() {
         return this.currentState;
     }
 
-    public void setToasterBrowningLevel(ToasterBrowningLevel bl, Time t) {
-        ToasterBrowningLevel old = this.currentBrowningLevel.getValue();
+    public void setToasterBrowningLevel(ToasterStateModel.ToasterBrowningLevel bl, Time t) {
+        ToasterStateModel.ToasterBrowningLevel old = this.currentBrowningLevel.getValue();
         this.currentBrowningLevel.setNewValue(bl, t);
         if (old != bl) {
             this.consumptionHasChanged = true;
@@ -238,7 +245,7 @@ public class ToasterElectricityModel extends AtomicHIOA {
                 new AssertionError("Black-box invariants violation!");
     }
 
-    public ToasterBrowningLevel getToasterBrowningLevel() {
+    public ToasterStateModel.ToasterBrowningLevel getToasterBrowningLevel() {
         return this.currentBrowningLevel.getValue();
     }
 
@@ -258,7 +265,7 @@ public class ToasterElectricityModel extends AtomicHIOA {
     public void initialiseState(Time startTime) {
         super.initialiseState(startTime);
 
-        this.currentState = ToasterState.OFF;
+        this.currentState = ToasterStateModel.ToasterState.OFF;
         this.totalConsumption = 0.0;
         this.consumptionHasChanged = false;
 
@@ -266,9 +273,9 @@ public class ToasterElectricityModel extends AtomicHIOA {
         this.logMessage("simulation begins./n");
 
         assert glassBoxInvariants(this) :
-                new AssertionError("Glass-box invariants violation!");
+                new NeoSim4JavaException("Glass-box invariants violation!");
         assert blackBoxInvariants(this) :
-                new AssertionError("Black-box invariant violation!");
+                new NeoSim4JavaException("Black-box invariant violation!");
     }
 
     @Override
@@ -277,9 +284,9 @@ public class ToasterElectricityModel extends AtomicHIOA {
         this.toggleConsumptionHasChanged();
 
         assert glassBoxInvariants(this) :
-                new AssertionError("Glass-box invariants violation!");
+                new NeoSim4JavaException("Glass-box invariants violation!");
         assert blackBoxInvariants(this) :
-                new AssertionError("Black-box invariant violation!");
+                new NeoSim4JavaException("Black-box invariant violation!");
     }
 
     @Override
@@ -288,7 +295,6 @@ public class ToasterElectricityModel extends AtomicHIOA {
         return true;
     }
 
-    //TODO: Ask about this method
     @Override
     public Pair<Integer, Integer> fixpointInitialiseVariables()
     {
@@ -298,7 +304,7 @@ public class ToasterElectricityModel extends AtomicHIOA {
                 !this.currentBrowningLevel.isInitialised()) {
 
             this.currentIntensity.initialise(0.0);
-            this.currentBrowningLevel.initialise(ToasterBrowningLevel.DEFROST);
+            this.currentBrowningLevel.initialise(ToasterStateModel.ToasterBrowningLevel.DEFROST);
 
             StringBuffer sb = new StringBuffer("new consumption: ");
             sb.append(this.currentIntensity.getValue());
@@ -312,9 +318,9 @@ public class ToasterElectricityModel extends AtomicHIOA {
         }
 
         assert	glassBoxInvariants(this) :
-                new AssertionError("White-box invariants violation!");
+                new NeoSim4JavaException("White-box invariants violation!");
         assert	blackBoxInvariants(this) :
-                new AssertionError("Black-box invariants violation!");
+                new NeoSim4JavaException("Black-box invariants violation!");
 
         return ret;
     }
@@ -342,9 +348,9 @@ public class ToasterElectricityModel extends AtomicHIOA {
         }
 
         assert glassBoxInvariants(this) :
-                new AssertionError("Glass-box invariants violation!");
+                new NeoSim4JavaException("Glass-box invariants violation!");
         assert blackBoxInvariants(this) :
-                new AssertionError("Black-box invariant violation!");
+                new NeoSim4JavaException("Black-box invariant violation!");
 
         return ret;
     }
@@ -355,18 +361,18 @@ public class ToasterElectricityModel extends AtomicHIOA {
         super.userDefinedInternalTransition(elapsedTime);
 
         Time t = this.getCurrentStateTime();
-        if (this.currentState == ToasterState.ON) {
-            if (this.currentBrowningLevel.getValue() == ToasterBrowningLevel.DEFROST) {
+        if (this.currentState == ToasterStateModel.ToasterState.ON) {
+            if (this.currentBrowningLevel.getValue() == ToasterStateModel.ToasterBrowningLevel.DEFROST) {
                 this.currentIntensity.setNewValue(DEFROSING_CONSUMPTION / TENSION, t);
-            } else if (this.currentBrowningLevel.getValue() == ToasterBrowningLevel.LOW) {
+            } else if (this.currentBrowningLevel.getValue() == ToasterStateModel.ToasterBrowningLevel.LOW) {
                 this.currentIntensity.setNewValue(LOW_CONSUMPTION / TENSION, t);
-            } else if (this.currentBrowningLevel.getValue() == ToasterBrowningLevel.MEDIUM) {
+            } else if (this.currentBrowningLevel.getValue() == ToasterStateModel.ToasterBrowningLevel.MEDIUM) {
                 this.currentIntensity.setNewValue(MEDIUM_CONSUMPTION / TENSION, t);
-            } else if (this.currentBrowningLevel.getValue() == ToasterBrowningLevel.HIGH) {
+            } else if (this.currentBrowningLevel.getValue() == ToasterStateModel.ToasterBrowningLevel.HIGH) {
                 this.currentIntensity.setNewValue(HIGH_CONSUMPTION / TENSION, t);
             }
         } else {
-            assert this.currentState == ToasterState.OFF;
+            assert this.currentState == ToasterStateModel.ToasterState.OFF;
             this.currentIntensity.setNewValue(0.0, t);
         }
         // Tracing
@@ -380,9 +386,9 @@ public class ToasterElectricityModel extends AtomicHIOA {
         this.logMessage(message.toString());
 
         assert glassBoxInvariants(this) :
-                new AssertionError("Glass-box invariants violation!");
+                new NeoSim4JavaException("Glass-box invariants violation!");
         assert blackBoxInvariants(this) :
-                new AssertionError("Black-box invariant violation!");
+                new NeoSim4JavaException("Black-box invariant violation!");
     }
 
     @Override
@@ -416,9 +422,9 @@ public class ToasterElectricityModel extends AtomicHIOA {
         ce.executeOn(this);
 
         assert glassBoxInvariants(this) :
-                new AssertionError("Glass-box invariants violation!");
+                new NeoSim4JavaException("Glass-box invariants violation!");
         assert blackBoxInvariants(this) :
-                new AssertionError("Black-box invariant violation!");
+                new NeoSim4JavaException("Black-box invariant violation!");
     }
 
     public void endSimulation(Time endTime) {
@@ -471,9 +477,9 @@ public class ToasterElectricityModel extends AtomicHIOA {
         }
 
         assert glassBoxInvariants(this) :
-                new AssertionError("Glass-box invariants violation!");
+                new NeoSim4JavaException("Glass-box invariants violation!");
         assert blackBoxInvariants(this) :
-                new AssertionError("Black-box invariant violation!");
+                new NeoSim4JavaException("Black-box invariant violation!");
     }
 
     // -------------------------------------------------------------------------

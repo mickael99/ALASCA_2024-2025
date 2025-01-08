@@ -1,5 +1,8 @@
 package fr.sorbonne_u.components.equipments.toaster;
 
+import fr.sorbonne_u.components.equipments.toaster.mil.ToasterStateModel;
+import fr.sorbonne_u.components.equipments.toaster.mil.events.SetToasterBrowningLevel;
+
 public interface ToasterImplementationI {
 	
 	public static enum ToasterState {
@@ -14,9 +17,9 @@ public interface ToasterImplementationI {
 		HIGH
 	}
 	
-	public ToasterState getState() throws Exception; 
+	public ToasterStateModel.ToasterState getState() throws Exception;
 	
-	public ToasterBrowningLevel getBrowningLevel() throws Exception; 
+	public ToasterStateModel.ToasterBrowningLevel getBrowningLevel() throws Exception;
 	
 	public int getSliceCount() throws Exception; 
 
@@ -26,5 +29,5 @@ public interface ToasterImplementationI {
 	
 	public void setSliceCount(int sliceCount) throws Exception; 
 		
-	public void setBrowningLevel(ToasterBrowningLevel bl) throws Exception;
+	public void setBrowningLevel(ToasterStateModel.ToasterBrowningLevel bl) throws Exception;
 }

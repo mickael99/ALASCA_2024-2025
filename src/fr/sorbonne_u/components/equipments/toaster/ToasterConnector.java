@@ -1,16 +1,18 @@
 package fr.sorbonne_u.components.equipments.toaster;
 
 import fr.sorbonne_u.components.connectors.AbstractConnector;
+import fr.sorbonne_u.components.equipments.toaster.mil.ToasterStateModel;
+import fr.sorbonne_u.components.equipments.toaster.mil.events.SetToasterBrowningLevel;
 
 public class ToasterConnector extends AbstractConnector implements ToasterUserCI {
 
 	@Override
-	public ToasterState getState() throws Exception {
+	public ToasterStateModel.ToasterState getState() throws Exception {
 		return ((ToasterUserCI)this.offering).getState();
 	}
 
 	@Override
-	public ToasterBrowningLevel getBrowningLevel() throws Exception {
+	public ToasterStateModel.ToasterBrowningLevel getBrowningLevel() throws Exception {
 		return ((ToasterUserCI)this.offering).getBrowningLevel();
 	}
 	
@@ -35,7 +37,7 @@ public class ToasterConnector extends AbstractConnector implements ToasterUserCI
 	}
 
 	@Override
-	public void setBrowningLevel(ToasterBrowningLevel bl) throws Exception {
+	public void setBrowningLevel(ToasterStateModel.ToasterBrowningLevel bl) throws Exception {
 		((ToasterUserCI)this.offering).setBrowningLevel(bl);
 	}
 

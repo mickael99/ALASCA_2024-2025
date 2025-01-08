@@ -27,6 +27,11 @@ public class ToasterUnitTesterModel extends AtomicES_Model {
     // -------------------------------------------------------------------------
 
     private static final long serialVersionUID = 1L;
+
+    public static final String MIL_URI = ToasterUnitTesterModel.class.getSimpleName() + "-MIL";
+    public static final String MIL_RT_URI = ToasterUnitTesterModel.class.getSimpleName() + "-MIL_RT";
+    public static final String SIL_URI = ToasterUnitTesterModel.class.getSimpleName() + "-SIL";
+
     public static final String URI = ToasterUnitTesterModel.class.getSimpleName();
     public int step;
 
@@ -61,16 +66,16 @@ public class ToasterUnitTesterModel extends AtomicES_Model {
                     ret.add(new TurnOnToaster(this.getCurrentStateTime()));
                     break;
                 case 2:
-                    ret.add(new SetToasterBrowningLevel(this.getCurrentStateTime(), new SetToasterBrowningLevel.BrowningLevelValue(ToasterElectricityModel.ToasterBrowningLevel.DEFROST)));
+                    ret.add(new SetToasterBrowningLevel(this.getCurrentStateTime(), new SetToasterBrowningLevel.BrowningLevelValue(ToasterStateModel.ToasterBrowningLevel.DEFROST)));
                     break;
                 case 3:
-                    ret.add(new SetToasterBrowningLevel(this.getCurrentStateTime(), new SetToasterBrowningLevel.BrowningLevelValue(ToasterElectricityModel.ToasterBrowningLevel.LOW)));
+                    ret.add(new SetToasterBrowningLevel(this.getCurrentStateTime(), new SetToasterBrowningLevel.BrowningLevelValue(ToasterStateModel.ToasterBrowningLevel.LOW)));
                     break;
                 case 4:
-                    ret.add(new SetToasterBrowningLevel(this.getCurrentStateTime(), new SetToasterBrowningLevel.BrowningLevelValue(ToasterElectricityModel.ToasterBrowningLevel.MEDIUM)));
+                    ret.add(new SetToasterBrowningLevel(this.getCurrentStateTime(), new SetToasterBrowningLevel.BrowningLevelValue(ToasterStateModel.ToasterBrowningLevel.MEDIUM)));
                     break;
                 case 5:
-                    ret.add(new SetToasterBrowningLevel(this.getCurrentStateTime(), new SetToasterBrowningLevel.BrowningLevelValue(ToasterElectricityModel.ToasterBrowningLevel.HIGH)));
+                    ret.add(new SetToasterBrowningLevel(this.getCurrentStateTime(), new SetToasterBrowningLevel.BrowningLevelValue(ToasterStateModel.ToasterBrowningLevel.HIGH)));
                     break;
                 case 6:
                     ret.add(new TurnOffToaster(this.getCurrentStateTime()));
