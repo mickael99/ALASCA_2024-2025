@@ -6,8 +6,11 @@ import java.util.concurrent.TimeUnit;
 import fr.sorbonne_u.components.equipments.generator.mil.events.AbstractGeneratorEvents;
 import fr.sorbonne_u.components.equipments.generator.mil.events.ActivateGeneratorEvent;
 import fr.sorbonne_u.components.equipments.generator.mil.events.StopGeneratorEvent;
+import fr.sorbonne_u.components.utils.Electricity;
+import fr.sorbonne_u.devs_simulation.exceptions.NeoSim4JavaException;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ExportedVariable;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ImportedVariable;
+import fr.sorbonne_u.devs_simulation.hioa.annotations.ModelExportedVariable;
 import fr.sorbonne_u.devs_simulation.hioa.models.AtomicHIOA;
 import fr.sorbonne_u.devs_simulation.hioa.models.vars.Value;
 import fr.sorbonne_u.devs_simulation.models.annotations.ModelExternalEvents;
@@ -16,33 +19,108 @@ import fr.sorbonne_u.devs_simulation.models.events.EventI;
 import fr.sorbonne_u.devs_simulation.models.time.Duration;
 import fr.sorbonne_u.devs_simulation.models.time.Time;
 import fr.sorbonne_u.devs_simulation.simulators.interfaces.AtomicSimulatorI;
+import fr.sorbonne_u.devs_simulation.utils.InvariantChecking;
 import fr.sorbonne_u.devs_simulation.utils.StandardLogger;
 
 @ModelExternalEvents(imported = {
         ActivateGeneratorEvent.class,
         StopGeneratorEvent.class
 })
-public class GeneratorElectricityModel extends AtomicHIOA {
+@ModelExportedVariable(name = "currentProduction", type = Double.class)
+@ModelExportedVariable(name = "currentFuelLevel", type = Double.class)
+public class GeneratorElectricityModel extends AtomicHIOA implements GeneratorOperationI {
 
     private static final long serialVersionUID = 1L;
 	
     public static final String URI = GeneratorElectricityModel.class.getSimpleName();
+    public static final String MIL_URI = GeneratorElectricityModel.class.getSimpleName() + "-MIL";
+    public static final String MIL_RT_URI = GeneratorElectricityModel.class.getSimpleName() + "-MIL_RT";
+    public static final String SIL_URI = GeneratorElectricityModel.class.getSimpleName() + "-MIL_RT";
+
     protected static final double PRODUCTION = 100.0;
-    
+    protected double totalProduction;
+
     protected boolean isRunning; 
-    protected boolean hasChanged;
+    protected boolean productionHasChanged;
     
     @ImportedVariable(type = Double.class)
     protected Value<Double> currentFuelLevel;
     
     @ExportedVariable(type = Double.class)
     protected final Value<Double> currentProduction = new Value<Double>(this);
-    
+
+    // -------------------------------------------------------------------------
+    // Invariants
+    // -------------------------------------------------------------------------
+
+    protected static boolean glassBoxInvariants(GeneratorElectricityModel m) {
+        assert	m != null :
+                new NeoSim4JavaException("Precondition violation: "
+                                         + "m != null");
+
+        boolean ret = true;
+        ret &= InvariantChecking.checkGlassBoxInvariant(
+                !m.currentProduction.isInitialised() || m.currentProduction.getValue() >= 0.0,
+                GeneratorElectricityModel.class,
+                m,
+                "currentProduction >= 0.0");
+        ret &= InvariantChecking.checkGlassBoxInvariant(
+                !m.currentFuelLevel.isInitialised() || m.currentFuelLevel.getValue() >= 0.0,
+                GeneratorElectricityModel.class,
+                m,
+                "currentFuelLevel >= 0.0");
+        ret &= InvariantChecking.checkGlassBoxInvariant(
+                PRODUCTION >= 0.0,
+                GeneratorElectricityModel.class,
+                m,
+                "currentProduction time >= 0.0");
+        ret &= InvariantChecking.checkGlassBoxInvariant(
+                m.totalProduction >= 0.0,
+                GeneratorElectricityModel.class,
+                m,
+                "totalProduction >= 0.0");
+
+        return ret;
+    }
+
+    protected static boolean blackBoxInvariants(GeneratorElectricityModel m) {
+        assert	m != null :
+                new NeoSim4JavaException("Precondition violation: "
+                                         + "m != null");
+
+        boolean ret = true;
+        ret &= InvariantChecking.checkBlackBoxInvariant(
+                MIL_URI != null && !MIL_URI.isEmpty(),
+                GeneratorElectricityModel.class,
+                m,
+                "MIL_URI != null && !MIL_URI.isEmpty()");
+        ret &= InvariantChecking.checkBlackBoxInvariant(
+                MIL_RT_URI != null && !MIL_RT_URI.isEmpty(),
+                GeneratorElectricityModel.class,
+                m,
+                "MIL_RT_URI != null && !MIL_RT_URI.isEmpty()");
+        ret &= InvariantChecking.checkBlackBoxInvariant(
+                SIL_URI != null && !SIL_URI.isEmpty(),
+                GeneratorElectricityModel.class,
+                m,
+                "SIL_URI != null && !SIL_URI.isEmpty()");
+
+        return ret;
+    }
+
+    // -------------------------------------------------------------------------
+    // Constructors
+    // -------------------------------------------------------------------------
 	
     public GeneratorElectricityModel(String uri, TimeUnit simulatedTimeUnit, AtomicSimulatorI simulationEngine) {
 		super(uri, simulatedTimeUnit, simulationEngine);
 		
 		this.getSimulationEngine().setLogger(new StandardLogger());
+
+        assert glassBoxInvariants(this) :
+                new NeoSim4JavaException("GeneratorElectricityModel.glassBoxInvariants(this)");
+        assert blackBoxInvariants(this) :
+                new NeoSim4JavaException("GeneratorElectricityModel.blackBoxInvariants(this)");
 	}
     
     public boolean isRunning() {
@@ -50,20 +128,38 @@ public class GeneratorElectricityModel extends AtomicHIOA {
     }
     
     public boolean hasChanged() {
-        return this.hasChanged;
+        return this.productionHasChanged;
     }
     
     public void activate() {
-    	this.isRunning = true;
+        if(!this.isRunning) {
+            this.isRunning = true;
+            this.toggleProdectionHasChanged();
+        }
     }
     
     public void stop() {
-    	this.isRunning = false;
+        if (this.isRunning) {
+            this.isRunning = false;
+            this.toggleProdectionHasChanged();
+        }
     }
     
-    public void setHasChanged(boolean hasChanged) {
-        this.hasChanged = hasChanged;
+    public void setProductionHasChanged(boolean productionHasChanged) {
+        this.productionHasChanged = productionHasChanged;
     }
+
+    protected void toggleProdectionHasChanged() {
+        if (this.productionHasChanged) {
+            this.productionHasChanged = false;
+        } else {
+            this.productionHasChanged = true;
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // DEVS simulation protocol
+    // -------------------------------------------------------------------------
     
     @Override
 	public void initialiseVariables() {
@@ -71,10 +167,15 @@ public class GeneratorElectricityModel extends AtomicHIOA {
 
 		this.currentProduction.initialise(0.0);
 		this.isRunning = false;
-		this.hasChanged = false;
+		this.productionHasChanged = false;
 		
 		this.getSimulationEngine().toggleDebugMode();
 		this.logMessage("simulation begins.\n");
+
+        assert glassBoxInvariants(this) :
+                new NeoSim4JavaException("GeneratorElectricityModel.glassBoxInvariants(this)");
+        assert blackBoxInvariants(this) :
+                new NeoSim4JavaException("GeneratorElectricityModel.blackBoxInvariants(this)");
 	}
     
     @Override
@@ -84,11 +185,19 @@ public class GeneratorElectricityModel extends AtomicHIOA {
     
     @Override
     public Duration timeAdvance() {
-        if(hasChanged) {
-            hasChanged = false;
-            return new Duration(0.0, getSimulatedTimeUnit());
+        Duration ret = null;
+        if(productionHasChanged) {
+            this.toggleProdectionHasChanged();
+            ret = new Duration(0.0, getSimulatedTimeUnit());
         }
-        return Duration.INFINITY;
+        ret = Duration.INFINITY;
+
+        assert glassBoxInvariants(this) :
+                new NeoSim4JavaException("GeneratorElectricityModel.glassBoxInvariants(this)");
+        assert blackBoxInvariants(this) :
+                new NeoSim4JavaException("GeneratorElectricityModel.blackBoxInvariants(this)");
+
+        return ret;
     }
     
     @Override
@@ -105,6 +214,11 @@ public class GeneratorElectricityModel extends AtomicHIOA {
 
         this.logMessage("Current production " + currentProduction.getValue() + " at " + currentProduction.getTime() +
                 " | Fuel level " + currentFuelLevel.getValue() + " l" + "\n");
+
+        assert glassBoxInvariants(this) :
+                new NeoSim4JavaException("GeneratorElectricityModel.glassBoxInvariants(this)");
+        assert blackBoxInvariants(this) :
+                new NeoSim4JavaException("GeneratorElectricityModel.blackBoxInvariants(this)");
     }
 
     @Override
@@ -113,14 +227,27 @@ public class GeneratorElectricityModel extends AtomicHIOA {
         assert	currentEvents != null && currentEvents.size() == 1;
         Event currentEvent = (Event) currentEvents.get(0);
 
+        this.totalProduction += this.currentProduction.getValue();
+        StringBuffer message =
+                new StringBuffer("executes an external transition ");
+        message.append(currentEvent.toString());
+        message.append(")");
+        this.logMessage(message.toString());
+
         assert currentEvent instanceof AbstractGeneratorEvents;
         currentEvent.executeOn(this);
 
         super.userDefinedExternalTransition(elapsedTime);
+
+        assert glassBoxInvariants(this) :
+                new NeoSim4JavaException("GeneratorElectricityModel.glassBoxInvariants(this)");
+        assert blackBoxInvariants(this) :
+                new NeoSim4JavaException("GeneratorElectricityModel.blackBoxInvariants(this)");
     }
     
     @Override
     public void endSimulation(Time endTime) {
+        this.totalProduction += this.currentProduction.getValue();
         logMessage("Simulation ends!\n");
         super.endSimulation(endTime);
     }

@@ -27,7 +27,7 @@ public class ActivateGeneratorEvent extends AbstractGeneratorEvents {
             GeneratorElectricityModel m = (GeneratorElectricityModel) model;
             if(!m.isRunning()) {
                 m.activate();
-                m.setHasChanged(true);
+                m.setProductionHasChanged(true);
             }
         }
         else {
