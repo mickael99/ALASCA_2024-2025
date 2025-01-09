@@ -18,23 +18,22 @@ import fr.sorbonne_u.devs_simulation.simulators.interfaces.CoordinatorI;
 public class GeneratorCoupledModel extends CoupledModel {
 
 	private static final long serialVersionUID = 1L;
-	public static final String	URI = WindTurbineCoupledModel.class.getSimpleName();
+	public static final String	URI = GeneratorCoupledModel.class.getSimpleName();
 
-	public GeneratorCoupledModel(String uri, TimeUnit simulatedTimeUnit, CoordinatorI simulationEngine, ModelI[] submodels,
-								Map<Class<? extends EventI>, EventSink[]> imported, Map<Class<? extends EventI>, ReexportedEvent> reexported,
-								Map<EventSource, EventSink[]> connections) throws Exception
+	public static final String	MIL_URI = GeneratorCoupledModel.class.getSimpleName() + "-MIL";
+	public static final String	MIL_RT_URI = GeneratorCoupledModel.class.getSimpleName() + "-MIL_RT";
+	public static final String	SIL_URI = GeneratorCoupledModel.class.getSimpleName() + "-MIL_RT";
+	
+	public GeneratorCoupledModel(String uri,
+								 TimeUnit simulatedTimeUnit,
+								 CoordinatorI simulationEngine,
+								 ModelI[] submodels,
+								Map<Class<? extends EventI>, EventSink[]> imported,
+								 Map<Class<? extends EventI>, ReexportedEvent> reexported,
+								Map<EventSource, EventSink[]> connections
+								 ) throws Exception
 	{
 		super(uri, simulatedTimeUnit, simulationEngine, submodels,
 			  imported, reexported, connections);
-	}
-	
-	public GeneratorCoupledModel(String uri, TimeUnit simulatedTimeUnit, CoordinatorI simulationEngine, ModelI[] submodels,
-								Map<Class<? extends EventI>, EventSink[]> imported, Map<Class<? extends EventI>, ReexportedEvent> reexported,
-								Map<EventSource, EventSink[]> connections, Map<StaticVariableDescriptor, VariableSink[]> importedVars,
-								Map<VariableSource, StaticVariableDescriptor> reexportedVars,Map<VariableSource, VariableSink[]> bindings) throws Exception
-	{
-		super(uri, simulatedTimeUnit, simulationEngine, submodels,
-			  imported, reexported, connections,
-			  importedVars, reexportedVars, bindings);
 	}
 }

@@ -27,7 +27,7 @@ public class StopGeneratorEvent extends AbstractGeneratorEvents {
             GeneratorElectricityModel m = (GeneratorElectricityModel) model;
             if(m.isRunning()) {
                 m.stop();
-                m.setHasChanged(true);
+                m.setProductionHasChanged(true);
             }
         }
         else {

@@ -19,40 +19,49 @@ import fr.sorbonne_u.devs_simulation.models.architectures.AtomicModelDescriptor;
 import fr.sorbonne_u.devs_simulation.models.architectures.CoupledModelDescriptor;
 import fr.sorbonne_u.devs_simulation.models.events.EventSink;
 import fr.sorbonne_u.devs_simulation.models.events.EventSource;
+import fr.sorbonne_u.devs_simulation.models.time.Duration;
+import fr.sorbonne_u.devs_simulation.models.time.Time;
 import fr.sorbonne_u.devs_simulation.simulators.SimulationEngine;
 import fr.sorbonne_u.devs_simulation.simulators.interfaces.SimulatorI;
 
 public class RunGeneratorUnitaryMILSimulation {
 
+	public static final TimeUnit	TIME_UNIT = TimeUnit.HOURS;
+
+
 	public static void main(String[] args) {
+		Time.setPrintPrecision(4);
+		Duration.setPrintPrecision(4);
+
+		//TODO: Discuss TIME_UNIT
 		try {
 			Map<String, AbstractAtomicModelDescriptor> atomicModelDescriptors = new HashMap<>();
 
 	        atomicModelDescriptors.put(
-	                GeneratorElectricityModel.URI,
+	                GeneratorElectricityModel.MIL_URI,
 	                AtomicHIOA_Descriptor.create(
 	                        GeneratorElectricityModel.class,
-	                        GeneratorElectricityModel.URI,
+	                        GeneratorElectricityModel.MIL_URI,
 	                        TimeUnit.MINUTES,
 	                        null
 	                )
 	        );
 
 	        atomicModelDescriptors.put(
-	                GeneratorFuelModel.URI,
+	                GeneratorFuelModel.MIL_URI,
 	                AtomicHIOA_Descriptor.create(
 	                        GeneratorFuelModel.class,
-	                        GeneratorFuelModel.URI,
+	                        GeneratorFuelModel.MIL_URI,
 	                        TimeUnit.MINUTES,
 	                        null
 	                )
 	        );
 
 	        atomicModelDescriptors.put(
-	                GeneratorUserModel.URI,
+	                GeneratorUserModel.MIL_URI,
 	                AtomicModelDescriptor.create(
 	                        GeneratorUserModel.class,
-	                        GeneratorUserModel.URI,
+	                        GeneratorUserModel.MIL_URI,
 	                        TimeUnit.MINUTES,
 	                        null
 	                )
@@ -62,33 +71,33 @@ public class RunGeneratorUnitaryMILSimulation {
 	        Map<String, CoupledModelDescriptor> coupledModelDescriptors = new HashMap<>();
 
 	        Set<String> subModel = new HashSet<>();
-	        subModel.add(GeneratorElectricityModel.URI);
-	        subModel.add(GeneratorFuelModel.URI);
-	        subModel.add(GeneratorUserModel.URI);
+	        subModel.add(GeneratorElectricityModel.MIL_URI);
+	        subModel.add(GeneratorFuelModel.MIL_URI);
+	        subModel.add(GeneratorUserModel.MIL_URI);
 	        
 	        
 	        Map<EventSource, EventSink[]> connections = new HashMap<>();
 
 	        connections.put(
-	                new EventSource(GeneratorUserModel.URI, ActivateGeneratorEvent.class),
+	                new EventSource(GeneratorUserModel.MIL_URI, ActivateGeneratorEvent.class),
 	                new EventSink[] {
-	                        new EventSink(GeneratorElectricityModel.URI, ActivateGeneratorEvent.class),
-	                        new EventSink(GeneratorFuelModel.URI, ActivateGeneratorEvent.class)
+	                        new EventSink(GeneratorElectricityModel.MIL_URI, ActivateGeneratorEvent.class),
+	                        new EventSink(GeneratorFuelModel.MIL_URI, ActivateGeneratorEvent.class)
 	                }
 	        );
 
 	        connections.put(
-	                new EventSource(GeneratorUserModel.URI, StopGeneratorEvent.class),
+	                new EventSource(GeneratorUserModel.MIL_URI, StopGeneratorEvent.class),
 	                new EventSink[] {
-	                        new EventSink(GeneratorElectricityModel.URI, StopGeneratorEvent.class),
-	                        new EventSink(GeneratorFuelModel.URI, StopGeneratorEvent.class),
+	                        new EventSink(GeneratorElectricityModel.MIL_URI, StopGeneratorEvent.class),
+	                        new EventSink(GeneratorFuelModel.MIL_URI, StopGeneratorEvent.class),
 	                }
 	        );
 
 	        connections.put(
-	                new EventSource(GeneratorFuelModel.URI, StopGeneratorEvent.class),
+	                new EventSource(GeneratorFuelModel.MIL_URI, StopGeneratorEvent.class),
 	                new EventSink[] {
-	                        new EventSink(GeneratorElectricityModel.URI, StopGeneratorEvent.class),
+	                        new EventSink(GeneratorElectricityModel.MIL_URI, StopGeneratorEvent.class),
 	                }
 	        );
 	        
@@ -96,17 +105,17 @@ public class RunGeneratorUnitaryMILSimulation {
 	        Map<VariableSource, VariableSink[]> bindings = new HashMap<>();
 
 	        bindings.put(
-	                new VariableSource("currentFuelLevel", Double.class, GeneratorFuelModel.URI),
+	                new VariableSource("currentFuelLevel", Double.class, GeneratorFuelModel.MIL_URI),
 	                new VariableSink[] {
-	                        new VariableSink("currentFuelLevel", Double.class, GeneratorElectricityModel.URI)
+	                        new VariableSink("currentFuelLevel", Double.class, GeneratorElectricityModel.MIL_URI)
 	                }
 	        );
 	        
 	        coupledModelDescriptors.put(
-	                GeneratorCoupledModel.URI,
+	                GeneratorCoupledModel.MIL_URI,
 	                new CoupledHIOA_Descriptor(
 	                        GeneratorCoupledModel.class,
-	                        GeneratorCoupledModel.URI,
+	                        GeneratorCoupledModel.MIL_URI,
 	                        subModel,
 	                        null,
 	                        null,
@@ -119,7 +128,7 @@ public class RunGeneratorUnitaryMILSimulation {
 	        );
 	        
 	        ArchitectureI architecture = new Architecture(
-	                GeneratorCoupledModel.URI,
+	                GeneratorCoupledModel.MIL_URI,
 	                atomicModelDescriptors,
 	                coupledModelDescriptors,
 	                TimeUnit.MINUTES
