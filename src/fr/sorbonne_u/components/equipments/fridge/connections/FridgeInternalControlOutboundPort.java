@@ -57,4 +57,9 @@ public class FridgeInternalControlOutboundPort extends AbstractOutboundPort impl
 
 	}
 
+	@Override
+	public void closeDoor() throws Exception {
+		((FridgeInternalControlCI)this.getConnector()).closeDoor();
+	}
+
 }

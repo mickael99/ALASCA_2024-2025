@@ -3,6 +3,8 @@ package fr.sorbonne_u.components.equipments.fridge;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.concurrent.TimeUnit;
+
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
@@ -11,12 +13,14 @@ import fr.sorbonne_u.components.equipments.fridge.connections.FridgeInternalCont
 import fr.sorbonne_u.components.equipments.fridge.connections.FridgeUserInboundPort;
 import fr.sorbonne_u.components.equipments.fridge.interfaces.FridgeInternalControlI;
 import fr.sorbonne_u.components.equipments.fridge.interfaces.FridgeUserI;
+import fr.sorbonne_u.components.equipments.fridge.measures.FridgeSensorData;
 import fr.sorbonne_u.components.equipments.hem.HEM;
 import fr.sorbonne_u.components.equipments.hem.registration.RegistrationConnector;
 import fr.sorbonne_u.components.equipments.hem.registration.RegistrationOutboundPort;
 import fr.sorbonne_u.components.equipments.fridge.interfaces.*;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
+import fr.sorbonne_u.components.utils.Measure;
 import fr.sorbonne_u.exceptions.PreconditionException;
 import fr.sorbonne_u.components.equipments.hem.registration.RegistrationCI;
 
@@ -378,5 +382,31 @@ public class Fridge extends AbstractComponent implements FridgeInternalControlI,
 		this.testRegistered();
 		this.testRegister();
 		this.testUnregister();
+	}
+
+	@Override
+	public void closeDoor() throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public FridgeSensorData<Measure<Boolean>> coolingPullSensor() throws Exception {
+		return null;
+	}
+	
+	public FridgeSensorData<Measure<Double>> targetTemperaturePullSensor() throws Exception {
+		return null;
+	}
+
+	public FridgeSensorData<Measure<Double>> currentTemperaturePullSensor() throws Exception {
+		return null;
+	}
+
+	public FridgeSensorData<Measure<Boolean>> doorStatePullSensor() throws Exception {
+		return null;
+	}
+
+	public void startTemperaturesPushSensor(long controlPeriod, TimeUnit tu) throws Exception {
+		
 	}
 }

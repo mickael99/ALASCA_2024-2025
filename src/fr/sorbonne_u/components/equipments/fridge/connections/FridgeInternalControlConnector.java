@@ -31,4 +31,9 @@ public class FridgeInternalControlConnector extends AbstractConnector implements
 		return ((FridgeInternalControlI)this.offering).getCurrentTemperature();
 	}
 
+	@Override
+	public void closeDoor() throws Exception {
+		((FridgeInternalControlI)this.offering).closeDoor();
+	}
+
 }

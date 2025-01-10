@@ -70,4 +70,12 @@ public class FridgeInternalControlInboundPort extends AbstractInboundPort implem
 		return this.getOwner().handleRequest(o -> ((FridgeInternalControlI)o).getCurrentTemperature());
 	}
 
+	@Override
+	public void closeDoor() throws Exception {
+		this.getOwner().handleRequest(
+				o -> {	((FridgeInternalControlI)o).closeDoor();
+						return null;
+				});
+	}
+
 }
