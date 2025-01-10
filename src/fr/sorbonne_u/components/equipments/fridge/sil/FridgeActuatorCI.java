@@ -7,4 +7,5 @@ public interface FridgeActuatorCI extends OfferedCI, RequiredCI {
 
 	public void startCooling() throws Exception;
 	public void	stopCooling() throws Exception;
+	public void closeDoor() throws Exception;
 }

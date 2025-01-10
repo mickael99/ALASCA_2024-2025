@@ -15,6 +15,7 @@ public interface FridgeSensorDataCI extends DataOfferedCI, DataRequiredCI {
 		public FridgeSensorData<Measure<Boolean>> coolingPullSensor() throws Exception;
 		public FridgeSensorData<Measure<Double>> targetTemperaturePullSensor() throws Exception;
 		public FridgeSensorData<Measure<Double>> currentTemperaturePullSensor() throws Exception;
+		public FridgeSensorData<Measure<Boolean>> doorStatePullSensor() throws Exception;
 
 		public void startTemperaturesPushSensor(long controlPeriod, TimeUnit tu) throws Exception;
 	}
