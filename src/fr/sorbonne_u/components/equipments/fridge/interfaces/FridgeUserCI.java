@@ -1,6 +1,6 @@
 package fr.sorbonne_u.components.equipments.fridge.interfaces;
 
-import fr.sorbonne_u.components.equipments.fridge.Fridge.FridgeState;
+import fr.sorbonne_u.components.equipments.fridge.mil.FridgeElectricityModel.FridgeState;
 import fr.sorbonne_u.components.interfaces.OfferedCI;
 import fr.sorbonne_u.components.interfaces.RequiredCI;
 

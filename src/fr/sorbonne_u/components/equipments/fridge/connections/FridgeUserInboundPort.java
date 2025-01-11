@@ -1,11 +1,11 @@
 package fr.sorbonne_u.components.equipments.fridge.connections;
 
 import fr.sorbonne_u.components.ComponentI;
-import fr.sorbonne_u.components.equipments.fridge.Fridge.FridgeState;
 import fr.sorbonne_u.components.equipments.fridge.interfaces.FridgeUserAndControlI;
 import fr.sorbonne_u.components.equipments.fridge.interfaces.FridgeUserAndExternalControlI;
 import fr.sorbonne_u.components.equipments.fridge.interfaces.FridgeUserCI;
 import fr.sorbonne_u.components.equipments.fridge.interfaces.FridgeUserI;
+import fr.sorbonne_u.components.equipments.fridge.mil.FridgeElectricityModel.FridgeState;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
 
 public class FridgeUserInboundPort extends AbstractInboundPort implements FridgeUserCI {

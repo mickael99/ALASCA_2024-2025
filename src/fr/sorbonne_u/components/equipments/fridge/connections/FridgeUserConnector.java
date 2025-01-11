@@ -1,8 +1,8 @@
 package fr.sorbonne_u.components.equipments.fridge.connections;
 
 import fr.sorbonne_u.components.connectors.AbstractConnector;
-import fr.sorbonne_u.components.equipments.fridge.Fridge.FridgeState;
 import fr.sorbonne_u.components.equipments.fridge.interfaces.FridgeUserCI;
+import fr.sorbonne_u.components.equipments.fridge.mil.FridgeElectricityModel.FridgeState;
 
 public class FridgeUserConnector extends AbstractConnector implements FridgeUserCI {
 

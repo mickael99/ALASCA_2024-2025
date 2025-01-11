@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
-import fr.sorbonne_u.components.equipments.fridge.Fridge.FridgeState;
 import fr.sorbonne_u.components.equipments.fridge.connections.FridgeExternalControlConnector;
 import fr.sorbonne_u.components.equipments.fridge.connections.FridgeExternalControlOutboundPort;
 import fr.sorbonne_u.components.equipments.fridge.connections.FridgeInternalControlConnector;
@@ -16,6 +15,7 @@ import fr.sorbonne_u.components.equipments.fridge.connections.FridgeUserOutbound
 import fr.sorbonne_u.components.equipments.fridge.interfaces.FridgeExternalControlCI;
 import fr.sorbonne_u.components.equipments.fridge.interfaces.FridgeInternalControlCI;
 import fr.sorbonne_u.components.equipments.fridge.interfaces.FridgeUserCI;
+import fr.sorbonne_u.components.equipments.fridge.mil.FridgeElectricityModel.FridgeState;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
 import fr.sorbonne_u.utils.aclocks.ClocksServerOutboundPort;
