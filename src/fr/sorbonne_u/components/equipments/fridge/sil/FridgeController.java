@@ -54,6 +54,7 @@ public class FridgeController extends AbstractComponent implements FridgePushImp
 	
 	public static final double STANDARD_HYSTERESIS = 0.1;
 	public static final double STANDARD_CONTROL_PERIOD = 60.0;
+	private static final long MAX_DOOR_OPEN_DURATION = 30L;
 
 	protected String sensorIBP_URI;
 	protected String actuatorIBPURI;
@@ -67,6 +68,8 @@ public class FridgeController extends AbstractComponent implements FridgePushImp
 	
 	protected FridgeState currentState;
 	protected final Object stateLock;
+	
+	protected long doorOpenTimeStamp = -1;
 
 	protected final ExecutionType currentExecutionType;
 	protected final SimulationType currentSimulationType;
@@ -315,14 +318,13 @@ public class FridgeController extends AbstractComponent implements FridgePushImp
 	@SuppressWarnings("unchecked")
 	@Override
 	public void	receiveDataFromFridge(DataRequiredCI.DataI sd) {
-		// Si pas de données reçu, levé une exception
 		assert	sd != null : new PreconditionException("sd != null");
 		if(DEBUG) 
 			this.traceMessage("receives fridge sensor data: " + sd + ".\n");
 		
 		FridgeMeasureI fm = ((FridgeSensorData<FridgeMeasureI>)sd).getMeasure();
 		
-		if (fm.isStateMeasure()) {
+		if(fm.isStateMeasure()) {
 			FridgeState fridgeState = ((FridgeStateMeasure)fm).getData();
 			if (this.clock != null) {
 				try {
@@ -340,9 +342,17 @@ public class FridgeController extends AbstractComponent implements FridgePushImp
 				}
 			}
 
-			synchronized (this.stateLock) {
+			synchronized(this.stateLock) {
 				FridgeState oldState = this.currentState;
 				this.currentState = fridgeState;
+				
+				//Check if the door is open
+				if(fridgeState == FridgeState.DOOR_OPEN && oldState != FridgeState.DOOR_OPEN)
+					this.doorOpenTimeStamp = System.nanoTime();			
+				
+				if(fridgeState != FridgeState.DOOR_OPEN)
+					this.doorOpenTimeStamp = -1;
+				
 				if (fridgeState != FridgeState.OFF && oldState == FridgeState.OFF ) {
 					if (this.controlMode == ControlMode.PULL) {
 						if (VERBOSE) {
@@ -350,7 +360,7 @@ public class FridgeController extends AbstractComponent implements FridgePushImp
 						}
 						
 						if (this.currentExecutionType.isTest() && this.currentSimulationType.isNoSimulation()) {
-							this.pullControLoop();
+							this.pullControlLoop();
 						} 
 						else {
 							this.scheduleTaskOnComponent(
@@ -358,7 +368,7 @@ public class FridgeController extends AbstractComponent implements FridgePushImp
 									
 									@Override
 									public void run() {
-										((FridgeController)this.getTaskOwner()).pullControLoop();
+										((FridgeController)this.getTaskOwner()).pullControlLoop();
 									}
 								},
 								this.actualControlPeriod, 
@@ -382,16 +392,164 @@ public class FridgeController extends AbstractComponent implements FridgePushImp
 		} 
 		else {
 			assert	fm.isTemperatureMeasures();
-			this.pushControLoop((FridgeCompoundMeasure)fm);
+			this.pushControlLoop((FridgeCompoundMeasure)fm);
 		}
 	}
 
-	protected void pushControLoop(FridgeCompoundMeasure fm) {
-		// TODO Auto-generated method stub
-		
+	protected void pushControlLoop(FridgeCompoundMeasure fm) {
+		try {
+			FridgeState s = FridgeState.OFF;
+			synchronized (this.stateLock) {
+				s = this.currentState;
+			}
+			
+			if (s != FridgeState.OFF) {
+				double current = fm.getCurrentTemperature();
+				double target = fm.getTargetTemperature();
+				this.oneControlStep(current, target, s);
+			} 
+			else {
+				if (VERBOSE) {
+					this.traceMessage("control is off.\n");
+				}
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e) ;
+		}
 	}
 
-	protected void pullControLoop() {
+	protected void pullControlLoop() {
+		this.traceMessage("executes a new pull control step.\n");
+		try {
+			FridgeState s = FridgeState.OFF;
+			synchronized (this.stateLock) {
+				s = this.currentState;
+			}
+			
+			if (s != FridgeState.OFF) {
+				@SuppressWarnings("unchecked")
+				FridgeSensorData<FridgeCompoundMeasure> td =
+						(FridgeSensorData<FridgeCompoundMeasure>)
+										this.sensorOutboundPort.request();
+
+				if (DEBUG) 
+					this.traceMessage(td + "\n");
+				
+				double current = td.getMeasure().getCurrentTemperature();
+				double target = td.getMeasure().getTargetTemperature();
+				this.oneControlStep(current, target, s);
+
+				if (this.currentExecutionType.isStandard()
+							|| this.currentSimulationType.isSILSimulation()
+							|| this.currentSimulationType.isHILSimulation()) {
+					this.scheduleTask(
+							o -> ((FridgeController)o).pullControlLoop(),
+							this.actualControlPeriod, 
+							TimeUnit.NANOSECONDS);
+				}
+			} 
+			else {
+				if (VERBOSE) {
+					this.traceMessage("exit the control.\n");
+				}
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e) ;
+		}
+	}
+	
+	protected void oneControlStep(double current, double target, FridgeState s) throws Exception {
+		StringBuffer sb = new StringBuffer();
 		
+		// Door management
+		if(s == FridgeState.DOOR_OPEN) {
+			if(this.doorOpenTimeStamp > 0) {
+				long currentTime = System.nanoTime();
+				long doorOpenDuration = TimeUnit.NANOSECONDS.toSeconds(currentTime - this.doorOpenTimeStamp);
+				if(doorOpenDuration > MAX_DOOR_OPEN_DURATION) {
+					this.actuatorOutboundPort.closeDoor();
+					if(VERBOSE) {
+						this.traceMessage("Door closed automatically after " + doorOpenDuration + " seconds.\n");
+					}
+					this.doorOpenTimeStamp = -1;
+				}
+			}
+		}
+		
+		if (current > target + this.hysteresis) {
+			if (FridgeState.COOLING != s) {
+				this.actuatorOutboundPort.startCooling();
+			}
+			if (VERBOSE) {
+				StringBuffer temp = new StringBuffer();
+				temp.append(current);
+				temp.append(" > ");
+				temp.append(target);
+				if (FridgeState.COOLING != s) {
+					sb.append("start cooling with ");
+					sb.append(temp);
+					sb.append(" - ");
+				} 
+				else {
+					sb.append("still cooling with ");
+					sb.append(temp);
+					sb.append(" + ");
+				}
+				sb.append(this.hysteresis);
+				sb.append(" at ");
+				sb.append(this.clock.get().currentInstant());
+				sb.append(".\n");
+				this.traceMessage(sb.toString());
+			}
+		} 
+		else if (current < target - this.hysteresis) {
+			if (FridgeState.COOLING == s) {
+				this.actuatorOutboundPort.stopCooling();;
+			}
+			StringBuffer temp = new StringBuffer();
+			temp.append(current);
+			temp.append(" < ");
+			temp.append(target);
+			if (VERBOSE) {
+				if (FridgeState.COOLING == s) {
+					sb.append("stop cooling with ");
+					sb.append(temp);
+					sb.append(" + ");
+				} 
+				else {
+					sb.append("still not cooling with ");
+					sb.append(temp);
+					sb.append(" - ");
+				}
+				sb.append(this.hysteresis);
+				sb.append(" at ");
+				sb.append(this.clock.get().currentInstant());
+				sb.append(".\n");
+				this.traceMessage(sb.toString());
+			}
+		} 
+		else {
+			if (VERBOSE) {
+				if (FridgeState.COOLING == s) {
+					sb.append("still cooling with ");
+					sb.append(current);
+					sb.append(" > ");
+					sb.append(target);
+					sb.append(" + ");
+				} 
+				else {
+					sb.append("still not cooling with ");
+					sb.append(current);
+					sb.append(" < ");
+					sb.append(target);
+					sb.append(" - ");
+			}
+			sb.append(this.hysteresis);
+			sb.append(" at ");
+			sb.append(this.clock.get().currentInstant());
+			sb.append(".\n");
+				this.traceMessage(sb.toString());
+			}
+		}
 	}
 }
