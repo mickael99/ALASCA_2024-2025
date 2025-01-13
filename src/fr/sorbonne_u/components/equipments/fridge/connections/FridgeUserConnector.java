@@ -50,5 +50,9 @@ public class FridgeUserConnector extends AbstractConnector implements FridgeUser
 	public double getCurrentTemperature() throws Exception {
 		return ((FridgeUserCI)this.offering).getCurrentTemperature();
 	}
-
+	
+	@Override
+	public void openDoor() throws Exception {
+		((FridgeUserCI)this.offering).openDoor();
+	}
 }

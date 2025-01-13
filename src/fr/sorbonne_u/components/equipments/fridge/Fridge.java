@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
+import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.equipments.fridge.connections.FridgeExternalControlInboundPort;
@@ -14,10 +15,20 @@ import fr.sorbonne_u.components.equipments.fridge.connections.FridgeInternalCont
 import fr.sorbonne_u.components.equipments.fridge.connections.FridgeUserInboundPort;
 import fr.sorbonne_u.components.equipments.fridge.interfaces.FridgeInternalControlI;
 import fr.sorbonne_u.components.equipments.fridge.interfaces.FridgeUserI;
+import fr.sorbonne_u.components.equipments.fridge.measures.FridgeCompoundMeasure;
 import fr.sorbonne_u.components.equipments.fridge.measures.FridgeSensorData;
+import fr.sorbonne_u.components.equipments.fridge.measures.FridgeStateMeasure;
 import fr.sorbonne_u.components.equipments.fridge.mil.FridgeElectricityModel.FridgeState;
+import fr.sorbonne_u.components.equipments.fridge.mil.FridgeStateModel;
 import fr.sorbonne_u.components.equipments.fridge.mil.FridgeTemperatureModel;
 import fr.sorbonne_u.components.equipments.fridge.mil.LocalSimulationArchitectures;
+import fr.sorbonne_u.components.equipments.fridge.mil.events.CloseDoorFridge;
+import fr.sorbonne_u.components.equipments.fridge.mil.events.CoolFridge;
+import fr.sorbonne_u.components.equipments.fridge.mil.events.DoNotCoolFridge;
+import fr.sorbonne_u.components.equipments.fridge.mil.events.OpenDoorFridge;
+import fr.sorbonne_u.components.equipments.fridge.mil.events.SetPowerFridge;
+import fr.sorbonne_u.components.equipments.fridge.mil.events.SwitchOffFridge;
+import fr.sorbonne_u.components.equipments.fridge.mil.events.SwitchOnFridge;
 import fr.sorbonne_u.components.equipments.hem.registration.RegistrationOutboundPort;
 import fr.sorbonne_u.components.equipments.fridge.interfaces.*;
 import fr.sorbonne_u.components.exceptions.BCMException;
@@ -28,6 +39,7 @@ import fr.sorbonne_u.components.utils.ExecutionType;
 import fr.sorbonne_u.components.utils.Measure;
 import fr.sorbonne_u.exceptions.InvariantChecking;
 import fr.sorbonne_u.exceptions.InvariantException;
+import fr.sorbonne_u.exceptions.PostconditionException;
 import fr.sorbonne_u.exceptions.PreconditionException;
 import fr.sorbonne_u.utils.aclocks.AcceleratedClock;
 import fr.sorbonne_u.utils.aclocks.ClocksServer;
@@ -48,6 +60,7 @@ import fr.sorbonne_u.components.utils.SimulationType;
 import fr.sorbonne_u.devs_simulation.architectures.Architecture;
 import fr.sorbonne_u.devs_simulation.models.time.Duration;
 import fr.sorbonne_u.devs_simulation.models.time.Time;
+import fr.sorbonne_u.components.equipments.fridge.mil.events.SetPowerFridge.PowerValue;
 
 @OfferedInterfaces(offered = {FridgeExternalControlCI.class, FridgeInternalControlCI.class, FridgeUserCI.class,
 								FridgeSensorDataCI.FridgeSensorOfferedPullCI.class, FridgeActuatorCI.class})
@@ -690,15 +703,32 @@ public class Fridge extends AbstractCyPhyComponent implements FridgeInternalCont
 		if (VERBOSE)
 			this.traceMessage("Fridge returns its target temperature -> " + this.targetTemperature + "\n.");
 		
-		return this.targetTemperature;
+		double ret = this.targetTemperature;
+		
+		assert	ret >= MIN_TEMPERATURE && ret <= MAX_TEMPERATURE :
+			new PostconditionException(
+					"ret >= MIN_TEMPERATURE && ret <= MAX_TEMPERATURE");
+		
+		return ret;
 	}
 
 	@Override
 	public double getCurrentTemperature() throws Exception { 
+		assert	this.getState() != FridgeState.OFF : new PreconditionException("this.getState() != FridgeState.OFF");
+		
 		if (VERBOSE)
 			this.traceMessage("Fridge returns its current temperature -> " + FAKE_CURRENT_TEMPERATURE + "\n.");
 		
-		return FAKE_CURRENT_TEMPERATURE;
+		double currentTemperature = FAKE_CURRENT_TEMPERATURE;
+		
+		if (this.currentSimulationType.isSILSimulation()) {
+			currentTemperature = (double)((RTAtomicSimulatorPlugin)this.asp).
+												getModelStateValue(
+														FridgeTemperatureModel.SIL_URI,
+														CURRENT_TEMPERATURE_NAME);
+		}
+		
+		return currentTemperature;
 	}
 
 	@Override
@@ -729,6 +759,17 @@ public class Fridge extends AbstractCyPhyComponent implements FridgeInternalCont
 
 		this.currentCoolingPower = power;
 		
+		if (this.currentSimulationType.isSILSimulation()) {
+			PowerValue pv = new PowerValue(this.currentCoolingPower);
+			((RTAtomicSimulatorPlugin)this.asp).triggerExternalEvent(
+												FridgeStateModel.SIL_URI,
+												t -> new SetPowerFridge(t, pv));
+		}
+		
+		assert	this.currentCoolingPower > this.getCurrentCoolingPower() :
+					new PostconditionException(
+							"this.currentCoolingPower > this.getCurrentCoolingPower()");
+			
 		if (VERBOSE)
 			this.traceMessage("Current cooling power is changing -> " + this.currentCoolingPower + "\n.");
 	}
@@ -738,12 +779,14 @@ public class Fridge extends AbstractCyPhyComponent implements FridgeInternalCont
 		if (VERBOSE)
 			this.traceMessage("Trying to set target temperature -> " + temperature + "\n.");
 		
-		assert this.currentState != FridgeState.OFF :
-			new PreconditionException("Impossible to set target temperature because the fridge is off");
 		assert temperature >= MIN_TEMPERATURE && temperature < FAKE_CURRENT_TEMPERATURE :
 			new PreconditionException("The target temperature is not between " + MIN_TEMPERATURE + " and " + FAKE_CURRENT_TEMPERATURE + " -> " + temperature);
 		
 		this.targetTemperature = temperature;
+		
+		
+		assert	getTargetTemperature() == this.targetTemperature:
+			new PostconditionException("getTargetTemperature() == this.targetTemperature");
 		
 		if (VERBOSE)
 			this.traceMessage("Target temperature is changing -> " + this.targetTemperature + "\n.");
@@ -763,6 +806,17 @@ public class Fridge extends AbstractCyPhyComponent implements FridgeInternalCont
 		
 		if (VERBOSE) 
 			this.traceMessage("Fridge is turning on \n.");
+		
+		if(this.currentSimulationType.isSILSimulation()) 
+			((RTAtomicSimulatorPlugin)this.asp).triggerExternalEvent(
+												FridgeStateModel.SIL_URI, 
+												t -> new SwitchOnFridge(t));	
+		
+		this.sensorInboundPort.send(
+								new FridgeSensorData<FridgeStateMeasure>(
+										new FridgeStateMeasure(this.currentState)));
+		
+		assert this.getState() == FridgeState.ON : new PostconditionException("this.getState() == FridgeState.ON");
 	}
 
 	@Override
@@ -771,6 +825,17 @@ public class Fridge extends AbstractCyPhyComponent implements FridgeInternalCont
 		
 		if (VERBOSE) 
 			this.traceMessage("Fridge is turning off \n.");
+		
+		if(this.currentSimulationType.isSILSimulation()) 
+			((RTAtomicSimulatorPlugin)this.asp).triggerExternalEvent(
+												FridgeStateModel.SIL_URI, 
+												t -> new SwitchOffFridge(t));	
+		
+		this.sensorInboundPort.send(
+								new FridgeSensorData<FridgeStateMeasure>(
+										new FridgeStateMeasure(this.currentState)));
+		
+		assert this.getState() == FridgeState.OFF : new PostconditionException("this.getState() == FridgeState.OFF");
 	}
 
 	@Override
@@ -797,6 +862,17 @@ public class Fridge extends AbstractCyPhyComponent implements FridgeInternalCont
 		
 		this.currentState = FridgeState.COOLING;
 		
+		if (this.currentSimulationType.isSILSimulation()) 
+			((RTAtomicSimulatorPlugin)this.asp).triggerExternalEvent(
+												FridgeStateModel.SIL_URI,
+												t -> new CoolFridge(t));
+		
+
+		this.sensorInboundPort.send(new FridgeSensorData<FridgeStateMeasure>(
+										new FridgeStateMeasure(this.currentState)));
+
+		assert	this.isCooling() : new PostconditionException("this.isCooling()");
+		
 		if(VERBOSE)
 			this.traceMessage("The fridge is cooling \n.");
 	}
@@ -811,8 +887,61 @@ public class Fridge extends AbstractCyPhyComponent implements FridgeInternalCont
 		
 		this.currentState = FridgeState.ON;
 		
+		if (this.currentSimulationType.isSILSimulation()) 
+			((RTAtomicSimulatorPlugin)this.asp).triggerExternalEvent(
+												FridgeStateModel.SIL_URI,
+												t -> new DoNotCoolFridge(t));
+		
+
+		this.sensorInboundPort.send(new FridgeSensorData<FridgeStateMeasure>(
+										new FridgeStateMeasure(this.currentState)));
+
+		assert	!this.isCooling() : new PostconditionException("!this.isCooling()");
+		
 		if(VERBOSE)
 			this.traceMessage("The fridge stop cooling \n.");
+	}
+	
+	public boolean isDoorOpen() throws Exception {
+		return this.getState() == FridgeState.DOOR_OPEN;
+	}
+	
+	@Override
+	public void closeDoor() throws Exception {
+		if(VERBOSE)
+			this.traceMessage("Close the door \n.");
+		
+		this.currentState = FridgeState.ON;
+		
+		if (this.currentSimulationType.isSILSimulation()) 
+				((RTAtomicSimulatorPlugin)this.asp).triggerExternalEvent(
+													FridgeStateModel.SIL_URI,
+													t -> new CloseDoorFridge(t));
+		
+		this.sensorInboundPort.send(new FridgeSensorData<FridgeStateMeasure>(
+										new FridgeStateMeasure(this.currentState)));
+		
+		assert this.getState() != FridgeState.DOOR_OPEN :
+			new PostconditionException("this.getState() != FridgeState.DOOR_OPEN");
+	}
+	
+	@Override
+	public void openDoor() throws Exception {
+		if(VERBOSE)
+			this.traceMessage("Open the door \n.");
+		
+		this.currentState = FridgeState.DOOR_OPEN;
+		
+		if (this.currentSimulationType.isSILSimulation()) 
+				((RTAtomicSimulatorPlugin)this.asp).triggerExternalEvent(
+													FridgeStateModel.SIL_URI,
+													t -> new OpenDoorFridge(t));
+		
+		this.sensorInboundPort.send(new FridgeSensorData<FridgeStateMeasure>(
+										new FridgeStateMeasure(this.currentState)));
+		
+		assert this.getState() == FridgeState.DOOR_OPEN :
+			new PostconditionException("this.getState() == FridgeState.DOOR_OPEN");
 	}
 	
 	
@@ -872,30 +1001,86 @@ public class Fridge extends AbstractCyPhyComponent implements FridgeInternalCont
 		this.testRegister();
 		this.testUnregister();
 	}
-
-	@Override
-	public void closeDoor() throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
+	
+	
+	// -------------------------------------------------------------------------
+	// Component sensors
+	// -------------------------------------------------------------------------
 	
 	public FridgeSensorData<Measure<Boolean>> coolingPullSensor() throws Exception {
-		return null;
+		return new FridgeSensorData<Measure<Boolean>>(
+										new Measure<Boolean>(this.isCooling()));
 	}
 	
 	public FridgeSensorData<Measure<Double>> targetTemperaturePullSensor() throws Exception {
-		return null;
+		return new FridgeSensorData<Measure<Double>>(
+				new Measure<Double>(this.getTargetTemperature(),
+									MeasurementUnit.CELSIUS));
 	}
 
 	public FridgeSensorData<Measure<Double>> currentTemperaturePullSensor() throws Exception {
-		return null;
+		return new FridgeSensorData<Measure<Double>>(
+				new Measure<Double>(this.getCurrentTemperature(),
+									MeasurementUnit.CELSIUS));
 	}
 
 	public FridgeSensorData<Measure<Boolean>> doorStatePullSensor() throws Exception {
-		return null;
+		return new FridgeSensorData<Measure<Boolean>>(
+				new Measure<Boolean>(this.isDoorOpen()));
 	}
 
 	public void startTemperaturesPushSensor(long controlPeriod, TimeUnit tu) throws Exception {
-		
+		long actualControlPeriod = -1L;
+		if (this.currentExecutionType.isStandard()) 
+			actualControlPeriod = (long)(controlPeriod * tu.toNanos(1));
+		else {
+			AcceleratedClock ac = this.clock.get();
+			actualControlPeriod = (long)((controlPeriod * tu.toNanos(1))/
+											ac.getAccelerationFactor());
+			if (actualControlPeriod < TimeUnit.MILLISECONDS.toNanos(10)) {
+				System.out.println(
+					"Warning: accelerated control period is "
+							+ "too small ("
+							+ actualControlPeriod +
+							"), unexpected scheduling problems may"
+							+ " occur!");
+			}
+		}
+		this.temperaturesPushSensorTask(actualControlPeriod);
+	}
+	
+	protected void temperaturesPushSensorTask (long actualControlPeriod) throws Exception {
+		assert	actualControlPeriod > 0 :
+				new PreconditionException("actualControlPeriod > 0");
+
+		if (this.currentState != FridgeState.OFF) {
+			this.traceMessage("Fridge performs a new temperatures push.\n");
+			this.temperaturesPushSensor();
+			if (this.currentExecutionType.isStandard()
+					|| this.currentSimulationType.isSILSimulation()
+					|| this.currentSimulationType.isHILSimulation()) {
+				this.scheduleTaskOnComponent(
+					new AbstractComponent.AbstractTask() {
+						@Override
+						public void run() {
+							try {
+								temperaturesPushSensorTask(actualControlPeriod);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					},
+					actualControlPeriod,
+					TimeUnit.NANOSECONDS);
+			}
+		}
+	}
+	
+	protected void temperaturesPushSensor() throws Exception {
+		this.sensorInboundPort.send(
+					new FridgeSensorData<FridgeCompoundMeasure>(
+						new FridgeCompoundMeasure(
+							this.targetTemperaturePullSensor().getMeasure(),
+							this.currentTemperaturePullSensor().getMeasure())));
 	}
 }

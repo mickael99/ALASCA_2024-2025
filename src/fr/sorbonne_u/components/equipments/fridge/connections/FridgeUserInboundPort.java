@@ -99,4 +99,12 @@ public class FridgeUserInboundPort extends AbstractInboundPort implements Fridge
 	public double getCurrentTemperature() throws Exception {
 		return this.getOwner().handleRequest(o -> ((FridgeUserI)o).getCurrentTemperature());
 	}
+	
+	@Override
+	public void openDoor() throws Exception {
+		this.getOwner().handleRequest(
+				o -> {	((FridgeUserI)o).openDoor();
+						return null;
+				});
+	}
 }

@@ -76,4 +76,8 @@ public class FridgeUserOutboundPort extends AbstractOutboundPort implements Frid
 		return ((FridgeUserCI)this.getConnector()).getCurrentTemperature();
 	}
 
+	@Override
+	public void openDoor() throws Exception {
+		((FridgeUserCI)this.getConnector()).openDoor();
+	}
 }

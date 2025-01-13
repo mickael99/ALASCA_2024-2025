@@ -18,4 +18,5 @@ public interface FridgeUserCI extends OfferedCI, RequiredCI, FridgeUserI {
 	public double getTargetTemperature() throws Exception;
     
 	public double getCurrentTemperature() throws Exception;
+	public void openDoor() throws Exception;
 }

@@ -7,5 +7,5 @@ public interface FridgeUserI extends FridgeUserAndControlI, FridgeUserAndExterna
 	public FridgeState getState() throws Exception;
 	public void switchOn() throws Exception;
 	public void switchOff() throws Exception;
-    
+	public void openDoor() throws Exception;
 }
