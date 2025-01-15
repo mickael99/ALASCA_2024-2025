@@ -51,7 +51,7 @@ public class CVM_ToasterUnitTest extends AbstractCVM {
 
     public static SimulationType	CURRENT_SIMULATION_TYPE =
             //SimulationType.NO_SIMULATION;
-            SimulationType.MIL_SIMULATION;
+            SimulationType.SIL_SIMULATION;
             //SimulationType.MIL_RT_SIMULATION;
             //SimulationType.SIL_SIMULATION;
 
