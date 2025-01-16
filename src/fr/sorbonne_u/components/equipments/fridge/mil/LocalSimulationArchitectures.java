@@ -31,6 +31,7 @@ public class LocalSimulationArchitectures {
 	public static Architecture createFridgeMILLocalArchitecture4UnitTest(String architectureURI, TimeUnit simulatedTimeUnit) throws Exception {
 		Map<String,AbstractAtomicModelDescriptor> atomicModelDescriptors = new HashMap<>();
 
+		System.out.println("qujcndsqdné");
 		// Atomic descriptors
 		atomicModelDescriptors.put(
 				FridgeStateModel.MIL_URI,
@@ -181,14 +182,6 @@ public class LocalSimulationArchitectures {
 								 		  Double.class,
 								 		  FridgeTemperatureModel.MIL_URI)
 				});
-		bindings.put(new VariableSource("currentCoolingPower",
-						Double.class,
-						FridgeElectricityModel.MIL_URI),
-						new VariableSink[] {
-						new VariableSink("currentCoolingPower",
-							 		  Double.class,
-							 		  FridgeTemperatureModel.MIL_URI)
-					});
 
 		// Coupled model descriptor
 		coupledModelDescriptors.put(
@@ -408,14 +401,6 @@ public class LocalSimulationArchitectures {
 								 		  Double.class,
 								 		  fridgeTemperatureModelURI)
 				});
-		bindings.put(new VariableSource("currentCoolingPower",
-						Double.class,
-						fridgeElectricityModelURI),
-						new VariableSink[] {
-						new VariableSink("currentCoolingPower",
-							 		 	  Double.class,
-							 		      fridgeTemperatureModelURI)
-			});
 
 		coupledModelDescriptors.put(
 				fridgeCoupledModelURI,

@@ -20,6 +20,13 @@ import fr.sorbonne_u.components.equipments.fridge.interfaces.FridgeExternalContr
 import fr.sorbonne_u.components.equipments.fridge.interfaces.FridgeInternalControlCI;
 import fr.sorbonne_u.components.equipments.fridge.interfaces.FridgeUserCI;
 import fr.sorbonne_u.components.equipments.fridge.mil.FridgeElectricityModel.FridgeState;
+import fr.sorbonne_u.components.equipments.fridge.mil.events.CloseDoorFridge;
+import fr.sorbonne_u.components.equipments.fridge.mil.events.CoolFridge;
+import fr.sorbonne_u.components.equipments.fridge.mil.events.DoNotCoolFridge;
+import fr.sorbonne_u.components.equipments.fridge.mil.events.OpenDoorFridge;
+import fr.sorbonne_u.components.equipments.fridge.mil.events.SetPowerFridge;
+import fr.sorbonne_u.components.equipments.fridge.mil.events.SwitchOffFridge;
+import fr.sorbonne_u.components.equipments.fridge.mil.events.SwitchOnFridge;
 import fr.sorbonne_u.components.equipments.fridge.mil.LocalSimulationArchitectures;
 import fr.sorbonne_u.components.exceptions.BCMException;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
@@ -27,6 +34,7 @@ import fr.sorbonne_u.components.exceptions.ComponentStartException;
 import fr.sorbonne_u.components.utils.ExecutionType;
 import fr.sorbonne_u.components.utils.SimulationType;
 import fr.sorbonne_u.devs_simulation.architectures.Architecture;
+import fr.sorbonne_u.devs_simulation.models.annotations.ModelExternalEvents;
 import fr.sorbonne_u.exceptions.ImplementationInvariantException;
 import fr.sorbonne_u.exceptions.InvariantChecking;
 import fr.sorbonne_u.exceptions.InvariantException;
@@ -45,6 +53,13 @@ import fr.sorbonne_u.components.cyphy.utils.aclocks.ClocksServerWithSimulationOu
 								FridgeInternalControlCI.class, 
 								FridgeUserCI.class,
 								ClocksServerWithSimulationCI.class})
+@ModelExternalEvents(imported = {SwitchOnFridge.class,
+		 SwitchOffFridge.class,
+		 CoolFridge.class,
+		 DoNotCoolFridge.class,
+		 SetPowerFridge.class,
+		 OpenDoorFridge.class,
+		 CloseDoorFridge.class})
 public class FridgeUser extends AbstractCyPhyComponent {
 	
 	// -------------------------------------------------------------------------
@@ -272,7 +287,6 @@ public class FridgeUser extends AbstractCyPhyComponent {
 			this.externalOutboundPort = new FridgeExternalControlOutboundPort(this);
 			this.externalOutboundPort.publishPort();
 		}
-		
 		switch (this.currentSimulationType) {
 			case MIL_SIMULATION:
 				Architecture architecture = 
@@ -285,6 +299,7 @@ public class FridgeUser extends AbstractCyPhyComponent {
 						new BCMException(
 								"local simulator " + this.localArchitectureURI
 								+ " does not exist!");
+				this.logMessage("Architecture built");
 				this.addLocalSimulatorArchitecture(architecture);
 				this.global2localSimulationArchitectureURIS.
 						put(this.globalArchitectureURI, this.localArchitectureURI);
@@ -360,6 +375,7 @@ public class FridgeUser extends AbstractCyPhyComponent {
 					this.asp.setPluginURI(uri);
 					this.asp.setSimulationArchitecture(architecture);
 					this.installPlugin(this.asp);
+					this.logMessage("Plugin installed");
 					break;
 					
 				case MIL_RT_SIMULATION:

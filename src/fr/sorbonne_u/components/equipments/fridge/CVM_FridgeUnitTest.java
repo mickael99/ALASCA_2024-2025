@@ -27,7 +27,7 @@ public class CVM_FridgeUnitTest extends AbstractCVM {
 	public static long DELAY_TO_START = 3000L;
 	public static long EXECUTION_DURATION = 5000L;
 	public static long DELAY_TO_STOP = 2000L;
-	public static long END_SLEEP_DURATION = 10000L;
+	public static long END_SLEEP_DURATION = 1000000L;
 
 	public static long DELAY_TO_START_SIMULATION = 3000L;
 	public static double SIMULATION_START_TIME = 0.0;
@@ -37,10 +37,10 @@ public class CVM_FridgeUnitTest extends AbstractCVM {
 
 	public static ExecutionType CURRENT_EXECUTION_TYPE = ExecutionType.UNIT_TEST;
 	public static SimulationType CURRENT_SIMULATION_TYPE =
-											SimulationType.NO_SIMULATION;
+											//SimulationType.NO_SIMULATION;
 											//SimulationType.MIL_SIMULATION;
 											//SimulationType.MIL_RT_SIMULATION;
-											//SimulationType.SIL_SIMULATION;
+											SimulationType.SIL_SIMULATION;
 	public static ControlMode CONTROL_MODE = ControlMode.PUSH;
 
 	public static String CLOCK_URI = "hem-clock";

@@ -13,6 +13,7 @@ import fr.sorbonne_u.components.cyphy.AbstractCyPhyComponent;
 import fr.sorbonne_u.components.cyphy.plugins.devs.CoordinatorPlugin;
 import fr.sorbonne_u.components.cyphy.plugins.devs.SupervisorPlugin;
 import fr.sorbonne_u.components.cyphy.plugins.devs.architectures.ComponentAtomicModelDescriptor;
+import fr.sorbonne_u.components.cyphy.plugins.devs.architectures.ComponentCoupledModelDescriptor;
 import fr.sorbonne_u.components.cyphy.plugins.devs.architectures.ComponentModelArchitecture;
 import fr.sorbonne_u.components.cyphy.plugins.devs.architectures.RTComponentAtomicModelDescriptor;
 import fr.sorbonne_u.components.cyphy.plugins.devs.architectures.RTComponentCoupledModelDescriptor;
@@ -26,7 +27,13 @@ import fr.sorbonne_u.components.equipments.fridge.Fridge;
 import fr.sorbonne_u.components.equipments.fridge.FridgeUser;
 import fr.sorbonne_u.components.equipments.fridge.mil.FridgeCoupledModel;
 import fr.sorbonne_u.components.equipments.fridge.mil.FridgeUnitTestModel;
-import fr.sorbonne_u.components.equipments.fridge.mil.events.*;
+import fr.sorbonne_u.components.equipments.fridge.mil.events.CloseDoorFridge;
+import fr.sorbonne_u.components.equipments.fridge.mil.events.CoolFridge;
+import fr.sorbonne_u.components.equipments.fridge.mil.events.DoNotCoolFridge;
+import fr.sorbonne_u.components.equipments.fridge.mil.events.OpenDoorFridge;
+import fr.sorbonne_u.components.equipments.fridge.mil.events.SetPowerFridge;
+import fr.sorbonne_u.components.equipments.fridge.mil.events.SwitchOffFridge;
+import fr.sorbonne_u.components.equipments.fridge.mil.events.SwitchOnFridge;
 import fr.sorbonne_u.components.exceptions.BCMException;
 import fr.sorbonne_u.components.utils.SimulationType;
 import fr.sorbonne_u.devs_simulation.models.architectures.AbstractAtomicModelDescriptor;
@@ -39,8 +46,6 @@ import fr.sorbonne_u.exceptions.InvariantChecking;
 import fr.sorbonne_u.exceptions.InvariantException;
 import fr.sorbonne_u.exceptions.PreconditionException;
 import fr.sorbonne_u.utils.aclocks.ClocksServer;
-import fr.sorbonne_u.components.cyphy.plugins.devs.architectures.ComponentCoupledModelDescriptor;
-
 @RequiredInterfaces(required = {ClocksServerWithSimulationCI.class})
 public class FridgeUnitTestsSupervisor extends AbstractCyPhyComponent {
 
@@ -172,8 +177,6 @@ public class FridgeUnitTestsSupervisor extends AbstractCyPhyComponent {
 
 		switch (this.currentSimulationType) {
 		case MIL_SIMULATION:
-			// create the global simulation architecture given the type of
-			// simulation for the current run
 			ComponentModelArchitecture cma =
 					createMILComponentSimulationArchitectures(
 										this.simArchitectureURI,

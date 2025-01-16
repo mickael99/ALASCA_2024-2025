@@ -3,51 +3,8 @@ package fr.sorbonne_u.components.equipments.fridge;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.HashMap;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
-
-import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
-import fr.sorbonne_u.components.equipments.fridge.connections.FridgeExternalControlInboundPort;
-import fr.sorbonne_u.components.equipments.fridge.connections.FridgeInternalControlInboundPort;
-import fr.sorbonne_u.components.equipments.fridge.connections.FridgeUserInboundPort;
-import fr.sorbonne_u.components.equipments.fridge.interfaces.FridgeInternalControlI;
-import fr.sorbonne_u.components.equipments.fridge.interfaces.FridgeUserI;
-import fr.sorbonne_u.components.equipments.fridge.measures.FridgeCompoundMeasure;
-import fr.sorbonne_u.components.equipments.fridge.measures.FridgeSensorData;
-import fr.sorbonne_u.components.equipments.fridge.measures.FridgeStateMeasure;
-import fr.sorbonne_u.components.equipments.fridge.mil.FridgeElectricityModel.FridgeState;
-import fr.sorbonne_u.components.equipments.fridge.mil.FridgeStateModel;
-import fr.sorbonne_u.components.equipments.fridge.mil.FridgeTemperatureModel;
-import fr.sorbonne_u.components.equipments.fridge.mil.LocalSimulationArchitectures;
-import fr.sorbonne_u.components.equipments.fridge.mil.events.CloseDoorFridge;
-import fr.sorbonne_u.components.equipments.fridge.mil.events.CoolFridge;
-import fr.sorbonne_u.components.equipments.fridge.mil.events.DoNotCoolFridge;
-import fr.sorbonne_u.components.equipments.fridge.mil.events.OpenDoorFridge;
-import fr.sorbonne_u.components.equipments.fridge.mil.events.SetPowerFridge;
-import fr.sorbonne_u.components.equipments.fridge.mil.events.SwitchOffFridge;
-import fr.sorbonne_u.components.equipments.fridge.mil.events.SwitchOnFridge;
-import fr.sorbonne_u.components.equipments.hem.registration.RegistrationOutboundPort;
-import fr.sorbonne_u.components.equipments.fridge.interfaces.*;
-import fr.sorbonne_u.components.exceptions.BCMException;
-import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
-import fr.sorbonne_u.components.exceptions.ComponentStartException;
-import fr.sorbonne_u.components.interfaces.DataOfferedCI;
-import fr.sorbonne_u.components.utils.ExecutionType;
-import fr.sorbonne_u.components.utils.Measure;
-import fr.sorbonne_u.exceptions.InvariantChecking;
-import fr.sorbonne_u.exceptions.InvariantException;
-import fr.sorbonne_u.exceptions.PostconditionException;
-import fr.sorbonne_u.exceptions.PreconditionException;
-import fr.sorbonne_u.utils.aclocks.AcceleratedClock;
-import fr.sorbonne_u.utils.aclocks.ClocksServer;
-import fr.sorbonne_u.components.equipments.hem.registration.RegistrationCI;
-import fr.sorbonne_u.components.equipments.fridge.sil.FridgeActuatorCI;
-import fr.sorbonne_u.components.equipments.fridge.sil.FridgeSensorDataCI;
-import fr.sorbonne_u.components.equipments.fridge.sil.connectors.FridgeActuatorInboundPort;
-import fr.sorbonne_u.components.equipments.fridge.sil.connectors.FridgeSensorDataInboundPort;
 import fr.sorbonne_u.components.cyphy.AbstractCyPhyComponent;
 import fr.sorbonne_u.components.cyphy.plugins.devs.AtomicSimulatorPlugin;
 import fr.sorbonne_u.components.cyphy.plugins.devs.RTAtomicSimulatorPlugin;
@@ -55,16 +12,63 @@ import fr.sorbonne_u.components.cyphy.utils.aclocks.AcceleratedAndSimulationCloc
 import fr.sorbonne_u.components.cyphy.utils.aclocks.ClocksServerWithSimulationCI;
 import fr.sorbonne_u.components.cyphy.utils.aclocks.ClocksServerWithSimulationConnector;
 import fr.sorbonne_u.components.cyphy.utils.aclocks.ClocksServerWithSimulationOutboundPort;
+import fr.sorbonne_u.components.exceptions.BCMException;
+import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
+import fr.sorbonne_u.components.exceptions.ComponentStartException;
+import fr.sorbonne_u.components.interfaces.DataOfferedCI;
+import fr.sorbonne_u.components.utils.ExecutionType;
+import fr.sorbonne_u.components.utils.Measure;
 import fr.sorbonne_u.components.utils.MeasurementUnit;
 import fr.sorbonne_u.components.utils.SimulationType;
 import fr.sorbonne_u.devs_simulation.architectures.Architecture;
 import fr.sorbonne_u.devs_simulation.models.time.Duration;
 import fr.sorbonne_u.devs_simulation.models.time.Time;
-import fr.sorbonne_u.components.equipments.fridge.mil.events.SetPowerFridge.PowerValue;
+import fr.sorbonne_u.exceptions.InvariantChecking;
+import fr.sorbonne_u.exceptions.InvariantException;
+import fr.sorbonne_u.exceptions.PostconditionException;
+import fr.sorbonne_u.exceptions.PreconditionException;
+import fr.sorbonne_u.utils.aclocks.AcceleratedClock;
+import fr.sorbonne_u.utils.aclocks.ClocksServer;
+import java.util.HashMap;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+import fr.sorbonne_u.components.AbstractComponent;
+import fr.sorbonne_u.components.equipments.fridge.connections.FridgeExternalControlInboundPort;
+import fr.sorbonne_u.components.equipments.fridge.connections.FridgeInternalControlInboundPort;
+import fr.sorbonne_u.components.equipments.fridge.connections.FridgeUserInboundPort;
+import fr.sorbonne_u.components.equipments.fridge.interfaces.FridgeExternalControlCI;
+import fr.sorbonne_u.components.equipments.fridge.interfaces.FridgeInternalControlCI;
+import fr.sorbonne_u.components.equipments.fridge.interfaces.FridgeInternalControlI;
+import fr.sorbonne_u.components.equipments.fridge.interfaces.FridgeUserCI;
+import fr.sorbonne_u.components.equipments.fridge.interfaces.FridgeUserI;
+import fr.sorbonne_u.components.equipments.fridge.measures.FridgeCompoundMeasure;
+import fr.sorbonne_u.components.equipments.fridge.measures.FridgeSensorData;
+import fr.sorbonne_u.components.equipments.fridge.measures.FridgeStateMeasure;
+import fr.sorbonne_u.components.equipments.fridge.mil.FridgeElectricityModel.FridgeState;
+import fr.sorbonne_u.components.equipments.fridge.mil.FridgeStateModel;
+import fr.sorbonne_u.components.equipments.fridge.mil.FridgeTemperatureModel;
+import fr.sorbonne_u.components.equipments.fridge.mil.events.CloseDoorFridge;
+import fr.sorbonne_u.components.equipments.fridge.mil.events.CoolFridge;
+import fr.sorbonne_u.components.equipments.fridge.mil.events.DoNotCoolFridge;
+import fr.sorbonne_u.components.equipments.fridge.mil.events.OpenDoorFridge;
+import fr.sorbonne_u.components.equipments.fridge.mil.events.SetPowerFridge;
+import fr.sorbonne_u.components.equipments.fridge.mil.events.SwitchOffFridge;
+import fr.sorbonne_u.components.equipments.fridge.mil.events.SwitchOnFridge;
+import fr.sorbonne_u.components.equipments.fridge.sil.FridgeActuatorCI;
+import fr.sorbonne_u.components.equipments.fridge.sil.FridgeSensorDataCI;
+import fr.sorbonne_u.components.equipments.fridge.sil.connectors.FridgeActuatorInboundPort;
+import fr.sorbonne_u.components.equipments.fridge.sil.connectors.FridgeSensorDataInboundPort;
+import fr.sorbonne_u.components.equipments.heater.mil.events.SetPowerHeater.PowerValue;
+import fr.sorbonne_u.components.equipments.hem.registration.RegistrationOutboundPort;
+import fr.sorbonne_u.components.equipments.fridge.mil.LocalSimulationArchitectures;
 
-@OfferedInterfaces(offered = {FridgeExternalControlCI.class, FridgeInternalControlCI.class, FridgeUserCI.class,
-								FridgeSensorDataCI.FridgeSensorOfferedPullCI.class, FridgeActuatorCI.class})
-@RequiredInterfaces(required = {RegistrationCI.class, DataOfferedCI.PushCI.class, ClocksServerWithSimulationCI.class})
+
+@OfferedInterfaces(offered = {FridgeExternalControlCI.class, 
+							  FridgeInternalControlCI.class, 
+							  FridgeUserCI.class,
+							  FridgeSensorDataCI.FridgeSensorOfferedPullCI.class, 
+							  FridgeActuatorCI.class})
+@RequiredInterfaces(required = {/*RegistrationCI.class, */DataOfferedCI.PushCI.class, ClocksServerWithSimulationCI.class})
 public class Fridge extends AbstractCyPhyComponent implements FridgeInternalControlI, FridgeUserI {
 	
 	
@@ -272,21 +276,6 @@ public class Fridge extends AbstractCyPhyComponent implements FridgeInternalCont
 				 ACTUATOR_INBOUND_PORT_URI);
 	}
 	
-	/*
-	protected Fridge(boolean isHEMConnectionRequired) throws Exception {
-		this(USER_INBOUND_PORT_URI, INTERNAL_CONTROL_INBOUND_PORT_URI, EXTERNAL_CONTROL_INBOUND_PORT_URI, isHEMConnectionRequired);
-	}
-	
-	protected Fridge(String userInboundURI, String internalInboundURI, String externalInboundURI, boolean isHEMConnectionRequired) throws Exception {
-		super(2, 0);
-		this.initialise(userInboundURI, internalInboundURI, externalInboundURI, isHEMConnectionRequired);
-	}
-	
-	protected Fridge(String reflectionInboundPortURI, String userInboundURI, String internalInboundURI, String externalInboundURI, boolean isHEMConnectionRequired) throws Exception {
-		super(reflectionInboundPortURI, 1, 0);
-		this.initialise(userInboundURI, internalInboundURI, externalInboundURI, isHEMConnectionRequired);
-	}*/
-	
 	protected Fridge(String fridgeUserInboundPortURI, String fridgeInternalControlInboundPortURI,
 						String fridgeExternalControlInboundPortURI, String fridgeSensorInboundPortURI,
 						String fridgeActuatorInboundPortURI) throws Exception
@@ -488,44 +477,6 @@ public class Fridge extends AbstractCyPhyComponent implements FridgeInternalCont
 			this.toggleTracing();		
 		}
 	}
-	/*
-	protected void initialise(String userInboundURI, String internalInboundURI, String externalInboundURI, boolean isHEMConnectionRequired) throws Exception {
-		assert userInboundURI != null && !userInboundURI.isEmpty();
-		assert internalInboundURI != null && !internalInboundURI.isEmpty();
-		assert externalInboundURI != null && !externalInboundURI.isEmpty();
-		
-		// Variables
-		this.currentState = FridgeState.OFF;
-		this.currentCoolingPower = MAX_COOLING_POWER;
-		this.targetTemperature = STANDARD_TARGET_TEMPERATURE;
-		
-		// Connections
-		this.userInbound = new FridgeUserInboundPort(userInboundURI, this);
-		this.userInbound.publishPort();
-		
-		this.internalInbound = new FridgeInternalControlInboundPort(internalInboundURI, this);
-		this.internalInbound.publishPort();
-		
-		this.externalInbound = new FridgeExternalControlInboundPort(externalInboundURI, this);
-		this.externalInbound.publishPort();
-		
-		// Registration
-		this.isHEMConnectionRequired = isHEMConnectionRequired;
-		
-		if(this.isHEMConnectionRequired) {
-			this.registrationPort = new RegistrationOutboundPort(this);
-			this.registrationPort.publishPort();
-		}
-		
-		// Tracing
-		if (VERBOSE) {
-			this.tracer.get().setTitle("Fridge component");
-			this.tracer.get().setRelativePosition(X_RELATIVE_POSITION,
-												  Y_RELATIVE_POSITION);
-			this.toggleTracing();		
-		}	
-	}
-	*/
 	
 	// -------------------------------------------------------------------------
 	// Component life-cycle

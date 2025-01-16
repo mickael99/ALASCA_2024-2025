@@ -58,12 +58,19 @@ public class FridgeCoupledModel extends CoupledModel {
 		return ret;
 	}
 		
-	public FridgeCoupledModel(String uri, TimeUnit simulatedTimeUnit, CoordinatorI simulationEngine, ModelI[] submodels,
-								Map<Class<? extends EventI>, EventSink[]> imported, Map<Class<? extends EventI>, ReexportedEvent> reexported,
-								Map<EventSource, EventSink[]> connections) throws Exception
+	public FridgeCoupledModel(
+			String uri,
+			TimeUnit simulatedTimeUnit,
+			CoordinatorI simulationEngine,
+			ModelI[] submodels,
+			Map<Class<? extends EventI>,
+			EventSink[]> imported,
+			Map<Class<? extends EventI>, ReexportedEvent> reexported,
+			Map<EventSource, EventSink[]> connections
+			) throws Exception
 	{
 		super(uri, simulatedTimeUnit, simulationEngine, submodels,
-			  imported, reexported, connections);
+				  imported, reexported, connections);
 		
 		assert	glassBoxInvariants(this) :
 				new NeoSim4JavaException("White-box invariants violation!");
@@ -71,14 +78,22 @@ public class FridgeCoupledModel extends CoupledModel {
 				new NeoSim4JavaException("Black-box invariants violation!");
 	}
 	
-	public FridgeCoupledModel(String uri, TimeUnit simulatedTimeUnit, CoordinatorI simulationEngine, ModelI[] submodels,
-								Map<Class<? extends EventI>, EventSink[]> imported, Map<Class<? extends EventI>, ReexportedEvent> reexported,
-								Map<EventSource, EventSink[]> connections, Map<StaticVariableDescriptor, VariableSink[]> importedVars,
-								Map<VariableSource, StaticVariableDescriptor> reexportedVars,Map<VariableSource, VariableSink[]> bindings) throws Exception
+	public FridgeCoupledModel(
+			String uri,
+			TimeUnit simulatedTimeUnit,
+			CoordinatorI simulationEngine,
+			ModelI[] submodels,
+			Map<Class<? extends EventI>, EventSink[]> imported,
+			Map<Class<? extends EventI>, ReexportedEvent> reexported,
+			Map<EventSource, EventSink[]> connections,
+			Map<StaticVariableDescriptor, VariableSink[]> importedVars,
+			Map<VariableSource, StaticVariableDescriptor> reexportedVars,
+			Map<VariableSource, VariableSink[]> bindings
+			) throws Exception
 	{
 		super(uri, simulatedTimeUnit, simulationEngine, submodels,
-			  imported, reexported, connections,
-			  importedVars, reexportedVars, bindings);
+				  imported, reexported, connections,
+				  importedVars, reexportedVars, bindings);
 		
 		assert	glassBoxInvariants(this) :
 				new NeoSim4JavaException("White-box invariants violation!");
