@@ -211,14 +211,6 @@ public class RunFridgeUnitaryMILRTSimulation {
 										 		  Double.class,
 										 		  FridgeTemperatureModel.MIL_RT_URI)
 						 });
-			bindings.put(new VariableSource("currentCoolingPower",
-											Double.class,
-											FridgeElectricityModel.MIL_RT_URI),
-						 new VariableSink[] {
-								 new VariableSink("currentCoolingPower",
-										 		  Double.class,
-										 		  FridgeTemperatureModel.MIL_RT_URI)
-						 });
 
 			coupledModelDescriptors.put(
 					FridgeCoupledModel.MIL_RT_URI,

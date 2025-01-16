@@ -39,7 +39,6 @@ import fr.sorbonne_u.devs_simulation.utils.StandardLogger;
 								 CloseDoorFridge.class,
 								 OpenDoorFridge.class})
 @ModelImportedVariable(name = "externalTemperature", type = Double.class)
-@ModelImportedVariable(name = "currentCoolingPower", type = Double.class)
 public class FridgeTemperatureModel extends AtomicHIOA implements FridgeOperationI {
 	
 	// -------------------------------------------------------------------------
@@ -74,8 +73,8 @@ public class FridgeTemperatureModel extends AtomicHIOA implements FridgeOperatio
 	@ImportedVariable(type = Double.class)
 	protected Value<Double>	externalTemperature;
 	
-	@ImportedVariable(type = Double.class)
-	protected Value<Double>	currentCoolingPower;
+	@InternalVariable(type = Double.class)
+	protected Value<Double> currentCoolingPower = new Value<Double>(this);
 	
 	@InternalVariable(type = Double.class)
 	protected final DerivableValue<Double> currentTemperature = new DerivableValue<Double>(this);
@@ -322,10 +321,13 @@ public class FridgeTemperatureModel extends AtomicHIOA implements FridgeOperatio
 									this.externalTemperature.isInitialised()) {
 			double derivative = this.computeDerivatives(INITIAL_TEMPERATURE);
 			this.currentTemperature.initialise(INITIAL_TEMPERATURE, derivative);
-			justInitialised++;
+			
+			this.currentCoolingPower.initialise(FridgeElectricityModel.MAX_COOLING_POWER);
+			
+			justInitialised += 2;
 		}
 		else if (!this.currentTemperature.isInitialised()) 
-			notInitialisedYet++;
+			notInitialisedYet += 2;
 		
 
 		assert	glassBoxInvariants(this) :

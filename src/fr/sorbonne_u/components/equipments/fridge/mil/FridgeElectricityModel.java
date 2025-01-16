@@ -10,6 +10,7 @@ import fr.sorbonne_u.components.utils.Electricity;
 import fr.sorbonne_u.devs_simulation.exceptions.MissingRunParameterException;
 import fr.sorbonne_u.devs_simulation.exceptions.NeoSim4JavaException;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ExportedVariable;
+import fr.sorbonne_u.devs_simulation.hioa.annotations.InternalVariable;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ModelExportedVariable;
 import fr.sorbonne_u.devs_simulation.hioa.models.AtomicHIOA;
 import fr.sorbonne_u.devs_simulation.hioa.models.vars.Value;
@@ -36,7 +37,6 @@ import fr.sorbonne_u.components.equipments.fridge.mil.events.*;
 								 OpenDoorFridge.class,
 								 CloseDoorFridge.class})
 @ModelExportedVariable(name = "currentIntensity", type = Double.class)
-@ModelExportedVariable(name = "currentCoolingPower", type = Double.class)
 public class FridgeElectricityModel extends AtomicHIOA implements FridgeOperationI{
 
 	// -------------------------------------------------------------------------
@@ -68,7 +68,7 @@ public class FridgeElectricityModel extends AtomicHIOA implements FridgeOperatio
 	protected double totalConsumption;
 
 	
-	@ExportedVariable(type = Double.class)
+	@InternalVariable(type = Double.class)
 	protected final Value<Double> currentCoolingPower = new Value<Double>(this);
 	
 	@ExportedVariable(type = Double.class)
@@ -254,6 +254,7 @@ public class FridgeElectricityModel extends AtomicHIOA implements FridgeOperatio
 
 		if (!this.currentIntensity.isInitialised() ||
 								!this.currentCoolingPower.isInitialised()) {
+			System.out.println("initialisation de l'intensité dans electricity");
 			this.currentIntensity.initialise(0.0);
 			this.currentCoolingPower.initialise(MAX_COOLING_POWER);
 

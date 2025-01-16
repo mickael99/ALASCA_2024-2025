@@ -14,6 +14,8 @@ import fr.sorbonne_u.components.equipments.fridge.mil.FridgeUnitTestModel;
 import fr.sorbonne_u.components.equipments.fridge.sil.FridgeController.ControlMode;
 import fr.sorbonne_u.components.utils.ExecutionType;
 import fr.sorbonne_u.components.utils.SimulationType;
+import fr.sorbonne_u.devs_simulation.exceptions.NeoSim4JavaException;
+import fr.sorbonne_u.exceptions.VerboseException;
 import fr.sorbonne_u.utils.aclocks.ClocksServer;
 
 public class CVM_FridgeUnitTest extends AbstractCVM {
@@ -173,5 +175,50 @@ public class CVM_FridgeUnitTest extends AbstractCVM {
 		}
 
 		super.deploy();
+	}
+	
+	public static void	main(String[] args)
+	{
+		VerboseException.VERBOSE = true;
+		VerboseException.PRINT_STACK_TRACE = true;
+		NeoSim4JavaException.VERBOSE = true;
+		NeoSim4JavaException.PRINT_STACK_TRACE = true;
+
+		try {
+			CVM_FridgeUnitTest cvm = new CVM_FridgeUnitTest();
+			
+			long executionDurationInMillis = 0L;
+			switch (CURRENT_SIMULATION_TYPE) {
+				case MIL_SIMULATION:
+					executionDurationInMillis =
+						DELAY_TO_START + DELAY_TO_START_SIMULATION 
+											+ EXECUTION_DURATION + DELAY_TO_STOP;
+					break;
+					
+				case MIL_RT_SIMULATION:
+					
+				case SIL_SIMULATION:
+					
+					executionDurationInMillis =
+						DELAY_TO_START + DELAY_TO_START_SIMULATION
+							+ ((long)(((double)SIMULATION_TIME_UNIT.toMillis(1))
+									* (SIMULATION_DURATION/ACCELERATION_FACTOR)))
+							+ DELAY_TO_STOP;
+					break;
+					
+				case NO_SIMULATION:
+					executionDurationInMillis =
+						DELAY_TO_START + EXECUTION_DURATION + DELAY_TO_STOP;
+					break;
+				default:
+			}
+			System.out.println("starting for " + executionDurationInMillis);
+			cvm.startStandardLifeCycle(executionDurationInMillis);
+			Thread.sleep(END_SLEEP_DURATION);
+
+			System.exit(0);
+		} catch (Exception e) {
+			throw new RuntimeException(e) ;
+		}
 	}
 }
