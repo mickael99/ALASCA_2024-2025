@@ -17,7 +17,7 @@ public class CVMUnitTest extends AbstractCVM {
 				new Object[]{false});
 
 		AbstractComponent.createComponent(
-				FridgeTester.class.getCanonicalName(),
+				FridgeUser.class.getCanonicalName(),
 				new Object[]{true});
 
 		super.deploy();

@@ -83,7 +83,7 @@ public class Fridge extends AbstractCyPhyComponent implements FridgeInternalCont
 	public static final String REFLECTION_INBOUND_PORT_URI = "FRIDGE-RIP-URI";
 	
 	// Tracing
-	public static final boolean VERBOSE = true;
+	public static boolean VERBOSE = true;
 	public static int X_RELATIVE_POSITION = 0;			
 	public static int Y_RELATIVE_POSITION = 0;
 	
@@ -91,7 +91,7 @@ public class Fridge extends AbstractCyPhyComponent implements FridgeInternalCont
 	protected FridgeState currentState;
 	
 	// Power level
-	protected static final double MAX_COOLING_POWER = 500.0;
+	public static final double MAX_COOLING_POWER = 500.0;
 	protected double currentCoolingPower;
 	
 	// Temperature
@@ -99,7 +99,7 @@ public class Fridge extends AbstractCyPhyComponent implements FridgeInternalCont
 	protected static final double MIN_TEMPERATURE = 0.0;
 	protected static final double MAX_TEMPERATURE = 8.0;
 	protected static final double FAKE_CURRENT_TEMPERATURE = 6.0;
-	protected static final double STANDARD_TARGET_TEMPERATURE = 4.0;
+	public static final double STANDARD_TARGET_TEMPERATURE = 4.0;
 	protected double targetTemperature;
 	
 	// Connections
