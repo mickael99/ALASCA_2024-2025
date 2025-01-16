@@ -1,4 +1,4 @@
-package fr.sorbonne_u.components.equipments.fridge.sil;
+package fr.sorbonne_u.components.equipments.fridge;
 
 import java.time.Instant;
 import java.util.concurrent.TimeUnit;
@@ -7,10 +7,10 @@ import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.CoordinatorComponent;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.components.cyphy.utils.aclocks.ClocksServerWithSimulation;
-import fr.sorbonne_u.components.equipments.fridge.Fridge;
-import fr.sorbonne_u.components.equipments.fridge.FridgeUser;
 import fr.sorbonne_u.components.equipments.fridge.mil.FridgeCoupledModel;
 import fr.sorbonne_u.components.equipments.fridge.mil.FridgeUnitTestModel;
+import fr.sorbonne_u.components.equipments.fridge.sil.FridgeController;
+import fr.sorbonne_u.components.equipments.fridge.sil.FridgeUnitTestsSupervisor;
 import fr.sorbonne_u.components.equipments.fridge.sil.FridgeController.ControlMode;
 import fr.sorbonne_u.components.utils.ExecutionType;
 import fr.sorbonne_u.components.utils.SimulationType;

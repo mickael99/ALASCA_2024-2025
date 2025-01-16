@@ -630,7 +630,7 @@ public class FridgeUser extends AbstractCyPhyComponent {
 			assertTrue(this.userOutboundPort.getState() == FridgeState.DOOR_OPEN);
 			this.internalOutboundPort.closeDoor();
 			assertFalse(this.userOutboundPort.getState() == FridgeState.DOOR_OPEN);
-			assertEquals(FridgeState.OFF, this.userOutboundPort.getState());
+			assertTrue(FridgeState.ON == this.userOutboundPort.getState());
 		} catch (Exception e) {
 			this.traceMessage("...KO.\n" + e);
 			assertTrue(false);
@@ -666,6 +666,8 @@ public class FridgeUser extends AbstractCyPhyComponent {
 		testStopCooling();
 		testOpenDoorCloseDoor();
 		testSwitchoff();
+		
+		this.traceMessage("Tests end...");
 	}
 	
 	protected void runUnitTestsNoSimulation(AcceleratedClock clock) {

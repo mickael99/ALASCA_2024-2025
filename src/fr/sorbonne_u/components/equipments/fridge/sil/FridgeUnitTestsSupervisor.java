@@ -21,6 +21,7 @@ import fr.sorbonne_u.components.cyphy.utils.aclocks.AcceleratedAndSimulationCloc
 import fr.sorbonne_u.components.cyphy.utils.aclocks.ClocksServerWithSimulationCI;
 import fr.sorbonne_u.components.cyphy.utils.aclocks.ClocksServerWithSimulationConnector;
 import fr.sorbonne_u.components.cyphy.utils.aclocks.ClocksServerWithSimulationOutboundPort;
+import fr.sorbonne_u.components.equipments.fridge.CVM_FridgeUnitTest;
 import fr.sorbonne_u.components.equipments.fridge.Fridge;
 import fr.sorbonne_u.components.equipments.fridge.FridgeUser;
 import fr.sorbonne_u.components.equipments.fridge.mil.FridgeCoupledModel;
