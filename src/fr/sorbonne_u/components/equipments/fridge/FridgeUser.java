@@ -732,6 +732,10 @@ public class FridgeUser extends AbstractCyPhyComponent {
 		assert	switchOnInstant.isAfter(currentInstant) :
 				new BCMException("switchOnInstant.isAfter(currentInstant)");
 
+		Instant openDoorInstant = simulationStartInstant.plusSeconds(3600L);
+		assert	openDoorInstant.isAfter(currentInstant) :
+				new BCMException("openDoorInstant.isAfter(currentInstant)");
+		
 		Instant switchOffInstant =
 						clock.getSimulationEndInstant().minusSeconds(600L);
 
@@ -750,6 +754,22 @@ public class FridgeUser extends AbstractCyPhyComponent {
 						}
 					}
 				}, delayToSwitchOn, TimeUnit.NANOSECONDS);
+		
+		long delayToOpenDoor = clock.nanoDelayUntilInstant(openDoorInstant);
+		this.scheduleTaskOnComponent(
+				new AbstractComponent.AbstractTask() {
+					@Override
+					public void run() {
+						try {
+							traceMessage(
+									"Fridge user open the door\n.");
+							o.openDoor();
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}, delayToOpenDoor, TimeUnit.NANOSECONDS);
+		
 		long delayToSwitchOff = clock.nanoDelayUntilInstant(switchOffInstant);
 		this.scheduleTaskOnComponent(
 				new AbstractComponent.AbstractTask() {

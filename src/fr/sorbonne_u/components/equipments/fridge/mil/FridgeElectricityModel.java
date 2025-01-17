@@ -254,7 +254,6 @@ public class FridgeElectricityModel extends AtomicHIOA implements FridgeOperatio
 
 		if (!this.currentIntensity.isInitialised() ||
 								!this.currentCoolingPower.isInitialised()) {
-			System.out.println("initialisation de l'intensité dans electricity");
 			this.currentIntensity.initialise(0.0);
 			this.currentCoolingPower.initialise(MAX_COOLING_POWER);
 

@@ -54,7 +54,7 @@ public class FridgeController extends AbstractComponent implements FridgePushImp
 	
 	public static final double STANDARD_HYSTERESIS = 0.5;
 	public static final double STANDARD_CONTROL_PERIOD = 60.0;
-	private static final long MAX_DOOR_OPEN_DURATION = 30L;
+	private static final long MAX_DOOR_OPEN_DURATION = 15L;
 
 	protected String sensorIBP_URI;
 	protected String actuatorIBPURI;
@@ -347,8 +347,8 @@ public class FridgeController extends AbstractComponent implements FridgePushImp
 				this.currentState = fridgeState;
 				
 				//Check if the door is open
-				if(fridgeState == FridgeState.DOOR_OPEN && oldState != FridgeState.DOOR_OPEN)
-					this.doorOpenTimeStamp = System.nanoTime();			
+				if(fridgeState == FridgeState.DOOR_OPEN && oldState != FridgeState.DOOR_OPEN) 
+					this.doorOpenTimeStamp = System.nanoTime();	
 				
 				if(fridgeState != FridgeState.DOOR_OPEN)
 					this.doorOpenTimeStamp = -1;
@@ -475,80 +475,82 @@ public class FridgeController extends AbstractComponent implements FridgePushImp
 				}
 			}
 		}
-		
-		if (current > target + this.hysteresis) {
-			if (FridgeState.COOLING != s) {
-				this.actuatorOutboundPort.startCooling();
-			}
-			if (VERBOSE) {
+		// If the door is open, we can't handle the fridge cooling
+		else {
+			if (current > target + this.hysteresis) {
+				if (FridgeState.COOLING != s) {
+					this.actuatorOutboundPort.startCooling();
+				}
+				if (VERBOSE) {
+					StringBuffer temp = new StringBuffer();
+					temp.append(current);
+					temp.append(" > ");
+					temp.append(target);
+					if (FridgeState.COOLING != s) {
+						sb.append("start cooling with ");
+						sb.append(temp);
+						sb.append(" - ");
+					} 
+					else {
+						sb.append("still cooling with ");
+						sb.append(temp);
+						sb.append(" + ");
+					}
+					sb.append(this.hysteresis);
+					sb.append(" at ");
+					sb.append(this.clock.get().currentInstant());
+					sb.append(".\n");
+					this.traceMessage(sb.toString());
+				}
+			} 
+			else if (current < target - this.hysteresis) {
+				if (FridgeState.COOLING == s) {
+					this.actuatorOutboundPort.stopCooling();;
+				}
 				StringBuffer temp = new StringBuffer();
 				temp.append(current);
-				temp.append(" > ");
+				temp.append(" < ");
 				temp.append(target);
-				if (FridgeState.COOLING != s) {
-					sb.append("start cooling with ");
-					sb.append(temp);
-					sb.append(" - ");
-				} 
-				else {
-					sb.append("still cooling with ");
-					sb.append(temp);
-					sb.append(" + ");
+				if (VERBOSE) {
+					if (FridgeState.COOLING == s) {
+						sb.append("stop cooling with ");
+						sb.append(temp);
+						sb.append(" + ");
+					} 
+					else {
+						sb.append("still not cooling with ");
+						sb.append(temp);
+						sb.append(" - ");
+					}
+					sb.append(this.hysteresis);
+					sb.append(" at ");
+					sb.append(this.clock.get().currentInstant());
+					sb.append(".\n");
+					this.traceMessage(sb.toString());
+				}
+			} 
+			else {
+				if (VERBOSE) {
+					if (FridgeState.COOLING == s) {
+						sb.append("still cooling with ");
+						sb.append(current);
+						sb.append(" > ");
+						sb.append(target);
+						sb.append(" + ");
+					} 
+					else {
+						sb.append("still not cooling with ");
+						sb.append(current);
+						sb.append(" < ");
+						sb.append(target);
+						sb.append(" - ");
 				}
 				sb.append(this.hysteresis);
 				sb.append(" at ");
 				sb.append(this.clock.get().currentInstant());
 				sb.append(".\n");
-				this.traceMessage(sb.toString());
-			}
-		} 
-		else if (current < target - this.hysteresis) {
-			if (FridgeState.COOLING == s) {
-				this.actuatorOutboundPort.stopCooling();;
-			}
-			StringBuffer temp = new StringBuffer();
-			temp.append(current);
-			temp.append(" < ");
-			temp.append(target);
-			if (VERBOSE) {
-				if (FridgeState.COOLING == s) {
-					sb.append("stop cooling with ");
-					sb.append(temp);
-					sb.append(" + ");
-				} 
-				else {
-					sb.append("still not cooling with ");
-					sb.append(temp);
-					sb.append(" - ");
+					this.traceMessage(sb.toString());
 				}
-				sb.append(this.hysteresis);
-				sb.append(" at ");
-				sb.append(this.clock.get().currentInstant());
-				sb.append(".\n");
-				this.traceMessage(sb.toString());
-			}
-		} 
-		else {
-			if (VERBOSE) {
-				if (FridgeState.COOLING == s) {
-					sb.append("still cooling with ");
-					sb.append(current);
-					sb.append(" > ");
-					sb.append(target);
-					sb.append(" + ");
-				} 
-				else {
-					sb.append("still not cooling with ");
-					sb.append(current);
-					sb.append(" < ");
-					sb.append(target);
-					sb.append(" - ");
-			}
-			sb.append(this.hysteresis);
-			sb.append(" at ");
-			sb.append(this.clock.get().currentInstant());
-			sb.append(".\n");
-				this.traceMessage(sb.toString());
 			}
 		}
 	}

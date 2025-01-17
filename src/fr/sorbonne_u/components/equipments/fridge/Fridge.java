@@ -858,6 +858,7 @@ public class Fridge extends AbstractCyPhyComponent implements FridgeInternalCont
 	
 	@Override
 	public void closeDoor() throws Exception {
+		System.out.println("le frigo ferme la porte");
 		if(VERBOSE)
 			this.traceMessage("Close the door \n.");
 		
@@ -880,6 +881,7 @@ public class Fridge extends AbstractCyPhyComponent implements FridgeInternalCont
 		if(VERBOSE)
 			this.traceMessage("Open the door \n.");
 		
+		System.out.println("porte ouverte");
 		this.currentState = FridgeState.DOOR_OPEN;
 		
 		if (this.currentSimulationType.isSILSimulation()) 
