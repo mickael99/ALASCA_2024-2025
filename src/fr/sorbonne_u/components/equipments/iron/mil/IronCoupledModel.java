@@ -16,7 +16,7 @@ public class IronCoupledModel extends CoupledModel {
 	private static final long serialVersionUID = 1L;														
 	public static final String MIL_URI = IronCoupledModel.class.getSimpleName() + "-MIL";
 	public static final String MIL_RT_URI = IronCoupledModel.class.getSimpleName() + "-MIL-RT";
-	public static final String SIL_URI = IronCoupledModel.class.getSimpleName() + "-SIL";
+	public static final String SIL_URI = IronCoupledModel.class.getSimpleName() + "-MIL-RT";
 
 	public IronCoupledModel(String uri, TimeUnit simulatedTimeUnit, CoordinatorI simulationEngine, ModelI[] submodels,
 							Map<Class<? extends EventI>,EventSink[]> imported, 

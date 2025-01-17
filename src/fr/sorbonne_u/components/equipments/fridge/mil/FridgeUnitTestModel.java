@@ -63,7 +63,6 @@ public class FridgeUnitTestModel extends AtomicModel {
 	
 	@Override
 	public ArrayList<EventI> output() {
-		System.out.println("step -> " + this.step);
 		if (this.step > 0 && this.step < 12) {
 			ArrayList<EventI> ret = new ArrayList<EventI>();
 			switch (this.step) {

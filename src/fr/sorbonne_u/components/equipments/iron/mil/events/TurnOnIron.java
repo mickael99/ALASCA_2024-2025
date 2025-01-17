@@ -24,7 +24,7 @@ public class TurnOnIron extends AbstractIronEvent {
 			new AssertionError(
 					"Precondition violation: model instanceof "
 					+ "IronOperationI");
-
+		
 		((IronOperationI)model).turnOn();
 	}
 }

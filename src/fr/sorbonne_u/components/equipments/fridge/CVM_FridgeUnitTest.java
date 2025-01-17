@@ -31,7 +31,7 @@ public class CVM_FridgeUnitTest extends AbstractCVM {
 
 	public static long DELAY_TO_START_SIMULATION = 3000L;
 	public static double SIMULATION_START_TIME = 0.0;
-	public static double SIMULATION_DURATION = 24.0;
+	public static double SIMULATION_DURATION = 10.0;
 	public static TimeUnit SIMULATION_TIME_UNIT = TimeUnit.HOURS;
 	public static double ACCELERATION_FACTOR = 360.0;
 

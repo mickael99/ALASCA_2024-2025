@@ -18,6 +18,7 @@ import fr.sorbonne_u.components.equipments.iron.mil.events.TurnOnIron;
 import fr.sorbonne_u.devs_simulation.architectures.Architecture;
 import fr.sorbonne_u.devs_simulation.architectures.RTArchitecture;
 import fr.sorbonne_u.devs_simulation.hioa.architectures.AtomicHIOA_Descriptor;
+import fr.sorbonne_u.devs_simulation.hioa.architectures.RTAtomicHIOA_Descriptor;
 import fr.sorbonne_u.devs_simulation.models.architectures.AbstractAtomicModelDescriptor;
 import fr.sorbonne_u.devs_simulation.models.architectures.AtomicModelDescriptor;
 import fr.sorbonne_u.devs_simulation.models.architectures.CoupledModelDescriptor;
@@ -218,19 +219,21 @@ public class LocalSimulationArchitectures {
 
 		atomicModelDescriptors.put(
 			IronElectricityModel.MIL_RT_URI,
-			AtomicHIOA_Descriptor.create(
+			RTAtomicHIOA_Descriptor.create(
 				IronElectricityModel.class,
 				IronElectricityModel.MIL_RT_URI,
 				simulatedTimeUnit,
-				null));
+				null,
+				accelerationFactor));
 		
 		atomicModelDescriptors.put(
 			IronStateModel.MIL_RT_URI,
-			AtomicModelDescriptor.create(
+			RTAtomicModelDescriptor.create(
 				IronStateModel.class,
 				IronStateModel.MIL_RT_URI,
 				simulatedTimeUnit,
-				null));
+				null,
+				accelerationFactor));
 		
 		Map<String,CoupledModelDescriptor> coupledModelDescriptors = new HashMap<>();
 		
@@ -379,7 +382,7 @@ public class LocalSimulationArchitectures {
 		Architecture architecture =
 			new RTArchitecture(
 				architectureURI,
-				IronCoupledModel.MIL_URI,
+				IronCoupledModel.MIL_RT_URI,
 				atomicModelDescriptors,
 				coupledModelDescriptors,
 				simulatedTimeUnit,

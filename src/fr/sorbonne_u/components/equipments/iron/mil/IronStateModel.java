@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import fr.sorbonne_u.components.cyphy.plugins.devs.AtomicSimulatorPlugin;
-import fr.sorbonne_u.components.equipments.iron.IronImplementationI.IronState;
+import fr.sorbonne_u.components.equipments.iron.interfaces.IronImplementationI.IronState;
 import fr.sorbonne_u.components.equipments.iron.mil.events.AbstractIronEvent;
 import fr.sorbonne_u.components.equipments.iron.mil.events.DisableEnergySavingModeIron;
 import fr.sorbonne_u.components.equipments.iron.mil.events.DisableSteamModeIron;
@@ -57,7 +57,7 @@ public class IronStateModel extends AtomicModel implements IronOperationI {
 	
 	public static final String MIL_URI = IronStateModel.class.getSimpleName() + "-MIL";
 	public static final String MIL_RT_URI = IronStateModel.class.getSimpleName() + "-MIL_RT";
-	public static final String SIL_URI = IronStateModel.class. getSimpleName() + "-SIL";
+	public static final String SIL_URI = IronStateModel.class. getSimpleName() + "-MIL_RT";
 
 	protected static final IronState INITIALISE_CURRENT_STATE = IronState.OFF;
 	protected IronState currentState;

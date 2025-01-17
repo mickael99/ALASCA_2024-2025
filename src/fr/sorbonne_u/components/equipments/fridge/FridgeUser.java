@@ -444,10 +444,6 @@ public class FridgeUser extends AbstractCyPhyComponent {
 				runSILTestScenario(clock);
 			}
 		}
-		
-		
-//		this.runAllTest();
-//		System.out.println("Fridge Tester ends");
 	}
 
 	@Override

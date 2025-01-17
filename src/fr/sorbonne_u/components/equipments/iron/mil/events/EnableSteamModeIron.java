@@ -32,7 +32,7 @@ public class EnableSteamModeIron extends AbstractIronEvent {
 			new AssertionError(
 					"Precondition violation: model instanceof "
 					+ "IronOperationI");
-
+		
 		((IronOperationI)model).enableSteamMode();
 	}
 }

@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import fr.sorbonne_u.components.CVMIntegrationTestStep3;
+import fr.sorbonne_u.components.CVMIntegrationTest;
 import fr.sorbonne_u.components.CoordinatorComponent;
 import fr.sorbonne_u.components.GlobalCoupledModel;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
@@ -23,7 +23,9 @@ import fr.sorbonne_u.components.cyphy.utils.aclocks.AcceleratedAndSimulationCloc
 import fr.sorbonne_u.components.cyphy.utils.aclocks.ClocksServerWithSimulationCI;
 import fr.sorbonne_u.components.cyphy.utils.aclocks.ClocksServerWithSimulationConnector;
 import fr.sorbonne_u.components.cyphy.utils.aclocks.ClocksServerWithSimulationOutboundPort;
+import fr.sorbonne_u.components.equipments.iron.CVM_IronUnitTest;
 import fr.sorbonne_u.components.equipments.iron.Iron;
+import fr.sorbonne_u.components.equipments.iron.IronUser;
 import fr.sorbonne_u.components.equipments.iron.mil.IronCoupledModel;
 import fr.sorbonne_u.components.equipments.iron.mil.IronUserModel;
 import fr.sorbonne_u.components.equipments.iron.mil.events.DisableEnergySavingModeIron;
@@ -169,7 +171,7 @@ public class IronUnitTestsSupervisor extends AbstractCyPhyComponent {
 				ClocksServerWithSimulationConnector.class.getCanonicalName());
 		this.logMessage("IronUnitTestsSupervisor gets the clock.");
 		AcceleratedAndSimulationClock acceleratedClock =
-			clocksServerOutboundPort.getClockWithSimulation(CVMIntegrationTestStep3.CLOCK_URI);
+			clocksServerOutboundPort.getClockWithSimulation(CVMIntegrationTest.CLOCK_URI);
 		this.doPortDisconnection(clocksServerOutboundPort.getPortURI());
 		clocksServerOutboundPort.unpublishPort();
 		clocksServerOutboundPort.destroyPort();

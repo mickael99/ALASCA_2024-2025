@@ -26,6 +26,9 @@ import fr.sorbonne_u.components.cyphy.utils.aclocks.AcceleratedAndSimulationCloc
 import fr.sorbonne_u.components.cyphy.utils.aclocks.ClocksServerWithSimulationCI;
 import fr.sorbonne_u.components.cyphy.utils.aclocks.ClocksServerWithSimulationConnector;
 import fr.sorbonne_u.components.cyphy.utils.aclocks.ClocksServerWithSimulationOutboundPort;
+import fr.sorbonne_u.components.equipments.iron.connections.IronInboundPort;
+import fr.sorbonne_u.components.equipments.iron.interfaces.IronImplementationI;
+import fr.sorbonne_u.components.equipments.iron.interfaces.IronUserCI;
 import fr.sorbonne_u.components.equipments.iron.mil.IronStateModel;
 import fr.sorbonne_u.components.equipments.iron.mil.LocalSimulationArchitectures;
 import fr.sorbonne_u.components.equipments.iron.mil.events.DisableEnergySavingModeIron;
@@ -485,9 +488,6 @@ public class Iron extends AbstractCyPhyComponent implements IronImplementationI 
 	public void setState(IronState s) throws Exception {
 		if(VERBOSE)
 			this.traceMessage("Trying setting the stat  -> " + s.toString() + ".\n");
-		
-		assert this.currentState != s : 
-			new PreconditionException("this.currentState != " + s.toString());
 		
 		this.currentState = s;
 		

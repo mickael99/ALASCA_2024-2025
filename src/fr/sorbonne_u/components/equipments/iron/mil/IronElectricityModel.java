@@ -23,7 +23,7 @@ import fr.sorbonne_u.devs_simulation.simulators.interfaces.AtomicSimulatorI;
 import fr.sorbonne_u.devs_simulation.simulators.interfaces.SimulationReportI;
 import fr.sorbonne_u.devs_simulation.utils.InvariantChecking;
 import fr.sorbonne_u.devs_simulation.utils.StandardLogger;
-import fr.sorbonne_u.components.equipments.iron.IronImplementationI.IronState;
+import fr.sorbonne_u.components.equipments.iron.interfaces.IronImplementationI.IronState;
 import fr.sorbonne_u.components.equipments.iron.mil.events.*;
 
 @ModelExternalEvents(imported = {DisableEnergySavingModeIron.class,
@@ -48,7 +48,7 @@ public class IronElectricityModel extends AtomicHIOA implements IronOperationI {
 	private static final long serialVersionUID = 1L;
 	public static final String MIL_URI = IronElectricityModel.class.getSimpleName() + "-MIL";
 	public static final String MIL_RT_URI = IronElectricityModel.class.getSimpleName() + "-MIL-RT";
-	public static final String SIL_URI = IronElectricityModel.class.getSimpleName() + "-SIL";
+	public static final String SIL_URI = IronElectricityModel.class.getSimpleName() + "-MIL-RT";
 	
 	// Modes energy consumption
 	protected static double DELICATE_CONSUMPTION = 600.0;
@@ -428,7 +428,7 @@ public class IronElectricityModel extends AtomicHIOA implements IronOperationI {
 									d,
 									TENSION * this.currentIntensity.getValue());
 
-		this.logMessage("simulation ends.\n");
+		this.logMessage("simulation ends with total consumption -> " + this.totalConsumption + "\n");
 		super.endSimulation(endTime);
 	}
 	
