@@ -103,7 +103,7 @@ public class Fridge extends AbstractCyPhyComponent implements FridgeInternalCont
 	protected static final double MIN_TEMPERATURE = 0.0;
 	protected static final double MAX_TEMPERATURE = 8.0;
 	protected static final double FAKE_CURRENT_TEMPERATURE = 6.0;
-	public static final double STANDARD_TARGET_TEMPERATURE = 4.0;
+	public static final double STANDARD_TARGET_TEMPERATURE = 2.0;
 	protected double targetTemperature;
 	
 	// Connections
@@ -667,9 +667,6 @@ public class Fridge extends AbstractCyPhyComponent implements FridgeInternalCont
 	public double getCurrentTemperature() throws Exception { 
 		assert	this.getState() != FridgeState.OFF : new PreconditionException("this.getState() != FridgeState.OFF");
 		
-		if (VERBOSE)
-			this.traceMessage("Fridge returns its current temperature -> " + FAKE_CURRENT_TEMPERATURE + "\n.");
-		
 		double currentTemperature = FAKE_CURRENT_TEMPERATURE;
 		
 		if (this.currentSimulationType.isSILSimulation()) {
@@ -677,6 +674,8 @@ public class Fridge extends AbstractCyPhyComponent implements FridgeInternalCont
 												getModelStateValue(
 														FridgeTemperatureModel.SIL_URI,
 														CURRENT_TEMPERATURE_NAME);
+			if (VERBOSE)
+				this.traceMessage("Fridge returns its current temperature -> " + currentTemperature + "\n.");
 		}
 		
 		return currentTemperature;

@@ -52,7 +52,7 @@ public class FridgeController extends AbstractComponent implements FridgePushImp
 	public static int Y_RELATIVE_POSITION = 0;
 	public static boolean DEBUG = true;
 	
-	public static final double STANDARD_HYSTERESIS = 0.1;
+	public static final double STANDARD_HYSTERESIS = 0.5;
 	public static final double STANDARD_CONTROL_PERIOD = 60.0;
 	private static final long MAX_DOOR_OPEN_DURATION = 30L;
 

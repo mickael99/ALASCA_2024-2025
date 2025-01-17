@@ -167,7 +167,7 @@ extends		AbstractCVM
 	public static long				DELAY_TO_STOP = 2000L;
 	/** duration of the sleep at the end of the execution before exiting
 	 *  the JVM.															*/
-	public static long				END_SLEEP_DURATION = 10000L;
+	public static long				END_SLEEP_DURATION = 1000000L;
 
 	/** delay to start the real time simulations on every atomic model at the
 	 *  same moment (the order is delivered to the models during this delay;
@@ -182,7 +182,7 @@ extends		AbstractCVM
 	 *  relevant.															*/
 	public static double 			SIMULATION_START_TIME = 0.0;
 	/** duration of the simulation, in simulated time.						*/
-	public static double			SIMULATION_DURATION = 3.0;
+	public static double			SIMULATION_DURATION = 24.0;
 	/** time unit in which {@code SIMULATION_DURATION} is expressed.		*/
 	public static TimeUnit			SIMULATION_TIME_UNIT = TimeUnit.HOURS;
 	/** for real time simulations, the acceleration factor applied to the
@@ -198,9 +198,9 @@ extends		AbstractCVM
 	 *  enumeration {@code ExecutionType}.									*/
 	public static SimulationType	CURRENT_SIMULATION_TYPE =
 											//SimulationType.NO_SIMULATION;
-											SimulationType.MIL_SIMULATION;
+											//SimulationType.MIL_SIMULATION;
 											//SimulationType.MIL_RT_SIMULATION;
-											//SimulationType.SIL_SIMULATION;
+											SimulationType.SIL_SIMULATION;
 	/** the control mode of the heater controller for the next run.			*/
 	public static ControlMode		CONTROL_MODE = ControlMode.PUSH;
 

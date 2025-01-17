@@ -31,17 +31,17 @@ public class CVM_FridgeUnitTest extends AbstractCVM {
 
 	public static long DELAY_TO_START_SIMULATION = 3000L;
 	public static double SIMULATION_START_TIME = 0.0;
-	public static double SIMULATION_DURATION = 3.0;
+	public static double SIMULATION_DURATION = 24.0;
 	public static TimeUnit SIMULATION_TIME_UNIT = TimeUnit.HOURS;
 	public static double ACCELERATION_FACTOR = 360.0;
 
 	public static ExecutionType CURRENT_EXECUTION_TYPE = ExecutionType.UNIT_TEST;
 	public static SimulationType CURRENT_SIMULATION_TYPE =
 											//SimulationType.NO_SIMULATION;
-											SimulationType.MIL_SIMULATION;
+											//SimulationType.MIL_SIMULATION;
 											//SimulationType.MIL_RT_SIMULATION;
-											//SimulationType.SIL_SIMULATION;
-	public static ControlMode CONTROL_MODE = ControlMode.PUSH;
+											SimulationType.SIL_SIMULATION;
+	public static ControlMode CONTROL_MODE = ControlMode.PULL;
 
 	public static String CLOCK_URI = "hem-clock";
 	public static String START_INSTANT = "2024-10-18T00:00:00.00Z";

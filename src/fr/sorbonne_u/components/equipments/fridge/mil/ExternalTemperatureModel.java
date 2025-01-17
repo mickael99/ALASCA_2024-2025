@@ -32,7 +32,7 @@ public class ExternalTemperatureModel extends AtomicHIOA {
 	public static final String MIL_RT_URI = ExternalTemperatureModel.class.getSimpleName() + "-MIL-RT";
 	public static final String SIL_URI = ExternalTemperatureModel.class.getSimpleName() + "-SIL";
 					
-	protected static double MIN_EXTERNAL_TEMPERATURE = 0.0;
+	protected static double MIN_EXTERNAL_TEMPERATURE = 10.0;
 	protected static double	MAX_EXTERNAL_TEMPERATURE = 20.0;
 
 	protected static double PERIOD = 24.0;

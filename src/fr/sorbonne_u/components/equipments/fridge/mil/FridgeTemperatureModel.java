@@ -54,7 +54,7 @@ public class FridgeTemperatureModel extends AtomicHIOA implements FridgeOperatio
 	public static String MIL_RT_URI = FridgeTemperatureModel.class.getSimpleName() + "-MIL-RT";
 	public static String SIL_URI = FridgeTemperatureModel.class.getSimpleName() + "-SIL";
 	
-	public static double INITIAL_TEMPERATURE = 22.0;
+	public static double INITIAL_TEMPERATURE = 6.0;
 	protected static double MIN_INTERNAL_TEMPERATURE = 0.0;
 	protected static double INSULATION_TRANSFER_CONSTANT = 8.0;
 											
@@ -231,8 +231,9 @@ public class FridgeTemperatureModel extends AtomicHIOA implements FridgeOperatio
 	}
 	
 	protected double currentCoolTransfertConstant()  {
-		double c = 1.0 / (MAX_COOLING_RATE_CONSTANT  * FridgeElectricityModel.MAX_COOLING_POWER);
-	    return c * this.currentCoolingPower.getValue();
+		double c = 1.0/(MAX_COOLING_RATE_CONSTANT*
+				FridgeElectricityModel.MAX_COOLING_POWER);
+		return -(1.0/(c*this.currentCoolingPower.getValue()));
 	}
 	
 	protected double computeDerivatives(Double current) {
@@ -242,7 +243,9 @@ public class FridgeTemperatureModel extends AtomicHIOA implements FridgeOperatio
 	    switch (this.currentState) {
 	        case COOLING:
 	            if (this.currentCoolingPower.getValue() > COOLING_POWER_TRANSFER_TOLERANCE) {
-	                currentTempDerivative = -current / this.currentCoolTransfertConstant();
+	            	currentTempDerivative =
+							(MAX_COOLING_RATE_CONSTANT - current)/
+												this.currentCoolTransfertConstant();
 	            }
 	            break;
 
@@ -374,6 +377,7 @@ public class FridgeTemperatureModel extends AtomicHIOA implements FridgeOperatio
 
 	    super.userDefinedInternalTransition(elapsedTime);
 
+	    
 	    assert glassBoxInvariants(this) :
 	            new NeoSim4JavaException("White-box invariants violation!");
 	    assert blackBoxInvariants(this) :
@@ -402,7 +406,7 @@ public class FridgeTemperatureModel extends AtomicHIOA implements FridgeOperatio
 	    this.currentTemperature.setNewValue(
 	        newTemp,
 	        newDerivative,
-	        new Time(this.getCurrentStateTime().getSimulatedTime() + elapsedTime.getSimulatedDuration(),
+	        new Time(this.getCurrentStateTime().getSimulatedTime(),
 	                 this.getSimulatedTimeUnit())
 	    );
 
