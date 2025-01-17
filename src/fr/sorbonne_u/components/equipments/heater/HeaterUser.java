@@ -330,6 +330,9 @@ extends		AbstractCyPhyComponent
 	{
 		super(REFLECTION_INBOUND_PORT_URI, 1, 1);
 
+		System.out.println("global -> " + globalArchitectureURI);
+		System.out.println("local -> " + localArchitectureURI);
+		
 		assert	currentExecutionType != null :
 				new PreconditionException("currentExecutionType != null");
 		assert	!currentExecutionType.isStandard() ||

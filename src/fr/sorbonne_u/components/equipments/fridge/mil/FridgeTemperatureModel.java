@@ -1,8 +1,10 @@
 package fr.sorbonne_u.components.equipments.fridge.mil;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import fr.sorbonne_u.components.cyphy.plugins.devs.AtomicSimulatorPlugin;
 import fr.sorbonne_u.components.equipments.fridge.mil.FridgeElectricityModel.FridgeState;
 import fr.sorbonne_u.components.equipments.fridge.mil.events.CloseDoorFridge;
 import fr.sorbonne_u.components.equipments.fridge.mil.events.CoolFridge;
@@ -13,6 +15,7 @@ import fr.sorbonne_u.components.equipments.fridge.mil.events.SetPowerFridge;
 import fr.sorbonne_u.components.equipments.fridge.mil.events.SwitchOffFridge;
 import fr.sorbonne_u.components.equipments.fridge.mil.events.SwitchOnFridge;
 import fr.sorbonne_u.components.equipments.hem.mil.HEM_ReportI;
+import fr.sorbonne_u.devs_simulation.exceptions.MissingRunParameterException;
 import fr.sorbonne_u.devs_simulation.exceptions.NeoSim4JavaException;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ImportedVariable;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.InternalVariable;
@@ -458,6 +461,15 @@ public class FridgeTemperatureModel extends AtomicHIOA implements FridgeOperatio
 		}
 	}
 
+	@Override
+	public void	setSimulationRunParameters(Map<String, Object> simParams) throws MissingRunParameterException {
+		if (simParams.containsKey(
+						AtomicSimulatorPlugin.OWNER_RUNTIME_PARAMETER_NAME)) {
+			this.getSimulationEngine().setLogger(
+						AtomicSimulatorPlugin.createComponentLogger(simParams));
+		}
+	}
+	
 	@Override
 	public SimulationReportI getFinalReport() {
 		return new FridgeTemperatureReport(this.getURI(), this.meanTemperature);

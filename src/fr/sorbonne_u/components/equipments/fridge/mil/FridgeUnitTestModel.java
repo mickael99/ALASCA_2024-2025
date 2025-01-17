@@ -1,10 +1,13 @@
 package fr.sorbonne_u.components.equipments.fridge.mil;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import fr.sorbonne_u.components.cyphy.plugins.devs.AtomicSimulatorPlugin;
 import fr.sorbonne_u.components.equipments.fridge.mil.events.*;
 import fr.sorbonne_u.components.equipments.fridge.mil.events.SetPowerFridge.PowerValue;
+import fr.sorbonne_u.devs_simulation.exceptions.MissingRunParameterException;
 import fr.sorbonne_u.devs_simulation.models.AtomicModel;
 import fr.sorbonne_u.devs_simulation.models.annotations.ModelExternalEvents;
 import fr.sorbonne_u.devs_simulation.models.events.EventI;
@@ -127,6 +130,15 @@ public class FridgeUnitTestModel extends AtomicModel {
 	public void endSimulation(Time endTime) {
 		this.logMessage("simulation ends.\n");
 		super.endSimulation(endTime);
+	}
+	
+	@Override
+	public void	setSimulationRunParameters(Map<String, Object> simParams) throws MissingRunParameterException {
+		if (simParams.containsKey(
+						AtomicSimulatorPlugin.OWNER_RUNTIME_PARAMETER_NAME)) {
+			this.getSimulationEngine().setLogger(
+						AtomicSimulatorPlugin.createComponentLogger(simParams));
+		}
 	}
 
 	@Override
