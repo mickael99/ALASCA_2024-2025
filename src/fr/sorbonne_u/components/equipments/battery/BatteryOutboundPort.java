@@ -16,12 +16,12 @@ public class BatteryOutboundPort extends AbstractOutboundPort implements Battery
 	}
 
 	@Override
-	public STATE getState() throws Exception {
+	public BATTERY_STATE getState() throws Exception {
 		return ((BatteryCI)this.getConnector()).getState();
 	}
 
 	@Override
-	public void setState(STATE state) throws Exception {
+	public void setState(BATTERY_STATE state) throws Exception {
 		((BatteryCI)this.getConnector()).setState(state);
 	}
 	

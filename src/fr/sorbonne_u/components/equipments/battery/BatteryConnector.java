@@ -5,12 +5,12 @@ import fr.sorbonne_u.components.connectors.AbstractConnector;
 public class BatteryConnector extends AbstractConnector implements BatteryCI {
 	
 	@Override
-	public STATE getState() throws Exception{
+	public BATTERY_STATE getState() throws Exception{
 		return ((BatteryCI)this.offering).getState();
 	}
 
 	@Override
-	public void setState(STATE state) throws Exception {
+	public void setState(BATTERY_STATE state) throws Exception {
 		((BatteryCI)this.offering).setState(state);
 	}
 	

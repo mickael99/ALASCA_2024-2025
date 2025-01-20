@@ -2,7 +2,7 @@ package fr.sorbonne_u.components.equipments.battery;
 
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
-import fr.sorbonne_u.components.equipments.battery.BatteryI.STATE;
+import fr.sorbonne_u.components.equipments.battery.BatteryI.BATTERY_STATE;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
 
@@ -71,7 +71,7 @@ public class BatteryTester extends AbstractComponent {
 		if(VERBOSE)
 			this.traceMessage("testGetState() \n");
 		try {
-			assertEquals(BatteryI.STATE.STANDBY, this.outboundPort.getState());
+			assertEquals(BATTERY_STATE.STANDBY, this.outboundPort.getState());
 		} catch(Exception e) {
 			assertTrue(false);
 		}
@@ -84,9 +84,9 @@ public class BatteryTester extends AbstractComponent {
 			this.traceMessage("testSetState() \n");
 		
 		try {
-			this.outboundPort.setState(STATE.PRODUCT);
+			this.outboundPort.setState(BATTERY_STATE.PRODUCT);
 			
-			assertEquals(BatteryI.STATE.PRODUCT, this.outboundPort.getState());
+			assertEquals(BATTERY_STATE.PRODUCT, this.outboundPort.getState());
 		} catch(Exception e) {
 			assertTrue(false);
 		}

@@ -139,9 +139,9 @@ import fr.sorbonne_u.devs_simulation.simulators.interfaces.SimulatorI;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class			RunHeaterUnitaryMILRTSimulation
+public class RunHeaterUnitaryMILRTSimulation
 {
-	public static final double			ACCELERATION_FACTOR = 1800.0;
+	public static final double ACCELERATION_FACTOR = 1800.0;
 
 	public static void main(String[] args)
 	{

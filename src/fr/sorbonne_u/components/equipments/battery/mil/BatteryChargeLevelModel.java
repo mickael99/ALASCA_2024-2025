@@ -3,10 +3,11 @@ package fr.sorbonne_u.components.equipments.battery.mil;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-import fr.sorbonne_u.components.equipments.battery.BatteryI;
+import fr.sorbonne_u.components.equipments.battery.BatteryI.BATTERY_STATE;
 import fr.sorbonne_u.components.equipments.battery.mil.events.AbstractBatteryEvent;
 import fr.sorbonne_u.components.equipments.battery.mil.events.SetConsumeBatteryEvent;
 import fr.sorbonne_u.components.equipments.battery.mil.events.SetProductBatteryEvent;
+import fr.sorbonne_u.components.equipments.battery.mil.events.SetStandByBatteryEvent;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ExportedVariable;
 import fr.sorbonne_u.devs_simulation.hioa.models.AtomicHIOA;
 import fr.sorbonne_u.devs_simulation.hioa.models.vars.Value;
@@ -20,16 +21,20 @@ import fr.sorbonne_u.devs_simulation.utils.StandardLogger;
 
 @ModelExternalEvents(imported = {
         SetProductBatteryEvent.class,
-        SetConsumeBatteryEvent.class
+        SetConsumeBatteryEvent.class,
+        SetStandByBatteryEvent.class
 })
-public class BatteryChargeLevelModel extends AtomicHIOA {
+public class BatteryChargeLevelModel extends AtomicHIOA implements BatteryOperationI {
 
 	// -------------------------------------------------------------------------
 	// Constants and variables
 	// -------------------------------------------------------------------------
 	
 	private static final long serialVersionUID = 1L;
-	public static final String URI = BatteryChargeLevelModel.class.getSimpleName();
+	
+	public static final String MIL_URI = BatteryChargeLevelModel.class.getSimpleName() + "-MIL";
+	public static final String MIL_RT_URI = BatteryChargeLevelModel.class.getSimpleName() + "-MIL-RT";
+	
     protected static final double STEP = 0.1;
     
     // Drain 15% of its total capacity in hour
@@ -40,7 +45,7 @@ public class BatteryChargeLevelModel extends AtomicHIOA {
 	
 	protected final Duration evaluationStep;
 
-    private BatteryI.STATE currentState;
+    private BATTERY_STATE currentState;
 
     @ExportedVariable(type = Double.class)
     protected final Value<Double> currentChargeLevel = new Value<Double>(this);
@@ -61,16 +66,24 @@ public class BatteryChargeLevelModel extends AtomicHIOA {
  	// Methods
  	// -------------------------------------------------------------------------
     
-    public BatteryI.STATE getCurrentState() {
+    @Override
+    public BATTERY_STATE getCurrentState() {
     	return this.currentState;
     }
     
+    @Override
     public void setProduction() {
-    	this.currentState = BatteryI.STATE.PRODUCT;
+    	this.currentState = BATTERY_STATE.PRODUCT;
     }
     
+    @Override
     public void setConsumption() {
-    	this.currentState = BatteryI.STATE.CONSUME;
+    	this.currentState = BATTERY_STATE.CONSUME;
+    }
+    
+    @Override
+    public void setStandBy() {
+    	this.currentState = BATTERY_STATE.STANDBY;
     }
     
     public void charge(Duration d) {
@@ -95,7 +108,7 @@ public class BatteryChargeLevelModel extends AtomicHIOA {
     public void initialiseState(Time initialTime) {
         super.initialiseState(initialTime);
 
-        currentState = BatteryI.STATE.CONSUME;
+        currentState = BATTERY_STATE.CONSUME;
         this.currentChargeLevel.initialise(1.0);
 
         this.getSimulationEngine().toggleDebugMode();
@@ -129,15 +142,15 @@ public class BatteryChargeLevelModel extends AtomicHIOA {
         super.userDefinedInternalTransition(elapsedTime);
 
         double v = this.currentChargeLevel.getValue();
-        if(v >= 0.0 && this.currentState == BatteryI.STATE.CONSUME) 
+        if(v >= 0.0 && this.currentState == BATTERY_STATE.CONSUME) 
             this.discharge(elapsedTime);
-        else if (v <= 1.0 && this.currentState == BatteryI.STATE.PRODUCT) 
+        else if (v <= 1.0 && this.currentState == BATTERY_STATE.PRODUCT) 
             this.charge(elapsedTime);
      
         this.currentChargeLevel.setNewValue(this.currentChargeLevel.getValue(), getCurrentStateTime());
 
         // Tracing
-        String stateString = currentState == BatteryI.STATE.PRODUCT ? "charging" : "discharging";
+        String stateString = currentState == BATTERY_STATE.PRODUCT ? "charging" : "discharging";
         logMessage("Battery is " + stateString + " | Charge level : " + currentChargeLevel.getValue() + " at " + currentChargeLevel.getTime() + "\n");
     }
 	

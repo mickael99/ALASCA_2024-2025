@@ -16,13 +16,13 @@ public class BatteryInboundPort extends AbstractInboundPort implements BatteryCI
 	}
 
 	@Override
-	public STATE getState() throws Exception{
+	public BATTERY_STATE getState() throws Exception{
 		return this.getOwner().handleRequest(
 				o -> ((BatteryI)o).getState());
 	}
 
 	@Override
-	public void setState(STATE state) throws Exception {
+	public void setState(BATTERY_STATE state) throws Exception {
 		this.getOwner().handleRequest(
 				o -> {	((BatteryI)o).setState(state);
 						return null;

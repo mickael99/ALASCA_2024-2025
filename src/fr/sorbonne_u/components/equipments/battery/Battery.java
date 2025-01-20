@@ -11,8 +11,8 @@ public class Battery extends AbstractComponent implements BatteryI {
 	public static int X_RELATIVE_POSITION = 2;
 	public static int Y_RELATIVE_POSITION = 1;
 	
-	protected static final STATE INIT_STATE = STATE.STANDBY;
-	protected STATE currentState;
+	protected static final BATTERY_STATE INIT_STATE = BATTERY_STATE.STANDBY;
+	protected BATTERY_STATE currentState;
 	protected double batteryLevel;
 	
 	public static final String INTERNAL_INBOUND_PORT = "INTERNAL_INBOUND_PORT";
@@ -51,7 +51,7 @@ public class Battery extends AbstractComponent implements BatteryI {
 	}
 
 	@Override
-	public STATE getState() throws Exception {
+	public BATTERY_STATE getState() throws Exception {
 		if(VERBOSE) 
 			this.logMessage("Battery gets its current state -> " + this.currentState.toString() + "\n");
 		
@@ -59,7 +59,7 @@ public class Battery extends AbstractComponent implements BatteryI {
 	}
 
 	@Override
-	public void setState(STATE state) throws Exception {
+	public void setState(BATTERY_STATE state) throws Exception {
 		if(VERBOSE) 
 			this.logMessage("Battery new state -> " + state.toString() + "\n");
 		

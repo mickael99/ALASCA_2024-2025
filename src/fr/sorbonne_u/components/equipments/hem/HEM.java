@@ -11,7 +11,7 @@ import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.equipments.battery.Battery;
 import fr.sorbonne_u.components.equipments.battery.BatteryConnector;
-import fr.sorbonne_u.components.equipments.battery.BatteryI;
+import fr.sorbonne_u.components.equipments.battery.BatteryI.BATTERY_STATE;
 import fr.sorbonne_u.components.equipments.battery.BatteryOutboundPort;
 import fr.sorbonne_u.components.equipments.fridge.Fridge;
 import fr.sorbonne_u.components.equipments.generator.Generator;
@@ -251,11 +251,11 @@ public class HEM extends AbstractComponent implements RegistrationI {
 		this.traceMessage("Battery mode? " +
 							this.batteryOutboundPort.getState().toString() + "\n");
 		
-		this.batteryOutboundPort.setState(BatteryI.STATE.CONSUME);
+		this.batteryOutboundPort.setState(BATTERY_STATE.CONSUME);
 		this.traceMessage("Battery mode? " +
 				this.batteryOutboundPort.getState().toString() + "\n");
 		
-		this.batteryOutboundPort.setState(BatteryI.STATE.PRODUCT);
+		this.batteryOutboundPort.setState(BATTERY_STATE.PRODUCT);
 		this.traceMessage("Battery mode? " +
 				this.batteryOutboundPort.getState().toString() + "\n");
 		

@@ -1,22 +1,22 @@
 package fr.sorbonne_u.components.equipments.battery.mil.events;
 
+import fr.sorbonne_u.components.equipments.battery.BatteryI.BATTERY_STATE;
 import fr.sorbonne_u.components.equipments.battery.mil.BatteryOperationI;
 import fr.sorbonne_u.devs_simulation.models.events.EventI;
 import fr.sorbonne_u.devs_simulation.models.interfaces.AtomicModelI;
 import fr.sorbonne_u.devs_simulation.models.time.Time;
-import fr.sorbonne_u.components.equipments.battery.BatteryI.BATTERY_STATE;
 
-public class SetConsumeBatteryEvent extends AbstractBatteryEvent {
-
+public class SetStandByBatteryEvent extends AbstractBatteryEvent {
+	
 	private static final long serialVersionUID = 1L;
 
-	public SetConsumeBatteryEvent(Time timeOfOccurrence) {
+	public SetStandByBatteryEvent(Time timeOfOccurrence) {
 		super(timeOfOccurrence, null);
 	}
 
 	@Override
     public boolean hasPriorityOver(EventI e) {
-        return false;
+        return true;
     }
 	
 	@Override
@@ -24,7 +24,7 @@ public class SetConsumeBatteryEvent extends AbstractBatteryEvent {
         assert model instanceof BatteryOperationI;
         BatteryOperationI b = (BatteryOperationI)model;
         
-        if(b.getCurrentState() != BATTERY_STATE.CONSUME) 
-            b.setConsumption();
+        if(b.getCurrentState() != BATTERY_STATE.STANDBY) 
+            b.setStandBy();
     }
 }

@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 import fr.sorbonne_u.components.equipments.battery.mil.events.SetConsumeBatteryEvent;
 import fr.sorbonne_u.components.equipments.battery.mil.events.SetProductBatteryEvent;
+import fr.sorbonne_u.components.equipments.battery.mil.events.SetStandByBatteryEvent;
 import fr.sorbonne_u.devs_simulation.architectures.Architecture;
 import fr.sorbonne_u.devs_simulation.architectures.ArchitectureI;
 import fr.sorbonne_u.devs_simulation.hioa.architectures.AtomicHIOA_Descriptor;
@@ -29,30 +30,30 @@ public class RunBatteryUnitaryMILSimulation {
 	            Map<String, AbstractAtomicModelDescriptor> atomicModelDescriptors = new HashMap<>();
 
 	            atomicModelDescriptors.put(
-	                    BatteryElectricityModel.URI,
+	                    BatteryElectricityModel.MIL_URI,
 	                    AtomicHIOA_Descriptor.create(
 	                    		BatteryElectricityModel.class,
-	                    		BatteryElectricityModel.URI,
+	                    		BatteryElectricityModel.MIL_URI,
 	                            TimeUnit.SECONDS,
 	                            null
 	                    )
 	            );
 
 	            atomicModelDescriptors.put(
-	                    BatteryChargeLevelModel.URI,
+	                    BatteryChargeLevelModel.MIL_URI,
 	                    AtomicHIOA_Descriptor.create(
 	                    		BatteryChargeLevelModel.class,
-	                    		BatteryChargeLevelModel.URI,
+	                    		BatteryChargeLevelModel.MIL_URI,
 	                            TimeUnit.SECONDS,
 	                            null
 	                    )
 	            );
 
 	            atomicModelDescriptors.put(
-	                    BatteryUserModel.URI,
+	                    BatteryUserModel.MIL_URI,
 	                    AtomicModelDescriptor.create(
 	                            BatteryUserModel.class,
-	                            BatteryUserModel.URI,
+	                            BatteryUserModel.MIL_URI,
 	                            TimeUnit.SECONDS,
 	                            null
 	                    )
@@ -62,42 +63,50 @@ public class RunBatteryUnitaryMILSimulation {
 	            Map<String, CoupledModelDescriptor> coupledModelDescriptors = new HashMap<>();
 
 	            Set<String> subModel = new HashSet<>();
-	            subModel.add(BatteryElectricityModel.URI);
-	            subModel.add(BatteryChargeLevelModel.URI);
-	            subModel.add(BatteryUserModel.URI);
+	            subModel.add(BatteryElectricityModel.MIL_URI);
+	            subModel.add(BatteryChargeLevelModel.MIL_URI);
+	            subModel.add(BatteryUserModel.MIL_URI);
 
 	            Map<EventSource, EventSink[]> connections = new HashMap<>();
 
 	            connections.put(
-	                    new EventSource(BatteryUserModel.URI, SetProductBatteryEvent.class),
+	                    new EventSource(BatteryUserModel.MIL_URI, SetProductBatteryEvent.class),
 	                    new EventSink[] {
-	                            new EventSink(BatteryElectricityModel.URI, SetProductBatteryEvent.class),
-	                            new EventSink(BatteryChargeLevelModel.URI, SetProductBatteryEvent.class)
+	                            new EventSink(BatteryElectricityModel.MIL_URI, SetProductBatteryEvent.class),
+	                            new EventSink(BatteryChargeLevelModel.MIL_URI, SetProductBatteryEvent.class)
 	                    }
 	            );
 
 	            connections.put(
-	                    new EventSource(BatteryUserModel.URI, SetConsumeBatteryEvent.class),
+	                    new EventSource(BatteryUserModel.MIL_URI, SetConsumeBatteryEvent.class),
 	                    new EventSink[] {
-	                            new EventSink(BatteryElectricityModel.URI, SetConsumeBatteryEvent.class),
-	                            new EventSink(BatteryChargeLevelModel.URI, SetConsumeBatteryEvent.class)
+	                            new EventSink(BatteryElectricityModel.MIL_URI, SetConsumeBatteryEvent.class),
+	                            new EventSink(BatteryChargeLevelModel.MIL_URI, SetConsumeBatteryEvent.class)
+	                    }
+	            );
+	            
+	            connections.put(
+	                    new EventSource(BatteryUserModel.MIL_URI, SetStandByBatteryEvent.class),
+	                    new EventSink[] {
+	                            new EventSink(BatteryElectricityModel.MIL_URI, SetStandByBatteryEvent.class),
+	                            new EventSink(BatteryChargeLevelModel.MIL_URI, SetStandByBatteryEvent.class)
 	                    }
 	            );
 
 	            Map<VariableSource, VariableSink[]> bindings = new HashMap<>();
 
 	            bindings.put(
-	                    new VariableSource("currentChargeLevel", Double.class, BatteryChargeLevelModel.URI),
+	                    new VariableSource("currentChargeLevel", Double.class, BatteryChargeLevelModel.MIL_URI),
 	                    new VariableSink[] {
-	                            new VariableSink("currentChargeLevel", Double.class, BatteryElectricityModel.URI)
+	                            new VariableSink("currentChargeLevel", Double.class, BatteryElectricityModel.MIL_URI)
 	                    }
 	            );
 
 	            coupledModelDescriptors.put(
-	            		BatteryCoupledModel.URI,
+	            		BatteryCoupledModel.MIL_URI,
 	                    new CoupledHIOA_Descriptor(
 	                            BatteryCoupledModel.class,
-	                            BatteryCoupledModel.URI,
+	                            BatteryCoupledModel.MIL_URI,
 	                            subModel,
 	                            null,
 	                            null,
@@ -110,7 +119,7 @@ public class RunBatteryUnitaryMILSimulation {
 	            );
 
 	            ArchitectureI architecture = new Architecture(
-	            		BatteryCoupledModel.URI,
+	            		BatteryCoupledModel.MIL_URI,
 	                    atomicModelDescriptors,
 	                    coupledModelDescriptors,
 	                    TimeUnit.SECONDS

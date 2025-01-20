@@ -3,8 +3,9 @@ package fr.sorbonne_u.components.equipments.battery.mil;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-import fr.sorbonne_u.components.equipments.battery.BatteryI;
+import fr.sorbonne_u.components.equipments.battery.BatteryI.BATTERY_STATE;
 import fr.sorbonne_u.components.equipments.battery.mil.events.SetProductBatteryEvent;
+import fr.sorbonne_u.components.equipments.battery.mil.events.SetStandByBatteryEvent;
 import fr.sorbonne_u.components.equipments.battery.mil.events.AbstractBatteryEvent;
 import fr.sorbonne_u.components.equipments.battery.mil.events.SetConsumeBatteryEvent;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ExportedVariable;
@@ -21,21 +22,24 @@ import fr.sorbonne_u.devs_simulation.utils.StandardLogger;
 
 @ModelExternalEvents(imported = {
         SetProductBatteryEvent.class,
-        SetConsumeBatteryEvent.class
+        SetConsumeBatteryEvent.class,
+        SetStandByBatteryEvent.class
 })
-public class BatteryElectricityModel extends AtomicHIOA {
+public class BatteryElectricityModel extends AtomicHIOA implements BatteryOperationI {
 
 	// -------------------------------------------------------------------------
 	// Constants and variables
 	// -------------------------------------------------------------------------
 	
 	private static final long serialVersionUID = 1L;
-	public static final String URI = BatteryElectricityModel.class.getSimpleName();
+	
+	public static final String MIL_URI = BatteryElectricityModel.class.getSimpleName() + "-MIL";
+	public static final String MIL_RT_URI = BatteryElectricityModel.class.getSimpleName() + "-MIL-RT";
 	
 	protected static final double PRODUCTION = 1200.0;
 	protected static final double CONSUMPTION = 1000.0;
 	
-	protected BatteryI.STATE currentState;
+	protected BATTERY_STATE currentState;
 	protected boolean hasChanged;
 	
 	// Between 0 and 1
@@ -63,16 +67,30 @@ public class BatteryElectricityModel extends AtomicHIOA {
  	// Methods
  	// -------------------------------------------------------------------------
     
-    public BatteryI.STATE getCurrentState() {
+    @Override
+    public BATTERY_STATE getCurrentState() {
     	return this.currentState;
     }
     
+    @Override
     public void setProduction() {
-    	this.currentState = BatteryI.STATE.PRODUCT;
+    	this.currentState = BATTERY_STATE.PRODUCT;
+    	
+    	this.setHasChanged(true);
     }
     
+    @Override
     public void setConsumption() {
-    	this.currentState = BatteryI.STATE.CONSUME;
+    	this.currentState = BATTERY_STATE.CONSUME;
+    	
+    	this.setHasChanged(true);
+    }
+    
+    @Override
+    public void setStandBy() {
+    	this.currentState = BATTERY_STATE.STANDBY;
+    	
+    	this.setHasChanged(true);
     }
     
     public void setHasChanged(boolean hc) {
@@ -104,7 +122,7 @@ public class BatteryElectricityModel extends AtomicHIOA {
 			this.logMessage(sbc.toString());
 		} 
 		
-        this.currentState = BatteryI.STATE.CONSUME;
+        this.currentState = BATTERY_STATE.CONSUME;
         this.hasChanged = false;
 
         this.getSimulationEngine().toggleDebugMode();

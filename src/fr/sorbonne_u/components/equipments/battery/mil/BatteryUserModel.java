@@ -5,6 +5,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import fr.sorbonne_u.components.equipments.battery.mil.events.SetConsumeBatteryEvent;
 import fr.sorbonne_u.components.equipments.battery.mil.events.SetProductBatteryEvent;
+import fr.sorbonne_u.components.equipments.battery.mil.events.SetStandByBatteryEvent;
 import fr.sorbonne_u.devs_simulation.es.events.ES_EventI;
 import fr.sorbonne_u.devs_simulation.es.models.AtomicES_Model;
 import fr.sorbonne_u.devs_simulation.models.annotations.ModelExternalEvents;
@@ -16,7 +17,8 @@ import fr.sorbonne_u.devs_simulation.models.time.Duration;
 
 @ModelExternalEvents(exported = {
         SetProductBatteryEvent.class,
-        SetConsumeBatteryEvent.class
+        SetConsumeBatteryEvent.class,
+        SetStandByBatteryEvent.class
 })
 public class BatteryUserModel extends AtomicES_Model {
 
@@ -25,7 +27,9 @@ public class BatteryUserModel extends AtomicES_Model {
 	// -------------------------------------------------------------------------
 	
 	private static final long serialVersionUID = 1L;
-	public static final String URI = BatteryUserModel.class.getSimpleName();
+	
+	public static final String MIL_URI = BatteryUserModel.class.getSimpleName() + "-MIL";
+	public static final String MIL_RT_URI = BatteryUserModel.class.getSimpleName() + "-MIL-RT";
 	
     protected static double STEP_MEAN_DURATION = 10.0;
     protected RandomDataGenerator generator;
@@ -57,12 +61,12 @@ public class BatteryUserModel extends AtomicES_Model {
         Time nextTime = computeTimeOfNextEvent(current.getTimeOfOccurrence());
 
         ES_EventI next = null;
-        if(current instanceof SetProductBatteryEvent) {
+        if(current instanceof SetStandByBatteryEvent) 
             next = new SetConsumeBatteryEvent(nextTime);
-        }
-        else if(current instanceof SetConsumeBatteryEvent) {
+        else if(current instanceof SetConsumeBatteryEvent) 
             next = new SetProductBatteryEvent(nextTime);
-        }
+        else 
+        	next = new SetStandByBatteryEvent(nextTime);
 
         scheduleEvent(next);
     }

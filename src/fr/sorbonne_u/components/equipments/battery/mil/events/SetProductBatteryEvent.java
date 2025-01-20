@@ -1,8 +1,7 @@
 package fr.sorbonne_u.components.equipments.battery.mil.events;
 
-import fr.sorbonne_u.components.equipments.battery.BatteryI;
-import fr.sorbonne_u.components.equipments.battery.mil.BatteryChargeLevelModel;
-import fr.sorbonne_u.components.equipments.battery.mil.BatteryElectricityModel;
+import fr.sorbonne_u.components.equipments.battery.BatteryI.BATTERY_STATE;
+import fr.sorbonne_u.components.equipments.battery.mil.BatteryOperationI;
 import fr.sorbonne_u.devs_simulation.models.events.EventI;
 import fr.sorbonne_u.devs_simulation.models.interfaces.AtomicModelI;
 import fr.sorbonne_u.devs_simulation.models.time.Time;
@@ -17,23 +16,17 @@ public class SetProductBatteryEvent extends AbstractBatteryEvent {
 
 	@Override
     public boolean hasPriorityOver(EventI e) {
-        return true;
+		if(e instanceof SetConsumeBatteryEvent)
+				return true;
+        return false;
     }
 	
 	@Override
     public void executeOn(AtomicModelI model) {
-        assert model instanceof BatteryElectricityModel || model instanceof BatteryChargeLevelModel;
-        if(model instanceof BatteryElectricityModel) {
-        	BatteryElectricityModel m = (BatteryElectricityModel)model;
-            if(m.getCurrentState() != BatteryI.STATE.PRODUCT) {
-                m.setProduction();;
-                m.setHasChanged(true);
-            }
-        }
-        else {
-        	BatteryChargeLevelModel m = (BatteryChargeLevelModel)model;
-            if(m.getCurrentState() != BatteryI.STATE.PRODUCT) 
-                m.setProduction();       
-        }
+        assert model instanceof BatteryOperationI;
+        BatteryOperationI b = (BatteryOperationI)model;
+        
+        if(b.getCurrentState() != BATTERY_STATE.PRODUCT) 
+            b.setProduction();
     }
 }

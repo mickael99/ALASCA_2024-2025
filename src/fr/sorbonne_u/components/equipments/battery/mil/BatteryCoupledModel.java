@@ -17,7 +17,9 @@ import fr.sorbonne_u.devs_simulation.simulators.interfaces.CoordinatorI;
 public class BatteryCoupledModel extends CoupledModel {
 
 	private static final long serialVersionUID = 1L;
-	public static final String	URI = BatteryCoupledModel.class.getSimpleName();
+	
+	public static final String MIL_URI = BatteryCoupledModel.class.getSimpleName() + "-MIL";
+	public static final String MIL_RT_URI = BatteryCoupledModel.class.getSimpleName() + "-MIL-RT";
 
 	public BatteryCoupledModel(String uri, TimeUnit simulatedTimeUnit, CoordinatorI simulationEngine, ModelI[] submodels,
 								Map<Class<? extends EventI>, EventSink[]> imported, Map<Class<? extends EventI>, ReexportedEvent> reexported,
