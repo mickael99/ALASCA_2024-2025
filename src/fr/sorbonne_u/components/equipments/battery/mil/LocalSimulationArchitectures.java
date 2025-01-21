@@ -84,10 +84,10 @@ public class LocalSimulationArchitectures {
 							      SetConsumeBatteryEvent.class)
 				});
 		imported.put(
-				SetConsumeBatteryEvent.class,
+				SetStandByBatteryEvent.class,
 				new EventSink[] {
 					new EventSink(BatteryStateModel.MIL_URI,
-								  SetConsumeBatteryEvent.class)
+							      SetStandByBatteryEvent.class)
 				});
 
 		
