@@ -20,6 +20,7 @@ public class BatteryCoupledModel extends CoupledModel {
 	
 	public static final String MIL_URI = BatteryCoupledModel.class.getSimpleName() + "-MIL";
 	public static final String MIL_RT_URI = BatteryCoupledModel.class.getSimpleName() + "-MIL-RT";
+	public static final String SIL_URI = BatteryCoupledModel.class.getSimpleName() + "-SIL";
 
 	public BatteryCoupledModel(String uri, TimeUnit simulatedTimeUnit, CoordinatorI simulationEngine, ModelI[] submodels,
 								Map<Class<? extends EventI>, EventSink[]> imported, Map<Class<? extends EventI>, ReexportedEvent> reexported,
