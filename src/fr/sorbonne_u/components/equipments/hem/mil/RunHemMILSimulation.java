@@ -165,30 +165,30 @@ public class RunHemMILSimulation {
 			
 			// Add battery
 			atomicModelDescriptors.put(
-                    BatteryElectricityModel.URI,
+                    BatteryElectricityModel.MIL_URI,
                     AtomicHIOA_Descriptor.create(
                     		BatteryElectricityModel.class,
-                    		BatteryElectricityModel.URI,
+                    		BatteryElectricityModel.MIL_URI,
                             TimeUnit.SECONDS,
                             null
                     )
             );
 
             atomicModelDescriptors.put(
-                    BatteryChargeLevelModel.URI,
+                    BatteryChargeLevelModel.MIL_URI,
                     AtomicHIOA_Descriptor.create(
                     		BatteryChargeLevelModel.class,
-                    		BatteryChargeLevelModel.URI,
+                    		BatteryChargeLevelModel.MIL_URI,
                             TimeUnit.SECONDS,
                             null
                     )
             );
 
             atomicModelDescriptors.put(
-                    BatteryUserModel.URI,
+                    BatteryUserModel.MIL_URI,
                     AtomicModelDescriptor.create(
                             BatteryUserModel.class,
-                            BatteryUserModel.URI,
+                            BatteryUserModel.MIL_URI,
                             TimeUnit.SECONDS,
                             null
                     )
@@ -283,9 +283,9 @@ public class RunHemMILSimulation {
             submodels.add(IronElectricityModel.MIL_URI);
 			submodels.add(IronUserModel.URI);
 			
-			submodels.add(BatteryElectricityModel.URI);
-			submodels.add(BatteryChargeLevelModel.URI);
-			submodels.add(BatteryUserModel.URI);
+			submodels.add(BatteryElectricityModel.MIL_URI);
+			submodels.add(BatteryChargeLevelModel.MIL_URI);
+			submodels.add(BatteryUserModel.MIL_URI);
 			
 			submodels.add(WindTurbineElectricityModel.URI);
 			submodels.add(WindTurbineUserModel.URI);
@@ -545,18 +545,18 @@ public class RunHemMILSimulation {
 			
 			// Add battery
 			connections.put(
-                    new EventSource(BatteryUserModel.URI, SetProductBatteryEvent.class),
+                    new EventSource(BatteryUserModel.MIL_URI, SetProductBatteryEvent.class),
                     new EventSink[] {
-                            new EventSink(BatteryElectricityModel.URI, SetProductBatteryEvent.class),
-                            new EventSink(BatteryChargeLevelModel.URI, SetProductBatteryEvent.class)
+                            new EventSink(BatteryElectricityModel.MIL_URI, SetProductBatteryEvent.class),
+                            new EventSink(BatteryChargeLevelModel.MIL_URI, SetProductBatteryEvent.class)
                     }
             );
 
             connections.put(
-                    new EventSource(BatteryUserModel.URI, SetConsumeBatteryEvent.class),
+                    new EventSource(BatteryUserModel.MIL_URI, SetConsumeBatteryEvent.class),
                     new EventSink[] {
-                            new EventSink(BatteryElectricityModel.URI, SetConsumeBatteryEvent.class),
-                            new EventSink(BatteryChargeLevelModel.URI, SetConsumeBatteryEvent.class)
+                            new EventSink(BatteryElectricityModel.MIL_URI, SetConsumeBatteryEvent.class),
+                            new EventSink(BatteryChargeLevelModel.MIL_URI, SetConsumeBatteryEvent.class)
                     }
             );
             
@@ -689,21 +689,21 @@ public class RunHemMILSimulation {
 			
 			// Add battery bindings
 			bindings.put(
-                    new VariableSource("currentChargeLevel", Double.class, BatteryChargeLevelModel.URI),
+                    new VariableSource("currentChargeLevel", Double.class, BatteryChargeLevelModel.MIL_URI),
                     new VariableSink[] {
-                            new VariableSink("currentChargeLevel", Double.class, BatteryElectricityModel.URI)
+                            new VariableSink("currentChargeLevel", Double.class, BatteryElectricityModel.MIL_URI)
                     }
             );
 			
 			bindings.put(
-                    new VariableSource("currentProduction", Double.class, BatteryElectricityModel.URI),
+                    new VariableSource("currentProduction", Double.class, BatteryElectricityModel.MIL_URI),
                     new VariableSink[] {
                             new VariableSink("currentBatteryProduction", Double.class, MeterElectricityModel.URI)
                     }
             );
 			
 			bindings.put(
-                    new VariableSource("currentConsumption", Double.class, BatteryElectricityModel.URI),
+                    new VariableSource("currentConsumption", Double.class, BatteryElectricityModel.MIL_URI),
                     new VariableSink[] {
                             new VariableSink("currentBatteryConsumption", Double.class, MeterElectricityModel.URI)
                     }

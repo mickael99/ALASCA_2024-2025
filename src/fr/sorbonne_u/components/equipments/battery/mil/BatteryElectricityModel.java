@@ -1,13 +1,18 @@
 package fr.sorbonne_u.components.equipments.battery.mil;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import fr.sorbonne_u.components.cyphy.plugins.devs.AtomicSimulatorPlugin;
 import fr.sorbonne_u.components.equipments.battery.BatteryI.BATTERY_STATE;
 import fr.sorbonne_u.components.equipments.battery.mil.events.SetProductBatteryEvent;
 import fr.sorbonne_u.components.equipments.battery.mil.events.SetStandByBatteryEvent;
+import fr.sorbonne_u.components.equipments.hem.mil.HEM_ReportI;
 import fr.sorbonne_u.components.equipments.battery.mil.events.AbstractBatteryEvent;
 import fr.sorbonne_u.components.equipments.battery.mil.events.SetConsumeBatteryEvent;
+import fr.sorbonne_u.devs_simulation.exceptions.MissingRunParameterException;
+import fr.sorbonne_u.devs_simulation.exceptions.NeoSim4JavaException;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ExportedVariable;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ImportedVariable;
 import fr.sorbonne_u.devs_simulation.hioa.models.AtomicHIOA;
@@ -15,10 +20,13 @@ import fr.sorbonne_u.devs_simulation.hioa.models.vars.Value;
 import fr.sorbonne_u.devs_simulation.models.annotations.ModelExternalEvents;
 import fr.sorbonne_u.devs_simulation.models.events.Event;
 import fr.sorbonne_u.devs_simulation.models.events.EventI;
+import fr.sorbonne_u.devs_simulation.models.interfaces.ModelI;
 import fr.sorbonne_u.devs_simulation.models.time.Duration;
 import fr.sorbonne_u.devs_simulation.models.time.Time;
 import fr.sorbonne_u.devs_simulation.simulators.interfaces.AtomicSimulatorI;
+import fr.sorbonne_u.devs_simulation.simulators.interfaces.SimulationReportI;
 import fr.sorbonne_u.devs_simulation.utils.StandardLogger;
+import fr.sorbonne_u.exceptions.InvariantChecking;
 
 @ModelExternalEvents(imported = {
         SetProductBatteryEvent.class,
@@ -35,12 +43,16 @@ public class BatteryElectricityModel extends AtomicHIOA implements BatteryOperat
 	
 	public static final String MIL_URI = BatteryElectricityModel.class.getSimpleName() + "-MIL";
 	public static final String MIL_RT_URI = BatteryElectricityModel.class.getSimpleName() + "-MIL-RT";
+	public static final String SIL_URI = BatteryElectricityModel.class.getSimpleName() + "-SIL";
 	
-	protected static final double PRODUCTION = 1200.0;
-	protected static final double CONSUMPTION = 1000.0;
+	protected static double PRODUCTION = 1200.0;
+	protected static double CONSUMPTION = 1000.0;
 	
 	protected BATTERY_STATE currentState;
+	protected double totalConsumption = 0.0;
 	protected boolean hasChanged;
+	protected Time lastInternalTransitionTime;
+
 	
 	// Between 0 and 1
 	@ImportedVariable(type = Double.class)
@@ -60,8 +72,69 @@ public class BatteryElectricityModel extends AtomicHIOA implements BatteryOperat
     public BatteryElectricityModel(String uri, TimeUnit simulatedTimeUnit, AtomicSimulatorI simulationEngine) throws Exception {
 		super(uri, simulatedTimeUnit, simulationEngine);
 		this.getSimulationEngine().setLogger(new StandardLogger());
+		
+		this.currentState = BATTERY_STATE.STANDBY;
+		
+		assert	glassBoxInvariants(this) :
+			new NeoSim4JavaException(
+					"BatteryElectricityModel.glassBoxInvariants(this)");
+		assert	blackBoxInvariants(this) :
+			new NeoSim4JavaException(
+					"BatteryElectricityModel.blackBoxInvariants(this)");
 	}
     
+    
+    // -------------------------------------------------------------------------
+ 	// Invariants
+ 	// -------------------------------------------------------------------------
+
+ 	protected static boolean glassBoxInvariants(BatteryElectricityModel instance) {
+ 		assert	instance != null :
+ 				new NeoSim4JavaException("Precondition violation: "
+ 						+ "instance != null");
+
+ 		boolean ret = true;
+ 		ret &= InvariantChecking.checkGlassBoxInvariant(
+ 					PRODUCTION >= 0.0,
+ 					BatteryElectricityModel.class,
+ 					instance,
+ 					"PRODUCTION >= 0.0");
+ 		ret &= InvariantChecking.checkGlassBoxInvariant(
+ 					CONSUMPTION > 0.0,
+ 					BatteryElectricityModel.class,
+ 					instance,
+ 					"CONSUMPTION > 0.0");
+ 		ret &= InvariantChecking.checkGlassBoxInvariant(
+ 					instance.currentState != null,
+ 				    BatteryElectricityModel.class,
+ 					instance,
+ 					"currentState != null");
+ 		return ret;
+ 	}
+
+ 	protected static boolean blackBoxInvariants(BatteryElectricityModel instance) {
+ 		assert	instance != null :
+ 				new NeoSim4JavaException("Precondition violation: "
+ 						+ "instance != null");
+
+ 		boolean ret = true;
+ 		ret &= InvariantChecking.checkBlackBoxInvariant(
+ 					MIL_URI != null && !MIL_URI.isEmpty(),
+ 					BatteryElectricityModel.class,
+ 					instance,
+ 					"MIL_URI != null && !MIL_URI.isEmpty()");
+ 		ret &= InvariantChecking.checkBlackBoxInvariant(
+ 					MIL_RT_URI != null && !MIL_RT_URI.isEmpty(),
+ 					BatteryElectricityModel.class,
+ 					instance,
+ 					"MIL_RT_URI != null && !MIL_RT_URI.isEmpty()");
+ 		ret &= InvariantChecking.checkBlackBoxInvariant(
+ 					SIL_URI != null && !SIL_URI.isEmpty(),
+ 					BatteryElectricityModel.class,
+ 					instance,
+ 					"SIL_URI != null && !SIL_URI.isEmpty()");
+ 		return ret;
+ 	}
     
     // -------------------------------------------------------------------------
  	// Methods
@@ -122,11 +195,18 @@ public class BatteryElectricityModel extends AtomicHIOA implements BatteryOperat
 			this.logMessage(sbc.toString());
 		} 
 		
-        this.currentState = BATTERY_STATE.CONSUME;
         this.hasChanged = false;
+        this.lastInternalTransitionTime = initialTime;
 
         this.getSimulationEngine().toggleDebugMode();
         logMessage("Simulation starts...\n");
+        
+        assert	glassBoxInvariants(this) :
+			new NeoSim4JavaException(
+					"BatteryElectricityModel.glassBoxInvariants(this)");
+        assert	blackBoxInvariants(this) :
+			new NeoSim4JavaException(
+					"BatteryElectricityModel.blackBoxInvariants(this)");
     }
     
     @Override
@@ -137,7 +217,7 @@ public class BatteryElectricityModel extends AtomicHIOA implements BatteryOperat
 	@Override
 	public Duration timeAdvance() {
 		if(hasChanged) {
-            hasChanged = false;
+            this.hasChanged = false;
             return Duration.zero(this.getSimulatedTimeUnit());
         }
 		
@@ -147,25 +227,40 @@ public class BatteryElectricityModel extends AtomicHIOA implements BatteryOperat
 	@Override
     public void userDefinedInternalTransition(Duration elapsedTime) {
         super.userDefinedInternalTransition(elapsedTime);
+        
         Time t = this.getCurrentStateTime();
+        double timeElapsed = t.subtract(this.lastInternalTransitionTime).getSimulatedDuration();
+        this.lastInternalTransitionTime = t;
         
         switch (this.currentState) {
             case PRODUCT:
                 this.currentProduction.setNewValue(PRODUCTION, t);
                 this.currentConsumption.setNewValue(0.0, t);
+                
+                this.totalConsumption += PRODUCTION / 1000 * timeElapsed;
+
                 break;
 
             case CONSUME:
             	this.currentProduction.setNewValue(0.0, t);
                 this.currentConsumption.setNewValue(CONSUMPTION, t);
+                this.totalConsumption += CONSUMPTION / 1000 * timeElapsed;
+
                 break;
 		default:
 			break;
         }
-
+        
         logMessage("Current production " + this.currentProduction.getValue() + " at " + this.currentProduction.getTime()
         		+ " current consumption" + this.currentConsumption.getValue() + " at " + this.currentProduction.getTime()
                 + " | Charge level " + this.currentChargeLevel.getValue() * 100 + "%" + "\n");
+        
+        assert	glassBoxInvariants(this) :
+			new NeoSim4JavaException(
+					"BatteryElectricityModel.glassBoxInvariants(this)");
+        assert	blackBoxInvariants(this) :
+			new NeoSim4JavaException(
+					"BatteryElectricityModel.blackBoxInvariants(this)");
     }
 	
 	 @Override
@@ -177,12 +272,109 @@ public class BatteryElectricityModel extends AtomicHIOA implements BatteryOperat
         assert currentEvent instanceof AbstractBatteryEvent;
         currentEvent.executeOn(this);
 
+//        try {
+//        	System.out.println("etat -> " + elapsedTime.getSimulatedDuration());
+//			Thread.sleep(5000L);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+        
         super.userDefinedExternalTransition(elapsedTime);
+        
+        assert	glassBoxInvariants(this) :
+			new NeoSim4JavaException(
+					"BatteryElectricityModel.glassBoxInvariants(this)");
+        assert	blackBoxInvariants(this) :
+			new NeoSim4JavaException(
+					"BatteryElectricityModel.blackBoxInvariants(this)");
     }
 	 
 	 @Override
     public void endSimulation(Time endTime) {
-        logMessage("Simulation ends!\n");
-        super.endSimulation(endTime);
+		 BatteryElectricityReport report = (BatteryElectricityReport)this.getFinalReport();
+		 logMessage(report.printout(""));
+		 
+		 logMessage("Simulation ends!\n");
+		 super.endSimulation(endTime);
     }
+	 
+	 
+	// -------------------------------------------------------------------------
+	// Optional DEVS simulation protocol: simulation run parameters
+	// -------------------------------------------------------------------------
+
+	public static final String	PRODUCTION_RUNPNAME = "PRODUCTION";
+	public static final String	CONSUMPTION_RUNPNAME = "CONSUMPTION";
+
+
+	@Override
+	public void setSimulationRunParameters(Map<String, Object> simParams) throws MissingRunParameterException {
+		super.setSimulationRunParameters(simParams);
+
+		if (simParams.containsKey(
+						AtomicSimulatorPlugin.OWNER_RUNTIME_PARAMETER_NAME)) 
+		{
+			this.getSimulationEngine().setLogger(
+					AtomicSimulatorPlugin.createComponentLogger(simParams));
+		}
+
+		String productionName = ModelI.createRunParameterName(getURI(), PRODUCTION_RUNPNAME);
+		if (simParams.containsKey(productionName)) 
+			PRODUCTION = (double)simParams.get(productionName);
+		
+		String consumptionName = ModelI.createRunParameterName(getURI(), CONSUMPTION_RUNPNAME);
+		if (simParams.containsKey(consumptionName)) 
+			CONSUMPTION = (double) simParams.get(consumptionName);
+	}
+	
+	
+	// -------------------------------------------------------------------------
+	// Optional DEVS simulation protocol: simulation report
+	// -------------------------------------------------------------------------
+
+	public static class	BatteryElectricityReport implements SimulationReportI, HEM_ReportI {
+		private static final long serialVersionUID = 1L;
+		protected String modelURI;
+		protected double totalConsumption;
+
+
+		public BatteryElectricityReport(String modelURI, double totalConsumption) {
+			super();
+			this.modelURI = modelURI;
+			this.totalConsumption = totalConsumption;
+		}
+
+		@Override
+		public String getModelURI() {
+			return this.modelURI;
+		}
+
+		@Override
+		public String printout(String indent) {
+			StringBuffer ret = new StringBuffer(indent);
+			ret.append("---\n");
+			ret.append(indent);
+			ret.append('|');
+			ret.append(this.modelURI);
+			ret.append(" report\n");
+			ret.append(indent);
+			ret.append('|');
+			ret.append("total consumption in kwh = ");
+			ret.append(this.totalConsumption);
+			ret.append(".\n");
+			ret.append(indent);
+			ret.append("---\n");
+			return ret.toString();
+		}		
+	}
+
+	// -------------------------------------------------------------------------
+	// Optional DEVS simulation protocol: simulation report
+	// -------------------------------------------------------------------------
+
+	@Override
+	public SimulationReportI getFinalReport() {
+		return new BatteryElectricityReport(this.getURI(), this.totalConsumption);
+	}
 }

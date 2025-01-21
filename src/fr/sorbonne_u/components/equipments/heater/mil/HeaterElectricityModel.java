@@ -184,132 +184,132 @@ implements	HeaterOperationI
 	protected final Value<Double>	currentHeatingPower =
 														new Value<Double>(this);
 
-	// -------------------------------------------------------------------------
-	// Invariants
-	// -------------------------------------------------------------------------
-
-	/**
-	 * return true if the glass-box invariants are observed, false otherwise.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code instance != null}
-	 * post	{@code true}	// no postcondition.
-	 * </pre>
-	 *
-	 * @param instance	instance to be tested.
-	 * @return			true if the glass-box invariants are observed, false otherwise.
-	 */
-	protected static boolean	glassBoxInvariants(
-		HeaterElectricityModel instance
-		)
-	{
-		assert	instance != null :
-				new NeoSim4JavaException("Precondition violation: "
-						+ "instance != null");
-
-		boolean ret = true;
-		ret &= InvariantChecking.checkGlassBoxInvariant(
-					NOT_HEATING_POWER >= 0.0,
-					HeaterElectricityModel.class,
-					instance,
-					"NOT_HEATING_POWER >= 0.0");
-		ret &= InvariantChecking.checkGlassBoxInvariant(
-					TENSION > 0.0,
-					HeaterElectricityModel.class,
-					instance,
-					"TENSION > 0.0");
-		ret &= InvariantChecking.checkGlassBoxInvariant(
-					instance.currentState != null,
-					HeaterElectricityModel.class,
-					instance,
-					"currentState != null");
-		ret &= InvariantChecking.checkGlassBoxInvariant(
-					instance.totalConsumption >= 0.0,
-					HeaterElectricityModel.class,
-					instance,
-					"totalConsumption >= 0.0");
-		ret &= InvariantChecking.checkGlassBoxInvariant(
-					!instance.currentHeatingPower.isInitialised() ||
-								instance.currentHeatingPower.getValue() >= 0.0,
-					HeaterElectricityModel.class,
-					instance,
-					"!currentHeatingPower.isInitialised() || "
-							+ "currentHeatingPower.getValue() >= 0.0");
-		ret &= InvariantChecking.checkGlassBoxInvariant(
-					!instance.currentIntensity.isInitialised() ||
-									instance.currentIntensity.getValue() >= 0.0,
-					HeaterElectricityModel.class,
-					instance,
-					"!currentIntensity.isInitialised() || "
-							+ "currentIntensity.getValue() >= 0.0");
-		return ret;
-	}
-
-	/**
-	 * return true if the black-box invariants are observed, false otherwise.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code instance != null}
-	 * post	{@code true}	// no postcondition.
-	 * </pre>
-	 *
-	 * @param instance	instance to be tested.
-	 * @return			true if the black-box invariants are observed, false otherwise.
-	 */
-	protected static boolean	blackBoxInvariants(
-		HeaterElectricityModel instance
-		)
-	{
-		assert	instance != null :
-				new NeoSim4JavaException("Precondition violation: "
-						+ "instance != null");
-
-		boolean ret = true;
-		ret &= InvariantChecking.checkBlackBoxInvariant(
-					MIL_URI != null && !MIL_URI.isEmpty(),
-					HeaterElectricityModel.class,
-					instance,
-					"MIL_URI != null && !MIL_URI.isEmpty()");
-		ret &= InvariantChecking.checkBlackBoxInvariant(
-					MIL_RT_URI != null && !MIL_RT_URI.isEmpty(),
-					HeaterElectricityModel.class,
-					instance,
-					"MIL_RT_URI != null && !MIL_RT_URI.isEmpty()");
-		ret &= InvariantChecking.checkBlackBoxInvariant(
-					SIL_URI != null && !SIL_URI.isEmpty(),
-					HeaterElectricityModel.class,
-					instance,
-					"SIL_URI != null && !SIL_URI.isEmpty()");
-		ret &= InvariantChecking.checkBlackBoxInvariant(
-					MAX_HEATING_POWER > NOT_HEATING_POWER,
-					HeaterElectricityModel.class,
-					instance,
-					"MAX_HEATING_POWER > NOT_HEATING_POWER");
-		ret &= InvariantChecking.checkBlackBoxInvariant(
-					NOT_HEATING_POWER_RUNPNAME != null &&
-									!NOT_HEATING_POWER_RUNPNAME.isEmpty(),
-					HeaterElectricityModel.class,
-					instance,
-					"NOT_HEATING_POWER_RUNPNAME != null && "
-					+ "!NOT_HEATING_POWER_RUNPNAME.isEmpty()");
-		ret &= InvariantChecking.checkBlackBoxInvariant(
-					MAX_HEATING_POWER_RUNPNAME != null &&
-									!MAX_HEATING_POWER_RUNPNAME.isEmpty(),
-					HeaterElectricityModel.class,
-					instance,
-					"MAX_HEATING_POWER_RUNPNAME != null && "
-					+ "!MAX_HEATING_POWER_RUNPNAME.isEmpty()");
-		ret &= InvariantChecking.checkBlackBoxInvariant(
-					TENSION_RUNPNAME != null && !TENSION_RUNPNAME.isEmpty(),
-					HeaterElectricityModel.class,
-					instance,
-					"TENSION_RUNPNAME != null && !TENSION_RUNPNAME.isEmpty()");
-		return ret;
-	}
+		// -------------------------------------------------------------------------
+		// Invariants
+		// -------------------------------------------------------------------------
+	
+		/**
+		 * return true if the glass-box invariants are observed, false otherwise.
+		 * 
+		 * <p><strong>Contract</strong></p>
+		 * 
+		 * <pre>
+		 * pre	{@code instance != null}
+		 * post	{@code true}	// no postcondition.
+		 * </pre>
+		 *
+		 * @param instance	instance to be tested.
+		 * @return			true if the glass-box invariants are observed, false otherwise.
+		 */
+		protected static boolean	glassBoxInvariants(
+			HeaterElectricityModel instance
+			)
+		{
+			assert	instance != null :
+					new NeoSim4JavaException("Precondition violation: "
+							+ "instance != null");
+	
+			boolean ret = true;
+			ret &= InvariantChecking.checkGlassBoxInvariant(
+						NOT_HEATING_POWER >= 0.0,
+						HeaterElectricityModel.class,
+						instance,
+						"NOT_HEATING_POWER >= 0.0");
+			ret &= InvariantChecking.checkGlassBoxInvariant(
+						TENSION > 0.0,
+						HeaterElectricityModel.class,
+						instance,
+						"TENSION > 0.0");
+			ret &= InvariantChecking.checkGlassBoxInvariant(
+						instance.currentState != null,
+						HeaterElectricityModel.class,
+						instance,
+						"currentState != null");
+			ret &= InvariantChecking.checkGlassBoxInvariant(
+						instance.totalConsumption >= 0.0,
+						HeaterElectricityModel.class,
+						instance,
+						"totalConsumption >= 0.0");
+			ret &= InvariantChecking.checkGlassBoxInvariant(
+						!instance.currentHeatingPower.isInitialised() ||
+									instance.currentHeatingPower.getValue() >= 0.0,
+						HeaterElectricityModel.class,
+						instance,
+						"!currentHeatingPower.isInitialised() || "
+								+ "currentHeatingPower.getValue() >= 0.0");
+			ret &= InvariantChecking.checkGlassBoxInvariant(
+						!instance.currentIntensity.isInitialised() ||
+										instance.currentIntensity.getValue() >= 0.0,
+						HeaterElectricityModel.class,
+						instance,
+						"!currentIntensity.isInitialised() || "
+								+ "currentIntensity.getValue() >= 0.0");
+			return ret;
+		}
+	
+		/**
+		 * return true if the black-box invariants are observed, false otherwise.
+		 * 
+		 * <p><strong>Contract</strong></p>
+		 * 
+		 * <pre>
+		 * pre	{@code instance != null}
+		 * post	{@code true}	// no postcondition.
+		 * </pre>
+		 *
+		 * @param instance	instance to be tested.
+		 * @return			true if the black-box invariants are observed, false otherwise.
+		 */
+		protected static boolean	blackBoxInvariants(
+			HeaterElectricityModel instance
+			)
+		{
+			assert	instance != null :
+					new NeoSim4JavaException("Precondition violation: "
+							+ "instance != null");
+	
+			boolean ret = true;
+			ret &= InvariantChecking.checkBlackBoxInvariant(
+						MIL_URI != null && !MIL_URI.isEmpty(),
+						HeaterElectricityModel.class,
+						instance,
+						"MIL_URI != null && !MIL_URI.isEmpty()");
+			ret &= InvariantChecking.checkBlackBoxInvariant(
+						MIL_RT_URI != null && !MIL_RT_URI.isEmpty(),
+						HeaterElectricityModel.class,
+						instance,
+						"MIL_RT_URI != null && !MIL_RT_URI.isEmpty()");
+			ret &= InvariantChecking.checkBlackBoxInvariant(
+						SIL_URI != null && !SIL_URI.isEmpty(),
+						HeaterElectricityModel.class,
+						instance,
+						"SIL_URI != null && !SIL_URI.isEmpty()");
+			ret &= InvariantChecking.checkBlackBoxInvariant(
+						MAX_HEATING_POWER > NOT_HEATING_POWER,
+						HeaterElectricityModel.class,
+						instance,
+						"MAX_HEATING_POWER > NOT_HEATING_POWER");
+			ret &= InvariantChecking.checkBlackBoxInvariant(
+						NOT_HEATING_POWER_RUNPNAME != null &&
+										!NOT_HEATING_POWER_RUNPNAME.isEmpty(),
+						HeaterElectricityModel.class,
+						instance,
+						"NOT_HEATING_POWER_RUNPNAME != null && "
+						+ "!NOT_HEATING_POWER_RUNPNAME.isEmpty()");
+			ret &= InvariantChecking.checkBlackBoxInvariant(
+						MAX_HEATING_POWER_RUNPNAME != null &&
+										!MAX_HEATING_POWER_RUNPNAME.isEmpty(),
+						HeaterElectricityModel.class,
+						instance,
+						"MAX_HEATING_POWER_RUNPNAME != null && "
+						+ "!MAX_HEATING_POWER_RUNPNAME.isEmpty()");
+			ret &= InvariantChecking.checkBlackBoxInvariant(
+						TENSION_RUNPNAME != null && !TENSION_RUNPNAME.isEmpty(),
+						HeaterElectricityModel.class,
+						instance,
+						"TENSION_RUNPNAME != null && !TENSION_RUNPNAME.isEmpty()");
+			return ret;
+		}
 
 	// -------------------------------------------------------------------------
 	// Constructors

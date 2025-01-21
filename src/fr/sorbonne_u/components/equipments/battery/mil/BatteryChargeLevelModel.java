@@ -1,23 +1,29 @@
 package fr.sorbonne_u.components.equipments.battery.mil;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import fr.sorbonne_u.components.cyphy.plugins.devs.AtomicSimulatorPlugin;
 import fr.sorbonne_u.components.equipments.battery.BatteryI.BATTERY_STATE;
 import fr.sorbonne_u.components.equipments.battery.mil.events.AbstractBatteryEvent;
 import fr.sorbonne_u.components.equipments.battery.mil.events.SetConsumeBatteryEvent;
 import fr.sorbonne_u.components.equipments.battery.mil.events.SetProductBatteryEvent;
 import fr.sorbonne_u.components.equipments.battery.mil.events.SetStandByBatteryEvent;
+import fr.sorbonne_u.devs_simulation.exceptions.MissingRunParameterException;
+import fr.sorbonne_u.devs_simulation.exceptions.NeoSim4JavaException;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ExportedVariable;
 import fr.sorbonne_u.devs_simulation.hioa.models.AtomicHIOA;
 import fr.sorbonne_u.devs_simulation.hioa.models.vars.Value;
 import fr.sorbonne_u.devs_simulation.models.annotations.ModelExternalEvents;
 import fr.sorbonne_u.devs_simulation.models.events.Event;
 import fr.sorbonne_u.devs_simulation.models.events.EventI;
+import fr.sorbonne_u.devs_simulation.models.interfaces.ModelI;
 import fr.sorbonne_u.devs_simulation.models.time.Duration;
 import fr.sorbonne_u.devs_simulation.models.time.Time;
 import fr.sorbonne_u.devs_simulation.simulators.interfaces.AtomicSimulatorI;
 import fr.sorbonne_u.devs_simulation.utils.StandardLogger;
+import fr.sorbonne_u.exceptions.InvariantChecking;
 
 @ModelExternalEvents(imported = {
         SetProductBatteryEvent.class,
@@ -34,14 +40,15 @@ public class BatteryChargeLevelModel extends AtomicHIOA implements BatteryOperat
 	
 	public static final String MIL_URI = BatteryChargeLevelModel.class.getSimpleName() + "-MIL";
 	public static final String MIL_RT_URI = BatteryChargeLevelModel.class.getSimpleName() + "-MIL-RT";
+	public static final String SIL_URI = BatteryChargeLevelModel.class.getSimpleName() + "-SIL-RT";
 	
     protected static final double STEP = 0.1;
     
     // Drain 15% of its total capacity in hour
-	protected static final double DISCHARGE_SPEED = 0.15;
+	protected static double DISCHARGE_SPEED = 0.15;
 	
 	// Recharges 35% of its total capacity in hour
-	protected static final double CHARGE_SPEED = 0.35; 
+	protected static double CHARGE_SPEED = 0.35; 
 	
 	protected final Duration evaluationStep;
 
@@ -57,9 +64,72 @@ public class BatteryChargeLevelModel extends AtomicHIOA implements BatteryOperat
     
     public BatteryChargeLevelModel(String uri, TimeUnit simulatedTimeUnit, AtomicSimulatorI simulationEngine) throws Exception {
         super(uri, simulatedTimeUnit, simulationEngine);
-        evaluationStep = new Duration(STEP, getSimulatedTimeUnit());
+        
+        this.evaluationStep = new Duration(STEP, getSimulatedTimeUnit());
+        this.currentState = BATTERY_STATE.STANDBY;
+        
         this.getSimulationEngine().setLogger(new StandardLogger());
+        
+        assert	glassBoxInvariants(this) :
+			new NeoSim4JavaException(
+					"BatteryChargeLevelModel.glassBoxInvariants(this)");
+        assert	blackBoxInvariants(this) :
+			new NeoSim4JavaException(
+					"BatteryChargeLevelModel.blackBoxInvariants(this)");
     }
+    
+    
+    // -------------------------------------------------------------------------
+	// Invariants
+	// -------------------------------------------------------------------------
+
+	protected static boolean glassBoxInvariants(BatteryChargeLevelModel instance) {
+		assert	instance != null :
+				new NeoSim4JavaException("Precondition violation: "
+						+ "instance != null");
+
+		boolean ret = true;
+		ret &= InvariantChecking.checkGlassBoxInvariant(
+					STEP >= 0.0,
+					BatteryChargeLevelModel.class,
+					instance,
+					"STEP >= 0.0");
+		ret &= InvariantChecking.checkGlassBoxInvariant(
+				CHARGE_SPEED > 0.0,
+				BatteryChargeLevelModel.class,
+					instance,
+					"CHARGE_SPEED > 0.0");
+		ret &= InvariantChecking.checkGlassBoxInvariant(
+					instance.currentState != null,
+					BatteryChargeLevelModel.class,
+					instance,
+					"currentState != null");
+		return ret;
+	}
+
+	protected static boolean blackBoxInvariants(BatteryChargeLevelModel instance) {
+		assert	instance != null :
+				new NeoSim4JavaException("Precondition violation: "
+						+ "instance != null");
+
+		boolean ret = true;
+		ret &= InvariantChecking.checkBlackBoxInvariant(
+					MIL_URI != null && !MIL_URI.isEmpty(),
+					BatteryChargeLevelModel.class,
+					instance,
+					"MIL_URI != null && !MIL_URI.isEmpty()");
+		ret &= InvariantChecking.checkBlackBoxInvariant(
+					MIL_RT_URI != null && !MIL_RT_URI.isEmpty(),
+					BatteryChargeLevelModel.class,
+					instance,
+					"MIL_RT_URI != null && !MIL_RT_URI.isEmpty()");
+		ret &= InvariantChecking.checkBlackBoxInvariant(
+					SIL_URI != null && !SIL_URI.isEmpty(),
+					BatteryChargeLevelModel.class,
+					instance,
+					"SIL_URI != null && !SIL_URI.isEmpty()");
+		return ret;
+	}
 
     
     // -------------------------------------------------------------------------
@@ -108,27 +178,21 @@ public class BatteryChargeLevelModel extends AtomicHIOA implements BatteryOperat
     public void initialiseState(Time initialTime) {
         super.initialiseState(initialTime);
 
-        currentState = BATTERY_STATE.CONSUME;
         this.currentChargeLevel.initialise(1.0);
 
         this.getSimulationEngine().toggleDebugMode();
         logMessage("Simulations starts...\n");
+        
+        assert	glassBoxInvariants(this) :
+			new NeoSim4JavaException(
+					"BatteryChargeLevelModel.glassBoxInvariants(this)");
+        assert	blackBoxInvariants(this) :
+			new NeoSim4JavaException(
+					"BatteryChargeLevelModel.blackBoxInvariants(this)");
     }
     
     @Override
-    public ArrayList<EventI> output() {
-    	double v = this.currentChargeLevel.getValue();
-    	
-    	ArrayList<EventI> res = new ArrayList<>();
-        if(v <= 0.0) {
-            res.add(new SetProductBatteryEvent(currentChargeLevel.getTime()));
-            return res;
-        }
-        else if(v >= 1) {
-        	res.add(new SetConsumeBatteryEvent(currentChargeLevel.getTime()));
-            return res;
-        }
-        
+    public ArrayList<EventI> output() {        
         return null;
     }
     
@@ -150,9 +214,23 @@ public class BatteryChargeLevelModel extends AtomicHIOA implements BatteryOperat
         this.currentChargeLevel.setNewValue(this.currentChargeLevel.getValue(), getCurrentStateTime());
 
         // Tracing
-        String stateString = currentState == BATTERY_STATE.PRODUCT ? "charging" : "discharging";
+        String stateString;
+        if(this.currentState == BATTERY_STATE.STANDBY)
+        	stateString = "stand by";
+        else if (this.currentState == BATTERY_STATE.CONSUME)
+        	stateString = "discharging";
+        else 
+        	stateString = "charging";
+        
         logMessage("Battery is " + stateString + " | Charge level : " + currentChargeLevel.getValue() + " at " + currentChargeLevel.getTime() + "\n");
-    }
+    
+        assert	glassBoxInvariants(this) :
+			new NeoSim4JavaException(
+					"BatteryChargeLevelModel.glassBoxInvariants(this)");
+        assert	blackBoxInvariants(this) :
+			new NeoSim4JavaException(
+					"BatteryChargeLevelModel.blackBoxInvariants(this)");
+	}
 	
 	@Override
     public void userDefinedExternalTransition(Duration elapsedTime) {
@@ -164,11 +242,41 @@ public class BatteryChargeLevelModel extends AtomicHIOA implements BatteryOperat
         currentEvent.executeOn(this);
 
         super.userDefinedExternalTransition(elapsedTime);
-    }
+    
+        assert	glassBoxInvariants(this) :
+			new NeoSim4JavaException(
+					"BatteryChargeLevelModel.glassBoxInvariants(this)");
+        assert	blackBoxInvariants(this) :
+			new NeoSim4JavaException(
+					"BatteryChargeLevelModel.blackBoxInvariants(this)");
+	}
 	
 	@Override
     public void endSimulation(Time endTime) {
         logMessage("Simulation ends!\n");
         super.endSimulation(endTime);
     }
+	
+	public static final String DISCHARGE_SPEED_RUNPNAME = "DISCHARGE_SPEED";
+	public static final String CHARGE_SPEED_RUNPNAME = "CHARGE_SPEED";
+	
+	@Override
+	public void setSimulationRunParameters(Map<String, Object> simParams) throws MissingRunParameterException {
+		super.setSimulationRunParameters(simParams);
+
+		if (simParams.containsKey(
+						AtomicSimulatorPlugin.OWNER_RUNTIME_PARAMETER_NAME)) 
+		{
+			this.getSimulationEngine().setLogger(
+						AtomicSimulatorPlugin.createComponentLogger(simParams));
+		}
+
+		String dischargeSpeed = ModelI.createRunParameterName(getURI(), DISCHARGE_SPEED_RUNPNAME);
+		if (simParams.containsKey(dischargeSpeed)) 
+			DISCHARGE_SPEED = (double)simParams.get(dischargeSpeed);
+		
+		String chargeSpeed = ModelI.createRunParameterName(getURI(), CHARGE_SPEED_RUNPNAME);
+		if (simParams.containsKey(chargeSpeed)) 
+			CHARGE_SPEED = (double) simParams.get(chargeSpeed);
+	}
 }

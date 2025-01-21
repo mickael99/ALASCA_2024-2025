@@ -1,13 +1,15 @@
 package fr.sorbonne_u.components.equipments.battery.mil;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import org.apache.commons.math3.random.RandomDataGenerator;
+
+import fr.sorbonne_u.components.cyphy.plugins.devs.AtomicSimulatorPlugin;
 import fr.sorbonne_u.components.equipments.battery.mil.events.SetConsumeBatteryEvent;
 import fr.sorbonne_u.components.equipments.battery.mil.events.SetProductBatteryEvent;
 import fr.sorbonne_u.components.equipments.battery.mil.events.SetStandByBatteryEvent;
-import fr.sorbonne_u.devs_simulation.es.events.ES_EventI;
 import fr.sorbonne_u.devs_simulation.es.models.AtomicES_Model;
+import fr.sorbonne_u.devs_simulation.exceptions.MissingRunParameterException;
 import fr.sorbonne_u.devs_simulation.models.annotations.ModelExternalEvents;
 import fr.sorbonne_u.devs_simulation.models.events.EventI;
 import fr.sorbonne_u.devs_simulation.models.time.Time;
@@ -30,9 +32,11 @@ public class BatteryUserModel extends AtomicES_Model {
 	
 	public static final String MIL_URI = BatteryUserModel.class.getSimpleName() + "-MIL";
 	public static final String MIL_RT_URI = BatteryUserModel.class.getSimpleName() + "-MIL-RT";
+	public static final String SIL_URI = BatteryUserModel.class.getSimpleName() + "-SIL";
 	
-    protected static double STEP_MEAN_DURATION = 10.0;
-    protected RandomDataGenerator generator;
+    protected static double STEP_MEAN_DURATION = 5.0;
+    
+    protected int step = 1;
     
     
     // -------------------------------------------------------------------------
@@ -41,7 +45,6 @@ public class BatteryUserModel extends AtomicES_Model {
     
     public BatteryUserModel(String uri, TimeUnit simulatedTimeUnit, AtomicSimulatorI simulationEngine) throws Exception {
 		super(uri, simulatedTimeUnit, simulationEngine);
-    	this.generator = new RandomDataGenerator();
 		this.getSimulationEngine().setLogger(new StandardLogger());
 	}
     
@@ -50,54 +53,56 @@ public class BatteryUserModel extends AtomicES_Model {
    	// Methods
    	// -------------------------------------------------------------------------
     
-    protected Time computeTimeOfNextEvent(Time from) {
-        double delay = Math.max(generator.nextGaussian(STEP_MEAN_DURATION, STEP_MEAN_DURATION/2.0), 0.1);
-        return from.add(new Duration(delay, this.getSimulatedTimeUnit()));
-    }
-    
-    protected void generateNextEvent() {
-        EventI current = eventList.peek();
-        assert current != null;
-        Time nextTime = computeTimeOfNextEvent(current.getTimeOfOccurrence());
-
-        ES_EventI next = null;
-        if(current instanceof SetStandByBatteryEvent) 
-            next = new SetConsumeBatteryEvent(nextTime);
-        else if(current instanceof SetConsumeBatteryEvent) 
-            next = new SetProductBatteryEvent(nextTime);
-        else 
-        	next = new SetStandByBatteryEvent(nextTime);
-
-        scheduleEvent(next);
-    }
-
     @Override
     public void initialiseState(Time initialTime) {
         super.initialiseState(initialTime);
-
-        generator.reSeedSecure();
-
-        Time nextTime = this.computeTimeOfNextEvent(getCurrentStateTime());
-        scheduleEvent(new SetProductBatteryEvent(nextTime));
-
-        nextTimeAdvance = timeAdvance();
-        timeOfNextEvent = getCurrentStateTime().add(getNextTimeAdvance());
 
         this.getSimulationEngine().toggleDebugMode();
         logMessage("Simulation starts...\n");
     }
     
     @Override
-    public ArrayList<EventI> output() {
-        if(eventList.peek() != null) 
-        	generateNextEvent();
-
-        return super.output();
+    public Duration timeAdvance() {
+    	return new Duration(STEP_MEAN_DURATION, this.getSimulatedTimeUnit());
     }
+    
+    @Override
+    public ArrayList<EventI> output() {
+    	EventI nextEvent; 
+    	if (step % 3 == 1) 
+            nextEvent = new SetConsumeBatteryEvent(this.getTimeOfNextEvent());
+        else if (step % 3 == 2) 
+            nextEvent = new SetProductBatteryEvent(this.getTimeOfNextEvent());
+        else  
+            nextEvent = new SetStandByBatteryEvent(this.getTimeOfNextEvent());
+        
+    	ArrayList<EventI> ret = new ArrayList<EventI>();
+		ret.add(nextEvent);
+		this.logMessage("emitting " + nextEvent + ".");
+		
+		return ret;	
+    }
+    
+    @Override
+	public void userDefinedInternalTransition(Duration elapsedTime) {
+		super.userDefinedInternalTransition(elapsedTime);
+
+		this.step++;
+	}
 
     @Override
     public void endSimulation(Time endTime) {
         logMessage("Simulation ends!\n");
+        
         super.endSimulation(endTime);
     }
+    
+    @Override
+	public void setSimulationRunParameters(Map<String, Object> simParams) throws MissingRunParameterException {
+		if (simParams.containsKey(
+						AtomicSimulatorPlugin.OWNER_RUNTIME_PARAMETER_NAME)) 
+		{
+			this.getSimulationEngine().setLogger(AtomicSimulatorPlugin.createComponentLogger(simParams));
+		}
+	}
 }

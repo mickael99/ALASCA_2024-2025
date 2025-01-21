@@ -61,6 +61,16 @@ public class RunBatteryUnitaryMILRTSimulation {
                             ACCELERATION_FACTOR
                     )
             );
+            atomicModelDescriptors.put(
+                    BatteryStateModel.MIL_RT_URI,
+                    RTAtomicModelDescriptor.create(
+                            BatteryStateModel.class,
+                            BatteryStateModel.MIL_RT_URI,
+                            TimeUnit.HOURS,
+                            null,
+                            ACCELERATION_FACTOR
+                    )
+            );
 
 
             Map<String, CoupledModelDescriptor> coupledModelDescriptors = new HashMap<>();
@@ -69,11 +79,36 @@ public class RunBatteryUnitaryMILRTSimulation {
             subModel.add(BatteryElectricityModel.MIL_RT_URI);
             subModel.add(BatteryChargeLevelModel.MIL_RT_URI);
             subModel.add(BatteryUserModel.MIL_RT_URI);
+            subModel.add(BatteryStateModel.MIL_RT_URI);
 
             Map<EventSource, EventSink[]> connections = new HashMap<>();
 
+            // User -> State
             connections.put(
                     new EventSource(BatteryUserModel.MIL_RT_URI, SetProductBatteryEvent.class),
+                    new EventSink[] {
+                            new EventSink(BatteryStateModel.MIL_RT_URI, SetProductBatteryEvent.class),
+                    }
+            );
+
+            connections.put(
+                    new EventSource(BatteryUserModel.MIL_RT_URI, SetConsumeBatteryEvent.class),
+                    new EventSink[] {
+                            new EventSink(BatteryStateModel.MIL_RT_URI, SetConsumeBatteryEvent.class),
+                    }
+            );
+            
+            connections.put(
+                    new EventSource(BatteryUserModel.MIL_RT_URI, SetStandByBatteryEvent.class),
+                    new EventSink[] {
+                            new EventSink(BatteryStateModel.MIL_RT_URI, SetStandByBatteryEvent.class),
+                    }
+            );
+            
+            // State -> Electricity
+            // State -> Charge level
+            connections.put(
+                    new EventSource(BatteryStateModel.MIL_RT_URI, SetProductBatteryEvent.class),
                     new EventSink[] {
                             new EventSink(BatteryElectricityModel.MIL_RT_URI, SetProductBatteryEvent.class),
                             new EventSink(BatteryChargeLevelModel.MIL_RT_URI, SetProductBatteryEvent.class)
@@ -81,7 +116,7 @@ public class RunBatteryUnitaryMILRTSimulation {
             );
 
             connections.put(
-                    new EventSource(BatteryUserModel.MIL_RT_URI, SetConsumeBatteryEvent.class),
+                    new EventSource(BatteryStateModel.MIL_RT_URI, SetConsumeBatteryEvent.class),
                     new EventSink[] {
                             new EventSink(BatteryElectricityModel.MIL_RT_URI, SetConsumeBatteryEvent.class),
                             new EventSink(BatteryChargeLevelModel.MIL_RT_URI, SetConsumeBatteryEvent.class)
@@ -89,7 +124,7 @@ public class RunBatteryUnitaryMILRTSimulation {
             );
             
             connections.put(
-                    new EventSource(BatteryUserModel.MIL_RT_URI, SetStandByBatteryEvent.class),
+                    new EventSource(BatteryStateModel.MIL_RT_URI, SetStandByBatteryEvent.class),
                     new EventSink[] {
                             new EventSink(BatteryElectricityModel.MIL_RT_URI, SetStandByBatteryEvent.class),
                             new EventSink(BatteryChargeLevelModel.MIL_RT_URI, SetStandByBatteryEvent.class)
