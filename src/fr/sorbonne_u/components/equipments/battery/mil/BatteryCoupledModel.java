@@ -22,18 +22,34 @@ public class BatteryCoupledModel extends CoupledModel {
 	public static final String MIL_RT_URI = BatteryCoupledModel.class.getSimpleName() + "-MIL-RT";
 	public static final String SIL_URI = BatteryCoupledModel.class.getSimpleName() + "-SIL";
 
-	public BatteryCoupledModel(String uri, TimeUnit simulatedTimeUnit, CoordinatorI simulationEngine, ModelI[] submodels,
-								Map<Class<? extends EventI>, EventSink[]> imported, Map<Class<? extends EventI>, ReexportedEvent> reexported,
-								Map<EventSource, EventSink[]> connections) throws Exception
+	public BatteryCoupledModel(
+			String uri, 
+			TimeUnit simulatedTimeUnit, 
+			CoordinatorI simulationEngine, 
+			ModelI[] submodels,
+			Map<Class<? extends EventI>, 
+			EventSink[]> imported, 
+			Map<Class<? extends EventI>, 
+			ReexportedEvent> reexported,
+			Map<EventSource, EventSink[]> connections) throws Exception
 	{
 		super(uri, simulatedTimeUnit, simulationEngine, submodels,
 			  imported, reexported, connections);
 	}
 	
-	public BatteryCoupledModel(String uri, TimeUnit simulatedTimeUnit, CoordinatorI simulationEngine, ModelI[] submodels,
-								Map<Class<? extends EventI>, EventSink[]> imported, Map<Class<? extends EventI>, ReexportedEvent> reexported,
-								Map<EventSource, EventSink[]> connections, Map<StaticVariableDescriptor, VariableSink[]> importedVars,
-								Map<VariableSource, StaticVariableDescriptor> reexportedVars,Map<VariableSource, VariableSink[]> bindings) throws Exception
+	public BatteryCoupledModel(
+			String uri, 
+			TimeUnit simulatedTimeUnit, 
+			CoordinatorI simulationEngine, 
+			ModelI[] submodels,
+			Map<Class<? extends EventI>, 
+			EventSink[]> imported, 
+			Map<Class<? extends EventI>, 
+			ReexportedEvent> reexported,
+			Map<EventSource, EventSink[]> connections, 
+			Map<StaticVariableDescriptor, VariableSink[]> importedVars,
+			Map<VariableSource, StaticVariableDescriptor> reexportedVars,
+			Map<VariableSource, VariableSink[]> bindings) throws Exception
 	{
 		super(uri, simulatedTimeUnit, simulationEngine, submodels,
 			  imported, reexported, connections,

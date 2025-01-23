@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 import fr.sorbonne_u.components.CVMIntegrationTest;
 import fr.sorbonne_u.components.CoordinatorComponent;
 import fr.sorbonne_u.components.GlobalCoupledModel;
+import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.cyphy.AbstractCyPhyComponent;
 import fr.sorbonne_u.components.cyphy.plugins.devs.CoordinatorPlugin;
 import fr.sorbonne_u.components.cyphy.plugins.devs.SupervisorPlugin;
@@ -19,6 +20,7 @@ import fr.sorbonne_u.components.cyphy.plugins.devs.architectures.RTComponentAtom
 import fr.sorbonne_u.components.cyphy.plugins.devs.architectures.RTComponentCoupledModelDescriptor;
 import fr.sorbonne_u.components.cyphy.plugins.devs.architectures.RTComponentModelArchitecture;
 import fr.sorbonne_u.components.cyphy.utils.aclocks.AcceleratedAndSimulationClock;
+import fr.sorbonne_u.components.cyphy.utils.aclocks.ClocksServerWithSimulationCI;
 import fr.sorbonne_u.components.cyphy.utils.aclocks.ClocksServerWithSimulationConnector;
 import fr.sorbonne_u.components.cyphy.utils.aclocks.ClocksServerWithSimulationOutboundPort;
 import fr.sorbonne_u.components.equipments.battery.Battery;
@@ -42,6 +44,7 @@ import fr.sorbonne_u.exceptions.InvariantException;
 import fr.sorbonne_u.exceptions.PreconditionException;
 import fr.sorbonne_u.utils.aclocks.ClocksServer;
 
+@RequiredInterfaces(required = {ClocksServerWithSimulationCI.class})
 public class BatteryUnitTestsSupervisor extends AbstractCyPhyComponent {
 	
 	// -------------------------------------------------------------------------
@@ -120,7 +123,7 @@ public class BatteryUnitTestsSupervisor extends AbstractCyPhyComponent {
 	
 	protected BatteryUnitTestsSupervisor(SimulationType currentSimulationType,String simArchitectureURI) {
 		super(2, 1);
-		
+		System.out.println("architecture -> " + simArchitectureURI);
 		assert	currentSimulationType != null :
 				new PreconditionException("currentExecutionType != null");
 		assert	!currentSimulationType.isSimulated() || 
@@ -183,6 +186,7 @@ public class BatteryUnitTestsSupervisor extends AbstractCyPhyComponent {
 											acceleratedClock.getSimulatedTimeUnit());
 	
 				SupervisorPlugin sp = new SupervisorPlugin(cma);
+				
 				sp.setPluginURI(BatteryUnitTestsSupervisor.MIL_ARCHITECTURE_URI);
 				this.installPlugin(sp);
 				this.logMessage("plug-in installed.");
@@ -237,7 +241,7 @@ public class BatteryUnitTestsSupervisor extends AbstractCyPhyComponent {
 					(String architectureURI, TimeUnit simulatedTimeUnit) throws Exception
 	{
 		Map<String, AbstractAtomicModelDescriptor> atomicModelDescriptors = new HashMap<>();
-
+		
 		atomicModelDescriptors.put(
 		    BatteryCoupledModel.MIL_URI,
 		    ComponentAtomicModelDescriptor.create(
@@ -305,13 +309,14 @@ public class BatteryUnitTestsSupervisor extends AbstractCyPhyComponent {
 		    )
 		);
 
-		ComponentModelArchitecture architecture = new ComponentModelArchitecture(
-		    architectureURI,
-		    GlobalCoupledModel.MIL_URI,
-		    atomicModelDescriptors,
-		    coupledModelDescriptors,
-		    simulatedTimeUnit
-		);
+		ComponentModelArchitecture architecture = 
+				new ComponentModelArchitecture(
+				    architectureURI,
+				    GlobalCoupledModel.MIL_URI,
+				    atomicModelDescriptors,
+				    coupledModelDescriptors,
+				    simulatedTimeUnit
+			    );
 
 		return architecture;
 	}

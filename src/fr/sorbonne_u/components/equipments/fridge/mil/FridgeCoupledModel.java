@@ -65,7 +65,8 @@ public class FridgeCoupledModel extends CoupledModel {
 			ModelI[] submodels,
 			Map<Class<? extends EventI>,
 			EventSink[]> imported,
-			Map<Class<? extends EventI>, ReexportedEvent> reexported,
+			Map<Class<? extends EventI>, 
+			ReexportedEvent> reexported,
 			Map<EventSource, EventSink[]> connections
 			) throws Exception
 	{
@@ -83,8 +84,10 @@ public class FridgeCoupledModel extends CoupledModel {
 			TimeUnit simulatedTimeUnit,
 			CoordinatorI simulationEngine,
 			ModelI[] submodels,
-			Map<Class<? extends EventI>, EventSink[]> imported,
-			Map<Class<? extends EventI>, ReexportedEvent> reexported,
+			Map<Class<? extends EventI>, 
+			EventSink[]> imported,
+			Map<Class<? extends EventI>, 
+			ReexportedEvent> reexported,
 			Map<EventSource, EventSink[]> connections,
 			Map<StaticVariableDescriptor, VariableSink[]> importedVars,
 			Map<VariableSource, StaticVariableDescriptor> reexportedVars,

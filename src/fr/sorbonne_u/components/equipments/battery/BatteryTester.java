@@ -43,7 +43,7 @@ public class BatteryTester extends AbstractCyPhyComponent {
 	public static int X_RELATIVE_POSITION = 1;
 	public static int Y_RELATIVE_POSITION = 1;
 	
-	public static final String REFLECTION_INBOUND_PORT_URI = "BATTERY-USER-RIP-URI";
+	public static final String REFLECTION_INBOUND_PORT_URI = "BATTERY-TESTER-RIP-URI";
 	
 	protected BatteryOutboundPort outboundPort;
 	protected String inboundPortURI;
@@ -145,9 +145,6 @@ public class BatteryTester extends AbstractCyPhyComponent {
 		) throws Exception
 	{
 		super(REFLECTION_INBOUND_PORT_URI, 1, 1);
-		
-		System.out.println("current execution type");
-		System.out.println(currentExecutionType.toString());
 		
 		assert	currentExecutionType != null :
 				new PreconditionException("currentExecutionType != null");
@@ -254,7 +251,7 @@ public class BatteryTester extends AbstractCyPhyComponent {
 
 		// Tracing
 		if(VERBOSE) {
-			this.tracer.get().setTitle("Battery user component");
+			this.tracer.get().setTitle("Battery tester component");
 			this.tracer.get().setRelativePosition(X_RELATIVE_POSITION, Y_RELATIVE_POSITION);
 			this.toggleTracing();
 		}
@@ -336,7 +333,7 @@ public class BatteryTester extends AbstractCyPhyComponent {
 			clocksServerOutboundPort.unpublishPort();
 			clocksServerOutboundPort.destroyPort();
 			
-			this.logMessage("Battery user waits until start.");
+			this.logMessage("Battery tester waits until start.");
 			clock.waitUntilStart();
 			
 			if (this.currentSimulationType.isNoSimulation()) {

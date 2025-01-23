@@ -12,7 +12,7 @@ import fr.sorbonne_u.components.equipments.battery.mil.events.SetProductBatteryE
 import fr.sorbonne_u.components.equipments.battery.mil.events.SetStandByBatteryEvent;
 import fr.sorbonne_u.devs_simulation.exceptions.MissingRunParameterException;
 import fr.sorbonne_u.devs_simulation.exceptions.NeoSim4JavaException;
-import fr.sorbonne_u.devs_simulation.hioa.annotations.ExportedVariable;
+import fr.sorbonne_u.devs_simulation.hioa.annotations.InternalVariable;
 import fr.sorbonne_u.devs_simulation.hioa.models.AtomicHIOA;
 import fr.sorbonne_u.devs_simulation.hioa.models.vars.Value;
 import fr.sorbonne_u.devs_simulation.models.annotations.ModelExternalEvents;
@@ -54,7 +54,7 @@ public class BatteryChargeLevelModel extends AtomicHIOA implements BatteryOperat
 
     private BATTERY_STATE currentState;
 
-    @ExportedVariable(type = Double.class)
+    @InternalVariable(type = Double.class)
     protected final Value<Double> currentChargeLevel = new Value<Double>(this);
 		
 		

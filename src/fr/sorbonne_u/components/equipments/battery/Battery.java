@@ -179,11 +179,18 @@ public class Battery extends AbstractCyPhyComponent implements BatteryI {
 				 null, null, null, 0.0, null);
 	}
 	
-	protected Battery(String reflectionInboundPortURI, String batteryInboundPortURI, ExecutionType currentExecutionType,
-							SimulationType currentSimulationType, String globalArchitectureURI, String localArchitectureURI,
-							TimeUnit simulationTimeUnit, double accFactor, String clockURI ) throws Exception
-	{
-		super(reflectionInboundPortURI, 2, 0);
+	protected Battery(
+			String reflectionInboundPortURI, 
+			String batteryInboundPortURI, 
+			ExecutionType currentExecutionType,
+			SimulationType currentSimulationType, 
+			String globalArchitectureURI, 
+			String localArchitectureURI,
+			TimeUnit simulationTimeUnit, 
+			double accFactor, 
+			String clockURI ) throws Exception
+	{		
+		super(reflectionInboundPortURI, 2, 1);
 		
 		assert	batteryInboundPortURI != null && !batteryInboundPortURI.isEmpty() :
 			new PreconditionException("batteryInboundPortURI != null && " + "!batteryInboundPortURI.isEmpty()");

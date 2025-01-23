@@ -248,7 +248,7 @@ public class FridgeUser extends AbstractCyPhyComponent {
 			this.simulationTimeUnit = simulationTimeUnit;
 			this.accFactor = accFactor;
 			this.clockURI = clockURI;
-
+			
 			this.initialise(fridgeUserInboundPortURI,
 							fridgeInternalControlInboundPortURI,
 							fridgeExternalControlInboundPortURI);

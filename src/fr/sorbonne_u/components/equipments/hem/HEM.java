@@ -144,7 +144,7 @@ public class HEM extends AbstractComponent implements RegistrationI {
 			if(testType == TestType.INTEGRATION || testType == TestType.BATTERY) {
 				this.doPortConnection(
 						this.batteryOutboundPort.getPortURI(), 
-						Battery.INTERNAL_INBOUND_PORT, 
+						Battery.INBOUND_PORT_URI, 
 						BatteryConnector.class.getCanonicalName());
 			}
 			

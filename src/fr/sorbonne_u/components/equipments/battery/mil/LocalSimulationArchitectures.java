@@ -118,16 +118,6 @@ public class LocalSimulationArchitectures {
                 }
         );
 
-		// Variable bindings
-		Map<VariableSource,VariableSink[]> bindings = new HashMap<VariableSource,VariableSink[]>();
-
-		bindings.put(
-                new VariableSource("currentChargeLevel", Double.class, BatteryChargeLevelModel.MIL_URI),
-                new VariableSink[] {
-                        new VariableSink("currentChargeLevel", Double.class, BatteryElectricityModel.MIL_URI)
-                }
-        );
-
 		// coupled model descriptor
 		coupledModelDescriptors.put(
         		BatteryCoupledModel.MIL_URI,
@@ -135,13 +125,13 @@ public class LocalSimulationArchitectures {
                         BatteryCoupledModel.class,
                         BatteryCoupledModel.MIL_URI,
                         submodels,
-                        null,
+                        imported,
                         null,
                         connections,
                         null,
                         null,
                         null,
-                        bindings
+                        null
                 )
         );
 

@@ -14,7 +14,6 @@ import fr.sorbonne_u.components.equipments.battery.mil.events.SetConsumeBatteryE
 import fr.sorbonne_u.devs_simulation.exceptions.MissingRunParameterException;
 import fr.sorbonne_u.devs_simulation.exceptions.NeoSim4JavaException;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ExportedVariable;
-import fr.sorbonne_u.devs_simulation.hioa.annotations.ImportedVariable;
 import fr.sorbonne_u.devs_simulation.hioa.models.AtomicHIOA;
 import fr.sorbonne_u.devs_simulation.hioa.models.vars.Value;
 import fr.sorbonne_u.devs_simulation.models.annotations.ModelExternalEvents;
@@ -52,11 +51,6 @@ public class BatteryElectricityModel extends AtomicHIOA implements BatteryOperat
 	protected double totalConsumption = 0.0;
 	protected boolean hasChanged;
 	protected Time lastInternalTransitionTime;
-
-	
-	// Between 0 and 1
-	@ImportedVariable(type = Double.class)
-	protected Value<Double> currentChargeLevel;
 	
 	@ExportedVariable(type = Double.class)
 	protected final Value<Double> currentProduction = new Value<Double>(this);
@@ -252,8 +246,7 @@ public class BatteryElectricityModel extends AtomicHIOA implements BatteryOperat
         }
         
         logMessage("Current production " + this.currentProduction.getValue() + " at " + this.currentProduction.getTime()
-        		+ " current consumption" + this.currentConsumption.getValue() + " at " + this.currentProduction.getTime()
-                + " | Charge level " + this.currentChargeLevel.getValue() * 100 + "%" + "\n");
+        		+ " current consumption" + this.currentConsumption.getValue() + " at " + this.currentProduction.getTime());
         
         assert	glassBoxInvariants(this) :
 			new NeoSim4JavaException(

@@ -13,8 +13,6 @@ import fr.sorbonne_u.devs_simulation.architectures.Architecture;
 import fr.sorbonne_u.devs_simulation.architectures.ArchitectureI;
 import fr.sorbonne_u.devs_simulation.hioa.architectures.AtomicHIOA_Descriptor;
 import fr.sorbonne_u.devs_simulation.hioa.architectures.CoupledHIOA_Descriptor;
-import fr.sorbonne_u.devs_simulation.hioa.models.vars.VariableSink;
-import fr.sorbonne_u.devs_simulation.hioa.models.vars.VariableSource;
 import fr.sorbonne_u.devs_simulation.models.architectures.AbstractAtomicModelDescriptor;
 import fr.sorbonne_u.devs_simulation.models.architectures.AtomicModelDescriptor;
 import fr.sorbonne_u.devs_simulation.models.architectures.CoupledModelDescriptor;
@@ -125,15 +123,6 @@ public class RunBatteryUnitaryMILSimulation {
 	                    }
 	            );
 
-	            Map<VariableSource, VariableSink[]> bindings = new HashMap<>();
-
-	            bindings.put(
-	                    new VariableSource("currentChargeLevel", Double.class, BatteryChargeLevelModel.MIL_URI),
-	                    new VariableSink[] {
-	                            new VariableSink("currentChargeLevel", Double.class, BatteryElectricityModel.MIL_URI)
-	                    }
-	            );
-
 	            coupledModelDescriptors.put(
 	            		BatteryCoupledModel.MIL_URI,
 	                    new CoupledHIOA_Descriptor(
@@ -146,7 +135,7 @@ public class RunBatteryUnitaryMILSimulation {
 	                            null,
 	                            null,
 	                            null,
-	                            bindings
+	                            null
 	                    )
 	            );
 
