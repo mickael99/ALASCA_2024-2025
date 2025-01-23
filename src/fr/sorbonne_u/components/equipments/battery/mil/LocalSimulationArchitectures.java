@@ -13,8 +13,6 @@ import fr.sorbonne_u.devs_simulation.hioa.architectures.AtomicHIOA_Descriptor;
 import fr.sorbonne_u.devs_simulation.hioa.architectures.CoupledHIOA_Descriptor;
 import fr.sorbonne_u.devs_simulation.hioa.architectures.RTAtomicHIOA_Descriptor;
 import fr.sorbonne_u.devs_simulation.hioa.architectures.RTCoupledHIOA_Descriptor;
-import fr.sorbonne_u.devs_simulation.hioa.models.vars.VariableSink;
-import fr.sorbonne_u.devs_simulation.hioa.models.vars.VariableSource;
 import fr.sorbonne_u.devs_simulation.models.architectures.AbstractAtomicModelDescriptor;
 import fr.sorbonne_u.devs_simulation.models.architectures.AtomicModelDescriptor;
 import fr.sorbonne_u.devs_simulation.models.architectures.CoupledModelDescriptor;

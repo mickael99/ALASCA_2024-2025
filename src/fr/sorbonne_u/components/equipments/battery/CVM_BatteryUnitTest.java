@@ -33,8 +33,8 @@ public class CVM_BatteryUnitTest extends AbstractCVM {
 	public static ExecutionType	CURRENT_EXECUTION_TYPE = ExecutionType.UNIT_TEST;
 	public static SimulationType CURRENT_SIMULATION_TYPE =  //SimulationType.NO_SIMULATION;
 															//SimulationType.MIL_SIMULATION;
-															SimulationType.MIL_RT_SIMULATION;
-															//SimulationType.SIL_SIMULATION;
+															//SimulationType.MIL_RT_SIMULATION;
+															SimulationType.SIL_SIMULATION;
 
 	public static String CLOCK_URI = "hem-clock";
 	public static String START_INSTANT = "2024-10-18T00:00:00.00Z";
@@ -93,8 +93,8 @@ public class CVM_BatteryUnitTest extends AbstractCVM {
 				break;
 				
 			case SIL_SIMULATION:
-				globalArchitectureURI = FridgeUnitTestsSupervisor.SIL_ARCHITECTURE_URI;
-				batteryLocalArchitectureURI =  FridgeCoupledModel.SIL_URI;
+				globalArchitectureURI = BatteryUnitTestsSupervisor.SIL_ARCHITECTURE_URI;
+				batteryLocalArchitectureURI =  BatteryCoupledModel.SIL_URI;
 				batteryUserLocalArchitectureURI = "not-used";
 				break;
 			case NO_SIMULATION:
