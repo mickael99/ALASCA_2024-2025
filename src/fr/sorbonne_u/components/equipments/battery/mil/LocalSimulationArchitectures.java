@@ -269,16 +269,6 @@ public class LocalSimulationArchitectures {
                 }
         );
 
-		// Bindings
-		Map<VariableSource,VariableSink[]> bindings = new HashMap<VariableSource,VariableSink[]>();
-
-		bindings.put(
-                new VariableSource("currentChargeLevel", Double.class, batteryChargeLevelModelURI),
-                new VariableSink[] {
-                        new VariableSink("currentChargeLevel", Double.class, batteryElectricityModelURI)
-                }
-        );
-
 		// coupled model descriptor
 		coupledModelDescriptors.put(
 				batteryCoupledModelURI,
@@ -292,7 +282,7 @@ public class LocalSimulationArchitectures {
 						null,
 						null,
 						null,
-						bindings,
+						null,
 						accelerationFactor));
 
 		// simulation architecture
@@ -471,16 +461,6 @@ public class LocalSimulationArchitectures {
                 }
         );
 
-		Map<VariableSource,VariableSink[]> bindings =
-							new HashMap<VariableSource,VariableSink[]>();
-
-							 bindings.put(
-					                    new VariableSource("currentChargeLevel", Double.class, BatteryChargeLevelModel.MIL_URI),
-					                    new VariableSink[] {
-					                            new VariableSink("currentChargeLevel", Double.class, BatteryElectricityModel.MIL_URI)
-					                    }
-					            );
-
 		// coupled model descriptor
 		coupledModelDescriptors.put(
 				BatteryCoupledModel.MIL_URI,
@@ -494,7 +474,7 @@ public class LocalSimulationArchitectures {
 						null,
 						null,
 						null,
-						bindings));
+						null));
 
 		// simulation architecture
 		Architecture architecture =
@@ -644,17 +624,6 @@ public class LocalSimulationArchitectures {
                 }
         );
 
-		// variable bindings between exporting and importing models
-		Map<VariableSource,VariableSink[]> bindings =
-							new HashMap<VariableSource,VariableSink[]>();
-
-		bindings.put(
-                new VariableSource("currentChargeLevel", Double.class, batteryChargeLevelModelURI),
-                new VariableSink[] {
-                        new VariableSink("currentChargeLevel", Double.class, batteryElectricityModelURI)
-                }
-		);
-
 		// coupled model descriptor
 		coupledModelDescriptors.put(
 				batteryCoupledModelURI,
@@ -668,7 +637,7 @@ public class LocalSimulationArchitectures {
 						null,
 						null,
 						null,
-						bindings,
+						null,
 						accelerationFactor));
 
 		// simulation architecture

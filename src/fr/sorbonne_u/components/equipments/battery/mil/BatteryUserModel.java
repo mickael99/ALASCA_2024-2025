@@ -34,7 +34,7 @@ public class BatteryUserModel extends AtomicES_Model {
 	public static final String MIL_RT_URI = BatteryUserModel.class.getSimpleName() + "-MIL-RT";
 	public static final String SIL_URI = BatteryUserModel.class.getSimpleName() + "-SIL";
 	
-    protected static double STEP_MEAN_DURATION = 5.0;
+    protected static double STEP_MEAN_DURATION = 1.0;
     
     protected int step = 1;
     

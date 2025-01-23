@@ -32,8 +32,8 @@ public class CVM_BatteryUnitTest extends AbstractCVM {
 
 	public static ExecutionType	CURRENT_EXECUTION_TYPE = ExecutionType.UNIT_TEST;
 	public static SimulationType CURRENT_SIMULATION_TYPE =  //SimulationType.NO_SIMULATION;
-															SimulationType.MIL_SIMULATION;
-															//SimulationType.MIL_RT_SIMULATION;
+															//SimulationType.MIL_SIMULATION;
+															SimulationType.MIL_RT_SIMULATION;
 															//SimulationType.SIL_SIMULATION;
 
 	public static String CLOCK_URI = "hem-clock";

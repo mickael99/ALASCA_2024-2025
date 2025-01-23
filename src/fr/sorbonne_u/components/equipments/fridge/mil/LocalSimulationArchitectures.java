@@ -31,6 +31,7 @@ public class LocalSimulationArchitectures {
 	public static Architecture createFridgeMILLocalArchitecture4UnitTest(String architectureURI, TimeUnit simulatedTimeUnit) throws Exception {
 		Map<String,AbstractAtomicModelDescriptor> atomicModelDescriptors = new HashMap<>();
 
+		System.out.println("qujcndsqdné");
 		// Atomic descriptors
 		atomicModelDescriptors.put(
 				FridgeStateModel.MIL_URI,
