@@ -6,12 +6,12 @@ import fr.sorbonne_u.components.cyphy.AbstractCyPhyComponent;
 import fr.sorbonne_u.components.cyphy.plugins.devs.AtomicSimulatorPlugin;
 import fr.sorbonne_u.components.cyphy.plugins.devs.RTAtomicSimulatorPlugin;
 import fr.sorbonne_u.components.cyphy.utils.aclocks.AcceleratedAndSimulationClock;
+import fr.sorbonne_u.components.cyphy.utils.aclocks.ClocksServerWithSimulationCI;
 import fr.sorbonne_u.components.cyphy.utils.aclocks.ClocksServerWithSimulationConnector;
 import fr.sorbonne_u.components.cyphy.utils.aclocks.ClocksServerWithSimulationOutboundPort;
 import fr.sorbonne_u.components.equipments.battery.BatteryI.BATTERY_STATE;
 import fr.sorbonne_u.components.equipments.battery.mil.LocalSimulationArchitectures;
 import fr.sorbonne_u.components.equipments.battery.mil.events.*;
-import fr.sorbonne_u.components.equipments.fridge.FridgeUser;
 import fr.sorbonne_u.components.exceptions.BCMException;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 
-@RequiredInterfaces(required = {BatteryCI.class})
+@RequiredInterfaces(required = {BatteryCI.class, ClocksServerWithSimulationCI.class})
 @ModelExternalEvents(imported = {
 					 SetStandByBatteryEvent.class,
 					 SetConsumeBatteryEvent.class,
@@ -70,23 +70,23 @@ public class BatteryTester extends AbstractCyPhyComponent {
 		boolean ret = true;
 		ret &= InvariantChecking.checkGlassBoxInvariant(
 					instance.currentExecutionType != null,
-					FridgeUser.class, instance,
+					BatteryTester.class, instance,
 					"currentExecutionType != null");
 		ret &= InvariantChecking.checkGlassBoxInvariant(
 					instance.currentSimulationType != null,
-					FridgeUser.class, instance,
+					BatteryTester.class, instance,
 					"currentSimulationType != null");
 		ret &= InvariantChecking.checkGlassBoxInvariant(
 					!instance.currentExecutionType.isStandard() ||
 							instance.currentSimulationType.isNoSimulation(),
-					FridgeUser.class, instance,
+					BatteryTester.class, instance,
 					"!currentExecutionType.isStandard() || "
 					+ "currentSimulationType.isNoSimulation()");
 		ret &= InvariantChecking.checkGlassBoxInvariant(
 					instance.currentSimulationType.isNoSimulation() ||
 						(instance.globalArchitectureURI != null &&
 							!instance.globalArchitectureURI.isEmpty()),
-					FridgeUser.class, instance,
+					BatteryTester.class, instance,
 					"currentSimulationType.isNoSimulation() || "
 					+ "(globalArchitectureURI != null && "
 					+ "!globalArchitectureURI.isEmpty())");
@@ -94,20 +94,20 @@ public class BatteryTester extends AbstractCyPhyComponent {
 					instance.currentSimulationType.isNoSimulation() ||
 						(instance.localArchitectureURI != null &&
 							!instance.localArchitectureURI.isEmpty()),
-					FridgeUser.class, instance,
+					BatteryTester.class, instance,
 					"currentSimulationType.isNoSimulation() || "
 					+ "(localArchitectureURI != null && "
 					+ "!localArchitectureURI.isEmpty())");
 		ret &= InvariantChecking.checkGlassBoxInvariant(
 					!instance.currentSimulationType.isSimulated() ||
 										instance.simulationTimeUnit != null,
-					FridgeUser.class, instance,
+					BatteryTester.class, instance,
 					"!currentSimulationType.isSimulated() || "
 					+ "simulationTimeUnit != null");
 		ret &= InvariantChecking.checkGlassBoxInvariant(
 					!instance.currentSimulationType.isRealTimeSimulation() ||
 													instance.accFactor > 0.0,
-					FridgeUser.class, instance,
+					BatteryTester.class, instance,
 					"!currentSimulationType.isRealTimeSimulation() || "
 					+ "accFactor > 0.0");
 		return ret;
@@ -120,11 +120,11 @@ public class BatteryTester extends AbstractCyPhyComponent {
 		boolean ret = true;
 		ret &= InvariantChecking.checkBlackBoxInvariant(
 					X_RELATIVE_POSITION >= 0,
-					FridgeUser.class, instance,
+					BatteryTester.class, instance,
 					"X_RELATIVE_POSITION >= 0");
 		ret &= InvariantChecking.checkBlackBoxInvariant(
 					Y_RELATIVE_POSITION >= 0,
-					FridgeUser.class, instance,
+					BatteryTester.class, instance,
 					"Y_RELATIVE_POSITION >= 0");
 		return ret;
 	}
@@ -145,7 +145,10 @@ public class BatteryTester extends AbstractCyPhyComponent {
 		) throws Exception
 	{
 		super(REFLECTION_INBOUND_PORT_URI, 1, 1);
-
+		
+		System.out.println("current execution type");
+		System.out.println(currentExecutionType.toString());
+		
 		assert	currentExecutionType != null :
 				new PreconditionException("currentExecutionType != null");
 		assert	!currentExecutionType.isStandard() ||
@@ -393,8 +396,9 @@ public class BatteryTester extends AbstractCyPhyComponent {
 			this.traceMessage("testSetState() \n");
 		
 		try {
+			System.out.println(this.outboundPort.getState().toString());
 			this.outboundPort.setState(BATTERY_STATE.PRODUCT);
-			
+			System.out.println(this.outboundPort.getState().toString());
 			assertEquals(BATTERY_STATE.PRODUCT, this.outboundPort.getState());
 		} catch(Exception e) {
 			assertTrue(false);

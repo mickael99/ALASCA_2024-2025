@@ -447,12 +447,10 @@ public class Battery extends AbstractCyPhyComponent implements BatteryI {
 
 	@Override
 	public void setState(BATTERY_STATE state) throws Exception {
-		if(VERBOSE) 
-			this.logMessage("Battery new state -> " + state.toString() + "\n");
-		
 		this.currentState = state;
 		
-		switch(state) {
+		if(this.currentSimulationType.isSILSimulation()) {
+			switch(state) {
 			case STANDBY:
 				((RTAtomicSimulatorPlugin)this.asp).triggerExternalEvent(
 						BatteryStateModel.SIL_URI, 
@@ -467,8 +465,11 @@ public class Battery extends AbstractCyPhyComponent implements BatteryI {
 				((RTAtomicSimulatorPlugin)this.asp).triggerExternalEvent(
 						BatteryStateModel.SIL_URI, 
 						t -> new SetProductBatteryEvent(t));
+			}
 		}
-
+		
+		if(VERBOSE) 
+			this.logMessage("Battery new state -> " + state.toString() + "\n");
 	}
 	
 	@Override
@@ -478,7 +479,8 @@ public class Battery extends AbstractCyPhyComponent implements BatteryI {
 		
 		double batteryLevel = FAKE_BATTERY_LEVEL;
 		
-		if (this.currentSimulationType.isSILSimulation()) {
+		if (this.currentSimulationType.isSILSimulation())
+		{
 			batteryLevel = (double)((RTAtomicSimulatorPlugin)this.asp).
 												getModelStateValue(
 														BatteryChargeLevelModel.SIL_URI,
@@ -486,7 +488,7 @@ public class Battery extends AbstractCyPhyComponent implements BatteryI {
 		}
 		
 		if (VERBOSE)
-			this.traceMessage("Fridge returns its current temperature -> " + batteryLevel + "\n.");
+			this.traceMessage("Battery returns its current charge level -> " + batteryLevel + "\n.");
 		
 		return batteryLevel;
 	}
