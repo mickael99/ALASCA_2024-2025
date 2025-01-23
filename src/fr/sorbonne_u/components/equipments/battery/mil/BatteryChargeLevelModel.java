@@ -141,6 +141,10 @@ public class BatteryChargeLevelModel extends AtomicHIOA implements BatteryOperat
     	return this.currentState;
     }
     
+    public double getCurrentChargeLevel() {
+    	return this.currentChargeLevel.getValue();
+    }
+    
     @Override
     public void setProduction() {
     	this.currentState = BATTERY_STATE.PRODUCT;

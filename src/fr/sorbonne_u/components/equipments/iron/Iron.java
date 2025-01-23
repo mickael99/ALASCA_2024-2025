@@ -69,7 +69,6 @@ public class Iron extends AbstractCyPhyComponent implements IronImplementationI 
 
 	protected final ExecutionType currentExecutionType;
 	protected final SimulationType currentSimulationType;
-
 													
 	protected final String clockURI;
 	protected AtomicSimulatorPlugin asp;

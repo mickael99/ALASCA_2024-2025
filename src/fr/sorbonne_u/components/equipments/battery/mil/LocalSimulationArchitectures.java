@@ -157,7 +157,7 @@ public class LocalSimulationArchitectures {
 		return architecture;
 	}
 
-	public static Architecture createBattery_RT_LocalArchitecture4UnitTest(
+	public static Architecture createBatteryMIL_RT_Architecture4UnitTest(
 		SimulationType currentSimulationType,
 		String architectureURI,
 		TimeUnit simulatedTimeUnit,
