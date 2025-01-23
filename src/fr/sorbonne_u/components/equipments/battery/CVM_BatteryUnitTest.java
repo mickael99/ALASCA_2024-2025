@@ -10,8 +10,6 @@ import fr.sorbonne_u.components.cyphy.utils.aclocks.ClocksServerWithSimulation;
 import fr.sorbonne_u.components.equipments.battery.mil.BatteryCoupledModel;
 import fr.sorbonne_u.components.equipments.battery.mil.BatteryUserModel;
 import fr.sorbonne_u.components.equipments.battery.sil.BatteryUnitTestsSupervisor;
-import fr.sorbonne_u.components.equipments.fridge.mil.FridgeCoupledModel;
-import fr.sorbonne_u.components.equipments.fridge.sil.FridgeUnitTestsSupervisor;
 import fr.sorbonne_u.components.utils.ExecutionType;
 import fr.sorbonne_u.components.utils.SimulationType;
 import fr.sorbonne_u.devs_simulation.exceptions.NeoSim4JavaException;

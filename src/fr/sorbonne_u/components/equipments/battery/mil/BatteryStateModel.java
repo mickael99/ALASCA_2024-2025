@@ -173,6 +173,7 @@ public class BatteryStateModel extends AtomicModel implements BatteryOperationI 
 
 	@Override
 	public void setProduction() {
+		System.out.println("produit");
 		this.currentState = BATTERY_STATE.PRODUCT;
 	}
 

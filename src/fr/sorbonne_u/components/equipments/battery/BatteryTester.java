@@ -468,17 +468,17 @@ public class BatteryTester extends AbstractCyPhyComponent {
 
 		
 		
-		Instant consumeInstant = simulationStartInstant.plusSeconds(600L);
+		Instant consumeInstant = simulationStartInstant.plusSeconds(3600L);
 		assert	consumeInstant.isAfter(currentInstant) :
 				new BCMException("consumeInstant.isAfter(currentInstant)");
 
-		Instant productDoorInstant = simulationStartInstant.plusSeconds(3600L);
-		assert	productDoorInstant.isAfter(consumeInstant) :
-				new BCMException("productDoorInstant.isAfter(consumeInstant)");
+		Instant productInstant = simulationStartInstant.plusSeconds(7200L);
+		assert	productInstant.isAfter(consumeInstant) :
+				new BCMException("productInstant.isAfter(consumeInstant)");
 		
-		Instant standByInstant = clock.getSimulationEndInstant().minusSeconds(6600L);
-		assert	standByInstant.isAfter(productDoorInstant) :
-			new BCMException("standByInstant.isAfter(productDoorInstant)");
+		Instant standByInstant = simulationStartInstant.plusSeconds(10080L);
+		assert	standByInstant.isAfter(productInstant) :
+			new BCMException("standByInstant.isAfter(productInstant)");
 		
 		
 		
@@ -497,7 +497,7 @@ public class BatteryTester extends AbstractCyPhyComponent {
 					}
 				}, delayToconsume, TimeUnit.NANOSECONDS);
 		
-		long delayToProduct = clock.nanoDelayUntilInstant(productDoorInstant);
+		long delayToProduct = clock.nanoDelayUntilInstant(productInstant);
 		this.scheduleTaskOnComponent(
 				new AbstractComponent.AbstractTask() {
 					@Override
@@ -518,7 +518,7 @@ public class BatteryTester extends AbstractCyPhyComponent {
 					public void run() {
 						try {
 							traceMessage("Battery tester set stand by mode\n.");
-							o.setState(BATTERY_STATE.PRODUCT);
+							o.setState(BATTERY_STATE.STANDBY);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}

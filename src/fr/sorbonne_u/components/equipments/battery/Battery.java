@@ -462,16 +462,19 @@ public class Battery extends AbstractCyPhyComponent implements BatteryI {
 				((RTAtomicSimulatorPlugin)this.asp).triggerExternalEvent(
 						BatteryStateModel.SIL_URI, 
 						t -> new SetStandByBatteryEvent(t));
+				break;
 				
 			case CONSUME:
 				((RTAtomicSimulatorPlugin)this.asp).triggerExternalEvent(
 						BatteryStateModel.SIL_URI, 
 						t -> new SetConsumeBatteryEvent(t));
+				break;
 				
 			case PRODUCT:
 				((RTAtomicSimulatorPlugin)this.asp).triggerExternalEvent(
 						BatteryStateModel.SIL_URI, 
 						t -> new SetProductBatteryEvent(t));
+				break;
 			}
 		}
 		
