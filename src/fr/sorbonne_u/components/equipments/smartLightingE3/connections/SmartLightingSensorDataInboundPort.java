@@ -11,7 +11,9 @@ import fr.sorbonne_u.components.ports.AbstractDataInboundPort;
 import fr.sorbonne_u.components.utils.Measure;
 import fr.sorbonne_u.exceptions.PreconditionException;
 
-public class SmartLightingSensorDataInboundPort extends AbstractDataInboundPort implements SmartLightingSensorDataCI.HeaterSensorOfferedPullCI {
+import java.util.concurrent.TimeUnit;
+
+public class SmartLightingSensorDataInboundPort extends AbstractDataInboundPort implements SmartLightingSensorDataCI.SmartLightingSensorOfferedPullCI {
     // ------------------------------------------------------------------------
     // Constants
     // ------------------------------------------------------------------------
@@ -23,13 +25,13 @@ public class SmartLightingSensorDataInboundPort extends AbstractDataInboundPort 
     // ------------------------------------------------------------------------
 
     public SmartLightingSensorDataInboundPort(ComponentI owner) throws Exception {
-        super(SmartLightingSensorDataCI.HeaterSensorOfferedPullCI.class, DataOfferedCI.PushCI.class, owner);
+        super(SmartLightingSensorDataCI.SmartLightingSensorOfferedPullCI.class, DataOfferedCI.PushCI.class, owner);
         assert owner instanceof SmartLightingInternalControlI :
                 new PreconditionException("owner instanceof SmartLightingInternalControlI");
     }
 
     public SmartLightingSensorDataInboundPort(String uri, ComponentI owner) throws Exception {
-        super(uri, SmartLightingSensorDataCI.HeaterSensorOfferedPullCI.class, DataOfferedCI.PushCI.class, owner);
+        super(uri, SmartLightingSensorDataCI.SmartLightingSensorOfferedPullCI.class, DataOfferedCI.PushCI.class, owner);
         assert owner instanceof SmartLightingInternalControlI :
                 new PreconditionException("owner instanceof SmartLightingInternalControlI");
     }
@@ -39,42 +41,31 @@ public class SmartLightingSensorDataInboundPort extends AbstractDataInboundPort 
     // ------------------------------------------------------------------------
 
     @Override
-    public SmartLightingSensorData<Measure<Boolean>> increaseLightIntensityPullSensor() throws Exception {
+    public SmartLightingSensorData<Measure<Boolean>> automaticModePullSensor() throws Exception {
         return this.getOwner().handleRequest(
                 owner -> {
-                    return ((SmartLighting) owner).increaseLightIntensityPullSensor();
+                    return ((SmartLighting) owner).automaticModePullSensor();
                 });
     }
 
-    @Override
-    public SmartLightingSensorData<Measure<Boolean>> decreaseLightIntensityPullSensor() throws Exception {
+    public SmartLightingSensorData<Measure<Double>> targetIlluminationPullSensor() throws Exception {
         return this.getOwner().handleRequest(
                 owner -> {
-                    return ((SmartLighting) owner).decreaseLightIntensityPullSensor();
+                    return ((SmartLighting) owner).targetIlluminationPullSensor();
                 });
     }
 
-    @Override
-    public SmartLightingSensorData<Measure<Double>> targetLightIntensityPullSensor() throws Exception {
+    public SmartLightingSensorData<Measure<Double>> currentIlluminationPullSensor() throws Exception {
         return this.getOwner().handleRequest(
                 owner -> {
-                    return ((SmartLighting) owner).targetLightIntensityPullSensor();
+                    return ((SmartLighting) owner).currentIlluminationPullSensor();
                 });
     }
 
-    @Override
-    public SmartLightingSensorData<Measure<Double>> currentLightIntensityPullSensor() throws Exception {
-        return this.getOwner().handleRequest(
-                owner -> {
-                    return ((SmartLighting) owner).currentLightIntensityPullSensor();
-                });
-    }
-
-    @Override
-    public void startLightIntensityPushSensor(long controlPeriod, java.util.concurrent.TimeUnit tu) throws Exception {
+    public void startIlluminationPushSensor(long controlPeriod, java.util.concurrent.TimeUnit tu) throws Exception {
         this.getOwner().handleRequest(
                 owner -> {
-                    ((SmartLighting) owner).startLightIntensityPushSensor(controlPeriod, tu);
+                    ((SmartLighting) owner).startIlluminationPushSensor(controlPeriod, tu);
                     return null;
                 });
     }
@@ -83,8 +74,8 @@ public class SmartLightingSensorDataInboundPort extends AbstractDataInboundPort 
     public DataOfferedCI.DataI get() throws Exception {
         return new SmartLightingSensorData<SmartLightingCompoundMeasure>(
                 new SmartLightingCompoundMeasure(
-                        this.targetLightIntensityPullSensor().getMeasure(),
-                        this.currentLightIntensityPullSensor().getMeasure()
+                        this.targetIlluminationPullSensor().getMeasure(),
+                        this.currentIlluminationPullSensor().getMeasure()
                 )
         );
     }

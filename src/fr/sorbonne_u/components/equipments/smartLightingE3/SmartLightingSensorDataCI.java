@@ -21,11 +21,11 @@ public interface SmartLightingSensorDataCI extends DataOfferedCI, DataRequiredCI
 
         public SmartLightingSensorData<Measure<Boolean>> automaticModePullSensor() throws Exception;
 
-        public SmartLightingSensorData<Measure<Double>> targetLightIntensityPullSensor() throws Exception;
+        public SmartLightingSensorData<Measure<Double>> targetIlluminationPullSensor() throws Exception;
 
-        public SmartLightingSensorData<Measure<Double>> currentLightIntensityPullSensor() throws Exception;
+        public SmartLightingSensorData<Measure<Double>> currentIlluminationPullSensor() throws Exception;
 
-        public void startLightIntensityPushSensor(long controlPeriod, TimeUnit tu) throws Exception;
+        public void startIlluminationPushSensor(long controlPeriod, TimeUnit tu) throws Exception;
     }
 
     public static interface SmartLightingSensorRequiredPullCI extends SmartLightingSensorCI, DataRequiredCI.PullCI {

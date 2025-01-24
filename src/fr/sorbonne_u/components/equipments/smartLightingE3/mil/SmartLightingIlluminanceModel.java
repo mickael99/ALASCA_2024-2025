@@ -200,6 +200,22 @@ public class SmartLightingIlluminanceModel extends AtomicHIOA {
         return this.currentState;
     }
 
+    public double getCurrentIlluminance(){
+        return this.currentIlluminance.getValue();
+    }
+
+    public void setCurrentIlluminance(double i){
+        this.currentIlluminance.setNewValue(
+                i,
+                new Time(this.getCurrentStateTime().getSimulatedTime(),
+                         this.getSimulatedTimeUnit()));
+
+        assert glassBoxInvariants(this) :
+            new NeoSim4JavaException("SmartLightingIlluminanceModel: White-box invariants violation!");
+        assert blackBoxInvariants(this) :
+            new NeoSim4JavaException("SmartLightingIlluminanceModel: Black-Box invariants violation!");
+    }
+
     protected double computeNewIlluminance(double deltaI){
         Time t = this.currentIlluminance.getTime();
         double oldI = this.currentIlluminance.evaluateAt(t);

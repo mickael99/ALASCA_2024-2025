@@ -106,17 +106,17 @@ public class SmartLighting extends AbstractCyPhyComponent implements SmartLighti
     protected SmartLightingSensorDataInboundPort sensorDataInboundPort;
     protected SmartLightingActuatorInboundPort actuatorInboundPort;
 
-    //Exwcution/Simulation
-    protected final String clockURI;
-    protected final CompletableFuture<AcceleratedClock> clock;
-    protected final ExecutionType currentExecutionType;
-    protected final SimulationType currentSimulationType;
+    //Execution/Simulation
+    protected  String clockURI;
+    protected  CompletableFuture<AcceleratedClock> clock;
+    protected  ExecutionType currentExecutionType;
+    protected  SimulationType currentSimulationType;
     protected AtomicSimulatorPlugin asp;
-    protected final String				globalArchitectureURI;
-    protected final String				localArchitectureURI;
-    protected final TimeUnit simulationTimeUnit;
+    protected String				globalArchitectureURI;
+    protected  String				localArchitectureURI;
+    protected  TimeUnit simulationTimeUnit;
     protected double					accFactor;
-    protected static final String CURRENT_LIGHT_INTENDITY_NAME = "currentLightIntensity";
+    protected static final String CURRENT_ILLUMINANCE_NAME = "currentIlluminance";
 
 
     // Registration
@@ -445,12 +445,11 @@ public class SmartLighting extends AbstractCyPhyComponent implements SmartLighti
                         ) throws Exception
                             {
                                 assert	modelURI.equals(SmartLightingIlluminanceModel.SIL_URI);
-                                assert	name.equals(CURRENT_LIGHT_INTENDITY_NAME_NAME);
+                                assert	name.equals(CURRENT_ILLUMINANCE_NAME);
                                 return ((SmartLightingIlluminanceModel)
                                         this.atomicSimulators.get(modelURI).
                                                              getSimulatedModel()).
-                                        getCurrentIllumination();
-                                //TODO: fix the errors
+                                        getCurrentIlluminance();
                             }
                     };
                     uri = this.global2localSimulationArchitectureURIS.get(this.globalArchitectureURI);

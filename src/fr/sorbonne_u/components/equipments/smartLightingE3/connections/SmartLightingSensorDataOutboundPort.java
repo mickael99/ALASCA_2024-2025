@@ -36,23 +36,19 @@ public class SmartLightingSensorDataOutboundPort extends AbstractDataOutboundPor
     }
 
     @Override
-    public SmartLightingSensorData<Measure<Boolean>> decreaseLightIntensityPullSensor() throws Exception {
-        return ((SmartLightingSensorDataCI.SmartLightingSensorRequiredPullCI)this.getConnector()).decreaseLightIntensityPullSensor();
+    public SmartLightingSensorData<Measure<Double>> targetIlluminationPullSensor() throws Exception {
+        return ((SmartLightingSensorDataCI.SmartLightingSensorRequiredPullCI)this.getConnector()).targetIlluminationPullSensor();
+    }
+
+
+    @Override
+    public SmartLightingSensorData<Measure<Double>> currentIlluminationPullSensor() throws Exception {
+        return ((SmartLightingSensorDataCI.SmartLightingSensorRequiredPullCI)this.getConnector()).currentIlluminationPullSensor();
     }
 
     @Override
-    public SmartLightingSensorData<Measure<Double>> targetLightIntensityPullSensor() throws Exception {
-        return ((SmartLightingSensorDataCI.SmartLightingSensorRequiredPullCI)this.getConnector()).targetLightIntensityPullSensor();
-    }
-
-    @Override
-    public SmartLightingSensorData<Measure<Double>> currentLightIntensityPullSensor() throws Exception {
-        return ((SmartLightingSensorDataCI.SmartLightingSensorRequiredPullCI)this.getConnector()).currentLightIntensityPullSensor();
-    }
-
-    @Override
-    public void startLightIntensityPushSensor(long controlPeriod, java.util.concurrent.TimeUnit tu) throws Exception {
-        ((SmartLightingSensorDataCI.SmartLightingSensorRequiredPullCI)this.getConnector()).startLightIntensityPushSensor(controlPeriod, tu);
+    public void startIlluminationPushSensor(long controlPeriod, java.util.concurrent.TimeUnit tu) throws Exception {
+        ((SmartLightingSensorDataCI.SmartLightingSensorRequiredPullCI)this.getConnector()).startIlluminationPushSensor(controlPeriod, tu);
     }
 
     @Override
