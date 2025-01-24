@@ -264,14 +264,6 @@ public class BatteryElectricityModel extends AtomicHIOA implements BatteryOperat
 
         assert currentEvent instanceof AbstractBatteryEvent;
         currentEvent.executeOn(this);
-
-//        try {
-//        	System.out.println("etat -> " + elapsedTime.getSimulatedDuration());
-//			Thread.sleep(5000L);
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
         
         super.userDefinedExternalTransition(elapsedTime);
         
@@ -283,7 +275,7 @@ public class BatteryElectricityModel extends AtomicHIOA implements BatteryOperat
 					"BatteryElectricityModel.blackBoxInvariants(this)");
     }
 	 
-	 @Override
+	@Override
     public void endSimulation(Time endTime) {
 		 BatteryElectricityReport report = (BatteryElectricityReport)this.getFinalReport();
 		 logMessage(report.printout(""));

@@ -29,84 +29,99 @@ public class RunWindTurbineUnitaryMILSimulation {
             Map<String, AbstractAtomicModelDescriptor> atomicModelDescriptors = new HashMap<>();
 
             atomicModelDescriptors.put(
-                    WindTurbineElectricityModel.URI,
+                    WindTurbineElectricityModel.MIL_URI,
                     AtomicHIOA_Descriptor.create(
                             WindTurbineElectricityModel.class,
-                            WindTurbineElectricityModel.URI,
+                            WindTurbineElectricityModel.MIL_URI,
                             TimeUnit.HOURS,
                             null
                     )
             );
-
             atomicModelDescriptors.put(
-                    ExternalWindModel.URI,
+                    ExternalWindModel.MIL_URI,
                     AtomicHIOA_Descriptor.create(
                             ExternalWindModel.class,
-                            ExternalWindModel.URI,
+                            ExternalWindModel.MIL_URI,
                             TimeUnit.HOURS,
                             null
                     )
             );
-
             atomicModelDescriptors.put(
-                    WindTurbineUserModel.URI,
+                    WindTurbineUserModel.MIL_URI,
                     AtomicModelDescriptor.create(
                             WindTurbineUserModel.class,
-                            WindTurbineUserModel.URI,
+                            WindTurbineUserModel.MIL_URI,
+                            TimeUnit.HOURS,
+                            null
+                    )
+            );
+            atomicModelDescriptors.put(
+                    WindTurbineStateModel.MIL_URI,
+                    AtomicModelDescriptor.create(
+                    		WindTurbineStateModel.class,
+                    		WindTurbineStateModel.MIL_URI,
                             TimeUnit.HOURS,
                             null
                     )
             );
 
-
+            
             Map<String, CoupledModelDescriptor> coupledModelDescriptors = new HashMap<>();
 
             Set<String> subModels = new HashSet<>();
-            subModels.add(WindTurbineElectricityModel.URI);
-            subModels.add(WindTurbineUserModel.URI);
-            subModels.add(ExternalWindModel.URI);
+            subModels.add(WindTurbineElectricityModel.MIL_URI);
+            subModels.add(WindTurbineUserModel.MIL_URI);
+            subModels.add(ExternalWindModel.MIL_URI);
+            subModels.add(WindTurbineStateModel.MIL_URI);
 
 
             Map<EventSource, EventSink[]> connections = new HashMap<EventSource,EventSink[]>();
 
             connections.put(
-                    new EventSource(WindTurbineUserModel.URI, StartWindTurbineEvent.class),
+                    new EventSource(WindTurbineUserModel.MIL_URI, StartWindTurbineEvent.class),
                     new EventSink[] {
-                            new EventSink(WindTurbineElectricityModel.URI, StartWindTurbineEvent.class)
+                            new EventSink(WindTurbineStateModel.MIL_URI, StartWindTurbineEvent.class)
                     }
             );
 
             connections.put(
-                    new EventSource(WindTurbineUserModel.URI, StopWindTurbineEvent.class),
+                    new EventSource(WindTurbineUserModel.MIL_URI, StopWindTurbineEvent.class),
                     new EventSink[] {
-                            new EventSink(WindTurbineElectricityModel.URI, StopWindTurbineEvent.class)
+                            new EventSink(WindTurbineStateModel.MIL_URI, StopWindTurbineEvent.class)
+                    }
+            );
+            connections.put(
+                    new EventSource(WindTurbineStateModel.MIL_URI, StartWindTurbineEvent.class),
+                    new EventSink[] {
+                            new EventSink(WindTurbineElectricityModel.MIL_URI, StartWindTurbineEvent.class)
                     }
             );
 
             connections.put(
-                    new EventSource(ExternalWindModel.URI, SetWindSpeedEvent.class),
+                    new EventSource(WindTurbineStateModel.MIL_URI, StopWindTurbineEvent.class),
                     new EventSink[] {
-                            new EventSink(WindTurbineElectricityModel.URI, SetWindSpeedEvent.class)
+                            new EventSink(WindTurbineElectricityModel.MIL_URI, StopWindTurbineEvent.class)
                     }
             );
+            
 
             Map<VariableSource, VariableSink[]> bindings = new HashMap<>();
 
             bindings.put(
                     new VariableSource("externalWindSpeed",
                             Double.class,
-                            ExternalWindModel.URI),
+                            ExternalWindModel.MIL_URI),
                     new VariableSink[] {
                             new VariableSink("externalWindSpeed",
                                     Double.class,
-                                    WindTurbineElectricityModel.URI)
+                                    WindTurbineElectricityModel.MIL_URI)
                     });
 
             coupledModelDescriptors.put(
-                    WindTurbineCoupledModel.URI,
+                    WindTurbineCoupledModel.MIL_URI,
                     new CoupledHIOA_Descriptor(
                             WindTurbineCoupledModel.class,
-                            WindTurbineCoupledModel.URI,
+                            WindTurbineCoupledModel.MIL_URI,
                             subModels,
                             null,
                             null,
@@ -117,7 +132,7 @@ public class RunWindTurbineUnitaryMILSimulation {
                             bindings));
 
             ArchitectureI architecture = new Architecture(
-                            WindTurbineCoupledModel.URI,
+                            WindTurbineCoupledModel.MIL_URI,
                             atomicModelDescriptors,
                             coupledModelDescriptors,
                             TimeUnit.SECONDS
@@ -126,7 +141,7 @@ public class RunWindTurbineUnitaryMILSimulation {
             // Start the simulation
             SimulatorI engine = architecture.constructSimulator();
             SimulationEngine.SIMULATION_STEP_SLEEP_TIME = 0L;
-            engine.doStandAloneSimulation(0.0, 5.0);
+            engine.doStandAloneSimulation(0.0, 40.0);
             System.exit(0);
 
         } catch (Exception e) {

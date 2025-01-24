@@ -3,18 +3,17 @@ package fr.sorbonne_u.components.equipments.windTurbine.mil;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-import fr.sorbonne_u.components.equipments.windTurbine.mil.events.SetWindSpeedEvent;
+import fr.sorbonne_u.devs_simulation.exceptions.NeoSim4JavaException;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ExportedVariable;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ModelExportedVariable;
 import fr.sorbonne_u.devs_simulation.hioa.models.AtomicHIOA;
 import fr.sorbonne_u.devs_simulation.hioa.models.vars.Value;
-import fr.sorbonne_u.devs_simulation.models.annotations.ModelExternalEvents;
 import fr.sorbonne_u.devs_simulation.models.events.EventI;
 import fr.sorbonne_u.devs_simulation.models.time.Duration;
 import fr.sorbonne_u.devs_simulation.models.time.Time;
 import fr.sorbonne_u.devs_simulation.simulators.interfaces.AtomicSimulatorI;
-import fr.sorbonne_u.devs_simulation.utils.Pair;
 import fr.sorbonne_u.devs_simulation.utils.StandardLogger;
+import fr.sorbonne_u.exceptions.InvariantChecking;
 
 @ModelExportedVariable(name = "externalWindSpeed", type = Double.class)
 public class ExternalWindModel extends AtomicHIOA {
@@ -25,31 +24,90 @@ public class ExternalWindModel extends AtomicHIOA {
 
 	private static final long serialVersionUID = 1L;
 
-	public static final String URI = ExternalWindModel.class.getSimpleName();
+	public static final String MIL_URI = ExternalWindModel.class.getSimpleName() + "-MIL";
+	public static final String MIL_RT_URI = ExternalWindModel.class.getSimpleName() + "-MIL-RT";
+	public static final String SIL_URI = ExternalWindModel.class.getSimpleName() + "-SIL";
 
+	// In m/s
     public static final double MIN_EXTERNAL_WIND_SPEED = 0.0;
-    public static final double MAX_EXTERNAL_WIND_SPEED = 150.0;
+    public static final double MAX_EXTERNAL_WIND_SPEED = 25.0;
+    protected static final double INITIAL_WIND_SPEED = 10.0;
 
-    public static final double PERIOD = 0.1;
-    protected static final double STEP = .01;
+    protected static final double PERIOD = 24.0;
+    public static final double STEP = 1.0;
 
     protected final Duration evaluationStep;
 
     @ExportedVariable(type = Double.class)
     protected final Value<Double> externalWindSpeed = new Value<Double>(this);
-    protected double cycleTime;
+    protected double cycleTime;    
+    
+    // -------------------------------------------------------------------------
+	// Invariants
+	// -------------------------------------------------------------------------
 
-    protected boolean windSpeedHasChanged;
-    
-    
+	protected static boolean glassBoxInvariants(ExternalWindModel instance) {
+		assert	instance != null :
+				new NeoSim4JavaException("Precondition violation: "
+						+ "instance != null");
+
+		boolean ret = true;
+		ret &= InvariantChecking.checkGlassBoxInvariant(
+					STEP >= 0.0,
+					ExternalWindModel.class,
+					instance,
+					"STEP > 0.0");
+		ret &= InvariantChecking.checkGlassBoxInvariant(
+					PERIOD > 0.0,
+					ExternalWindModel.class,
+					instance,
+					"PERIOD > 0.0");
+		return ret;
+	}
+
+	protected static boolean blackBoxInvariants(ExternalWindModel instance) {
+		assert	instance != null :
+				new NeoSim4JavaException("Precondition violation: "
+						+ "instance != null");
+
+		boolean ret = true;
+		ret &= InvariantChecking.checkBlackBoxInvariant(
+					MIL_URI != null && !MIL_URI.isEmpty(),
+					ExternalWindModel.class,
+					instance,
+					"MIL_URI != null && !MIL_URI.isEmpty()");
+		ret &= InvariantChecking.checkBlackBoxInvariant(
+					MIL_RT_URI != null && !MIL_RT_URI.isEmpty(),
+					ExternalWindModel.class,
+					instance,
+					"MIL_RT_URI != null && !MIL_RT_URI.isEmpty()");
+		ret &= InvariantChecking.checkBlackBoxInvariant(
+					SIL_URI != null && !SIL_URI.isEmpty(),
+					ExternalWindModel.class,
+					instance,
+					"SIL_URI != null && !SIL_URI.isEmpty()");
+		return ret;
+	}
+	
+	
     // -------------------------------------------------------------------------
  	// Constructors
  	// -------------------------------------------------------------------------
     
     public ExternalWindModel(String uri, TimeUnit simulatedTimeUnit, AtomicSimulatorI simulationEngine) throws Exception {
 		super(uri, simulatedTimeUnit, simulationEngine);
+		
 		this.evaluationStep = new Duration(STEP, this.getSimulatedTimeUnit());
+		this.cycleTime = 0.0;
+	        
 		this.getSimulationEngine().setLogger(new StandardLogger());
+		
+		assert	glassBoxInvariants(this) :
+			new NeoSim4JavaException(
+					"ExternalWindModel.glassBoxInvariants(this)");
+        assert	blackBoxInvariants(this) :
+			new NeoSim4JavaException(
+					"ExternalWindModel.blackBoxInvariants(this)");
 	}
     
     
@@ -60,31 +118,19 @@ public class ExternalWindModel extends AtomicHIOA {
     @Override
     public void initialiseState(Time initialTime) {
         super.initialiseState(initialTime);
+
+        this.externalWindSpeed.initialise(INITIAL_WIND_SPEED);
         
-        this.cycleTime = 0.0;
-        this.windSpeedHasChanged = false;
+        this.getSimulationEngine().toggleDebugMode();
+        logMessage("Simulations starts...\n");
+        
+        assert	glassBoxInvariants(this) :
+			new NeoSim4JavaException(
+					"ExternalWindModel.glassBoxInvariants(this)");
+        assert	blackBoxInvariants(this) :
+			new NeoSim4JavaException(
+					"ExternalWindModel.blackBoxInvariants(this)");
     }
-    
-    @Override
-	public Pair<Integer, Integer> fixpointInitialiseVariables() {
-		if (!this.externalWindSpeed.isInitialised()) {
-			this.externalWindSpeed.initialise(MIN_EXTERNAL_WIND_SPEED);
-
-			this.getSimulationEngine().toggleDebugMode();
-			this.logMessage("simulation begins.\n");
-			StringBuffer message =
-					new StringBuffer("current external wind speed: ");
-			message.append(this.externalWindSpeed.getValue());
-			message.append(" at ");
-			message.append(this.getCurrentStateTime());
-			message.append("\n");
-			this.logMessage(message.toString());
-
-			return new Pair<>(1, 0);
-		}
-	
-		return new Pair<>(0, 0);
-	}
     
     @Override
 	public void initialiseVariables() {
@@ -93,15 +139,7 @@ public class ExternalWindModel extends AtomicHIOA {
     
     @Override
     public ArrayList<EventI> output() {
-        ArrayList<EventI> events = null;
-        if(windSpeedHasChanged) {
-            events = new ArrayList<>();
-            events.add(new SetWindSpeedEvent(this.externalWindSpeed.getTime()));
-            
-            windSpeedHasChanged = false;
-        }
-        
-        return events;
+        return null;
     }
     
 	@Override
@@ -127,8 +165,8 @@ public class ExternalWindModel extends AtomicHIOA {
                 * ((1.0 + c) / 2.0);
 
         this.externalWindSpeed.setNewValue(windSpeed, this.getCurrentStateTime());
-        this.windSpeedHasChanged = true;
 
+        System.out.println("vitesse du vent -> " + windSpeed);
         // Tracing
         StringBuffer message = new StringBuffer("current external wind speed: ");
         message.append(this.externalWindSpeed.getValue());
@@ -136,11 +174,6 @@ public class ExternalWindModel extends AtomicHIOA {
         message.append(this.externalWindSpeed.getTime());
         message.append("\n");
         this.logMessage(message.toString());
-    }
-
-    @Override
-    public boolean useFixpointInitialiseVariables() {
-        return true;
     }
 	
 	@Override

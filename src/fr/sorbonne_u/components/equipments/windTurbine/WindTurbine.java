@@ -11,8 +11,8 @@ public class WindTurbine extends AbstractComponent implements WindTurbineI {
 	public static int X_RELATIVE_POSITION = 2;
 	public static int Y_RELATIVE_POSITION = 1;
 	
-	public static final TurbineWindState INIT_STATE = TurbineWindState.STANDBY;
-	protected TurbineWindState currentState;
+	public static final WindTurbineState INIT_STATE = WindTurbineState.STANDBY;
+	protected WindTurbineState currentState;
 	
 	public static final String INBOUND_PORT_URI = "INBOUND_PORT_URI";
 	protected WindTurbineInboundPort inboundPort;
@@ -52,7 +52,7 @@ public class WindTurbine extends AbstractComponent implements WindTurbineI {
 		if(VERBOSE)
 			this.traceMessage("Wind turbine says if it's activate or not -> " + this.currentState.toString() + "\n");
 		
-		return this.currentState == TurbineWindState.ACTIVE;
+		return this.currentState == WindTurbineState.ACTIVE;
 	}
 
 
@@ -61,7 +61,7 @@ public class WindTurbine extends AbstractComponent implements WindTurbineI {
 		if(VERBOSE)
 			this.traceMessage("Stop the wind turbine \n");
 		
-		this.currentState = TurbineWindState.STANDBY;
+		this.currentState = WindTurbineState.STANDBY;
 	}
 	
 	@Override
@@ -69,7 +69,7 @@ public class WindTurbine extends AbstractComponent implements WindTurbineI {
 		if(VERBOSE)
 			this.traceMessage("start the wind turbine \n");
 		
-		this.currentState = TurbineWindState.ACTIVE;
+		this.currentState = WindTurbineState.ACTIVE;
 	}
 
 

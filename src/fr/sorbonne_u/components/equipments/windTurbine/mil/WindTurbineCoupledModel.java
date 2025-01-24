@@ -16,7 +16,10 @@ import fr.sorbonne_u.devs_simulation.simulators.interfaces.CoordinatorI;
 public class WindTurbineCoupledModel extends CoupledModel {
 
 	private static final long serialVersionUID = 1L;
-	public static final String	URI = WindTurbineCoupledModel.class.getSimpleName();
+	
+	public static final String	MIL_URI = WindTurbineCoupledModel.class.getSimpleName() + "-MIL";
+	public static final String	MIL_RT_URI = WindTurbineCoupledModel.class.getSimpleName() + "-MIL-RT";
+	public static final String	SIL_URI = WindTurbineCoupledModel.class.getSimpleName() + "-SIL";
 
 	public WindTurbineCoupledModel(String uri, TimeUnit simulatedTimeUnit, CoordinatorI simulationEngine, ModelI[] submodels,
 								Map<Class<? extends EventI>, EventSink[]> imported, Map<Class<? extends EventI>, ReexportedEvent> reexported,
