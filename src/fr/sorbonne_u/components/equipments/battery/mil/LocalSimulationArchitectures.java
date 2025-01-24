@@ -373,13 +373,6 @@ public class LocalSimulationArchitectures {
 						simulatedTimeUnit,
 						null));
 		atomicModelDescriptors.put(
-				BatteryElectricityModel.MIL_URI,
-				AtomicHIOA_Descriptor.create(
-						BatteryElectricityModel.class,
-						BatteryElectricityModel.MIL_URI,
-						simulatedTimeUnit,
-						null));
-		atomicModelDescriptors.put(
 				BatteryChargeLevelModel.MIL_URI,
 				AtomicHIOA_Descriptor.create(
 						BatteryChargeLevelModel.class,
@@ -391,7 +384,6 @@ public class LocalSimulationArchitectures {
 
 		Set<String> submodels = new HashSet<String>();
 		submodels.add(BatteryStateModel.MIL_URI);
-		submodels.add(BatteryElectricityModel.MIL_URI);
 		submodels.add(BatteryChargeLevelModel.MIL_URI);
 
 		// events received by the coupled model transmitted to its submodels
@@ -438,7 +430,6 @@ public class LocalSimulationArchitectures {
 		connections.put(
                 new EventSource(BatteryStateModel.MIL_URI, SetProductBatteryEvent.class),
                 new EventSink[] {
-                        new EventSink(BatteryElectricityModel.MIL_URI, SetProductBatteryEvent.class),
                         new EventSink(BatteryChargeLevelModel.MIL_URI, SetProductBatteryEvent.class)
                 }
         );
@@ -446,7 +437,6 @@ public class LocalSimulationArchitectures {
         connections.put(
                 new EventSource(BatteryStateModel.MIL_URI, SetConsumeBatteryEvent.class),
                 new EventSink[] {
-                        new EventSink(BatteryElectricityModel.MIL_URI, SetConsumeBatteryEvent.class),
                         new EventSink(BatteryChargeLevelModel.MIL_URI, SetConsumeBatteryEvent.class)
                 }
         );
@@ -454,7 +444,6 @@ public class LocalSimulationArchitectures {
         connections.put(
                 new EventSource(BatteryStateModel.MIL_URI, SetStandByBatteryEvent.class),
                 new EventSink[] {
-                        new EventSink(BatteryElectricityModel.MIL_URI, SetStandByBatteryEvent.class),
                         new EventSink(BatteryChargeLevelModel.MIL_URI, SetStandByBatteryEvent.class)
                 }
         );
@@ -501,21 +490,18 @@ public class LocalSimulationArchitectures {
 
 		String batteryStateModelURI = null;
 		String batteryChargeLevelModelURI = null;
-		String batteryElectricityModelURI = null;
 		String batteryCoupledModelURI = null;
 		
 		switch (currentSimulationType) {
 			case MIL_RT_SIMULATION:
 				batteryStateModelURI = BatteryStateModel.MIL_RT_URI;
 				batteryChargeLevelModelURI = BatteryChargeLevelModel.MIL_RT_URI;
-				batteryElectricityModelURI = BatteryElectricityModel.MIL_RT_URI;
 				batteryCoupledModelURI = BatteryCoupledModel.MIL_RT_URI;
 				break;
 				
 			case SIL_SIMULATION:
 				batteryStateModelURI = BatteryStateModel.SIL_URI;
 				batteryChargeLevelModelURI = BatteryChargeLevelModel.SIL_URI;
-				batteryElectricityModelURI = BatteryElectricityModel.SIL_URI;
 				batteryCoupledModelURI = BatteryCoupledModel.SIL_URI;
 				break;
 			
@@ -541,21 +527,12 @@ public class LocalSimulationArchitectures {
 						simulatedTimeUnit,
 						null,
 						accelerationFactor));
-		atomicModelDescriptors.put(
-				batteryElectricityModelURI,
-				RTAtomicHIOA_Descriptor.create(
-						BatteryElectricityModel.class,
-						batteryElectricityModelURI,
-						simulatedTimeUnit,
-						null,
-						accelerationFactor));
 
 		Map<String,CoupledModelDescriptor> coupledModelDescriptors = new HashMap<>();
 
 		Set<String> submodels = new HashSet<String>();
 		submodels.add(batteryStateModelURI);
 		submodels.add(batteryChargeLevelModelURI);
-		submodels.add(batteryElectricityModelURI);
 
 		Map<Class<? extends EventI>, EventSink[]> imported = new HashMap<>();
 
@@ -602,7 +579,6 @@ public class LocalSimulationArchitectures {
                 new EventSource(batteryStateModelURI, SetProductBatteryEvent.class),
                 new EventSink[] {
                         new EventSink(batteryChargeLevelModelURI, SetProductBatteryEvent.class),
-                        new EventSink(batteryElectricityModelURI, SetProductBatteryEvent.class)
                 }
         );
 
@@ -610,7 +586,6 @@ public class LocalSimulationArchitectures {
                 new EventSource(batteryStateModelURI, SetConsumeBatteryEvent.class),
                 new EventSink[] {
                         new EventSink(batteryChargeLevelModelURI, SetConsumeBatteryEvent.class),
-                        new EventSink(batteryElectricityModelURI, SetConsumeBatteryEvent.class)
                 }
         );
         
@@ -618,7 +593,6 @@ public class LocalSimulationArchitectures {
                 new EventSource(batteryStateModelURI, SetStandByBatteryEvent.class),
                 new EventSink[] {
                         new EventSink(batteryChargeLevelModelURI, SetStandByBatteryEvent.class),
-                        new EventSink(batteryElectricityModelURI, SetStandByBatteryEvent.class)
                 }
         );
 

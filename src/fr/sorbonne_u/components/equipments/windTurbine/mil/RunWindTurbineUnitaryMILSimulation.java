@@ -135,7 +135,7 @@ public class RunWindTurbineUnitaryMILSimulation {
                             WindTurbineCoupledModel.MIL_URI,
                             atomicModelDescriptors,
                             coupledModelDescriptors,
-                            TimeUnit.SECONDS
+                            TimeUnit.HOURS
             );
 
             // Start the simulation
