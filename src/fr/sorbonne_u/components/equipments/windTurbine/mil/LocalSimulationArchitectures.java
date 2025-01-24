@@ -30,7 +30,7 @@ public class LocalSimulationArchitectures {
 
 		public static Architecture createWindTurbineMILLocalArchitecture4UnitTest(String architectureURI, TimeUnit simulatedTimeUnit) throws Exception {
 			Map<String,AbstractAtomicModelDescriptor> atomicModelDescriptors = new HashMap<>();
-
+			
 			// atom model descriptors
 			atomicModelDescriptors.put(
                     WindTurbineElectricityModel.MIL_URI,
@@ -155,7 +155,7 @@ public class LocalSimulationArchitectures {
 					new PreconditionException(
 							"currentSimulationType.isMILRTSimulation() || "
 							+ "currentSimulationType.isSILSimulation()");
-
+			
 			// URI
 			String windTurbineStateModelURI = null;
 			String externalWindModelURI = null;

@@ -31,8 +31,8 @@ public class CVM_WindTurbineUnitTest extends AbstractCVM {
 
 	public static ExecutionType	CURRENT_EXECUTION_TYPE = ExecutionType.UNIT_TEST;
 	public static SimulationType CURRENT_SIMULATION_TYPE =  //SimulationType.NO_SIMULATION;
-															SimulationType.MIL_SIMULATION;
-															//SimulationType.MIL_RT_SIMULATION;
+															//SimulationType.MIL_SIMULATION;
+															SimulationType.MIL_RT_SIMULATION;
 															//SimulationType.SIL_SIMULATION;
 
 	public static String CLOCK_URI = "hem-clock";
@@ -89,13 +89,13 @@ public class CVM_WindTurbineUnitTest extends AbstractCVM {
 			case MIL_RT_SIMULATION:
 				globalArchitectureURI = WindTurbineTestsSupervisor.MIL_RT_ARCHITECTURE_URI;
 				windTurbineLocalArchitectureURI = WindTurbineCoupledModel.MIL_RT_URI;
-				windTurbineLocalArchitectureURI = WindTurbineUserModel.MIL_RT_URI;
+				windTurbineUserLocalArchitectureURI = WindTurbineUserModel.MIL_RT_URI;
 				break;
 				
 			case SIL_SIMULATION:
 				globalArchitectureURI = WindTurbineTestsSupervisor.SIL_ARCHITECTURE_URI;
 				windTurbineLocalArchitectureURI =  WindTurbineCoupledModel.SIL_URI;
-				windTurbineLocalArchitectureURI = "not-used";
+				windTurbineUserLocalArchitectureURI = "not-used";
 				break;
 			case NO_SIMULATION:
 			

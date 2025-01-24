@@ -349,14 +349,14 @@ public class WindTurbineTestsSupervisor extends AbstractCyPhyComponent {
 
 	    Map<EventSource, EventSink[]> connections = new HashMap<>();
 	    connections.put(
-		    new EventSource(WindTurbineUserModel.MIL_URI, StartWindTurbineEvent.class),
+		    new EventSource(WindTurbineUserModel.MIL_RT_URI, StartWindTurbineEvent.class),
 		    new EventSink[]{
-		        new EventSink(WindTurbineCoupledModel.MIL_URI, StartWindTurbineEvent.class)
+		        new EventSink(WindTurbineCoupledModel.MIL_RT_URI, StartWindTurbineEvent.class)
 		    });
 		connections.put(
-		    new EventSource(WindTurbineUserModel.MIL_URI, StopWindTurbineEvent.class),
+		    new EventSource(WindTurbineUserModel.MIL_RT_URI, StopWindTurbineEvent.class),
 		    new EventSink[]{
-		        new EventSink(WindTurbineCoupledModel.MIL_URI, StopWindTurbineEvent.class)
+		        new EventSink(WindTurbineCoupledModel.MIL_RT_URI, StopWindTurbineEvent.class)
 		    });
 
 	    coupledModelDescriptors.put(

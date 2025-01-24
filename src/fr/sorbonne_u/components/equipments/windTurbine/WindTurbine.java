@@ -286,6 +286,8 @@ super(reflectionInboundPortURI, 2, 1);
 																	this.accFactor);
 				}
 				
+				System.out.println(architecture.getRootModelURI());
+				System.out.println(this.localArchitectureURI);
 				assert	architecture.getRootModelURI().equals(this.localArchitectureURI) :
 					new BCMException("local simulation architecture " + this.localArchitectureURI
 										+ " does not exist!");
