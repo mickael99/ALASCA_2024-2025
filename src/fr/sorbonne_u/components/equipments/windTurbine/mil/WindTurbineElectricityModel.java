@@ -191,7 +191,7 @@ public class WindTurbineElectricityModel extends AtomicHIOA implements WindTurbi
             currentProduction.setNewValue(externalWindSpeed.getValue() * 5000 / 150.0, 
             								this.getCurrentStateTime());
             
-            this.totalProduction += currentProduction.getValue();
+            this.totalProduction += currentProduction.getValue() * elapsedTime.getSimulatedDuration();
         } 
         else 
         	currentProduction.setNewValue(0.0, this.getCurrentStateTime());

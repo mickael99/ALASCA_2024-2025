@@ -1,14 +1,18 @@
 package fr.sorbonne_u.components.equipments.windTurbine.mil;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import fr.sorbonne_u.components.cyphy.plugins.devs.AtomicSimulatorPlugin;
+import fr.sorbonne_u.devs_simulation.exceptions.MissingRunParameterException;
 import fr.sorbonne_u.devs_simulation.exceptions.NeoSim4JavaException;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ExportedVariable;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ModelExportedVariable;
 import fr.sorbonne_u.devs_simulation.hioa.models.AtomicHIOA;
 import fr.sorbonne_u.devs_simulation.hioa.models.vars.Value;
 import fr.sorbonne_u.devs_simulation.models.events.EventI;
+import fr.sorbonne_u.devs_simulation.models.interfaces.ModelI;
 import fr.sorbonne_u.devs_simulation.models.time.Duration;
 import fr.sorbonne_u.devs_simulation.models.time.Time;
 import fr.sorbonne_u.devs_simulation.simulators.interfaces.AtomicSimulatorI;
@@ -29,8 +33,8 @@ public class ExternalWindModel extends AtomicHIOA {
 	public static final String SIL_URI = ExternalWindModel.class.getSimpleName() + "-SIL";
 
 	// In m/s
-    public static final double MIN_EXTERNAL_WIND_SPEED = 0.0;
-    public static final double MAX_EXTERNAL_WIND_SPEED = 25.0;
+    public static double MIN_EXTERNAL_WIND_SPEED = 0.0;
+    public static double MAX_EXTERNAL_WIND_SPEED = 25.0;
     protected static final double INITIAL_WIND_SPEED = 10.0;
 
     protected static final double PERIOD = 24.0;
@@ -182,4 +186,28 @@ public class ExternalWindModel extends AtomicHIOA {
         
         super.endSimulation(endTime);
     }
+	
+	
+	public static final String MIN_EXTERNAL_WIND_SPEED_RUNPNAME = "MIN_EXTERNAL_WIND_SPEED";
+	public static final String MAX_EXTERNAL_WIND_SPEED_RUNPNAME = "MAX_EXTERNAL_WIND_SPEED_RUNPNAME";
+	
+	@Override
+	public void setSimulationRunParameters(Map<String, Object> simParams) throws MissingRunParameterException {
+		super.setSimulationRunParameters(simParams);
+
+		if (simParams.containsKey(
+						AtomicSimulatorPlugin.OWNER_RUNTIME_PARAMETER_NAME)) 
+		{
+			this.getSimulationEngine().setLogger(
+						AtomicSimulatorPlugin.createComponentLogger(simParams));
+		}
+
+		String minSpeed = ModelI.createRunParameterName(getURI(), MIN_EXTERNAL_WIND_SPEED_RUNPNAME);
+		if (simParams.containsKey(minSpeed)) 
+			MIN_EXTERNAL_WIND_SPEED = (double)simParams.get(minSpeed);
+		
+		String maxSpeed = ModelI.createRunParameterName(getURI(), MAX_EXTERNAL_WIND_SPEED_RUNPNAME);
+		if (simParams.containsKey(maxSpeed)) 
+			MAX_EXTERNAL_WIND_SPEED = (double) simParams.get(maxSpeed);
+	}
 }

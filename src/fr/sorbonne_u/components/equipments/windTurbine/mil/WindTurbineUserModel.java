@@ -35,7 +35,7 @@ public class WindTurbineUserModel extends AtomicES_Model {
 	public static final String MIL_RT_URI = WindTurbineUserModel.class.getSimpleName() + "-MIL-RT";
 	public static final String SIL = WindTurbineUserModel.class.getSimpleName() + "-SIL";
 
-    protected static double STEP_MEAN_DURATION = 1.0;
+    protected static double STEP_MEAN_DURATION = 10.0;
     protected RandomDataGenerator generator;
     
     
