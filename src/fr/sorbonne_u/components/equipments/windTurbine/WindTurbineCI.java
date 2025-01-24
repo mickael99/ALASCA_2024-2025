@@ -9,6 +9,4 @@ public interface WindTurbineCI extends OfferedCI, RequiredCI, WindTurbineI {
 	
 	public void activate() throws Exception;
 	public void stop() throws Exception;
-
-	public double getCurrentProduction() throws Exception;
 }

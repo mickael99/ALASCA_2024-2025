@@ -39,6 +39,10 @@ import java.util.concurrent.TimeUnit;
 					 SetProductBatteryEvent.class})
 public class BatteryTester extends AbstractCyPhyComponent {
 	
+	// -------------------------------------------------------------------------
+	// Constants and variables
+	// -------------------------------------------------------------------------
+	
 	public static boolean VERBOSE = true;
 	public static int X_RELATIVE_POSITION = 1;
 	public static int Y_RELATIVE_POSITION = 1;

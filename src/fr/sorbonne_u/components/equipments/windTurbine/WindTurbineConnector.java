@@ -18,10 +18,4 @@ public class WindTurbineConnector extends AbstractConnector implements WindTurbi
 	public void stop() throws Exception {
 		((WindTurbineCI)this.offering).stop();
 	}
-
-	@Override
-	public double getCurrentProduction() throws Exception {
-		return ((WindTurbineCI)this.offering).getCurrentProduction();
-	}
-
 }

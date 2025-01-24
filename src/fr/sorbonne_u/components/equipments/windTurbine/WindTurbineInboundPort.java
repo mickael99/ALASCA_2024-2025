@@ -36,10 +36,4 @@ public class WindTurbineInboundPort extends AbstractInboundPort implements WindT
 						return null;
 				});
 	}
-
-	@Override
-	public double getCurrentProduction() throws Exception {
-		return this.getOwner().handleRequest(
-				o -> ((WindTurbineI)o).getCurrentProduction());
-	}
 }

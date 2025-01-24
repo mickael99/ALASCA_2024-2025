@@ -26,7 +26,7 @@ import fr.sorbonne_u.devs_simulation.models.events.EventSource;
 import fr.sorbonne_u.devs_simulation.models.events.ReexportedEvent;
 import fr.sorbonne_u.exceptions.PreconditionException;
 
-public class LocalSimulatorArchitectures {
+public class LocalSimulationArchitectures {
 
 		public static Architecture createWindTurbineMILLocalArchitecture4UnitTest(String architectureURI, TimeUnit simulatedTimeUnit) throws Exception {
 			Map<String,AbstractAtomicModelDescriptor> atomicModelDescriptors = new HashMap<>();

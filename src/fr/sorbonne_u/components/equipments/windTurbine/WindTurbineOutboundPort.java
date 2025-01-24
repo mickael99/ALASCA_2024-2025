@@ -29,9 +29,4 @@ public class WindTurbineOutboundPort extends AbstractOutboundPort implements Win
 	public void stop() throws Exception {
 		((WindTurbineCI)this.getConnector()).stop();
 	}
-
-	@Override
-	public double getCurrentProduction() throws Exception {
-		return ((WindTurbineCI)this.getConnector()).getCurrentProduction();
-	}
 }
