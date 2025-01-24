@@ -1,15 +1,14 @@
-package fr.sorbonne_u.components.equipments.battery.mil;
+package fr.sorbonne_u.components.equipments.windTurbine.mil;
 
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import fr.sorbonne_u.components.cyphy.plugins.devs.AtomicSimulatorPlugin;
-import fr.sorbonne_u.components.equipments.battery.BatteryI.BATTERY_STATE;
-import fr.sorbonne_u.components.equipments.battery.mil.events.AbstractBatteryEvent;
-import fr.sorbonne_u.components.equipments.battery.mil.events.SetConsumeBatteryEvent;
-import fr.sorbonne_u.components.equipments.battery.mil.events.SetProductBatteryEvent;
-import fr.sorbonne_u.components.equipments.battery.mil.events.SetStandByBatteryEvent;
+import fr.sorbonne_u.components.equipments.windTurbine.WindTurbineI.WindTurbineState;
+import fr.sorbonne_u.components.equipments.windTurbine.mil.events.AbstractWindTurbineEvent;
+import fr.sorbonne_u.components.equipments.windTurbine.mil.events.StartWindTurbineEvent;
+import fr.sorbonne_u.components.equipments.windTurbine.mil.events.StopWindTurbineEvent;
 import fr.sorbonne_u.devs_simulation.exceptions.MissingRunParameterException;
 import fr.sorbonne_u.devs_simulation.exceptions.NeoSim4JavaException;
 import fr.sorbonne_u.devs_simulation.models.AtomicModel;
@@ -22,19 +21,15 @@ import fr.sorbonne_u.devs_simulation.simulators.interfaces.AtomicSimulatorI;
 import fr.sorbonne_u.devs_simulation.utils.StandardLogger;
 import fr.sorbonne_u.exceptions.InvariantChecking;
 
-@ModelExternalEvents(
-        imported = {
-                SetConsumeBatteryEvent.class,
-                SetProductBatteryEvent.class,
-                SetStandByBatteryEvent.class
-        },
-        exported = {
-        		SetConsumeBatteryEvent.class,
-                SetProductBatteryEvent.class,
-                SetStandByBatteryEvent.class
-        }
-)
-public class BatteryStateModel extends AtomicModel implements BatteryOperationI {
+@ModelExternalEvents(exported = {
+				        StartWindTurbineEvent.class,
+				        StopWindTurbineEvent.class
+					 },
+					 imported = {
+						StartWindTurbineEvent.class,
+					    StopWindTurbineEvent.class
+					 })
+public class WindTurbineStateModel extends AtomicModel implements WindTurbineOperationI {
 
 	// -------------------------------------------------------------------------
 	// Constants and variables
@@ -42,19 +37,20 @@ public class BatteryStateModel extends AtomicModel implements BatteryOperationI 
 	
 	private static final long serialVersionUID = 1L;
 	
-	public static final String	MIL_URI = BatteryStateModel.class.getSimpleName() + "-MIL";
-	public static final String	MIL_RT_URI = BatteryStateModel.class.getSimpleName() + "-MIL-RT";
-	public static final String	SIL_URI = BatteryStateModel.class.getSimpleName() + "-SIL";
+	public static final String	MIL_URI = WindTurbineStateModel.class.getSimpleName() + "-MIL";
+	public static final String	MIL_RT_URI = WindTurbineStateModel.class.getSimpleName() + "-MIL-RT";
+	public static final String	SIL_URI = WindTurbineStateModel.class.getSimpleName() + "-SIL";
 	
-	protected BATTERY_STATE currentState;
+	protected WindTurbineState currentState;
+	public static final WindTurbineState INITIAL_CURRENT_STATE = WindTurbineState.STANDBY;
 	protected EventI toBeReemitted;
-	
+
 	
 	// -------------------------------------------------------------------------
 	// Invariants
 	// -------------------------------------------------------------------------
 
-	protected static boolean glassBoxInvariants(BatteryStateModel instance) {
+	protected static boolean glassBoxInvariants(WindTurbineStateModel instance) {
 		assert	instance != null :
 				new NeoSim4JavaException("Precondition violation: "
 						+ "instance != null");
@@ -62,13 +58,13 @@ public class BatteryStateModel extends AtomicModel implements BatteryOperationI 
 		boolean ret = true;
 		ret &= InvariantChecking.checkGlassBoxInvariant(
 					instance.currentState != null,
-					BatteryStateModel.class,
+					WindTurbineStateModel.class,
 					instance,
 					"currentState != null");
 		return ret;
 	}
 
-	protected static boolean blackBoxInvariants(BatteryStateModel instance) {
+	protected static boolean blackBoxInvariants(WindTurbineStateModel instance) {
 		assert	instance != null :
 				new NeoSim4JavaException("Precondition violation: "
 						+ "instance != null");
@@ -76,38 +72,39 @@ public class BatteryStateModel extends AtomicModel implements BatteryOperationI 
 		boolean ret = true;
 		ret &= InvariantChecking.checkBlackBoxInvariant(
 					MIL_URI != null && !MIL_URI.isEmpty(),
-					BatteryStateModel.class,
+					WindTurbineStateModel.class,
 					instance,
 					"MIL_URI != null && !MIL_URI.isEmpty()");
 		ret &= InvariantChecking.checkBlackBoxInvariant(
 					MIL_RT_URI != null && !MIL_RT_URI.isEmpty(),
-					BatteryStateModel.class,
+					WindTurbineStateModel.class,
 					instance,
 					"MIL_RT_URI != null && !MIL_RT_URI.isEmpty()");
 		ret &= InvariantChecking.checkBlackBoxInvariant(
 					SIL_URI != null && !SIL_URI.isEmpty(),
-					BatteryStateModel.class,
+					WindTurbineStateModel.class,
 					instance,
 					"SIL_URI != null && !SIL_URI.isEmpty()");
 		return ret;
 	}
 	
+	
 	// -------------------------------------------------------------------------
 	// Constructors
 	// -------------------------------------------------------------------------
 
-	public BatteryStateModel(String uri, TimeUnit simulatedTimeUnit, AtomicSimulatorI simulationEngine) {
+	public WindTurbineStateModel(String uri, TimeUnit simulatedTimeUnit, AtomicSimulatorI simulationEngine) {
 		super(uri, simulatedTimeUnit, simulationEngine);
 		this.getSimulationEngine().setLogger(new StandardLogger());
 		
-		this.currentState = BATTERY_STATE.STANDBY;
+		this.currentState = INITIAL_CURRENT_STATE;
 		
 		assert	glassBoxInvariants(this) :
 				new NeoSim4JavaException(
-						"BatteryStateModel.glassBoxInvariants(this)");
+						"WindTurbineStateModel.glassBoxInvariants(this)");
 		assert	blackBoxInvariants(this) :
 				new NeoSim4JavaException(
-						"BatteryStateModel.blackBoxInvariants(this)");
+						"WindTurbineStateModel.blackBoxInvariants(this)");
 	}
 	
 	@Override
@@ -119,10 +116,10 @@ public class BatteryStateModel extends AtomicModel implements BatteryOperationI 
 
 		assert	glassBoxInvariants(this) :
 				new NeoSim4JavaException(
-						"BatteryStateModel.glassBoxInvariants(this)");
+						"WindTurbineStateModel.glassBoxInvariants(this)");
 		assert	blackBoxInvariants(this) :
 				new NeoSim4JavaException(
-						"BatteryStateModel.blackBoxInvariants(this)");
+						"WindTurbineStateModel.blackBoxInvariants(this)");
 	}
 	
 	
@@ -144,6 +141,7 @@ public class BatteryStateModel extends AtomicModel implements BatteryOperationI 
 			ArrayList<EventI> ret = new ArrayList<EventI>();
 			ret.add(this.toBeReemitted);
 			this.toBeReemitted = null;
+			
 			return ret;
 		} 
 		else 
@@ -158,42 +156,31 @@ public class BatteryStateModel extends AtomicModel implements BatteryOperationI 
 		assert	currentEvents != null && currentEvents.size() == 1;
 
 		this.toBeReemitted = (Event)currentEvents.get(0);
-		assert	this.toBeReemitted instanceof AbstractBatteryEvent;
+		assert this.toBeReemitted instanceof AbstractWindTurbineEvent;
 		this.toBeReemitted.executeOn(this);
 
 		assert	glassBoxInvariants(this) :
 				new NeoSim4JavaException(
-						"BatteryStateModel.glassBoxInvariants(this)");
+						"WindTurbineStateModel.glassBoxInvariants(this)");
 		assert	blackBoxInvariants(this) :
 				new NeoSim4JavaException(
-						"BatteryStateModel.blackBoxInvariants(this)");
+						"WindTurbineStateModel.blackBoxInvariants(this)");
 	}
 
 	@Override
-	public void endSimulation(Time endTime) {
-		this.logMessage("simulation ends.");
+	public void activate() {
+		this.currentState = WindTurbineState.ACTIVE;
 	}
 
 	@Override
-	public void setProduction() {
-		this.currentState = BATTERY_STATE.PRODUCT;
+	public void stop() {
+		this.currentState = WindTurbineState.STANDBY;
 	}
 
 	@Override
-	public void setConsumption() {
-		this.currentState = BATTERY_STATE.CONSUME;
-	}
-
-	@Override
-	public void setStandBy() {
-		this.currentState = BATTERY_STATE.STANDBY;
-	}
-
-	@Override
-	public BATTERY_STATE getCurrentState() {
+	public WindTurbineState getState() {
 		return this.currentState;
 	}
-
 	
 	// -------------------------------------------------------------------------
 	// Optional DEVS simulation protocol: simulation run parameters

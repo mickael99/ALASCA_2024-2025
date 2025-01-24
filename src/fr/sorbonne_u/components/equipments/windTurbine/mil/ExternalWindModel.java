@@ -16,9 +16,6 @@ import fr.sorbonne_u.devs_simulation.simulators.interfaces.AtomicSimulatorI;
 import fr.sorbonne_u.devs_simulation.utils.Pair;
 import fr.sorbonne_u.devs_simulation.utils.StandardLogger;
 
-@ModelExternalEvents(exported = {
-        SetWindSpeedEvent.class
-})
 @ModelExportedVariable(name = "externalWindSpeed", type = Double.class)
 public class ExternalWindModel extends AtomicHIOA {
 	

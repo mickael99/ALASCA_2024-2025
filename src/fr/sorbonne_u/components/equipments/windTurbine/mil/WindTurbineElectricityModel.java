@@ -2,11 +2,11 @@ package fr.sorbonne_u.components.equipments.windTurbine.mil;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
-
+import fr.sorbonne_u.components.equipments.windTurbine.WindTurbineI.WindTurbineState;
 import fr.sorbonne_u.components.equipments.windTurbine.mil.events.AbstractWindTurbineEvent;
-import fr.sorbonne_u.components.equipments.windTurbine.mil.events.SetWindSpeedEvent;
 import fr.sorbonne_u.components.equipments.windTurbine.mil.events.StartWindTurbineEvent;
 import fr.sorbonne_u.components.equipments.windTurbine.mil.events.StopWindTurbineEvent;
+import fr.sorbonne_u.devs_simulation.exceptions.NeoSim4JavaException;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ExportedVariable;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ImportedVariable;
 import fr.sorbonne_u.devs_simulation.hioa.models.AtomicHIOA;
@@ -18,27 +18,26 @@ import fr.sorbonne_u.devs_simulation.models.time.Duration;
 import fr.sorbonne_u.devs_simulation.models.time.Time;
 import fr.sorbonne_u.devs_simulation.simulators.interfaces.AtomicSimulatorI;
 import fr.sorbonne_u.devs_simulation.utils.StandardLogger;
+import fr.sorbonne_u.exceptions.InvariantChecking;
 
 @ModelExternalEvents(imported = {
-        SetWindSpeedEvent.class,
         StartWindTurbineEvent.class,
         StopWindTurbineEvent.class
 })
-public class WindTurbineElectricityModel extends AtomicHIOA {
+public class WindTurbineElectricityModel extends AtomicHIOA implements WindTurbineOperationI{
 
 	// -------------------------------------------------------------------------
-	// Attributes
+	// Constants and variables
 	// -------------------------------------------------------------------------
 	
 	private static final long serialVersionUID = 1L;
-	public static final String	URI = WindTurbineElectricityModel.class.getSimpleName();
-
-	public static enum WindTurbineState {
-		ACTIVE,
-		STANDBY
-	}
+	
+	public static final String MIL_URI = WindTurbineElectricityModel.class.getSimpleName() + "-MIL";
+	public static final String MIL_RT_URI = WindTurbineElectricityModel.class.getSimpleName() + "-MIL-RT";
+	public static final String SIL_URI = WindTurbineElectricityModel.class.getSimpleName() + "-SIL";
 	
     protected WindTurbineState currentState;
+    protected double totalProduction = 0.0;
     protected boolean hasChanged;
 
     @ImportedVariable(type = Double.class)
@@ -49,13 +48,68 @@ public class WindTurbineElectricityModel extends AtomicHIOA {
     
     
     // -------------------------------------------------------------------------
+ 	// Invariants
+ 	// -------------------------------------------------------------------------
+
+ 	protected static boolean glassBoxInvariants(WindTurbineElectricityModel instance) {
+ 		assert	instance != null :
+ 				new NeoSim4JavaException("Precondition violation: "
+ 						+ "instance != null");
+
+ 		boolean ret = true;
+ 		ret &= InvariantChecking.checkGlassBoxInvariant(
+ 					instance.totalProduction >= 0.0,
+ 					WindTurbineElectricityModel.class,
+ 					instance,
+ 					"totalProduction >= 0.0");
+ 		ret &= InvariantChecking.checkGlassBoxInvariant(
+ 					instance.currentState != null,
+ 					WindTurbineElectricityModel.class,
+ 					instance,
+ 					"currentState != null");
+ 		return ret;
+ 	}
+
+ 	protected static boolean blackBoxInvariants(WindTurbineElectricityModel instance) {
+ 		assert	instance != null :
+ 				new NeoSim4JavaException("Precondition violation: "
+ 						+ "instance != null");
+
+ 		boolean ret = true;
+ 		ret &= InvariantChecking.checkBlackBoxInvariant(
+ 					MIL_URI != null && !MIL_URI.isEmpty(),
+ 					WindTurbineElectricityModel.class,
+ 					instance,
+ 					"MIL_URI != null && !MIL_URI.isEmpty()");
+ 		ret &= InvariantChecking.checkBlackBoxInvariant(
+ 					MIL_RT_URI != null && !MIL_RT_URI.isEmpty(),
+ 					WindTurbineElectricityModel.class,
+ 					instance,
+ 					"MIL_RT_URI != null && !MIL_RT_URI.isEmpty()");
+ 		ret &= InvariantChecking.checkBlackBoxInvariant(
+ 					SIL_URI != null && !SIL_URI.isEmpty(),
+ 					WindTurbineElectricityModel.class,
+ 					instance,
+ 					"SIL_URI != null && !SIL_URI.isEmpty()");
+ 		return ret;
+ 	}
+    
+    // -------------------------------------------------------------------------
     // Constructors
     // -------------------------------------------------------------------------
     
     public WindTurbineElectricityModel(String uri, TimeUnit simulatedTimeUnit, AtomicSimulatorI simulationEngine) {
 		super(uri, simulatedTimeUnit, simulationEngine);
-		
 		this.getSimulationEngine().setLogger(new StandardLogger());
+		
+		this.currentState = WindTurbineStateModel.INITIAL_CURRENT_STATE;
+		
+		assert	glassBoxInvariants(this) :
+			new NeoSim4JavaException(
+					"WindTurbineStateModel.glassBoxInvariants(this)");
+		assert	blackBoxInvariants(this) :
+			new NeoSim4JavaException(
+					"WindTurbineStateModel.blackBoxInvariants(this)");
 	}
     
   
@@ -137,4 +191,18 @@ public class WindTurbineElectricityModel extends AtomicHIOA {
         logMessage("simulations ends!\n");
         super.endSimulation(endTime);
     }
+
+
+	@Override
+	public void activate() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void stop() {
+		// TODO Auto-generated method stub
+		
+	}
 }

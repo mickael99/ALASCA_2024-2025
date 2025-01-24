@@ -2,7 +2,7 @@ package fr.sorbonne_u.components.equipments.windTurbine;
 
 public interface WindTurbineI {
 	
-	public static enum STATE {
+	public static enum WindTurbineState {
 		ACTIVE,
 		STANDBY
 	}

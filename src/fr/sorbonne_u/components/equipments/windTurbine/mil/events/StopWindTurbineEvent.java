@@ -1,9 +1,11 @@
 package fr.sorbonne_u.components.equipments.windTurbine.mil.events;
 
-import fr.sorbonne_u.components.equipments.windTurbine.mil.WindTurbineElectricityModel;
+import fr.sorbonne_u.components.equipments.windTurbine.WindTurbineI.WindTurbineState;
+import fr.sorbonne_u.components.equipments.windTurbine.mil.WindTurbineOperationI;
 import fr.sorbonne_u.devs_simulation.models.events.EventI;
 import fr.sorbonne_u.devs_simulation.models.interfaces.AtomicModelI;
 import fr.sorbonne_u.devs_simulation.models.time.Time;
+import fr.sorbonne_u.exceptions.PreconditionException;
 
 public class StopWindTurbineEvent extends AbstractWindTurbineEvent {
 
@@ -15,18 +17,17 @@ public class StopWindTurbineEvent extends AbstractWindTurbineEvent {
 
 	@Override
     public boolean hasPriorityOver(EventI e) {
-        return false;
+        return true;
     }
 
     @Override
     public void executeOn(AtomicModelI model) {
-    	assert model instanceof WindTurbineElectricityModel;
-        WindTurbineElectricityModel m = (WindTurbineElectricityModel) model;
+    	assert model instanceof WindTurbineOperationI;
+    	WindTurbineOperationI w = (WindTurbineOperationI) model;
         
-        if(m.getState() == WindTurbineElectricityModel.WindTurbineState.ACTIVE) {
-            m.setState(WindTurbineElectricityModel.WindTurbineState.STANDBY);
-            
-            m.setHasChanged(true);
-        }
+    	assert w.getState() == WindTurbineState.ACTIVE:
+    		new PreconditionException("w.getState() == WindTurbineState.ACTIVE");
+    	
+    	w.stop();
     }
 }

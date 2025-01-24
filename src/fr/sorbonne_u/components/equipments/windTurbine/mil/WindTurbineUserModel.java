@@ -1,14 +1,17 @@
 package fr.sorbonne_u.components.equipments.windTurbine.mil;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.math3.random.RandomDataGenerator;
 
+import fr.sorbonne_u.components.cyphy.plugins.devs.AtomicSimulatorPlugin;
 import fr.sorbonne_u.components.equipments.windTurbine.mil.events.StartWindTurbineEvent;
 import fr.sorbonne_u.components.equipments.windTurbine.mil.events.StopWindTurbineEvent;
 import fr.sorbonne_u.devs_simulation.es.events.ES_EventI;
 import fr.sorbonne_u.devs_simulation.es.models.AtomicES_Model;
+import fr.sorbonne_u.devs_simulation.exceptions.MissingRunParameterException;
 import fr.sorbonne_u.devs_simulation.models.annotations.ModelExternalEvents;
 import fr.sorbonne_u.devs_simulation.models.events.EventI;
 import fr.sorbonne_u.devs_simulation.models.time.Duration;
@@ -28,7 +31,9 @@ public class WindTurbineUserModel extends AtomicES_Model {
 	
 	private static final long serialVersionUID = 1L;
 
-	public static final String URI = WindTurbineUserModel.class.getSimpleName();
+	public static final String MIL_URI = WindTurbineUserModel.class.getSimpleName() + "-MIL";
+	public static final String MIL_RT_URI = WindTurbineUserModel.class.getSimpleName() + "-MIL-RT";
+	public static final String SIL = WindTurbineUserModel.class.getSimpleName() + "-SIL";
 
     protected static double STEP_MEAN_DURATION = 1.0;
     protected RandomDataGenerator generator;
@@ -97,4 +102,13 @@ public class WindTurbineUserModel extends AtomicES_Model {
         logMessage("Simulation ends!\n");
         super.endSimulation(endTime);
     }
+    
+    @Override
+	public void setSimulationRunParameters(Map<String, Object> simParams) throws MissingRunParameterException {
+		if (simParams.containsKey(
+						AtomicSimulatorPlugin.OWNER_RUNTIME_PARAMETER_NAME)) 
+		{
+			this.getSimulationEngine().setLogger(AtomicSimulatorPlugin.createComponentLogger(simParams));
+		}
+	}
 }
