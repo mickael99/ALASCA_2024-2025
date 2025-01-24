@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import fr.sorbonne_u.components.CVMIntegrationTest;
 import fr.sorbonne_u.components.CoordinatorComponent;
 import fr.sorbonne_u.components.GlobalCoupledModel;
+import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.cyphy.AbstractCyPhyComponent;
 import fr.sorbonne_u.components.cyphy.plugins.devs.CoordinatorPlugin;
 import fr.sorbonne_u.components.cyphy.plugins.devs.SupervisorPlugin;
@@ -18,6 +19,7 @@ import fr.sorbonne_u.components.cyphy.plugins.devs.architectures.RTComponentAtom
 import fr.sorbonne_u.components.cyphy.plugins.devs.architectures.RTComponentCoupledModelDescriptor;
 import fr.sorbonne_u.components.cyphy.plugins.devs.architectures.RTComponentModelArchitecture;
 import fr.sorbonne_u.components.cyphy.utils.aclocks.AcceleratedAndSimulationClock;
+import fr.sorbonne_u.components.cyphy.utils.aclocks.ClocksServerWithSimulationCI;
 import fr.sorbonne_u.components.cyphy.utils.aclocks.ClocksServerWithSimulationConnector;
 import fr.sorbonne_u.components.cyphy.utils.aclocks.ClocksServerWithSimulationOutboundPort;
 import fr.sorbonne_u.components.equipments.windTurbine.CVM_WindTurbineUnitTest;
@@ -40,6 +42,7 @@ import fr.sorbonne_u.exceptions.InvariantException;
 import fr.sorbonne_u.exceptions.PreconditionException;
 import fr.sorbonne_u.utils.aclocks.ClocksServer;
 
+@RequiredInterfaces(required = {ClocksServerWithSimulationCI.class})
 public class WindTurbineTestsSupervisor extends AbstractCyPhyComponent {
 	// -------------------------------------------------------------------------
 	// Constants and variables

@@ -150,8 +150,7 @@ public class CVM_BatteryUnitTest extends AbstractCVM {
 		super.deploy();
 	}
 	
-	public static void	main(String[] args)
-	{
+	public static void	main(String[] args) {
 		VerboseException.VERBOSE = true;
 		VerboseException.PRINT_STACK_TRACE = true;
 		NeoSim4JavaException.VERBOSE = true;

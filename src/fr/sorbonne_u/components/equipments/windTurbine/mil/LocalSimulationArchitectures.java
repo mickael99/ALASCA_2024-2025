@@ -65,7 +65,6 @@ public class LocalSimulationArchitectures {
 
 			Set<String> submodels = new HashSet<String>();
 			submodels.add(WindTurbineElectricityModel.MIL_URI);
-	        submodels.add(WindTurbineUserModel.MIL_URI);
 	        submodels.add(ExternalWindModel.MIL_URI);
 	        submodels.add(WindTurbineStateModel.MIL_URI);
 

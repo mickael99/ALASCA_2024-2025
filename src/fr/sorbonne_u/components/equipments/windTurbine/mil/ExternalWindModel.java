@@ -170,7 +170,6 @@ public class ExternalWindModel extends AtomicHIOA {
 
         this.externalWindSpeed.setNewValue(windSpeed, this.getCurrentStateTime());
 
-        System.out.println("vitesse du vent -> " + windSpeed);
         // Tracing
         StringBuffer message = new StringBuffer("current external wind speed: ");
         message.append(this.externalWindSpeed.getValue());
