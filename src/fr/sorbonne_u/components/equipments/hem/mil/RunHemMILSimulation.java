@@ -53,7 +53,6 @@ import fr.sorbonne_u.components.equipments.smartLighting.mil.events.TurnOnSmartL
 import fr.sorbonne_u.components.equipments.windTurbine.mil.ExternalWindModel;
 import fr.sorbonne_u.components.equipments.windTurbine.mil.WindTurbineElectricityModel;
 import fr.sorbonne_u.components.equipments.windTurbine.mil.WindTurbineUserModel;
-import fr.sorbonne_u.components.equipments.windTurbine.mil.events.SetWindSpeedEvent;
 import fr.sorbonne_u.components.equipments.windTurbine.mil.events.StartWindTurbineEvent;
 import fr.sorbonne_u.components.equipments.windTurbine.mil.events.StopWindTurbineEvent;
 import fr.sorbonne_u.devs_simulation.architectures.Architecture;
@@ -196,30 +195,30 @@ public class RunHemMILSimulation {
             
             // Add Wind turbine
             atomicModelDescriptors.put(
-                    WindTurbineElectricityModel.URI,
+                    WindTurbineElectricityModel.MIL_URI,
                     AtomicHIOA_Descriptor.create(
                             WindTurbineElectricityModel.class,
-                            WindTurbineElectricityModel.URI,
+                            WindTurbineElectricityModel.MIL_URI,
                             TimeUnit.SECONDS,
                             null
                     )
             );
 
             atomicModelDescriptors.put(
-                    ExternalWindModel.URI,
+                    ExternalWindModel.MIL_URI,
                     AtomicHIOA_Descriptor.create(
                             ExternalWindModel.class,
-                            ExternalWindModel.URI,
+                            ExternalWindModel.MIL_URI,
                             TimeUnit.SECONDS,
                             null
                     )
             );
 
             atomicModelDescriptors.put(
-                    WindTurbineUserModel.URI,
+                    WindTurbineUserModel.MIL_URI,
                     AtomicModelDescriptor.create(
                             WindTurbineUserModel.class,
-                            WindTurbineUserModel.URI,
+                            WindTurbineUserModel.MIL_URI,
                             TimeUnit.SECONDS,
                             null
                     )
@@ -287,9 +286,9 @@ public class RunHemMILSimulation {
 			submodels.add(BatteryChargeLevelModel.MIL_URI);
 			submodels.add(BatteryUserModel.MIL_URI);
 			
-			submodels.add(WindTurbineElectricityModel.URI);
-			submodels.add(WindTurbineUserModel.URI);
-			submodels.add(ExternalWindModel.URI);
+			submodels.add(WindTurbineElectricityModel.MIL_URI);
+			submodels.add(WindTurbineUserModel.MIL_URI);
+			submodels.add(ExternalWindModel.MIL_URI);
 			
 			submodels.add(GeneratorElectricityModel.URI);
 	        submodels.add(GeneratorFuelModel.URI);
@@ -562,25 +561,19 @@ public class RunHemMILSimulation {
             
             // Add wind turbine events
             connections.put(
-                    new EventSource(WindTurbineUserModel.URI, StartWindTurbineEvent.class),
+                    new EventSource(WindTurbineUserModel.MIL_URI, StartWindTurbineEvent.class),
                     new EventSink[] {
-                            new EventSink(WindTurbineElectricityModel.URI, StartWindTurbineEvent.class)
+                            new EventSink(WindTurbineElectricityModel.MIL_URI, StartWindTurbineEvent.class)
                     }
             );
 
             connections.put(
-                    new EventSource(WindTurbineUserModel.URI, StopWindTurbineEvent.class),
+                    new EventSource(WindTurbineUserModel.MIL_URI, StopWindTurbineEvent.class),
                     new EventSink[] {
-                            new EventSink(WindTurbineElectricityModel.URI, StopWindTurbineEvent.class)
+                            new EventSink(WindTurbineElectricityModel.MIL_URI, StopWindTurbineEvent.class)
                     }
             );
-
-            connections.put(
-                    new EventSource(ExternalWindModel.URI, SetWindSpeedEvent.class),
-                    new EventSink[] {
-                            new EventSink(WindTurbineElectricityModel.URI, SetWindSpeedEvent.class)
-                    }
-            );    
+ 
             
             // Add generator
             connections.put(
@@ -713,16 +706,16 @@ public class RunHemMILSimulation {
 			bindings.put(
                     new VariableSource("externalWindSpeed",
                             Double.class,
-                            ExternalWindModel.URI),
+                            ExternalWindModel.MIL_URI),
                     new VariableSink[] {
                             new VariableSink("externalWindSpeed",
                                     Double.class,
-                                    WindTurbineElectricityModel.URI)
+                                    WindTurbineElectricityModel.MIL_URI)
                     });
 			bindings.put(
                     new VariableSource("currentProduction",
                             Double.class,
-                            WindTurbineElectricityModel.URI),
+                            WindTurbineElectricityModel.MIL_URI),
                     new VariableSink[] {
                             new VariableSink("currentWindTurbineProduction",
                                     Double.class,
