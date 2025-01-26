@@ -5,6 +5,7 @@ import java.util.concurrent.TimeUnit;
 
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ImportedVariable;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.InternalVariable;
+import fr.sorbonne_u.devs_simulation.hioa.annotations.ModelImportedVariable;
 import fr.sorbonne_u.devs_simulation.hioa.models.AtomicHIOA;
 import fr.sorbonne_u.devs_simulation.hioa.models.vars.Value;
 import fr.sorbonne_u.devs_simulation.models.events.EventI;
@@ -13,6 +14,8 @@ import fr.sorbonne_u.devs_simulation.models.time.Time;
 import fr.sorbonne_u.devs_simulation.simulators.interfaces.AtomicSimulatorI;
 import fr.sorbonne_u.devs_simulation.utils.StandardLogger;
 
+@ModelImportedVariable(name = "currentFridgeConsumption", type = Double.class)
+@ModelImportedVariable(name = "currentIronConsumption", type = Double.class)
 public class MeterElectricityModel extends AtomicHIOA {
 
 	// -------------------------------------------------------------------------
@@ -22,6 +25,12 @@ public class MeterElectricityModel extends AtomicHIOA {
     private static final long serialVersionUID = 1L;
 	
     public static final String URI = MeterElectricityModel.class.getSimpleName();
+	public static final String	MIL_URI = MeterElectricityModel.class.
+													getSimpleName() + "-MIL";
+	public static final String	MIL_RT_URI = MeterElectricityModel.class.
+													   getSimpleName() + "-MIL_RT";
+	public static final String	SIL_URI = MeterElectricityModel.class.
+													getSimpleName() + "-SIL";
 	protected static final double STEP = 0.1; // In seconds
 	protected final Duration evaluationStep;
 	

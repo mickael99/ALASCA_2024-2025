@@ -34,6 +34,12 @@ package fr.sorbonne_u.components.equipments.meter;
 
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
+import fr.sorbonne_u.components.utils.ExecutionType;
+import fr.sorbonne_u.components.utils.SimulationType;
+import fr.sorbonne_u.utils.aclocks.ClocksServer;
+
+import java.time.Instant;
+import java.util.concurrent.TimeUnit;
 
 // -----------------------------------------------------------------------------
 /**
@@ -55,6 +61,14 @@ import fr.sorbonne_u.components.cvm.AbstractCVM;
 public class			CVMUnitTest
 extends		AbstractCVM
 {
+	// -------------------------------------------------------------------------
+	// Constants and variables
+	// -------------------------------------------------------------------------
+	public static final long			DELAY_TO_START = 3000L;
+	public static final String			CLOCK_URI = "hem-clock";
+	public static final String			START_INSTANT =
+			"2023-11-22T00:00:00.00Z";
+
 	// -------------------------------------------------------------------------
 	// Constructors
 	// -------------------------------------------------------------------------
@@ -81,11 +95,34 @@ extends		AbstractCVM
 	{
 		AbstractComponent.createComponent(
 				ElectricMeter.class.getCanonicalName(),
-				new Object[]{});
+				new Object[]{ElectricMeter.REFLECTION_INBOUND_PORT_URI,
+							 ElectricMeter.ELECTRIC_METER_INBOUND_PORT_URI,
+							 ExecutionType.UNIT_TEST,
+							 SimulationType.NO_SIMULATION,
+							 "",
+							 "",
+							 TimeUnit.DAYS,
+							 0.0,
+							 CLOCK_URI});
 
 		AbstractComponent.createComponent(
 				ElectricMeterUnitTester.class.getCanonicalName(),
-				new Object[]{});
+				new Object[]{CLOCK_URI});
+
+		long unixEpochStartTimeInMillis =
+				System.currentTimeMillis() + DELAY_TO_START;
+
+		AbstractComponent.createComponent(
+				ClocksServer.class.getCanonicalName(),
+				new Object[]{
+						// URI of the clock to retrieve it
+						CLOCK_URI,
+						// start time in Unix epoch time
+						TimeUnit.MILLISECONDS.toNanos(
+								unixEpochStartTimeInMillis),
+						// start instant synchronised with the start time
+						Instant.parse(START_INSTANT),
+						1.0});
 
 		super.deploy();
 	}

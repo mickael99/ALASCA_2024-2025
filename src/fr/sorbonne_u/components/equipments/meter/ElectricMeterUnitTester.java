@@ -39,6 +39,7 @@ import fr.sorbonne_u.components.equipments.meter.connections.ElectricMeterOutbou
 import fr.sorbonne_u.components.equipments.meter.interfaces.ElectricMeterCI;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
+import fr.sorbonne_u.utils.aclocks.*;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -65,7 +66,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-@RequiredInterfaces(required={ElectricMeterCI.class})
+@RequiredInterfaces(required={ElectricMeterCI.class, ClocksServerCI.class})
 public class			ElectricMeterUnitTester
 extends		AbstractComponent
 {
@@ -81,6 +82,8 @@ extends		AbstractComponent
 	public static int			Y_RELATIVE_POSITION = 0;
 
 	protected ElectricMeterOutboundPort emop;
+
+	protected String	clockURI;
 
 	// -------------------------------------------------------------------------
 	// Constructors
@@ -98,9 +101,11 @@ extends		AbstractComponent
 	 *
 	 * @throws Exception	<i>to do</i>.
 	 */
-	protected			ElectricMeterUnitTester() throws Exception
+	protected			ElectricMeterUnitTester(String clockURI) throws Exception
 	{
 		super(1, 0);
+
+		this.clockURI = clockURI;
 
 		this.emop = new ElectricMeterOutboundPort(this);
 		this.emop.publishPort();
@@ -176,7 +181,25 @@ extends		AbstractComponent
 	@Override
 	public synchronized void	execute() throws Exception
 	{
+		ClocksServerOutboundPort clocksServerOutboundPort =
+				new ClocksServerOutboundPort(this);
+		clocksServerOutboundPort.publishPort();
+		this.doPortConnection(
+				clocksServerOutboundPort.getPortURI(),
+				ClocksServer.STANDARD_INBOUNDPORT_URI,
+				ClocksServerConnector.class.getCanonicalName());
+		this.logMessage("ElectricMeterUnitTester gets the clock.");
+		AcceleratedClock ac =
+				clocksServerOutboundPort.getClock(this.clockURI);
+		this.doPortDisconnection(clocksServerOutboundPort.getPortURI());
+		clocksServerOutboundPort.unpublishPort();
+
+		this.logMessage("ElectricMeterUnitTester waits until start time.");
+		ac.waitUntilStart();
+		this.logMessage("ElectricMeterUnitTester starts.");
+		this.logMessage("ElectricMeterUnitTester begins to perform tests.");
 		this.runAllTests();
+		this.logMessage("ElectricMeterUnitTester tests end.");
 	}
 
 	/**

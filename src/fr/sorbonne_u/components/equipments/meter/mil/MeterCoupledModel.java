@@ -18,6 +18,9 @@ public class MeterCoupledModel extends CoupledModel {
 	
 	private static final long serialVersionUID = 1L;
     public static final String URI = MeterCoupledModel.class.getSimpleName();
+	public static final String	MIL_URI = MeterCoupledModel.class.getSimpleName() + "-MIL";
+	public static final String	MIL_RT_URI = MeterCoupledModel.class.getSimpleName() + "-MIL_RT";
+	public static final String	SIL_URI = MeterCoupledModel.class.getSimpleName() + "-SIL";
 
     public MeterCoupledModel(String uri, TimeUnit simulatedTimeUnit, CoordinatorI simulationEngine, ModelI[] submodels,
 							 Map<Class<? extends EventI>, EventSink[]> imported, Map<Class<? extends EventI>, ReexportedEvent> reexported,
