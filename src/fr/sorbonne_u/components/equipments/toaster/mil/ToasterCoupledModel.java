@@ -44,4 +44,21 @@ public class ToasterCoupledModel extends CoupledModel {
                 imported, reexported, connections);
     }
 
+    public ToasterCoupledModel(
+            String uri,
+            TimeUnit simulatedTimeUnit,
+            CoordinatorI simulationEngine,
+            ModelI[] submodels,
+            Map<Class<? extends EventI>,EventSink[]> imported,
+            Map<Class<? extends EventI>,ReexportedEvent> reexported,
+            Map<EventSource,EventSink[]> connections,
+            Map<StaticVariableDescriptor,VariableSink[]> importedVars,
+            Map<VariableSource,StaticVariableDescriptor> reexportedVars,
+            Map<VariableSource,VariableSink[]> bindings
+                              ){
+        super(uri, simulatedTimeUnit, simulationEngine, submodels,
+                imported, reexported, connections, importedVars,
+                reexportedVars, bindings);
+    }
+
 }

@@ -51,9 +51,8 @@ public class CVM_ToasterUnitTest extends AbstractCVM {
 
     public static SimulationType	CURRENT_SIMULATION_TYPE =
             //SimulationType.NO_SIMULATION;
-            SimulationType.SIL_SIMULATION;
             //SimulationType.MIL_RT_SIMULATION;
-            //SimulationType.SIL_SIMULATION;
+            SimulationType.SIL_SIMULATION;
 
     public static String			CLOCK_URI = "hem-clock";
     /** start instant in test scenarios.									*/

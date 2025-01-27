@@ -36,9 +36,7 @@ public class RunToasterUnitaryMILRTSimulation {
                             ToasterStateModel.MIL_RT_URI,
                             TIME_UNIT,
                             null,
-                            ACCELERATION_FACTOR
-                                                  )
-                                      );
+                            ACCELERATION_FACTOR));
             atomicModelDescriptors.put(
                     ToasterElectricityModel.MIL_RT_URI,
                     RTAtomicModelDescriptor.create(
@@ -46,9 +44,7 @@ public class RunToasterUnitaryMILRTSimulation {
                             ToasterElectricityModel.MIL_RT_URI,
                             TIME_UNIT,
                             null,
-                            ACCELERATION_FACTOR
-                                                  )
-                                      );
+                            ACCELERATION_FACTOR));
             atomicModelDescriptors.put(
                     ToasterUnitTesterModel.MIL_RT_URI
                     , RTAtomicModelDescriptor.create(
@@ -56,12 +52,9 @@ public class RunToasterUnitaryMILRTSimulation {
                             ToasterUnitTesterModel.MIL_RT_URI,
                             TIME_UNIT,
                             null,
-                            ACCELERATION_FACTOR
-                                                    )
-                                      );
+                            ACCELERATION_FACTOR));
 
-            Map<String, CoupledModelDescriptor> coupledModelDescriptors =
-                    new HashMap<>();
+            Map<String, CoupledModelDescriptor> coupledModelDescriptors = new HashMap<>();
 
             // the set of submodels of the coupled model, given by their URIs
             Set<String> submodels = new HashSet<String>();
@@ -84,9 +77,15 @@ public class RunToasterUnitaryMILRTSimulation {
                     }
                            );
             connections.put(
+                    new EventSource(ToasterUnitTesterModel.MIL_RT_URI, TurnOffToaster.class),
+                    new EventSink[]{
+                            new EventSink(ToasterStateModel.MIL_RT_URI, TurnOffToaster.class)
+                    }
+                           );
+            connections.put(
                     new EventSource(ToasterStateModel.MIL_RT_URI, TurnOffToaster.class),
                     new EventSink[]{
-                            new EventSink(ToasterUnitTesterModel.MIL_RT_URI, TurnOffToaster.class)
+                            new EventSink(ToasterElectricityModel.MIL_RT_URI, TurnOffToaster.class)
                     }
                            );
             connections.put(
@@ -96,15 +95,9 @@ public class RunToasterUnitaryMILRTSimulation {
                     }
                            );
             connections.put(
-                    new EventSource(ToasterStateModel.MIL_RT_URI, SetToasterBrowningLevel.class),
+                    new EventSource(ToasterStateModel.MIL_RT_URI, TurnOnToaster.class),
                     new EventSink[]{
                             new EventSink(ToasterElectricityModel.MIL_RT_URI, TurnOnToaster.class)
-                    }
-                           );
-            connections.put(
-                    new EventSource(ToasterStateModel.MIL_RT_URI, TurnOffToaster.class),
-                    new EventSink[]{
-                            new EventSink(ToasterElectricityModel.MIL_RT_URI, TurnOffToaster.class)
                     }
                            );
 
@@ -122,8 +115,7 @@ public class RunToasterUnitaryMILRTSimulation {
                             null,
                             null,
                             ACCELERATION_FACTOR
-                    )
-                                       );
+                    ));
 
             Architecture architecture = new RTArchitecture(
                     ToasterCoupledModel.MIL_RT_URI,

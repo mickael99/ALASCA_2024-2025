@@ -8,6 +8,7 @@ import fr.sorbonne_u.components.equipments.toaster.mil.events.TurnOnToaster;
 import fr.sorbonne_u.devs_simulation.exceptions.MissingRunParameterException;
 import fr.sorbonne_u.devs_simulation.exceptions.NeoSim4JavaException;
 import fr.sorbonne_u.devs_simulation.hioa.models.AtomicHIOA;
+import fr.sorbonne_u.devs_simulation.models.AtomicModel;
 import fr.sorbonne_u.devs_simulation.models.annotations.ModelExternalEvents;
 import fr.sorbonne_u.devs_simulation.models.events.Event;
 import fr.sorbonne_u.devs_simulation.models.events.EventI;
@@ -21,17 +22,18 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-@ModelExternalEvents(imported = {
-        TurnOnToaster.class,
-        TurnOffToaster.class,
-        SetToasterBrowningLevel.class
-                                },
+@ModelExternalEvents(
+        imported = {
+            TurnOnToaster.class,
+            TurnOffToaster.class,
+            SetToasterBrowningLevel.class
+        },
         exported = {
-                TurnOnToaster.class,
-                TurnOffToaster.class,
-                SetToasterBrowningLevel.class
+            TurnOnToaster.class,
+            TurnOffToaster.class,
+            SetToasterBrowningLevel.class
         })
-public class ToasterStateModel extends AtomicHIOA implements ToasterOperationI {
+public class ToasterStateModel extends AtomicModel implements ToasterOperationI {
 
     // -------------------------------------------------------------------------
     // Inner classes
@@ -70,16 +72,6 @@ public class ToasterStateModel extends AtomicHIOA implements ToasterOperationI {
                 new NeoSim4JavaException("model is null");
 
         boolean ret = true;
-        ret &= InvariantChecking.checkGlassBoxInvariant(
-                model.currentState != null,
-                ToasterStateModel.class,
-                model,
-                "currentstate is null");
-        ret &= InvariantChecking.checkGlassBoxInvariant(
-                model.currentBrowningLevel != null,
-                ToasterStateModel.class,
-                model,
-                "currentbrowningLevel is null");
         return ret;
     }
 

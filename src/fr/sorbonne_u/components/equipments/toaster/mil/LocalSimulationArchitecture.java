@@ -137,17 +137,20 @@ public class LocalSimulationArchitecture {
         String toasterStateModelURI = null;
         String toasterElectricityModelURI = null;
         String toasterCoupledModelURI = null;
+        String toasterUnitTesterModelURI = null;
 
         switch (currentSimulationType) {
             case MIL_RT_SIMULATION:
                 toasterStateModelURI = ToasterStateModel.MIL_RT_URI;
                 toasterElectricityModelURI = ToasterElectricityModel.MIL_RT_URI;
                 toasterCoupledModelURI = ToasterCoupledModel.MIL_RT_URI;
+                toasterUnitTesterModelURI = ToasterUnitTesterModel.MIL_RT_URI;
                 break;
             case SIL_SIMULATION:
                 toasterStateModelURI = ToasterStateModel.SIL_URI;
                 toasterElectricityModelURI = ToasterElectricityModel.SIL_URI;
                 toasterCoupledModelURI = ToasterCoupledModel.SIL_URI;
+                toasterUnitTesterModelURI = ToasterUnitTesterModel.SIL_URI;
                 break;
             default:
         }

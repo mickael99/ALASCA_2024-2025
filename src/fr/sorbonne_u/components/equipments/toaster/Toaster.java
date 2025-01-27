@@ -10,7 +10,6 @@ import fr.sorbonne_u.components.cyphy.utils.aclocks.AcceleratedAndSimulationCloc
 import fr.sorbonne_u.components.cyphy.utils.aclocks.ClocksServerWithSimulationCI;
 import fr.sorbonne_u.components.cyphy.utils.aclocks.ClocksServerWithSimulationConnector;
 import fr.sorbonne_u.components.cyphy.utils.aclocks.ClocksServerWithSimulationOutboundPort;
-import fr.sorbonne_u.components.equipments.iron.mil.LocalSimulationArchitectures;
 import fr.sorbonne_u.components.equipments.toaster.mil.LocalSimulationArchitecture;
 import fr.sorbonne_u.components.equipments.toaster.mil.ToasterStateModel;
 import fr.sorbonne_u.components.equipments.toaster.mil.events.SetToasterBrowningLevel;
@@ -26,7 +25,6 @@ import fr.sorbonne_u.devs_simulation.models.events.EventInformationI;
 import fr.sorbonne_u.devs_simulation.models.time.Duration;
 import fr.sorbonne_u.devs_simulation.models.time.Time;
 import fr.sorbonne_u.exceptions.*;
-import fr.sorbonne_u.utils.aclocks.AcceleratedClock;
 import fr.sorbonne_u.utils.aclocks.ClocksServer;
 
 import java.util.HashMap;
@@ -110,12 +108,12 @@ public class Toaster extends AbstractCyPhyComponent implements ToasterImplementa
 				t,
 				"!currentExecutionType.isStandard() || currentSimulationType.isNoSimulation()");
 		ret &= InvariantChecking.checkGlassBoxInvariant(
-				t.currentSimulationType.isNoSimulation() || (t.globalArchitectureURI != null && t.globalArchitectureURI.isEmpty()),
+				t.currentSimulationType.isNoSimulation() || (t.globalArchitectureURI != null && !t.globalArchitectureURI.isEmpty()),
 				Toaster.class,
 				t,
 				"currentSimulationType.isNoSimulation() || (globalArchitectureURI != null && globalArchitectureURI.isEmpty())");
 		ret &= InvariantChecking.checkGlassBoxInvariant(
-				t.currentSimulationType.isNoSimulation() || (t.localArchitectureURI != null && t.localArchitectureURI.isEmpty()),
+				t.currentSimulationType.isNoSimulation() || (t.localArchitectureURI != null && !t.localArchitectureURI.isEmpty()),
 				Toaster.class,
 				t,
 				"currentSimulationType.isNoSimulation() || (localArchitectureURI != null && localArchitectureURI.isEmpty())");
@@ -235,7 +233,7 @@ public class Toaster extends AbstractCyPhyComponent implements ToasterImplementa
 		this.initialise(toasterInboundPortURI);
 
 		assert Toaster.glassBoxInvariants(this):
-			new ImplementationInvariantException("Toaster: glassBoxInvariants(this)");
+			new InvariantException("Toaster constructor: glassBoxInvariants(this)");
 		assert Toaster.blackBoxInvariants(this):
 			new InvariantException("Toaster: blackBoxInvariants(this)");
 	}
