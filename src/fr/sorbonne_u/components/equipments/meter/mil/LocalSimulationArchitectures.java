@@ -32,10 +32,10 @@ public abstract class LocalSimulationArchitectures {
                 new HashMap<>();
 
         atomicModelDescriptors.put(
-                MeterElectricityModel.MIL_URI,
+                ElectricMeterElectricityModel.MIL_URI,
                 AtomicHIOA_Descriptor.create(
-                        MeterElectricityModel.class,
-                        MeterElectricityModel.MIL_URI,
+                        ElectricMeterElectricityModel.class,
+                        ElectricMeterElectricityModel.MIL_URI,
                         simulatedTimeUnit,
                         null));
 
@@ -75,7 +75,7 @@ public abstract class LocalSimulationArchitectures {
                 new HashMap<>();
 
         Set<String> submodels = new HashSet<String>();
-        submodels.add(MeterElectricityModel.MIL_URI);
+        submodels.add(ElectricMeterElectricityModel.MIL_URI);
         submodels.add(FridgeElectricityModel.MIL_URI);
         submodels.add(IronElectricityModel.MIL_URI);
 
@@ -125,6 +125,8 @@ public abstract class LocalSimulationArchitectures {
                                 SwitchOnFridge.class
                         )
                 });
+        
+        
         imported.put(
                 DisableEnergySavingModeIron.class,
                 new EventSink[]{
@@ -188,21 +190,21 @@ public abstract class LocalSimulationArchitectures {
                 new VariableSink[]{
                         new VariableSink("currentFridgeIntensity",
                                          Double.class,
-                                         MeterElectricityModel.MIL_URI)
+                                         ElectricMeterElectricityModel.MIL_URI)
                 });
         bindings.put(
                 new VariableSource("currentIntensity", Double.class, IronElectricityModel.MIL_URI),
                 new VariableSink[]{
                         new VariableSink("currentIronIntensity",
                                          Double.class,
-                                         MeterElectricityModel.MIL_URI)
+                                         ElectricMeterElectricityModel.MIL_URI)
                 });
 
         coupledModelDescriptors.put(
-                MeterElectricityModel.MIL_URI,
+                ElectricMeterElectricityModel.MIL_URI,
                 new CoupledHIOA_Descriptor(
-                        MeterCoupledModel.class,
-                        MeterCoupledModel.MIL_URI,
+                        ElectricMeterCoupledModel.class,
+                        ElectricMeterCoupledModel.MIL_URI,
                         submodels,
                         imported,
                         null,
@@ -216,7 +218,7 @@ public abstract class LocalSimulationArchitectures {
 
         Architecture architecture = new Architecture(
                 architectureURI,
-                MeterCoupledModel.MIL_URI,
+                ElectricMeterCoupledModel.MIL_URI,
                 atomicModelDescriptors,
                 coupledModelDescriptors,
                 simulatedTimeUnit);
@@ -238,18 +240,18 @@ public abstract class LocalSimulationArchitectures {
 
         switch (currentSimulationType) {
             case MIL_RT_SIMULATION:
-                electricMeterElectricityModelURI = MeterElectricityModel.MIL_RT_URI;
-                electricMeterElectricityModelClass = MeterElectricityModel.class;
+                electricMeterElectricityModelURI = ElectricMeterElectricityModel.MIL_RT_URI;
+                electricMeterElectricityModelClass = ElectricMeterElectricityModel.class;
                 fridgeElectricityModelURI = FridgeElectricityModel.MIL_RT_URI;
                 ironElectricityModelURI = IronElectricityModel.MIL_RT_URI;
-                electricMeterCoupledModelURI = MeterCoupledModel.MIL_RT_URI;
+                electricMeterCoupledModelURI = ElectricMeterCoupledModel.MIL_RT_URI;
                 break;
             case SIL_SIMULATION:
-                electricMeterElectricityModelURI = MeterElectricityModel.SIL_URI;
-                electricMeterElectricityModelClass = MeterElectricitySILModel.class;
+                electricMeterElectricityModelURI = ElectricMeterElectricitySILModel.SIL_URI;
+                electricMeterElectricityModelClass = ElectricMeterElectricitySILModel.class;
                 fridgeElectricityModelURI = FridgeElectricityModel.SIL_URI;
                 ironElectricityModelURI = IronElectricityModel.SIL_URI;
-                electricMeterCoupledModelURI = MeterCoupledModel.SIL_URI;
+                electricMeterCoupledModelURI = ElectricMeterCoupledModel.SIL_URI;
                 break;
             default:
         }
@@ -269,6 +271,14 @@ public abstract class LocalSimulationArchitectures {
                 RTAtomicHIOA_Descriptor.create(
                         IronElectricityModel.class,
                         ironElectricityModelURI,
+                        simulatedTimeUnit,
+                        null,
+                        accelerationFactor));
+        atomicModelDescriptors.put(
+        		electricMeterElectricityModelURI,
+                RTAtomicHIOA_Descriptor.create(
+                		electricMeterElectricityModelClass,
+                        electricMeterElectricityModelURI,
                         simulatedTimeUnit,
                         null,
                         accelerationFactor));
@@ -327,6 +337,8 @@ public abstract class LocalSimulationArchitectures {
                                 SwitchOnFridge.class
                         )
                 });
+        
+        
         imported.put(
                 DisableEnergySavingModeIron.class,
                 new EventSink[]{
@@ -401,7 +413,7 @@ public abstract class LocalSimulationArchitectures {
         coupledModelDescriptors.put(
                 electricMeterElectricityModelURI,
                 new RTCoupledHIOA_Descriptor(
-                        MeterCoupledModel.class,
+                        ElectricMeterCoupledModel.class,
                         electricMeterCoupledModelURI,
                         submodels,
                         imported,

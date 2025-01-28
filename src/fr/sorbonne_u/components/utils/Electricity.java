@@ -19,4 +19,8 @@ public class Electricity {
 		double h = toHours(d);
 		return h*i/1000.0;
 	}
+	
+	public static double computeProduction(Duration d, double i) {
+		return computeConsumption(d, i);
+	}
 }

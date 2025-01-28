@@ -39,7 +39,7 @@ import fr.sorbonne_u.components.equipments.iron.mil.events.EnableLinenModeIron;
 import fr.sorbonne_u.components.equipments.iron.mil.events.EnableSteamModeIron;
 import fr.sorbonne_u.components.equipments.iron.mil.events.TurnOffIron;
 import fr.sorbonne_u.components.equipments.iron.mil.events.TurnOnIron;
-import fr.sorbonne_u.components.equipments.meter.mil.MeterElectricityModel;
+import fr.sorbonne_u.components.equipments.meter.mil.ElectricMeterElectricityModel;
 import fr.sorbonne_u.components.equipments.smartLighting.mil.ExternalIlluminanceModel;
 import fr.sorbonne_u.components.equipments.smartLighting.mil.SmartLightingElectricityModel;
 import fr.sorbonne_u.components.equipments.smartLighting.mil.SmartLightingIlluminanceModel;
@@ -257,10 +257,10 @@ public class RunHemMILSimulation {
             
             // Add Metter
             atomicModelDescriptors.put(
-                    MeterElectricityModel.URI,
+                    ElectricMeterElectricityModel.URI,
                     AtomicHIOA_Descriptor.create(
-                            MeterElectricityModel.class,
-                            MeterElectricityModel.URI,
+                            ElectricMeterElectricityModel.class,
+                            ElectricMeterElectricityModel.URI,
                             TimeUnit.SECONDS,
                             null
                     )
@@ -294,7 +294,7 @@ public class RunHemMILSimulation {
 	        submodels.add(GeneratorFuelModel.URI);
 	        submodels.add(GeneratorUserModel.URI);
 	        
-			submodels.add(MeterElectricityModel.URI);
+			submodels.add(ElectricMeterElectricityModel.URI);
 
             Map<EventSource, EventSink[]> connections = new HashMap<>();
 
@@ -609,7 +609,7 @@ public class RunHemMILSimulation {
 			 new VariableSink[] {
 					 new VariableSink("currentIronConsumption",
 							 		  Double.class,
-							 		  MeterElectricityModel.URI)
+							 		  ElectricMeterElectricityModel.URI)
 			 }); 
             
             // Add fridge bindings
@@ -636,7 +636,7 @@ public class RunHemMILSimulation {
 			new VariableSink[] {
 					new VariableSink("currentFridgeConsumption",
 							 		  Double.class,
-							 		  MeterElectricityModel.URI)
+							 		  ElectricMeterElectricityModel.URI)
 			}); 
 			
 			// Add smart lighting bindings
@@ -676,7 +676,7 @@ public class RunHemMILSimulation {
                             new VariableSink(
                                     "currentSmartLightingConsumption",
                                     Double.class,
-                                    MeterElectricityModel.URI
+                                    ElectricMeterElectricityModel.URI
                             )
                     });
 			
@@ -691,14 +691,14 @@ public class RunHemMILSimulation {
 			bindings.put(
                     new VariableSource("currentProduction", Double.class, BatteryElectricityModel.MIL_URI),
                     new VariableSink[] {
-                            new VariableSink("currentBatteryProduction", Double.class, MeterElectricityModel.URI)
+                            new VariableSink("currentBatteryProduction", Double.class, ElectricMeterElectricityModel.URI)
                     }
             );
 			
 			bindings.put(
                     new VariableSource("currentConsumption", Double.class, BatteryElectricityModel.MIL_URI),
                     new VariableSink[] {
-                            new VariableSink("currentBatteryConsumption", Double.class, MeterElectricityModel.URI)
+                            new VariableSink("currentBatteryConsumption", Double.class, ElectricMeterElectricityModel.URI)
                     }
             ); 
 
@@ -719,7 +719,7 @@ public class RunHemMILSimulation {
                     new VariableSink[] {
                             new VariableSink("currentWindTurbineProduction",
                                     Double.class,
-                                    MeterElectricityModel.URI)
+                                    ElectricMeterElectricityModel.URI)
                     });
 			
 			// Add generator bindings
@@ -732,7 +732,7 @@ public class RunHemMILSimulation {
 			bindings.put(
 	                new VariableSource("currentProduction", Double.class, GeneratorElectricityModel.URI),
 	                new VariableSink[] {
-	                        new VariableSink("currentGeneratorProduction", Double.class, MeterElectricityModel.URI)
+	                        new VariableSink("currentGeneratorProduction", Double.class, ElectricMeterElectricityModel.URI)
 	                }
 	        );
 			

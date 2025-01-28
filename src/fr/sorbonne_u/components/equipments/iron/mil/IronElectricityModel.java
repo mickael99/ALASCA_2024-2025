@@ -11,6 +11,7 @@ import fr.sorbonne_u.components.utils.Electricity;
 import fr.sorbonne_u.devs_simulation.exceptions.MissingRunParameterException;
 import fr.sorbonne_u.devs_simulation.exceptions.NeoSim4JavaException;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ExportedVariable;
+import fr.sorbonne_u.devs_simulation.hioa.annotations.ModelExportedVariable;
 import fr.sorbonne_u.devs_simulation.hioa.models.AtomicHIOA;
 import fr.sorbonne_u.devs_simulation.hioa.models.vars.Value;
 import fr.sorbonne_u.devs_simulation.models.annotations.ModelExternalEvents;
@@ -35,6 +36,7 @@ import fr.sorbonne_u.components.equipments.iron.mil.events.*;
 								 EnableLinenModeIron.class,
 								 TurnOnIron.class,
 								 TurnOffIron.class})
+@ModelExportedVariable(name = "currentIntensity", type = Double.class)
 public class IronElectricityModel extends AtomicHIOA implements IronOperationI {
 
 	// -------------------------------------------------------------------------
