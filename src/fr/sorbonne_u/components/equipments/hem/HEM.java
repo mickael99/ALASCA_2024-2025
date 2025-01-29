@@ -19,7 +19,10 @@ import fr.sorbonne_u.components.equipments.hem.registration.RegistrationInboundP
 import fr.sorbonne_u.components.equipments.meter.ElectricMeter;
 import fr.sorbonne_u.components.equipments.meter.connections.ElectricMeterConnector;
 import fr.sorbonne_u.components.equipments.meter.connections.ElectricMeterOutboundPort;
+import fr.sorbonne_u.components.equipments.windTurbine.WindTurbine;
 import fr.sorbonne_u.components.equipments.windTurbine.WindTurbineCI;
+import fr.sorbonne_u.components.equipments.windTurbine.WindTurbineConnector;
+import fr.sorbonne_u.components.equipments.windTurbine.WindTurbineOutboundPort;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
 import fr.sorbonne_u.components.utils.SimulationType;
@@ -57,7 +60,7 @@ public class HEM extends AbstractComponent implements RegistrationI {
 	protected AdjustableOutboundPort controlFridgeOutboundPort;
 	//protected AdjustableOutboundPort controlSmartLightingPort;
 	//protected BatteryOutboundPort batteryOutboundPort;
-	//protected WindTurbineOutboundPort windTurbineOutboundPort;
+	protected WindTurbineOutboundPort windTurbineOutboundPort;
 	//protected GeneratorHEMOutboundPort generatorHEMOutboundPort;
 	
 	
@@ -171,10 +174,19 @@ public class HEM extends AbstractComponent implements RegistrationI {
 
 			this.controlFridgeOutboundPort = new AdjustableOutboundPort(this);
 			this.controlFridgeOutboundPort.publishPort();
+			
+			this.windTurbineOutboundPort = new WindTurbineOutboundPort(this);
+			this.windTurbineOutboundPort.publishPort();
+			
 			this.doPortConnection(
 					this.controlFridgeOutboundPort.getPortURI(),
 					Fridge.EXTERNAL_CONTROL_INBOUND_PORT_URI,
 					FridgeConnector.class.getCanonicalName());
+			
+			this.doPortConnection(
+					this.windTurbineOutboundPort.getPortURI(),
+					WindTurbine.INBOUND_PORT_URI,
+					WindTurbineConnector.class.getCanonicalName());
 		} catch (Exception e) {
 			throw new ComponentStartException(e) ;
 		}
@@ -208,6 +220,8 @@ public class HEM extends AbstractComponent implements RegistrationI {
 			Instant first = ac.getSimulationStartInstant().plusSeconds(600L);
 			Instant end = ac.getSimulationEndInstant().minusSeconds(600L);
 			this.logMessage("HEM schedules the SIL integration test.");
+			
+			//this.windTurbineOutboundPort.activate(); //emergency
 			this.loop(first, end, ac);
 		} else {
 			Instant meterTest = ac.getStartInstant().plusSeconds(60L);
@@ -310,6 +324,33 @@ public class HEM extends AbstractComponent implements RegistrationI {
 								traceMessage("Fridge current mode is? " +
 												controlFridgeOutboundPort.currentMode() + "\n");
 								traceMessage("HEM fridge third call ends.\n");
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					}, delay, TimeUnit.NANOSECONDS);
+			
+			// Wind turbine
+			Instant windTurbine = ac.getStartInstant().plusSeconds(300L);
+			delay = ac.nanoDelayUntilInstant(windTurbine);
+			this.logMessage("HEM schedules the wind turbine call in "
+										+ delay + " " + TimeUnit.NANOSECONDS);
+			this.scheduleTaskOnComponent(
+					new AbstractComponent.AbstractTask() {
+						@Override
+						public void run() {
+							try {
+								traceMessage("HEM wind turbine call begins.\n");
+								traceMessage("Shouldn't be activate " +
+												windTurbineOutboundPort.isActivate() + "\n");
+								windTurbineOutboundPort.activate();
+								traceMessage("Should be activate " +
+										windTurbineOutboundPort.isActivate() + "\n");
+								windTurbineOutboundPort.stop();
+								traceMessage("Shouldn't be activate " +
+										windTurbineOutboundPort.isActivate() + "\n");
+								windTurbineOutboundPort.activate();
+								traceMessage("HEM wind turbine call ends.\n");
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
