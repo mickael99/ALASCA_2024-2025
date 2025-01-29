@@ -125,6 +125,7 @@ implements	ElectricMeterCI
 	@Override
 	public SensorData<Measure<Double>>	getCurrentConsumption() throws Exception
 	{
+		System.out.println("je suis dans le port externe");
 		return ((ElectricMeterCI)this.getConnector()).getCurrentConsumption();
 	}
 

@@ -12,6 +12,7 @@ import fr.sorbonne_u.utils.aclocks.*;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+
 @RequiredInterfaces(required={ElectricMeterCI.class, ClocksServerCI.class})
 public class ElectricMeterUnitTester extends AbstractComponent {
 	// -------------------------------------------------------------------------
@@ -52,9 +53,9 @@ public class ElectricMeterUnitTester extends AbstractComponent {
 	protected void testGetCurrentConsumption() {
 		this.traceMessage("testGetCurrentConsumption()...\n");
 		try {
-			this.traceMessage("Electric meter current consumption? " +
-									this.outboundPort.getCurrentConsumption() + "\n");
+			this.outboundPort.getCurrentConsumption();
 		} catch (Exception e) {
+			System.out.println("ko");
 			this.traceMessage("...KO.\n");
 			assertTrue(false);
 		}
@@ -64,8 +65,6 @@ public class ElectricMeterUnitTester extends AbstractComponent {
 	protected void testGetCurrentProduction() {
 		this.traceMessage("testGetCurrentProduction()...\n");
 		try {
-			this.traceMessage("Electric meter current production? " +
-									this.outboundPort.getCurrentProduction() + "\n");
 		} catch (Exception e) {
 			this.traceMessage("...KO.\n");
 			assertTrue(false);

@@ -41,54 +41,53 @@ public class ComponentSimulationArchitectures {
 
 		/* 				ATOMIC DESCRIPTORS			*/
 		
-		Map<String,AbstractAtomicModelDescriptor> atomicModelDescriptors =
-															new HashMap<>();
+		Map<String,AbstractAtomicModelDescriptor> atomicModelDescriptors = new HashMap<>();
 
 		// Iron
-		atomicModelDescriptors.put(
-				IronStateModel.MIL_URI,
-				ComponentAtomicModelDescriptor.create(
-						IronStateModel.MIL_URI,
-						(Class<? extends EventI>[]) new Class<?>[]{
-							DisableEnergySavingModeIron.class,
-							DisableSteamModeIron.class,
-							EnableCottonModeIron.class,
-							EnableDelicateModeIron.class,
-							EnableEnergySavingModeIron.class,
-							EnableLinenModeIron.class,
-							EnableSteamModeIron.class,
-							TurnOffIron.class,
-							TurnOnIron.class},
-						(Class<? extends EventI>[]) new Class<?>[]{
-							DisableEnergySavingModeIron.class,
-							DisableSteamModeIron.class,
-							EnableCottonModeIron.class,
-							EnableDelicateModeIron.class,
-							EnableEnergySavingModeIron.class,
-							EnableLinenModeIron.class,
-							EnableSteamModeIron.class,
-							TurnOffIron.class,
-							TurnOnIron.class},
-						simulatedTimeUnit,
-						Iron.REFLECTION_INBOUND_PORT_URI
-						));
-		atomicModelDescriptors.put(
-				IronUserModel.MIL_URI,
-				ComponentAtomicModelDescriptor.create(
-						IronUserModel.MIL_URI,
-						(Class<? extends EventI>[]) new Class<?>[]{},
-						(Class<? extends EventI>[]) new Class<?>[]{
-							DisableEnergySavingModeIron.class,
-							DisableSteamModeIron.class,
-							EnableCottonModeIron.class,
-							EnableDelicateModeIron.class,
-							EnableEnergySavingModeIron.class,
-							EnableLinenModeIron.class,
-							EnableSteamModeIron.class,
-							TurnOffIron.class,
-							TurnOnIron.class},
-						simulatedTimeUnit,
-						IronUser.REFLECTION_INBOUND_PORT_URI));
+//		atomicModelDescriptors.put(
+//				IronStateModel.MIL_URI,
+//				ComponentAtomicModelDescriptor.create(
+//						IronStateModel.MIL_URI,
+//						(Class<? extends EventI>[]) new Class<?>[]{
+//							DisableEnergySavingModeIron.class,
+//							DisableSteamModeIron.class,
+//							EnableCottonModeIron.class,
+//							EnableDelicateModeIron.class,
+//							EnableEnergySavingModeIron.class,
+//							EnableLinenModeIron.class,
+//							EnableSteamModeIron.class,
+//							TurnOffIron.class,
+//							TurnOnIron.class},
+//						(Class<? extends EventI>[]) new Class<?>[]{
+//							DisableEnergySavingModeIron.class,
+//							DisableSteamModeIron.class,
+//							EnableCottonModeIron.class,
+//							EnableDelicateModeIron.class,
+//							EnableEnergySavingModeIron.class,
+//							EnableLinenModeIron.class,
+//							EnableSteamModeIron.class,
+//							TurnOffIron.class,
+//							TurnOnIron.class},
+//						simulatedTimeUnit,
+//						Iron.REFLECTION_INBOUND_PORT_URI
+//						));
+//		atomicModelDescriptors.put(
+//				IronUserModel.MIL_URI,
+//				ComponentAtomicModelDescriptor.create(
+//						IronUserModel.MIL_URI,
+//						(Class<? extends EventI>[]) new Class<?>[]{},
+//						(Class<? extends EventI>[]) new Class<?>[]{
+//							DisableEnergySavingModeIron.class,
+//							DisableSteamModeIron.class,
+//							EnableCottonModeIron.class,
+//							EnableDelicateModeIron.class,
+//							EnableEnergySavingModeIron.class,
+//							EnableLinenModeIron.class,
+//							EnableSteamModeIron.class,
+//							TurnOffIron.class,
+//							TurnOnIron.class},
+//						simulatedTimeUnit,
+//						IronUser.REFLECTION_INBOUND_PORT_URI));
 
 		// Fridge
 		atomicModelDescriptors.put(
@@ -130,46 +129,47 @@ public class ComponentSimulationArchitectures {
 						FridgeUser.REFLECTION_INBOUND_PORT_URI));
 
 		// Electric Metter
-		atomicModelDescriptors.put(
-				ElectricMeterCoupledModel.MIL_URI,
-				ComponentAtomicModelDescriptor.create(
-						ElectricMeterCoupledModel.MIL_URI,
-						(Class<? extends EventI>[]) new Class<?>[]{
-							CloseDoorFridge.class,
-							CoolFridge.class,
-							DoNotCoolFridge.class,
-							OpenDoorFridge.class,
-							SetPowerFridge.class,
-							SwitchOffFridge.class,
-							SwitchOnFridge.class,
+//		atomicModelDescriptors.put(
+//				ElectricMeterCoupledModel.MIL_URI,
+//				ComponentAtomicModelDescriptor.create(
+//						ElectricMeterCoupledModel.MIL_URI,
+//						(Class<? extends EventI>[]) new Class<?>[]{
+//							CloseDoorFridge.class,
+//							CoolFridge.class,
+//							DoNotCoolFridge.class,
+//							OpenDoorFridge.class,
+//							SetPowerFridge.class,
+//							SwitchOffFridge.class,
+//							SwitchOnFridge.class
 							
-							DisableEnergySavingModeIron.class,
-							DisableSteamModeIron.class,
-							EnableCottonModeIron.class,
-							EnableDelicateModeIron.class,
-							EnableEnergySavingModeIron.class,
-							EnableLinenModeIron.class,
-							EnableSteamModeIron.class,
-							TurnOffIron.class,
-							TurnOnIron.class},
-						(Class<? extends EventI>[]) new Class<?>[]{},
-						simulatedTimeUnit,
-						ElectricMeter.REFLECTION_INBOUND_PORT_URI));
+//							DisableEnergySavingModeIron.class,
+//							DisableSteamModeIron.class,
+//							EnableCottonModeIron.class,
+//							EnableDelicateModeIron.class,
+//							EnableEnergySavingModeIron.class,
+//							EnableLinenModeIron.class,
+//							EnableSteamModeIron.class,
+//							TurnOffIron.class,
+//							TurnOnIron.class
+//							},
+//						(Class<? extends EventI>[]) new Class<?>[]{},
+//						simulatedTimeUnit,
+//						ElectricMeter.REFLECTION_INBOUND_PORT_URI));
 
 		Map<String,CoupledModelDescriptor> coupledModelDescriptors = new HashMap<>();
 
 		/* 				SUBMODELS			*/
 		Set<String> submodels = new HashSet<String>();
 		// Iron
-		submodels.add(IronStateModel.MIL_URI);
-		submodels.add(IronUserModel.MIL_URI);
+//		submodels.add(IronStateModel.MIL_URI);
+//		submodels.add(IronUserModel.MIL_URI);
 		
 		// Fridge
 		submodels.add(FridgeCoupledModel.MIL_URI);
 		submodels.add(FridgeUnitTestModel.MIL_URI);
 		
 		// Electric Metter
-		submodels.add(ElectricMeterCoupledModel.MIL_URI);
+//		submodels.add(ElectricMeterCoupledModel.MIL_URI);
 
 		
 		/* 				CONNECTIONS			*/
@@ -177,135 +177,135 @@ public class ComponentSimulationArchitectures {
 		Map<EventSource,EventSink[]> connections = new HashMap<EventSource,EventSink[]>();
 		
 		// IronUser -> IronState
-		connections.put(
-			new EventSource(IronUserModel.MIL_URI,
-					TurnOnIron.class),
-			new EventSink[] {
-				new EventSink(IronStateModel.MIL_URI,
-						TurnOnIron.class)
-			});
-		connections.put(
-			new EventSource(IronUserModel.MIL_URI,
-					TurnOffIron.class),
-			new EventSink[] {
-				new EventSink(IronStateModel.MIL_URI,
-						TurnOffIron.class)
-			});
-		connections.put(
-			new EventSource(IronUserModel.MIL_URI,
-					DisableEnergySavingModeIron.class),
-			new EventSink[] {
-				new EventSink(IronStateModel.MIL_URI,
-							DisableEnergySavingModeIron.class)
-			});
-		connections.put(
-			new EventSource(IronUserModel.MIL_URI,
-					DisableSteamModeIron.class),
-			new EventSink[] {
-				new EventSink(IronStateModel.MIL_URI,
-						DisableSteamModeIron.class)
-			});
-		connections.put(
-				new EventSource(IronUserModel.MIL_URI,
-						EnableCottonModeIron.class),
-				new EventSink[] {
-					new EventSink(IronStateModel.MIL_URI,
-							EnableCottonModeIron.class)
-				});
-		connections.put(
-				new EventSource(IronUserModel.MIL_URI,
-						EnableDelicateModeIron.class),
-				new EventSink[] {
-					new EventSink(IronStateModel.MIL_URI,
-							EnableDelicateModeIron.class)
-				});
-		connections.put(
-				new EventSource(IronUserModel.MIL_URI,
-						EnableLinenModeIron.class),
-				new EventSink[] {
-					new EventSink(IronStateModel.MIL_URI,
-							EnableLinenModeIron.class)
-				});
-		connections.put(
-				new EventSource(IronUserModel.MIL_URI,
-						EnableEnergySavingModeIron.class),
-				new EventSink[] {
-					new EventSink(IronStateModel.MIL_URI,
-							EnableEnergySavingModeIron.class)
-				});
-		connections.put(
-				new EventSource(IronUserModel.MIL_URI,
-						EnableSteamModeIron.class),
-				new EventSink[] {
-					new EventSink(IronStateModel.MIL_URI,
-							EnableSteamModeIron.class)
-				});
+//		connections.put(
+//			new EventSource(IronUserModel.MIL_URI,
+//					TurnOnIron.class),
+//			new EventSink[] {
+//				new EventSink(IronStateModel.MIL_URI,
+//						TurnOnIron.class)
+//			});
+//		connections.put(
+//			new EventSource(IronUserModel.MIL_URI,
+//					TurnOffIron.class),
+//			new EventSink[] {
+//				new EventSink(IronStateModel.MIL_URI,
+//						TurnOffIron.class)
+//			});
+//		connections.put(
+//			new EventSource(IronUserModel.MIL_URI,
+//					DisableEnergySavingModeIron.class),
+//			new EventSink[] {
+//				new EventSink(IronStateModel.MIL_URI,
+//							DisableEnergySavingModeIron.class)
+//			});
+//		connections.put(
+//			new EventSource(IronUserModel.MIL_URI,
+//					DisableSteamModeIron.class),
+//			new EventSink[] {
+//				new EventSink(IronStateModel.MIL_URI,
+//						DisableSteamModeIron.class)
+//			});
+//		connections.put(
+//				new EventSource(IronUserModel.MIL_URI,
+//						EnableCottonModeIron.class),
+//				new EventSink[] {
+//					new EventSink(IronStateModel.MIL_URI,
+//							EnableCottonModeIron.class)
+//				});
+//		connections.put(
+//				new EventSource(IronUserModel.MIL_URI,
+//						EnableDelicateModeIron.class),
+//				new EventSink[] {
+//					new EventSink(IronStateModel.MIL_URI,
+//							EnableDelicateModeIron.class)
+//				});
+//		connections.put(
+//				new EventSource(IronUserModel.MIL_URI,
+//						EnableLinenModeIron.class),
+//				new EventSink[] {
+//					new EventSink(IronStateModel.MIL_URI,
+//							EnableLinenModeIron.class)
+//				});
+//		connections.put(
+//				new EventSource(IronUserModel.MIL_URI,
+//						EnableEnergySavingModeIron.class),
+//				new EventSink[] {
+//					new EventSink(IronStateModel.MIL_URI,
+//							EnableEnergySavingModeIron.class)
+//				});
+//		connections.put(
+//				new EventSource(IronUserModel.MIL_URI,
+//						EnableSteamModeIron.class),
+//				new EventSink[] {
+//					new EventSink(IronStateModel.MIL_URI,
+//							EnableSteamModeIron.class)
+//				});
 		
 		
 		// IronState -> ElectricMeterCoupledModel
-		connections.put(
-			new EventSource(IronStateModel.MIL_URI,
-					TurnOnIron.class),
-			new EventSink[] {
-				new EventSink(ElectricMeterCoupledModel.MIL_URI,
-						TurnOnIron.class)
-			});
-		connections.put(
-			new EventSource(IronStateModel.MIL_URI,
-					TurnOffIron.class),
-			new EventSink[] {
-				new EventSink(ElectricMeterCoupledModel.MIL_URI,
-						TurnOffIron.class)
-			});
-		connections.put(
-			new EventSource(IronStateModel.MIL_URI,
-					DisableEnergySavingModeIron.class),
-			new EventSink[] {
-				new EventSink(ElectricMeterCoupledModel.MIL_URI,
-							DisableEnergySavingModeIron.class)
-			});
-		connections.put(
-			new EventSource(IronStateModel.MIL_URI,
-					DisableSteamModeIron.class),
-			new EventSink[] {
-				new EventSink(ElectricMeterCoupledModel.MIL_URI,
-						DisableSteamModeIron.class)
-			});
-		connections.put(
-				new EventSource(IronStateModel.MIL_URI,
-						EnableCottonModeIron.class),
-				new EventSink[] {
-					new EventSink(ElectricMeterCoupledModel.MIL_URI,
-							EnableCottonModeIron.class)
-				});
-		connections.put(
-				new EventSource(IronStateModel.MIL_URI,
-						EnableDelicateModeIron.class),
-				new EventSink[] {
-					new EventSink(ElectricMeterCoupledModel.MIL_URI,
-							EnableDelicateModeIron.class)
-				});
-		connections.put(
-				new EventSource(IronStateModel.MIL_URI,
-						EnableLinenModeIron.class),
-				new EventSink[] {
-					new EventSink(ElectricMeterCoupledModel.MIL_URI,
-							EnableLinenModeIron.class)
-				});
-		connections.put(
-				new EventSource(IronStateModel.MIL_URI,
-						EnableEnergySavingModeIron.class),
-				new EventSink[] {
-					new EventSink(ElectricMeterCoupledModel.MIL_URI,
-							EnableEnergySavingModeIron.class)
-				});
-		connections.put(
-				new EventSource(IronStateModel.MIL_URI,
-						EnableSteamModeIron.class),
-				new EventSink[] {
-					new EventSink(ElectricMeterCoupledModel.MIL_URI,
-							EnableSteamModeIron.class)
-				});
+//		connections.put(
+//			new EventSource(IronStateModel.MIL_URI,
+//					TurnOnIron.class),
+//			new EventSink[] {
+//				new EventSink(ElectricMeterCoupledModel.MIL_URI,
+//						TurnOnIron.class)
+//			});
+//		connections.put(
+//			new EventSource(IronStateModel.MIL_URI,
+//					TurnOffIron.class),
+//			new EventSink[] {
+//				new EventSink(ElectricMeterCoupledModel.MIL_URI,
+//						TurnOffIron.class)
+//			});
+//		connections.put(
+//			new EventSource(IronStateModel.MIL_URI,
+//					DisableEnergySavingModeIron.class),
+//			new EventSink[] {
+//				new EventSink(ElectricMeterCoupledModel.MIL_URI,
+//							DisableEnergySavingModeIron.class)
+//			});
+//		connections.put(
+//			new EventSource(IronStateModel.MIL_URI,
+//					DisableSteamModeIron.class),
+//			new EventSink[] {
+//				new EventSink(ElectricMeterCoupledModel.MIL_URI,
+//						DisableSteamModeIron.class)
+//			});
+//		connections.put(
+//				new EventSource(IronStateModel.MIL_URI,
+//						EnableCottonModeIron.class),
+//				new EventSink[] {
+//					new EventSink(ElectricMeterCoupledModel.MIL_URI,
+//							EnableCottonModeIron.class)
+//				});
+//		connections.put(
+//				new EventSource(IronStateModel.MIL_URI,
+//						EnableDelicateModeIron.class),
+//				new EventSink[] {
+//					new EventSink(ElectricMeterCoupledModel.MIL_URI,
+//							EnableDelicateModeIron.class)
+//				});
+//		connections.put(
+//				new EventSource(IronStateModel.MIL_URI,
+//						EnableLinenModeIron.class),
+//				new EventSink[] {
+//					new EventSink(ElectricMeterCoupledModel.MIL_URI,
+//							EnableLinenModeIron.class)
+//				});
+//		connections.put(
+//				new EventSource(IronStateModel.MIL_URI,
+//						EnableEnergySavingModeIron.class),
+//				new EventSink[] {
+//					new EventSink(ElectricMeterCoupledModel.MIL_URI,
+//							EnableEnergySavingModeIron.class)
+//				});
+//		connections.put(
+//				new EventSource(IronStateModel.MIL_URI,
+//						EnableSteamModeIron.class),
+//				new EventSink[] {
+//					new EventSink(ElectricMeterCoupledModel.MIL_URI,
+//							EnableSteamModeIron.class)
+//				});
 			
 			
 		// FridgeUnitTestModel -> FridgeCoupledModel
@@ -354,48 +354,48 @@ public class ComponentSimulationArchitectures {
 		
 		
 		// FridgeCoupledModel -> ElectricMeterCoupledModel
-		connections.put(
-				new EventSource(FridgeCoupledModel.MIL_URI, SwitchOffFridge.class),
-				new EventSink[] {
-						new EventSink(ElectricMeterCoupledModel.MIL_URI,
-									  SwitchOffFridge.class),
-				});
-		connections.put(
-				new EventSource(FridgeCoupledModel.MIL_URI, CoolFridge.class),
-				new EventSink[] {
-						new EventSink(ElectricMeterCoupledModel.MIL_URI,
-									  CoolFridge.class),
-				});
-		connections.put(
-				new EventSource(FridgeCoupledModel.MIL_URI, DoNotCoolFridge.class),
-				new EventSink[] {
-						new EventSink(ElectricMeterCoupledModel.MIL_URI,
-									  DoNotCoolFridge.class),
-				});
-		connections.put(
-				new EventSource(FridgeCoupledModel.MIL_URI, SwitchOnFridge.class),
-				new EventSink[] {
-						new EventSink(ElectricMeterCoupledModel.MIL_URI,
-									  SwitchOnFridge.class),
-				});
-		connections.put(
-				new EventSource(FridgeCoupledModel.MIL_URI, OpenDoorFridge.class),
-				new EventSink[] {
-						new EventSink(ElectricMeterCoupledModel.MIL_URI,
-									  OpenDoorFridge.class),
-				});
-		connections.put(
-				new EventSource(FridgeCoupledModel.MIL_URI, CloseDoorFridge.class),
-				new EventSink[] {
-						new EventSink(ElectricMeterCoupledModel.MIL_URI,
-									  CloseDoorFridge.class),
-				});
-		connections.put(
-				new EventSource(FridgeCoupledModel.MIL_URI, SetPowerFridge.class),
-				new EventSink[] {
-						new EventSink(ElectricMeterCoupledModel.MIL_URI,
-									  SetPowerFridge.class),
-				});
+//		connections.put(
+//				new EventSource(FridgeCoupledModel.MIL_URI, SwitchOffFridge.class),
+//				new EventSink[] {
+//						new EventSink(ElectricMeterCoupledModel.MIL_URI,
+//									  SwitchOffFridge.class),
+//				});
+//		connections.put(
+//				new EventSource(FridgeCoupledModel.MIL_URI, CoolFridge.class),
+//				new EventSink[] {
+//						new EventSink(ElectricMeterCoupledModel.MIL_URI,
+//									  CoolFridge.class),
+//				});
+//		connections.put(
+//				new EventSource(FridgeCoupledModel.MIL_URI, DoNotCoolFridge.class),
+//				new EventSink[] {
+//						new EventSink(ElectricMeterCoupledModel.MIL_URI,
+//									  DoNotCoolFridge.class),
+//				});
+//		connections.put(
+//				new EventSource(FridgeCoupledModel.MIL_URI, SwitchOnFridge.class),
+//				new EventSink[] {
+//						new EventSink(ElectricMeterCoupledModel.MIL_URI,
+//									  SwitchOnFridge.class),
+//				});
+//		connections.put(
+//				new EventSource(FridgeCoupledModel.MIL_URI, OpenDoorFridge.class),
+//				new EventSink[] {
+//						new EventSink(ElectricMeterCoupledModel.MIL_URI,
+//									  OpenDoorFridge.class),
+//				});
+//		connections.put(
+//				new EventSource(FridgeCoupledModel.MIL_URI, CloseDoorFridge.class),
+//				new EventSink[] {
+//						new EventSink(ElectricMeterCoupledModel.MIL_URI,
+//									  CloseDoorFridge.class),
+//				});
+//		connections.put(
+//				new EventSource(FridgeCoupledModel.MIL_URI, SetPowerFridge.class),
+//				new EventSink[] {
+//						new EventSink(ElectricMeterCoupledModel.MIL_URI,
+//									  SetPowerFridge.class),
+//				});
 
 		// coupled model descriptor
 		coupledModelDescriptors.put(
@@ -438,50 +438,50 @@ public class ComponentSimulationArchitectures {
 		Map<String,AbstractAtomicModelDescriptor> atomicModelDescriptors =
 															new HashMap<>();
 
-		atomicModelDescriptors.put(
-				IronStateModel.MIL_RT_URI,
-				RTComponentAtomicModelDescriptor.create(
-						IronStateModel.MIL_RT_URI,
-						(Class<? extends EventI>[]) new Class<?>[]{
-							DisableEnergySavingModeIron.class,
-							DisableSteamModeIron.class,
-							EnableCottonModeIron.class,
-							EnableDelicateModeIron.class,
-							EnableEnergySavingModeIron.class,
-							EnableLinenModeIron.class,
-							EnableSteamModeIron.class,
-							TurnOffIron.class,
-							TurnOnIron.class},
-						(Class<? extends EventI>[]) new Class<?>[]{
-							DisableEnergySavingModeIron.class,
-							DisableSteamModeIron.class,
-							EnableCottonModeIron.class,
-							EnableDelicateModeIron.class,
-							EnableEnergySavingModeIron.class,
-							EnableLinenModeIron.class,
-							EnableSteamModeIron.class,
-							TurnOffIron.class,
-							TurnOnIron.class},	
-						simulatedTimeUnit,
-						Iron.REFLECTION_INBOUND_PORT_URI
-						));
-		atomicModelDescriptors.put(
-				IronUserModel.MIL_RT_URI,
-				RTComponentAtomicModelDescriptor.create(
-						IronUserModel.MIL_RT_URI,
-						(Class<? extends EventI>[]) new Class<?>[]{},
-						(Class<? extends EventI>[]) new Class<?>[]{
-							DisableEnergySavingModeIron.class,
-							DisableSteamModeIron.class,
-							EnableCottonModeIron.class,
-							EnableDelicateModeIron.class,
-							EnableEnergySavingModeIron.class,
-							EnableLinenModeIron.class,
-							EnableSteamModeIron.class,
-							TurnOffIron.class,
-							TurnOnIron.class},	
-						simulatedTimeUnit,
-						IronUser.REFLECTION_INBOUND_PORT_URI));
+//		atomicModelDescriptors.put(
+//				IronStateModel.MIL_RT_URI,
+//				RTComponentAtomicModelDescriptor.create(
+//						IronStateModel.MIL_RT_URI,
+//						(Class<? extends EventI>[]) new Class<?>[]{
+//							DisableEnergySavingModeIron.class,
+//							DisableSteamModeIron.class,
+//							EnableCottonModeIron.class,
+//							EnableDelicateModeIron.class,
+//							EnableEnergySavingModeIron.class,
+//							EnableLinenModeIron.class,
+//							EnableSteamModeIron.class,
+//							TurnOffIron.class,
+//							TurnOnIron.class},
+//						(Class<? extends EventI>[]) new Class<?>[]{
+//							DisableEnergySavingModeIron.class,
+//							DisableSteamModeIron.class,
+//							EnableCottonModeIron.class,
+//							EnableDelicateModeIron.class,
+//							EnableEnergySavingModeIron.class,
+//							EnableLinenModeIron.class,
+//							EnableSteamModeIron.class,
+//							TurnOffIron.class,
+//							TurnOnIron.class},	
+//						simulatedTimeUnit,
+//						Iron.REFLECTION_INBOUND_PORT_URI
+//						));
+//		atomicModelDescriptors.put(
+//				IronUserModel.MIL_RT_URI,
+//				RTComponentAtomicModelDescriptor.create(
+//						IronUserModel.MIL_RT_URI,
+//						(Class<? extends EventI>[]) new Class<?>[]{},
+//						(Class<? extends EventI>[]) new Class<?>[]{
+//							DisableEnergySavingModeIron.class,
+//							DisableSteamModeIron.class,
+//							EnableCottonModeIron.class,
+//							EnableDelicateModeIron.class,
+//							EnableEnergySavingModeIron.class,
+//							EnableLinenModeIron.class,
+//							EnableSteamModeIron.class,
+//							TurnOffIron.class,
+//							TurnOnIron.class},	
+//						simulatedTimeUnit,
+//						IronUser.REFLECTION_INBOUND_PORT_URI));
 
 		atomicModelDescriptors.put(
 				FridgeCoupledModel.MIL_RT_URI,
@@ -533,15 +533,16 @@ public class ComponentSimulationArchitectures {
 							SetPowerFridge.class,
 							SwitchOffFridge.class,
 							SwitchOnFridge.class,
-							DisableEnergySavingModeIron.class,
-							DisableSteamModeIron.class,
-							EnableCottonModeIron.class,
-							EnableDelicateModeIron.class,
-							EnableEnergySavingModeIron.class,
-							EnableLinenModeIron.class,
-							EnableSteamModeIron.class,
-							TurnOffIron.class,
-							TurnOnIron.class},
+//							DisableEnergySavingModeIron.class,
+//							DisableSteamModeIron.class,
+//							EnableCottonModeIron.class,
+//							EnableDelicateModeIron.class,
+//							EnableEnergySavingModeIron.class,
+//							EnableLinenModeIron.class,
+//							EnableSteamModeIron.class,
+//							TurnOffIron.class,
+//							TurnOnIron.class
+							},
 						(Class<? extends EventI>[]) new Class<?>[]{},
 						simulatedTimeUnit,
 						ElectricMeter.REFLECTION_INBOUND_PORT_URI));
@@ -552,8 +553,8 @@ public class ComponentSimulationArchitectures {
 
 
 		Set<String> submodels = new HashSet<String>();
-		submodels.add(IronStateModel.MIL_RT_URI);
-		submodels.add(IronUserModel.MIL_RT_URI);
+//		submodels.add(IronStateModel.MIL_RT_URI);
+//		submodels.add(IronUserModel.MIL_RT_URI);
 		submodels.add(FridgeCoupledModel.MIL_RT_URI);
 		submodels.add(FridgeUnitTestModel.MIL_RT_URI);
 		submodels.add(ElectricMeterCoupledModel.MIL_RT_URI);
@@ -562,135 +563,135 @@ public class ComponentSimulationArchitectures {
 									new HashMap<EventSource,EventSink[]>();
 									
 		// IronUser -> IronState
-		connections.put(
-			new EventSource(IronUserModel.MIL_RT_URI,
-					TurnOnIron.class),
-			new EventSink[] {
-				new EventSink(IronStateModel.MIL_RT_URI,
-						TurnOnIron.class)
-			});
-		connections.put(
-			new EventSource(IronUserModel.MIL_RT_URI,
-					TurnOffIron.class),
-			new EventSink[] {
-				new EventSink(IronStateModel.MIL_RT_URI,
-						TurnOffIron.class)
-			});
-		connections.put(
-			new EventSource(IronUserModel.MIL_RT_URI,
-					DisableEnergySavingModeIron.class),
-			new EventSink[] {
-				new EventSink(IronStateModel.MIL_RT_URI,
-							DisableEnergySavingModeIron.class)
-			});
-		connections.put(
-			new EventSource(IronUserModel.MIL_RT_URI,
-					DisableSteamModeIron.class),
-			new EventSink[] {
-				new EventSink(IronStateModel.MIL_RT_URI,
-						DisableSteamModeIron.class)
-			});
-		connections.put(
-				new EventSource(IronUserModel.MIL_RT_URI,
-						EnableCottonModeIron.class),
-				new EventSink[] {
-					new EventSink(IronStateModel.MIL_RT_URI,
-							EnableCottonModeIron.class)
-				});
-		connections.put(
-				new EventSource(IronUserModel.MIL_RT_URI,
-						EnableDelicateModeIron.class),
-				new EventSink[] {
-					new EventSink(IronStateModel.MIL_RT_URI,
-							EnableDelicateModeIron.class)
-				});
-		connections.put(
-				new EventSource(IronUserModel.MIL_RT_URI,
-						EnableLinenModeIron.class),
-				new EventSink[] {
-					new EventSink(IronStateModel.MIL_RT_URI,
-							EnableLinenModeIron.class)
-				});
-		connections.put(
-				new EventSource(IronUserModel.MIL_RT_URI,
-						EnableEnergySavingModeIron.class),
-				new EventSink[] {
-					new EventSink(IronStateModel.MIL_RT_URI,
-							EnableEnergySavingModeIron.class)
-				});
-		connections.put(
-				new EventSource(IronUserModel.MIL_RT_URI,
-						EnableSteamModeIron.class),
-				new EventSink[] {
-					new EventSink(IronStateModel.MIL_RT_URI,
-							EnableSteamModeIron.class)
-				});
+//		connections.put(
+//			new EventSource(IronUserModel.MIL_RT_URI,
+//					TurnOnIron.class),
+//			new EventSink[] {
+//				new EventSink(IronStateModel.MIL_RT_URI,
+//						TurnOnIron.class)
+//			});
+//		connections.put(
+//			new EventSource(IronUserModel.MIL_RT_URI,
+//					TurnOffIron.class),
+//			new EventSink[] {
+//				new EventSink(IronStateModel.MIL_RT_URI,
+//						TurnOffIron.class)
+//			});
+//		connections.put(
+//			new EventSource(IronUserModel.MIL_RT_URI,
+//					DisableEnergySavingModeIron.class),
+//			new EventSink[] {
+//				new EventSink(IronStateModel.MIL_RT_URI,
+//							DisableEnergySavingModeIron.class)
+//			});
+//		connections.put(
+//			new EventSource(IronUserModel.MIL_RT_URI,
+//					DisableSteamModeIron.class),
+//			new EventSink[] {
+//				new EventSink(IronStateModel.MIL_RT_URI,
+//						DisableSteamModeIron.class)
+//			});
+//		connections.put(
+//				new EventSource(IronUserModel.MIL_RT_URI,
+//						EnableCottonModeIron.class),
+//				new EventSink[] {
+//					new EventSink(IronStateModel.MIL_RT_URI,
+//							EnableCottonModeIron.class)
+//				});
+//		connections.put(
+//				new EventSource(IronUserModel.MIL_RT_URI,
+//						EnableDelicateModeIron.class),
+//				new EventSink[] {
+//					new EventSink(IronStateModel.MIL_RT_URI,
+//							EnableDelicateModeIron.class)
+//				});
+//		connections.put(
+//				new EventSource(IronUserModel.MIL_RT_URI,
+//						EnableLinenModeIron.class),
+//				new EventSink[] {
+//					new EventSink(IronStateModel.MIL_RT_URI,
+//							EnableLinenModeIron.class)
+//				});
+//		connections.put(
+//				new EventSource(IronUserModel.MIL_RT_URI,
+//						EnableEnergySavingModeIron.class),
+//				new EventSink[] {
+//					new EventSink(IronStateModel.MIL_RT_URI,
+//							EnableEnergySavingModeIron.class)
+//				});
+//		connections.put(
+//				new EventSource(IronUserModel.MIL_RT_URI,
+//						EnableSteamModeIron.class),
+//				new EventSink[] {
+//					new EventSink(IronStateModel.MIL_RT_URI,
+//							EnableSteamModeIron.class)
+//				});
 		
 		
 		// IronState -> ElectricMeterCoupledModel
-		connections.put(
-			new EventSource(IronStateModel.MIL_RT_URI,
-					TurnOnIron.class),
-			new EventSink[] {
-				new EventSink(ElectricMeterCoupledModel.MIL_RT_URI,
-						TurnOnIron.class)
-			});
-		connections.put(
-			new EventSource(IronStateModel.MIL_RT_URI,
-					TurnOffIron.class),
-			new EventSink[] {
-				new EventSink(ElectricMeterCoupledModel.MIL_RT_URI,
-						TurnOffIron.class)
-			});
-		connections.put(
-			new EventSource(IronStateModel.MIL_RT_URI,
-					DisableEnergySavingModeIron.class),
-			new EventSink[] {
-				new EventSink(ElectricMeterCoupledModel.MIL_RT_URI,
-							DisableEnergySavingModeIron.class)
-			});
-		connections.put(
-			new EventSource(IronStateModel.MIL_RT_URI,
-					DisableSteamModeIron.class),
-			new EventSink[] {
-				new EventSink(ElectricMeterCoupledModel.MIL_RT_URI,
-						DisableSteamModeIron.class)
-			});
-		connections.put(
-				new EventSource(IronStateModel.MIL_RT_URI,
-						EnableCottonModeIron.class),
-				new EventSink[] {
-					new EventSink(ElectricMeterCoupledModel.MIL_RT_URI,
-							EnableCottonModeIron.class)
-				});
-		connections.put(
-				new EventSource(IronStateModel.MIL_RT_URI,
-						EnableDelicateModeIron.class),
-				new EventSink[] {
-					new EventSink(ElectricMeterCoupledModel.MIL_RT_URI,
-							EnableDelicateModeIron.class)
-				});
-		connections.put(
-				new EventSource(IronStateModel.MIL_RT_URI,
-						EnableLinenModeIron.class),
-				new EventSink[] {
-					new EventSink(ElectricMeterCoupledModel.MIL_RT_URI,
-							EnableLinenModeIron.class)
-				});
-		connections.put(
-				new EventSource(IronStateModel.MIL_RT_URI,
-						EnableEnergySavingModeIron.class),
-				new EventSink[] {
-					new EventSink(ElectricMeterCoupledModel.MIL_RT_URI,
-							EnableEnergySavingModeIron.class)
-				});
-		connections.put(
-				new EventSource(IronStateModel.MIL_RT_URI,
-						EnableSteamModeIron.class),
-				new EventSink[] {
-					new EventSink(ElectricMeterCoupledModel.MIL_RT_URI,
-							EnableSteamModeIron.class)
-				});
+//		connections.put(
+//			new EventSource(IronStateModel.MIL_RT_URI,
+//					TurnOnIron.class),
+//			new EventSink[] {
+//				new EventSink(ElectricMeterCoupledModel.MIL_RT_URI,
+//						TurnOnIron.class)
+//			});
+//		connections.put(
+//			new EventSource(IronStateModel.MIL_RT_URI,
+//					TurnOffIron.class),
+//			new EventSink[] {
+//				new EventSink(ElectricMeterCoupledModel.MIL_RT_URI,
+//						TurnOffIron.class)
+//			});
+//		connections.put(
+//			new EventSource(IronStateModel.MIL_RT_URI,
+//					DisableEnergySavingModeIron.class),
+//			new EventSink[] {
+//				new EventSink(ElectricMeterCoupledModel.MIL_RT_URI,
+//							DisableEnergySavingModeIron.class)
+//			});
+//		connections.put(
+//			new EventSource(IronStateModel.MIL_RT_URI,
+//					DisableSteamModeIron.class),
+//			new EventSink[] {
+//				new EventSink(ElectricMeterCoupledModel.MIL_RT_URI,
+//						DisableSteamModeIron.class)
+//			});
+//		connections.put(
+//				new EventSource(IronStateModel.MIL_RT_URI,
+//						EnableCottonModeIron.class),
+//				new EventSink[] {
+//					new EventSink(ElectricMeterCoupledModel.MIL_RT_URI,
+//							EnableCottonModeIron.class)
+//				});
+//		connections.put(
+//				new EventSource(IronStateModel.MIL_RT_URI,
+//						EnableDelicateModeIron.class),
+//				new EventSink[] {
+//					new EventSink(ElectricMeterCoupledModel.MIL_RT_URI,
+//							EnableDelicateModeIron.class)
+//				});
+//		connections.put(
+//				new EventSource(IronStateModel.MIL_RT_URI,
+//						EnableLinenModeIron.class),
+//				new EventSink[] {
+//					new EventSink(ElectricMeterCoupledModel.MIL_RT_URI,
+//							EnableLinenModeIron.class)
+//				});
+//		connections.put(
+//				new EventSource(IronStateModel.MIL_RT_URI,
+//						EnableEnergySavingModeIron.class),
+//				new EventSink[] {
+//					new EventSink(ElectricMeterCoupledModel.MIL_RT_URI,
+//							EnableEnergySavingModeIron.class)
+//				});
+//		connections.put(
+//				new EventSource(IronStateModel.MIL_RT_URI,
+//						EnableSteamModeIron.class),
+//				new EventSink[] {
+//					new EventSink(ElectricMeterCoupledModel.MIL_RT_URI,
+//							EnableSteamModeIron.class)
+//				});
 			
 			
 		// FridgeUnitTestModel -> FridgeCoupledModel
@@ -820,33 +821,33 @@ public class ComponentSimulationArchitectures {
 		Map<String,AbstractAtomicModelDescriptor> atomicModelDescriptors =
 															new HashMap<>();
 
-		atomicModelDescriptors.put(
-				IronStateModel.SIL_URI,
-				RTComponentAtomicModelDescriptor.create(
-						IronStateModel.SIL_URI,
-						(Class<? extends EventI>[]) new Class<?>[]{
-							DisableEnergySavingModeIron.class,
-							DisableSteamModeIron.class,
-							EnableCottonModeIron.class,
-							EnableDelicateModeIron.class,
-							EnableEnergySavingModeIron.class,
-							EnableLinenModeIron.class,
-							EnableSteamModeIron.class,
-							TurnOffIron.class,
-							TurnOnIron.class},	
-						(Class<? extends EventI>[]) new Class<?>[]{
-							DisableEnergySavingModeIron.class,
-							DisableSteamModeIron.class,
-							EnableCottonModeIron.class,
-							EnableDelicateModeIron.class,
-							EnableEnergySavingModeIron.class,
-							EnableLinenModeIron.class,
-							EnableSteamModeIron.class,
-							TurnOffIron.class,
-							TurnOnIron.class},	
-						simulatedTimeUnit,
-						Iron.REFLECTION_INBOUND_PORT_URI
-						));
+//		atomicModelDescriptors.put(
+//				IronStateModel.SIL_URI,
+//				RTComponentAtomicModelDescriptor.create(
+//						IronStateModel.SIL_URI,
+//						(Class<? extends EventI>[]) new Class<?>[]{
+//							DisableEnergySavingModeIron.class,
+//							DisableSteamModeIron.class,
+//							EnableCottonModeIron.class,
+//							EnableDelicateModeIron.class,
+//							EnableEnergySavingModeIron.class,
+//							EnableLinenModeIron.class,
+//							EnableSteamModeIron.class,
+//							TurnOffIron.class,
+//							TurnOnIron.class},	
+//						(Class<? extends EventI>[]) new Class<?>[]{
+//							DisableEnergySavingModeIron.class,
+//							DisableSteamModeIron.class,
+//							EnableCottonModeIron.class,
+//							EnableDelicateModeIron.class,
+//							EnableEnergySavingModeIron.class,
+//							EnableLinenModeIron.class,
+//							EnableSteamModeIron.class,
+//							TurnOffIron.class,
+//							TurnOnIron.class},	
+//						simulatedTimeUnit,
+//						Iron.REFLECTION_INBOUND_PORT_URI
+//						));
 
 		atomicModelDescriptors.put(
 				FridgeCoupledModel.SIL_URI,
@@ -883,15 +884,16 @@ public class ComponentSimulationArchitectures {
 							SetPowerFridge.class,
 							SwitchOffFridge.class,
 							SwitchOnFridge.class,
-							DisableEnergySavingModeIron.class,
-							DisableSteamModeIron.class,
-							EnableCottonModeIron.class,
-							EnableDelicateModeIron.class,
-							EnableEnergySavingModeIron.class,
-							EnableLinenModeIron.class,
-							EnableSteamModeIron.class,
-							TurnOffIron.class,
-							TurnOnIron.class},
+//							DisableEnergySavingModeIron.class,
+//							DisableSteamModeIron.class,
+//							EnableCottonModeIron.class,
+//							EnableDelicateModeIron.class,
+//							EnableEnergySavingModeIron.class,
+//							EnableLinenModeIron.class,
+//							EnableSteamModeIron.class,
+//							TurnOffIron.class,
+//							TurnOnIron.class
+							},
 						(Class<? extends EventI>[]) new Class<?>[]{},
 						simulatedTimeUnit,
 						ElectricMeter.REFLECTION_INBOUND_PORT_URI));
@@ -900,7 +902,7 @@ public class ComponentSimulationArchitectures {
 															new HashMap<>();
 
 		Set<String> submodels = new HashSet<String>();
-		submodels.add(IronStateModel.SIL_URI);
+//		submodels.add(IronStateModel.SIL_URI);
 		submodels.add(FridgeCoupledModel.SIL_URI);
 		submodels.add(ElectricMeterCoupledModel.SIL_URI);
 
@@ -908,69 +910,69 @@ public class ComponentSimulationArchitectures {
 
 		
 		// IronStateModel -> ElectricMeterCoupledModel
-		connections.put(
-			new EventSource(IronStateModel.SIL_URI,
-					TurnOnIron.class),
-			new EventSink[] {
-				new EventSink(ElectricMeterCoupledModel.SIL_URI,
-						TurnOnIron.class)
-			});
-		connections.put(
-			new EventSource(IronStateModel.SIL_URI,
-					TurnOffIron.class),
-			new EventSink[] {
-				new EventSink(ElectricMeterCoupledModel.SIL_URI,
-						TurnOffIron.class)
-			});
-		connections.put(
-			new EventSource(IronStateModel.SIL_URI,
-					DisableEnergySavingModeIron.class),
-			new EventSink[] {
-				new EventSink(ElectricMeterCoupledModel.SIL_URI,
-							DisableEnergySavingModeIron.class)
-			});
-		connections.put(
-			new EventSource(IronStateModel.SIL_URI,
-					DisableSteamModeIron.class),
-			new EventSink[] {
-				new EventSink(ElectricMeterCoupledModel.SIL_URI,
-						DisableSteamModeIron.class)
-			});
-		connections.put(
-				new EventSource(IronStateModel.SIL_URI,
-						EnableCottonModeIron.class),
-				new EventSink[] {
-					new EventSink(ElectricMeterCoupledModel.SIL_URI,
-							EnableCottonModeIron.class)
-				});
-		connections.put(
-				new EventSource(IronStateModel.SIL_URI,
-						EnableDelicateModeIron.class),
-				new EventSink[] {
-					new EventSink(ElectricMeterCoupledModel.SIL_URI,
-							EnableDelicateModeIron.class)
-				});
-		connections.put(
-				new EventSource(IronStateModel.SIL_URI,
-						EnableLinenModeIron.class),
-				new EventSink[] {
-					new EventSink(ElectricMeterCoupledModel.SIL_URI,
-							EnableLinenModeIron.class)
-				});
-		connections.put(
-				new EventSource(IronStateModel.SIL_URI,
-						EnableEnergySavingModeIron.class),
-				new EventSink[] {
-					new EventSink(ElectricMeterCoupledModel.SIL_URI,
-							EnableEnergySavingModeIron.class)
-				});
-		connections.put(
-				new EventSource(IronStateModel.SIL_URI,
-						EnableSteamModeIron.class),
-				new EventSink[] {
-					new EventSink(ElectricMeterCoupledModel.SIL_URI,
-							EnableSteamModeIron.class)
-				});
+//		connections.put(
+//			new EventSource(IronStateModel.SIL_URI,
+//					TurnOnIron.class),
+//			new EventSink[] {
+//				new EventSink(ElectricMeterCoupledModel.SIL_URI,
+//						TurnOnIron.class)
+//			});
+//		connections.put(
+//			new EventSource(IronStateModel.SIL_URI,
+//					TurnOffIron.class),
+//			new EventSink[] {
+//				new EventSink(ElectricMeterCoupledModel.SIL_URI,
+//						TurnOffIron.class)
+//			});
+//		connections.put(
+//			new EventSource(IronStateModel.SIL_URI,
+//					DisableEnergySavingModeIron.class),
+//			new EventSink[] {
+//				new EventSink(ElectricMeterCoupledModel.SIL_URI,
+//							DisableEnergySavingModeIron.class)
+//			});
+//		connections.put(
+//			new EventSource(IronStateModel.SIL_URI,
+//					DisableSteamModeIron.class),
+//			new EventSink[] {
+//				new EventSink(ElectricMeterCoupledModel.SIL_URI,
+//						DisableSteamModeIron.class)
+//			});
+//		connections.put(
+//				new EventSource(IronStateModel.SIL_URI,
+//						EnableCottonModeIron.class),
+//				new EventSink[] {
+//					new EventSink(ElectricMeterCoupledModel.SIL_URI,
+//							EnableCottonModeIron.class)
+//				});
+//		connections.put(
+//				new EventSource(IronStateModel.SIL_URI,
+//						EnableDelicateModeIron.class),
+//				new EventSink[] {
+//					new EventSink(ElectricMeterCoupledModel.SIL_URI,
+//							EnableDelicateModeIron.class)
+//				});
+//		connections.put(
+//				new EventSource(IronStateModel.SIL_URI,
+//						EnableLinenModeIron.class),
+//				new EventSink[] {
+//					new EventSink(ElectricMeterCoupledModel.SIL_URI,
+//							EnableLinenModeIron.class)
+//				});
+//		connections.put(
+//				new EventSource(IronStateModel.SIL_URI,
+//						EnableEnergySavingModeIron.class),
+//				new EventSink[] {
+//					new EventSink(ElectricMeterCoupledModel.SIL_URI,
+//							EnableEnergySavingModeIron.class)
+//				});
+//		connections.put(
+//				new EventSource(IronStateModel.SIL_URI,
+//						EnableSteamModeIron.class),
+//				new EventSink[] {
+//					new EventSink(ElectricMeterCoupledModel.SIL_URI,
+//							EnableSteamModeIron.class)
+//				});
 
 		// FridgeCoupledModel -> ElectricMeterCoupledModel
 		connections.put(

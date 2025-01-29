@@ -188,20 +188,20 @@ public abstract class LocalSimulationArchitectures {
         bindings.put(
                 new VariableSource("currentIntensity", Double.class, FridgeElectricityModel.MIL_URI),
                 new VariableSink[]{
-                        new VariableSink("currentFridgeIntensity",
+                        new VariableSink("currentFridgeConsumption",
                                          Double.class,
                                          ElectricMeterElectricityModel.MIL_URI)
                 });
         bindings.put(
                 new VariableSource("currentIntensity", Double.class, IronElectricityModel.MIL_URI),
                 new VariableSink[]{
-                        new VariableSink("currentIronIntensity",
+                        new VariableSink("currentIronConsumption",
                                          Double.class,
                                          ElectricMeterElectricityModel.MIL_URI)
                 });
 
         coupledModelDescriptors.put(
-                ElectricMeterElectricityModel.MIL_URI,
+        		ElectricMeterCoupledModel.MIL_URI,
                 new CoupledHIOA_Descriptor(
                         ElectricMeterCoupledModel.class,
                         ElectricMeterCoupledModel.MIL_URI,
@@ -398,20 +398,20 @@ public abstract class LocalSimulationArchitectures {
         bindings.put(
                 new VariableSource("currentIntensity", Double.class, fridgeElectricityModelURI),
                 new VariableSink[]{
-                        new VariableSink("currentFridgeIntensity",
+                        new VariableSink("currentFridgeConsumption",
                                          Double.class,
                                          electricMeterElectricityModelURI)
                 });
         bindings.put(
                 new VariableSource("currentIntensity", Double.class, ironElectricityModelURI),
                 new VariableSink[]{
-                        new VariableSink("currentIronIntensity",
+                        new VariableSink("currentIronConsumption",
                                          Double.class,
                                          electricMeterElectricityModelURI)
                 });
 
         coupledModelDescriptors.put(
-                electricMeterElectricityModelURI,
+        		electricMeterCoupledModelURI,
                 new RTCoupledHIOA_Descriptor(
                         ElectricMeterCoupledModel.class,
                         electricMeterCoupledModelURI,

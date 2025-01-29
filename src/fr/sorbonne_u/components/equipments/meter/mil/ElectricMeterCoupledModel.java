@@ -17,15 +17,21 @@ import fr.sorbonne_u.devs_simulation.simulators.interfaces.CoordinatorI;
 public class ElectricMeterCoupledModel extends CoupledModel {
 	
 	private static final long serialVersionUID = 1L;
-    public static final String URI = ElectricMeterCoupledModel.class.getSimpleName();
 	public static final String	MIL_URI = ElectricMeterCoupledModel.class.getSimpleName() + "-MIL";
 	public static final String	MIL_RT_URI = ElectricMeterCoupledModel.class.getSimpleName() + "-MIL_RT";
 	public static final String	SIL_URI = ElectricMeterCoupledModel.class.getSimpleName() + "-SIL";
 
-    public ElectricMeterCoupledModel(String uri, TimeUnit simulatedTimeUnit, CoordinatorI simulationEngine, ModelI[] submodels,
-							 Map<Class<? extends EventI>, EventSink[]> imported, Map<Class<? extends EventI>, ReexportedEvent> reexported,
-							 Map<EventSource, EventSink[]> connections, Map<StaticVariableDescriptor, VariableSink[]> importedVars,
-							 Map<VariableSource, StaticVariableDescriptor> reexportedVars,Map<VariableSource, VariableSink[]> bindings ) throws Exception 
+    public ElectricMeterCoupledModel(
+    		String uri, 
+    		TimeUnit simulatedTimeUnit, 
+    		CoordinatorI simulationEngine, 
+    		ModelI[] submodels,
+			Map<Class<? extends EventI>, EventSink[]> imported, 
+			Map<Class<? extends EventI>, ReexportedEvent> reexported,
+			Map<EventSource, EventSink[]> connections,
+			Map<StaticVariableDescriptor, VariableSink[]> importedVars,
+			Map<VariableSource, StaticVariableDescriptor> reexportedVars,
+			Map<VariableSource, VariableSink[]> bindings ) throws Exception 
     {
     	super(uri, simulatedTimeUnit, simulationEngine, submodels,
   			  imported, reexported, connections,

@@ -19,7 +19,6 @@ import fr.sorbonne_u.exceptions.InvariantException;
 import fr.sorbonne_u.exceptions.PostconditionException;
 import fr.sorbonne_u.exceptions.PreconditionException;
 import fr.sorbonne_u.utils.aclocks.*;
-
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -36,8 +35,7 @@ public class ElectricMeter extends AbstractCyPhyComponent implements ElectricMet
 	public static final Measure<Double>	ELECTRIC_METER_VOLTAGE =
 			new Measure<Double>(220.0, MeasurementUnit.VOLTS);
 
-	public static final String	ELECTRIC_METER_INBOUND_PORT_URI = "ELECTRIC-METER";
-
+	public static final String	ELECTRIC_METER_INBOUND_PORT_URI = "ELECTRIC-METER-INBOUND-PORT";
 	public static final String	REFLECTION_INBOUND_PORT_URI = "ELECTRIC-METER-RIP-URI";
 
 	public static boolean		VERBOSE = true;
@@ -319,6 +317,8 @@ public class ElectricMeter extends AbstractCyPhyComponent implements ElectricMet
 			this.tracer.get().setRelativePosition(X_RELATIVE_POSITION,
 												  Y_RELATIVE_POSITION);
 			this.toggleTracing();
+			
+			this.logMessage("Start");
 		}
 	}
 

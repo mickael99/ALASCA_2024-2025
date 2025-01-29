@@ -35,11 +35,11 @@ public class CVMIntegrationTest extends AbstractCVM {
 	public static long DELAY_TO_START = 3000L;
 	public static long EXECUTION_DURATION = 5000L;
 	public static long DELAY_TO_STOP = 2000L;
-	public static long END_SLEEP_DURATION = 10000L;
+	public static long END_SLEEP_DURATION = 1000000L;
 
 	public static long DELAY_TO_START_SIMULATION = 5000L;
 	public static double SIMULATION_START_TIME = 0.0;
-	public static double SIMULATION_DURATION = 24.0;
+	public static double SIMULATION_DURATION = 3.0;
 	public static TimeUnit SIMULATION_TIME_UNIT = TimeUnit.HOURS;
 	public static double ACCELERATION_FACTOR = 180.0;
 
@@ -48,7 +48,7 @@ public class CVMIntegrationTest extends AbstractCVM {
 
 	public static String CLOCK_URI = "hem-clock";
 	public static String START_INSTANT = "2023-11-22T00:00:00.00Z";
-	public static ControlMode CONTROL_MODE = ControlMode.PULL;
+	public static ControlMode CONTROL_MODE = ControlMode.PUSH;
 	
 	
 	// -------------------------------------------------------------------------
@@ -70,19 +70,19 @@ public class CVMIntegrationTest extends AbstractCVM {
 		HEM.X_RELATIVE_POSITION = 0;
 		HEM.Y_RELATIVE_POSITION = 1;
 		
-		ElectricMeter.VERBOSE = true;
-		ElectricMeter.X_RELATIVE_POSITION = 1;
-		ElectricMeter.Y_RELATIVE_POSITION = 1;
-		ElectricMeterUnitTester.VERBOSE = true;
-		ElectricMeterUnitTester.X_RELATIVE_POSITION = 2;
-		ElectricMeterUnitTester.Y_RELATIVE_POSITION = 1;
+//		ElectricMeter.VERBOSE = true;
+//		ElectricMeter.X_RELATIVE_POSITION = 1;
+//		ElectricMeter.Y_RELATIVE_POSITION = 1;
+//		ElectricMeterUnitTester.VERBOSE = true;
+//		ElectricMeterUnitTester.X_RELATIVE_POSITION = 2;
+//		ElectricMeterUnitTester.Y_RELATIVE_POSITION = 1;
 		
-		Iron.VERBOSE = true;
-		Iron.X_RELATIVE_POSITION = 1;
-		Iron.Y_RELATIVE_POSITION = 2;
-		IronUser.VERBOSE = true;
-		IronUser.X_RELATIVE_POSITION = 0;
-		IronUser.Y_RELATIVE_POSITION = 2;
+//		Iron.VERBOSE = true;
+//		Iron.X_RELATIVE_POSITION = 1;
+//		Iron.Y_RELATIVE_POSITION = 2;
+//		IronUser.VERBOSE = true;
+//		IronUser.X_RELATIVE_POSITION = 0;
+//		IronUser.Y_RELATIVE_POSITION = 2;
 		
 		Fridge.VERBOSE = true;
 		Fridge.X_RELATIVE_POSITION = 1;
@@ -108,49 +108,42 @@ public class CVMIntegrationTest extends AbstractCVM {
 						"!CURRENT_EXECUTION_TYPE.isUnitTest()");
 
 		String globalArchitectureURI = "";
-		String ironLocalArchitectureURI = "";
-		String ironUserLocalArchitectureURI = "";
+//		String ironLocalArchitectureURI = "";
+//		String ironUserLocalArchitectureURI = "";
 		String fridgeLocalArchitectureURI = "";
 		String fridgeUserLocalArchitectureURI = "";
-		String meterLocalArchitectureURI = "";
+//		String meterLocalArchitectureURI = "";
 
 		long current = System.currentTimeMillis();
-		// start time of the components in Unix epoch time in milliseconds.
 		long unixEpochStartTimeInMillis = current + DELAY_TO_START;
-		// start instant used for time-triggered synchronisation in unit tests
-		// and SIL simulation runs.
 		Instant	startInstant = Instant.parse(START_INSTANT);
 
-		// URI of the simulation models and architectures differ among
-		// simulation types merely to offer the possibility to the components
-		// to create and store all of their possible simulation architectures
-		// at the same time, hence avoiding confusion among them.
 		switch (CURRENT_SIMULATION_TYPE) {
 		case MIL_SIMULATION:
 			globalArchitectureURI = GlobalSupervisor.MIL_SIM_ARCHITECTURE_URI;
-			ironLocalArchitectureURI = IronStateModel.MIL_URI;
-			ironUserLocalArchitectureURI = IronUserModel.MIL_URI;
+//			ironLocalArchitectureURI = IronStateModel.MIL_URI;
+//			ironUserLocalArchitectureURI = IronUserModel.MIL_URI;
 			fridgeLocalArchitectureURI = FridgeCoupledModel.MIL_URI;
 			fridgeUserLocalArchitectureURI = FridgeUnitTestModel.MIL_URI;
-			meterLocalArchitectureURI = ElectricMeterCoupledModel.MIL_URI;
+//			meterLocalArchitectureURI = ElectricMeterCoupledModel.MIL_URI;
 			break;
 			
 		case MIL_RT_SIMULATION:
 			globalArchitectureURI = GlobalSupervisor.MIL_SIM_ARCHITECTURE_URI;
-			ironLocalArchitectureURI = IronStateModel.MIL_RT_URI;
-			ironUserLocalArchitectureURI = IronUserModel.MIL_RT_URI;
+//			ironLocalArchitectureURI = IronStateModel.MIL_RT_URI;
+//			ironUserLocalArchitectureURI = IronUserModel.MIL_RT_URI;
 			fridgeLocalArchitectureURI = FridgeCoupledModel.MIL_RT_URI;
 			fridgeUserLocalArchitectureURI = FridgeUnitTestModel.MIL_RT_URI;
-			meterLocalArchitectureURI = ElectricMeterCoupledModel.MIL_RT_URI;
+//			meterLocalArchitectureURI = ElectricMeterCoupledModel.MIL_RT_URI;
 			break;
 			
 		case SIL_SIMULATION:
 			globalArchitectureURI = GlobalSupervisor.SIL_SIM_ARCHITECTURE_URI;
-			ironLocalArchitectureURI = IronStateModel.SIL_URI;
-			ironUserLocalArchitectureURI = "not-used";
+//			ironLocalArchitectureURI = IronStateModel.SIL_URI;
+//			ironUserLocalArchitectureURI = "not-used";
 			fridgeLocalArchitectureURI = FridgeCoupledModel.SIL_URI;
 			fridgeUserLocalArchitectureURI = "not-used";
-			meterLocalArchitectureURI = ElectricMeterCoupledModel.SIL_URI;
+//			meterLocalArchitectureURI = ElectricMeterCoupledModel.SIL_URI;
 			break;
 			
 		case NO_SIMULATION:
@@ -158,28 +151,28 @@ public class CVMIntegrationTest extends AbstractCVM {
 		default:
 		}
 		
-		AbstractComponent.createComponent(
-				Iron.class.getCanonicalName(),
-				new Object[]{Iron.REFLECTION_INBOUND_PORT_URI,
-							 Iron.INBOUND_PORT_URI,
-							 CURRENT_EXECUTION_TYPE,
-							 CURRENT_SIMULATION_TYPE,
-							 globalArchitectureURI,
-							 ironLocalArchitectureURI,
-							 SIMULATION_TIME_UNIT,
-							 ACCELERATION_FACTOR,
-							 CLOCK_URI});
-		AbstractComponent.createComponent(
-				IronUser.class.getCanonicalName(),
-				new Object[]{IronUser.REFLECTION_INBOUND_PORT_URI,
-							 Iron.INBOUND_PORT_URI,
-							 CURRENT_EXECUTION_TYPE,
-							 CURRENT_SIMULATION_TYPE,
-							 globalArchitectureURI,
-							 ironUserLocalArchitectureURI,
-							 SIMULATION_TIME_UNIT,
-							 ACCELERATION_FACTOR,
-							 CLOCK_URI});
+//		AbstractComponent.createComponent(
+//				Iron.class.getCanonicalName(),
+//				new Object[]{Iron.REFLECTION_INBOUND_PORT_URI,
+//							 Iron.INBOUND_PORT_URI,
+//							 CURRENT_EXECUTION_TYPE,
+//							 CURRENT_SIMULATION_TYPE,
+//							 globalArchitectureURI,
+//							 ironLocalArchitectureURI,
+//							 SIMULATION_TIME_UNIT,
+//							 ACCELERATION_FACTOR,
+//							 CLOCK_URI});
+//		AbstractComponent.createComponent(
+//				IronUser.class.getCanonicalName(),
+//				new Object[]{IronUser.REFLECTION_INBOUND_PORT_URI,
+//							 Iron.INBOUND_PORT_URI,
+//							 CURRENT_EXECUTION_TYPE,
+//							 CURRENT_SIMULATION_TYPE,
+//							 globalArchitectureURI,
+//							 ironUserLocalArchitectureURI,
+//							 SIMULATION_TIME_UNIT,
+//							 ACCELERATION_FACTOR,
+//							 CLOCK_URI});
 
 		AbstractComponent.createComponent(
 				Fridge.class.getCanonicalName(),
@@ -219,17 +212,17 @@ public class CVMIntegrationTest extends AbstractCVM {
 						 	 ACCELERATION_FACTOR,
 						 	 CLOCK_URI});
 
-		AbstractComponent.createComponent(
-				ElectricMeter.class.getCanonicalName(),
-				new Object[]{ElectricMeter.REFLECTION_INBOUND_PORT_URI,
-							 ElectricMeter.ELECTRIC_METER_INBOUND_PORT_URI,
-							 CURRENT_EXECUTION_TYPE,
-							 CURRENT_SIMULATION_TYPE,
-							 globalArchitectureURI,
-							 meterLocalArchitectureURI,
-							 SIMULATION_TIME_UNIT,
-							 ACCELERATION_FACTOR,
-						 	 CLOCK_URI});
+//		AbstractComponent.createComponent(
+//				ElectricMeter.class.getCanonicalName(),
+//				new Object[]{ElectricMeter.REFLECTION_INBOUND_PORT_URI,
+//							 ElectricMeter.ELECTRIC_METER_INBOUND_PORT_URI,
+//							 CURRENT_EXECUTION_TYPE,
+//							 CURRENT_SIMULATION_TYPE,
+//							 globalArchitectureURI,
+//							 meterLocalArchitectureURI,
+//							 SIMULATION_TIME_UNIT,
+//							 ACCELERATION_FACTOR,
+//						 	 CLOCK_URI});
 
 		AbstractComponent.createComponent(
 				HEM.class.getCanonicalName(),

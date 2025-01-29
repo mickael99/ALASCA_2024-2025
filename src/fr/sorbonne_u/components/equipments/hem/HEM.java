@@ -1,5 +1,6 @@
 package fr.sorbonne_u.components.equipments.hem;
 
+import fr.sorbonne_u.components.cyphy.utils.aclocks.ClocksServerWithSimulationCI;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
@@ -30,7 +31,12 @@ import fr.sorbonne_u.components.equipments.battery.BatteryCI;
 import fr.sorbonne_u.components.equipments.generator.interfaces.GeneratorHEMCI;
 
 //@OfferedInterfaces(offered = {RegistrationCI.class})
-@RequiredInterfaces(required = {AdjustableCI.class, ElectricMeterCI.class, BatteryCI.class, WindTurbineCI.class, GeneratorHEMCI.class})
+@RequiredInterfaces(required = {AdjustableCI.class, 
+								ElectricMeterCI.class, 
+								BatteryCI.class, 
+								WindTurbineCI.class, 
+								GeneratorHEMCI.class,
+								ClocksServerWithSimulationCI.class})
 public class HEM extends AbstractComponent implements RegistrationI {
 
 	// -------------------------------------------------------------------------
@@ -91,10 +97,10 @@ public class HEM extends AbstractComponent implements RegistrationI {
 					try	{
 						o.traceMessage(
 								"Electric meter current consumption: " +
-								electricMeterOutboundPort.getCurrentConsumption() + "\n");
+								/*electricMeterOutboundPort.getCurrentConsumption()*/ "Not implemented yet\n");
 						o.traceMessage(
 								"Electric meter current production: " +
-								electricMeterOutboundPort.getCurrentProduction() + "\n");
+								electricMeterOutboundPort.getCurrentProduction() + "Not implemented yet\n");
 						loop(next, end, ac);
 					} catch(Exception e) {
 						e.printStackTrace();
@@ -156,12 +162,12 @@ public class HEM extends AbstractComponent implements RegistrationI {
 		super.start();
 
 		try {
-			this.electricMeterOutboundPort = new ElectricMeterOutboundPort(this);
-			this.electricMeterOutboundPort.publishPort();
-			this.doPortConnection(
-					this.electricMeterOutboundPort.getPortURI(),
-					ElectricMeter.ELECTRIC_METER_INBOUND_PORT_URI,
-					ElectricMeterConnector.class.getCanonicalName());
+//			this.electricMeterOutboundPort = new ElectricMeterOutboundPort(this);
+//			this.electricMeterOutboundPort.publishPort();
+//			this.doPortConnection(
+//					this.electricMeterOutboundPort.getPortURI(),
+//					ElectricMeter.ELECTRIC_METER_INBOUND_PORT_URI,
+//					ElectricMeterConnector.class.getCanonicalName());
 
 			this.controlFridgeOutboundPort = new AdjustableOutboundPort(this);
 			this.controlFridgeOutboundPort.publishPort();
@@ -215,10 +221,10 @@ public class HEM extends AbstractComponent implements RegistrationI {
 						try {
 							traceMessage(
 									"Electric meter current consumption: " +
-									electricMeterOutboundPort.getCurrentConsumption() + "\n");
+									/*electricMeterOutboundPort.getCurrentConsumption()*/ "Not implemented yet\n");
 							traceMessage(
 									"Electric meter current production: " +
-									electricMeterOutboundPort.getCurrentProduction() + "\n");
+									/*electricMeterOutboundPort.getCurrentProduction()*/ "Not implemented yet\n");
 							traceMessage("HEM meter test ends.\n");
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -314,7 +320,7 @@ public class HEM extends AbstractComponent implements RegistrationI {
 	@Override
 	public synchronized void finalise() throws Exception {
 		this.logMessage("HEM ends.");
-		this.doPortDisconnection(this.electricMeterOutboundPort.getPortURI());
+//		this.doPortDisconnection(this.electricMeterOutboundPort.getPortURI());
 		this.doPortDisconnection(this.controlFridgeOutboundPort.getPortURI());
 		
 		super.finalise();
@@ -323,7 +329,7 @@ public class HEM extends AbstractComponent implements RegistrationI {
 	@Override
 	public synchronized void shutdown() throws ComponentShutdownException {
 		try {
-			this.electricMeterOutboundPort.unpublishPort();
+//			this.electricMeterOutboundPort.unpublishPort();
 			this.controlFridgeOutboundPort.unpublishPort();
 		} catch (Exception e) {
 			throw new ComponentShutdownException(e) ;

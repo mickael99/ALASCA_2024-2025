@@ -1,11 +1,14 @@
 package fr.sorbonne_u.components.equipments.meter.mil;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import fr.sorbonne_u.components.cyphy.plugins.devs.AtomicSimulatorPlugin;
 import fr.sorbonne_u.components.equipments.hem.mil.HEM_ReportI;
 import fr.sorbonne_u.components.equipments.meter.ElectricMeter;
 import fr.sorbonne_u.components.utils.Electricity;
+import fr.sorbonne_u.devs_simulation.exceptions.MissingRunParameterException;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ImportedVariable;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.InternalVariable;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ModelImportedVariable;
@@ -18,6 +21,7 @@ import fr.sorbonne_u.devs_simulation.simulators.interfaces.AtomicSimulatorI;
 import fr.sorbonne_u.devs_simulation.simulators.interfaces.SimulationReportI;
 import fr.sorbonne_u.devs_simulation.utils.Pair;
 import fr.sorbonne_u.devs_simulation.utils.StandardLogger;
+import fr.sorbonne_u.exceptions.PreconditionException;
 
 @ModelImportedVariable(name = "currentFridgeConsumption", type = Double.class)
 @ModelImportedVariable(name = "currentIronConsumption", type = Double.class)
@@ -54,22 +58,22 @@ public class ElectricMeterElectricityModel extends AtomicHIOA {
 	@ImportedVariable(type = Double.class)
 	protected Value<Double> currentFridgeConsumption = new Value<Double>(this);
 	
-	@ImportedVariable(type = Double.class)
-	protected Value<Double> currentBatteryConsumption = new Value<Double>(this);
+//	@ImportedVariable(type = Double.class)
+//	protected Value<Double> currentBatteryConsumption = new Value<Double>(this);
 	
 	 
 //	@ImportedVariable(type = Double.class)
 //	protected Value<Double> currentSmartLightingConsumption = new Value<Double>(this);
 	
 	// Production devices
-	@ImportedVariable(type = Double.class)
-	protected Value<Double> currentWindTurbineProduction = new Value<Double>(this);
-	
-	@ImportedVariable(type = Double.class)
-	protected Value<Double> currentBatteryProduction = new Value<Double>(this);
-	
-	@ImportedVariable(type = Double.class)
-	protected Value<Double> currentGeneratorProduction = new Value<Double>(this);
+//	@ImportedVariable(type = Double.class)
+//	protected Value<Double> currentWindTurbineProduction = new Value<Double>(this);
+//	
+//	@ImportedVariable(type = Double.class)
+//	protected Value<Double> currentBatteryProduction = new Value<Double>(this);
+//	
+//	@ImportedVariable(type = Double.class)
+//	protected Value<Double> currentGeneratorProduction = new Value<Double>(this);
 	
 	
 	// Total values
@@ -135,9 +139,9 @@ public class ElectricMeterElectricityModel extends AtomicHIOA {
                         (this.currentIronConsumption == null || this.currentIronConsumption.getValue() == null
                         		? 0.0 : currentIronConsumption.getValue()) +
                         (this.currentFridgeConsumption == null || this.currentFridgeConsumption.getValue() == null
-                        		? 0.0 : currentFridgeConsumption.getValue()) +
-                        (this.currentBatteryConsumption == null || this.currentBatteryConsumption.getValue() == null 
-                        		? 0.0 : currentBatteryConsumption.getValue());
+                        		? 0.0 : currentFridgeConsumption.getValue());
+//                        (this.currentBatteryConsumption == null || this.currentBatteryConsumption.getValue() == null 
+//                        		? 0.0 : currentBatteryConsumption.getValue());
         
         return consumption;
 	}
@@ -155,13 +159,14 @@ public class ElectricMeterElectricityModel extends AtomicHIOA {
 	
 	public double computeCurrentProduction() {
 
-        double production =
-                        (this.currentWindTurbineProduction == null || this.currentWindTurbineProduction.getValue() == null
-                        		? 0.0 : currentWindTurbineProduction.getValue()) +
-                        (this.currentBatteryProduction == null || this.currentBatteryProduction.getValue() == null
-                        		? 0.0 : currentBatteryProduction.getValue()) +
-                        (this.currentGeneratorProduction == null || this.currentGeneratorProduction.getValue() == null
-                		? 0.0 : currentGeneratorProduction.getValue());
+//        double production =
+//                        (this.currentWindTurbineProduction == null || this.currentWindTurbineProduction.getValue() == null
+//                        		? 0.0 : currentWindTurbineProduction.getValue()) +
+//                        (this.currentBatteryProduction == null || this.currentBatteryProduction.getValue() == null
+//                        		? 0.0 : currentBatteryProduction.getValue()) +
+//                        (this.currentGeneratorProduction == null || this.currentGeneratorProduction.getValue() == null
+//                		? 0.0 : currentGeneratorProduction.getValue());
+		double production = 0.0;
         
         return production;
     }
@@ -189,10 +194,10 @@ public class ElectricMeterElectricityModel extends AtomicHIOA {
 		}
 		
 		// Production
-		if (!this.currentProduction.isInitialised()
-				&& this.currentBatteryProduction.isInitialised()
-				&& this.currentGeneratorProduction.isInitialised()
-				&& this.currentWindTurbineProduction.isInitialised()) {
+		if (!this.currentProduction.isInitialised()) {
+//				&& this.currentBatteryProduction.isInitialised()
+//				&& this.currentGeneratorProduction.isInitialised()
+//				&& this.currentWindTurbineProduction.isInitialised()) {
 			double production = this.computeCurrentProduction();
 			this.currentProduction.initialise(production);
 			this.totalProduction.initialise(0.0);
@@ -261,6 +266,27 @@ public class ElectricMeterElectricityModel extends AtomicHIOA {
         logMessage("Simulation ends!\n");
         super.endSimulation(endTime);
     }
+    
+    @Override
+	public void setSimulationRunParameters(
+		Map<String, Object> simParams
+		) throws MissingRunParameterException
+	{
+		super.setSimulationRunParameters(simParams);
+
+		assert	simParams != null && !simParams.isEmpty() :
+				new PreconditionException(
+								"simParams != null && !simParams.isEmpty()");
+
+		if (simParams.containsKey(
+						AtomicSimulatorPlugin.OWNER_RUNTIME_PARAMETER_NAME)) {
+			this.ownerComponent = 
+				(ElectricMeter) simParams.get(
+						AtomicSimulatorPlugin.OWNER_RUNTIME_PARAMETER_NAME);
+			this.getSimulationEngine().setLogger(
+						AtomicSimulatorPlugin.createComponentLogger(simParams));
+		}
+	}
     
     public static class		ElectricMeterElectricityReport
 	implements	SimulationReportI, HEM_ReportI
