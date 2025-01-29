@@ -30,7 +30,11 @@ import fr.sorbonne_u.components.xmlReader.ClassCreator;
 import fr.sorbonne_u.utils.aclocks.AcceleratedClock;
 import fr.sorbonne_u.utils.aclocks.ClocksServer;
 import fr.sorbonne_u.components.equipments.meter.interfaces.ElectricMeterCI;
+import fr.sorbonne_u.components.equipments.battery.Battery;
 import fr.sorbonne_u.components.equipments.battery.BatteryCI;
+import fr.sorbonne_u.components.equipments.battery.BatteryConnector;
+import fr.sorbonne_u.components.equipments.battery.BatteryOutboundPort;
+import fr.sorbonne_u.components.equipments.battery.BatteryI.BATTERY_STATE;
 import fr.sorbonne_u.components.equipments.generator.interfaces.GeneratorHEMCI;
 
 //@OfferedInterfaces(offered = {RegistrationCI.class})
@@ -59,7 +63,7 @@ public class HEM extends AbstractComponent implements RegistrationI {
 	protected ElectricMeterOutboundPort electricMeterOutboundPort;
 	protected AdjustableOutboundPort controlFridgeOutboundPort;
 	//protected AdjustableOutboundPort controlSmartLightingPort;
-	//protected BatteryOutboundPort batteryOutboundPort;
+	protected BatteryOutboundPort batteryOutboundPort;
 	protected WindTurbineOutboundPort windTurbineOutboundPort;
 	//protected GeneratorHEMOutboundPort generatorHEMOutboundPort;
 	
@@ -178,6 +182,9 @@ public class HEM extends AbstractComponent implements RegistrationI {
 			this.windTurbineOutboundPort = new WindTurbineOutboundPort(this);
 			this.windTurbineOutboundPort.publishPort();
 			
+			this.batteryOutboundPort = new BatteryOutboundPort(this);
+			this.batteryOutboundPort.publishPort();
+			
 			this.doPortConnection(
 					this.controlFridgeOutboundPort.getPortURI(),
 					Fridge.EXTERNAL_CONTROL_INBOUND_PORT_URI,
@@ -187,6 +194,11 @@ public class HEM extends AbstractComponent implements RegistrationI {
 					this.windTurbineOutboundPort.getPortURI(),
 					WindTurbine.INBOUND_PORT_URI,
 					WindTurbineConnector.class.getCanonicalName());
+			
+			this.doPortConnection(
+					this.batteryOutboundPort.getPortURI(),
+					Battery.INBOUND_PORT_URI,
+					BatteryConnector.class.getCanonicalName());
 		} catch (Exception e) {
 			throw new ComponentStartException(e) ;
 		}
@@ -356,14 +368,46 @@ public class HEM extends AbstractComponent implements RegistrationI {
 							}
 						}
 					}, delay, TimeUnit.NANOSECONDS);
+			
+			// Wind turbine
+			Instant battery = ac.getStartInstant().plusSeconds(350L);
+			delay = ac.nanoDelayUntilInstant(battery);
+			this.logMessage("HEM schedules the battery call in "
+										+ delay + " " + TimeUnit.NANOSECONDS);
+			this.scheduleTaskOnComponent(
+					new AbstractComponent.AbstractTask() {
+						@Override
+						public void run() {
+							try {
+								traceMessage("HEM battery call begins.\n");
+								batteryOutboundPort.setState(BATTERY_STATE.CONSUME);
+								traceMessage("Battery state -> " + batteryOutboundPort.getState() + "\n");
+								
+								batteryOutboundPort.setState(BATTERY_STATE.STANDBY);
+								traceMessage("Battery state -> " + batteryOutboundPort.getState() + "\n");
+								
+								batteryOutboundPort.setState(BATTERY_STATE.PRODUCT);
+								traceMessage("Battery state -> " + batteryOutboundPort.getState() + "\n");
+								
+								traceMessage("Battery level -> " + batteryOutboundPort.getBatteryLevel() + "\n");
+								
+								traceMessage("HEM battery call ends.\n");
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					}, delay, TimeUnit.NANOSECONDS);
 		}
 	}
 	
 	@Override
 	public synchronized void finalise() throws Exception {
 		this.logMessage("HEM ends.");
+		
 //		this.doPortDisconnection(this.electricMeterOutboundPort.getPortURI());
 		this.doPortDisconnection(this.controlFridgeOutboundPort.getPortURI());
+		this.doPortDisconnection(this.windTurbineOutboundPort.getPortURI());
+		this.doPortDisconnection(this.batteryOutboundPort.getPortURI());
 		
 		super.finalise();
 	}
@@ -373,6 +417,8 @@ public class HEM extends AbstractComponent implements RegistrationI {
 		try {
 //			this.electricMeterOutboundPort.unpublishPort();
 			this.controlFridgeOutboundPort.unpublishPort();
+			this.windTurbineOutboundPort.unpublishPort();
+			this.batteryOutboundPort.unpublishPort();
 		} catch (Exception e) {
 			throw new ComponentShutdownException(e) ;
 		}
