@@ -12,6 +12,16 @@ import fr.sorbonne_u.components.cyphy.plugins.devs.architectures.ComponentCouple
 import fr.sorbonne_u.components.cyphy.plugins.devs.architectures.ComponentModelArchitecture;
 import fr.sorbonne_u.components.cyphy.plugins.devs.architectures.RTComponentAtomicModelDescriptor;
 import fr.sorbonne_u.components.cyphy.plugins.devs.architectures.RTComponentCoupledModelDescriptor;
+import fr.sorbonne_u.components.equipments.battery.Battery;
+import fr.sorbonne_u.components.equipments.battery.BatteryTester;
+import fr.sorbonne_u.components.equipments.battery.mil.BatteryChargeLevelModel;
+import fr.sorbonne_u.components.equipments.battery.mil.BatteryCoupledModel;
+import fr.sorbonne_u.components.equipments.battery.mil.BatteryElectricityModel;
+import fr.sorbonne_u.components.equipments.battery.mil.BatteryStateModel;
+import fr.sorbonne_u.components.equipments.battery.mil.BatteryUserModel;
+import fr.sorbonne_u.components.equipments.battery.mil.events.SetConsumeBatteryEvent;
+import fr.sorbonne_u.components.equipments.battery.mil.events.SetProductBatteryEvent;
+import fr.sorbonne_u.components.equipments.battery.mil.events.SetStandByBatteryEvent;
 import fr.sorbonne_u.components.equipments.fridge.Fridge;
 import fr.sorbonne_u.components.equipments.fridge.FridgeUser;
 import fr.sorbonne_u.components.equipments.fridge.mil.FridgeCoupledModel;
@@ -155,6 +165,34 @@ public class ComponentSimulationArchitectures {
 							StopWindTurbineEvent.class},
 						simulatedTimeUnit,
 						WindTurbineTester.REFLECTION_INBOUND_PORT_URI));
+		
+		// Battery
+		atomicModelDescriptors.put(
+				BatteryCoupledModel.MIL_URI,
+				ComponentAtomicModelDescriptor.create(
+						BatteryCoupledModel.MIL_URI,
+						(Class<? extends EventI>[]) new Class<?>[]{
+							SetProductBatteryEvent.class,
+							SetConsumeBatteryEvent.class,
+							SetStandByBatteryEvent.class},
+						(Class<? extends EventI>[]) new Class<?>[]{
+							SetProductBatteryEvent.class,
+							SetConsumeBatteryEvent.class,
+							SetStandByBatteryEvent.class},
+						simulatedTimeUnit,
+						Battery.REFLECTION_INBOUND_PORT_URI));
+		atomicModelDescriptors.put(
+				BatteryUserModel.MIL_URI,
+				ComponentAtomicModelDescriptor.create(
+						BatteryUserModel.MIL_URI,
+						(Class<? extends EventI>[]) new Class<?>[]{},
+						(Class<? extends EventI>[]) new Class<?>[]{
+							SetProductBatteryEvent.class,
+							SetConsumeBatteryEvent.class,
+							SetStandByBatteryEvent.class},
+						simulatedTimeUnit,
+						BatteryTester.REFLECTION_INBOUND_PORT_URI));
+		
 		// Electric Metter
 //		atomicModelDescriptors.put(
 //				ElectricMeterCoupledModel.MIL_URI,
@@ -195,9 +233,13 @@ public class ComponentSimulationArchitectures {
 		submodels.add(FridgeCoupledModel.MIL_URI);
 		submodels.add(FridgeUnitTestModel.MIL_URI);
 		
-		//WindTurbine
+		// WindTurbine
 		submodels.add(WindTurbineCoupledModel.MIL_URI);
 		submodels.add(WindTurbineUserModel.MIL_URI);
+		
+		// Battery
+		submodels.add(BatteryUserModel.MIL_URI);
+		submodels.add(BatteryCoupledModel.MIL_URI);
 		
 		// Electric Metter
 //		submodels.add(ElectricMeterCoupledModel.MIL_URI);
@@ -442,6 +484,65 @@ public class ComponentSimulationArchitectures {
                         new EventSink(WindTurbineCoupledModel.MIL_URI, StopWindTurbineEvent.class)
                 }
         );
+        
+        // WindTurbineCoupled -> ElectricMeterCoupled
+//      connections.put(
+//              new EventSource(WindTurbineCoupledModel.MIL_URI, StartWindTurbineEvent.class),
+//              new EventSink[] {
+//                      new EventSink(ElectricMeterCoupledModel.MIL_URI, StartWindTurbineEvent.class)
+//              }
+//      );
+//      
+//      connections.put(
+//              new EventSource(WindTurbineCoupledModel.MIL_URI, StopWindTurbineEvent.class),
+//              new EventSink[] {
+//                      new EventSink(ElectricMeterCoupledModel.MIL_URI, StopWindTurbineEvent.class)
+//              }
+//      );
+        
+        // BatteryUser -> BatteryCoupledModel
+        connections.put(
+                new EventSource(BatteryUserModel.MIL_URI, SetProductBatteryEvent.class),
+                new EventSink[] {
+                        new EventSink(BatteryCoupledModel.MIL_URI, SetProductBatteryEvent.class)
+                }
+        );
+
+        connections.put(
+                new EventSource(BatteryUserModel.MIL_URI, SetConsumeBatteryEvent.class),
+                new EventSink[] {
+                        new EventSink(BatteryCoupledModel.MIL_URI, SetConsumeBatteryEvent.class)
+                }
+        );
+        
+        connections.put(
+                new EventSource(BatteryUserModel.MIL_URI, SetStandByBatteryEvent.class),
+                new EventSink[] {
+                        new EventSink(BatteryCoupledModel.MIL_URI, SetStandByBatteryEvent.class)
+                }
+        );
+        
+        // BatteryCoupledModel -> ElectricMeterCoupledModel
+//        connections.put(
+//                new EventSource(BatteryCoupledModel.MIL_URI, SetProductBatteryEvent.class),
+//                new EventSink[] {
+//                        new EventSink(ElectricMeterCoupledModel.MIL_URI, SetProductBatteryEvent.class)
+//                }
+//        );
+//
+//        connections.put(
+//                new EventSource(BatteryCoupledModel.MIL_URI, SetConsumeBatteryEvent.class),
+//                new EventSink[] {
+//                        new EventSink(ElectricMeterCoupledModel.MIL_URI, SetConsumeBatteryEvent.class)
+//                }
+//        );
+//        
+//        connections.put(
+//                new EventSource(BatteryCoupledModel.MIL_URI, SetStandByBatteryEvent.class),
+//                new EventSink[] {
+//                        new EventSink(ElectricMeterCoupledModel.MIL_URI, SetStandByBatteryEvent.class)
+//                }
+//        );
 
 		// coupled model descriptor
 		coupledModelDescriptors.put(
@@ -590,6 +691,33 @@ public class ComponentSimulationArchitectures {
 							StopWindTurbineEvent.class},
 						simulatedTimeUnit,
 						WindTurbineTester.REFLECTION_INBOUND_PORT_URI));
+		
+		// Battery
+		atomicModelDescriptors.put(
+				BatteryCoupledModel.MIL_RT_URI,
+				RTComponentAtomicModelDescriptor.create(
+						BatteryCoupledModel.MIL_RT_URI,
+						(Class<? extends EventI>[]) new Class<?>[]{
+							SetProductBatteryEvent.class,
+							SetConsumeBatteryEvent.class,
+							SetStandByBatteryEvent.class},
+						(Class<? extends EventI>[]) new Class<?>[]{
+							SetProductBatteryEvent.class,
+							SetConsumeBatteryEvent.class,
+							SetStandByBatteryEvent.class},
+						simulatedTimeUnit,
+						Battery.REFLECTION_INBOUND_PORT_URI));
+		atomicModelDescriptors.put(
+				BatteryUserModel.MIL_RT_URI,
+				RTComponentAtomicModelDescriptor.create(
+						BatteryUserModel.MIL_RT_URI,
+						(Class<? extends EventI>[]) new Class<?>[]{},
+						(Class<? extends EventI>[]) new Class<?>[]{
+							SetProductBatteryEvent.class,
+							SetConsumeBatteryEvent.class,
+							SetStandByBatteryEvent.class},
+						simulatedTimeUnit,
+						BatteryTester.REFLECTION_INBOUND_PORT_URI));
 
 //		atomicModelDescriptors.put(
 //				ElectricMeterCoupledModel.MIL_RT_URI,
@@ -631,6 +759,9 @@ public class ComponentSimulationArchitectures {
 		
 		submodels.add(WindTurbineCoupledModel.MIL_RT_URI);
 		submodels.add(WindTurbineUserModel.MIL_RT_URI);
+		
+		submodels.add(BatteryUserModel.MIL_RT_URI);
+		submodels.add(BatteryCoupledModel.MIL_RT_URI);
 		
 //		submodels.add(ElectricMeterCoupledModel.MIL_RT_URI);
 
@@ -874,6 +1005,8 @@ public class ComponentSimulationArchitectures {
         );
         
         
+        
+        
         // WindTurbineCoupled -> ElectricMeterCoupled
 //        connections.put(
 //                new EventSource(WindTurbineCoupledModel.MIL_RT_URI, StartWindTurbineEvent.class),
@@ -889,6 +1022,50 @@ public class ComponentSimulationArchitectures {
 //                }
 //        );
 		        
+        // BatteryUser -> BatteryCoupledModel
+        connections.put(
+                new EventSource(BatteryUserModel.MIL_RT_URI, SetProductBatteryEvent.class),
+                new EventSink[] {
+                        new EventSink(BatteryCoupledModel.MIL_RT_URI, SetProductBatteryEvent.class)
+                }
+        );
+
+        connections.put(
+                new EventSource(BatteryUserModel.MIL_RT_URI, SetConsumeBatteryEvent.class),
+                new EventSink[] {
+                        new EventSink(BatteryCoupledModel.MIL_RT_URI, SetConsumeBatteryEvent.class)
+                }
+        );
+        
+        connections.put(
+                new EventSource(BatteryUserModel.MIL_RT_URI, SetStandByBatteryEvent.class),
+                new EventSink[] {
+                        new EventSink(BatteryCoupledModel.MIL_RT_URI, SetStandByBatteryEvent.class)
+                }
+        );
+        
+        // BatteryCoupledModel -> ElectricMeterCoupledModel
+//        connections.put(
+//                new EventSource(BatteryCoupledModel.MIL_RT_URI, SetProductBatteryEvent.class),
+//                new EventSink[] {
+//                        new EventSink(ElectricMeterCoupledModel.MIL_RT_URI, SetProductBatteryEvent.class)
+//                }
+//        );
+//
+//        connections.put(
+//                new EventSource(BatteryCoupledModel.MIL_RT_URI, SetConsumeBatteryEvent.class),
+//                new EventSink[] {
+//                        new EventSink(ElectricMeterCoupledModel.MIL_RT_URI, SetConsumeBatteryEvent.class)
+//                }
+//        );
+//        
+//        connections.put(
+//                new EventSource(BatteryCoupledModel.MIL_RT_URI, SetStandByBatteryEvent.class),
+//                new EventSink[] {
+//                        new EventSink(ElectricMeterCoupledModel.MIL_RT_URI, SetStandByBatteryEvent.class)
+//                }
+//        );
+        
 		// coupled model descriptor
 		coupledModelDescriptors.put(
 				GlobalCoupledModel.MIL_RT_URI,
@@ -991,6 +1168,22 @@ public class ComponentSimulationArchitectures {
 							StopWindTurbineEvent.class},
 						simulatedTimeUnit,
 						WindTurbine.REFLECTION_INBOUND_PORT_URI));
+		
+		// Battery
+		atomicModelDescriptors.put(
+				BatteryCoupledModel.SIL_URI,
+				RTComponentAtomicModelDescriptor.create(
+						BatteryCoupledModel.SIL_URI,
+						(Class<? extends EventI>[]) new Class<?>[]{
+							SetProductBatteryEvent.class,
+							SetConsumeBatteryEvent.class,
+							SetStandByBatteryEvent.class},
+						(Class<? extends EventI>[]) new Class<?>[]{
+							SetProductBatteryEvent.class,
+							SetConsumeBatteryEvent.class,
+							SetStandByBatteryEvent.class},
+						simulatedTimeUnit,
+						Battery.REFLECTION_INBOUND_PORT_URI));
 
 //		atomicModelDescriptors.put(
 //				ElectricMeterCoupledModel.SIL_URI,
@@ -1025,6 +1218,7 @@ public class ComponentSimulationArchitectures {
 		submodels.add(IronStateModel.SIL_URI);
 		submodels.add(FridgeCoupledModel.SIL_URI);
 		submodels.add(WindTurbineCoupledModel.SIL_URI);
+		submodels.add(BatteryCoupledModel.SIL_URI);
 //		submodels.add(ElectricMeterCoupledModel.SIL_URI);
 
 		Map<EventSource,EventSink[]> connections = 	new HashMap<EventSource,EventSink[]>();
@@ -1154,6 +1348,28 @@ public class ComponentSimulationArchitectures {
 //                        new EventSink(ElectricMeterCoupledModel.SIL_URI, StopWindTurbineEvent.class)
 //                }
 //        );
+		
+		  // BatteryCoupledModel -> ElectricMeterCoupledModel
+//      connections.put(
+//              new EventSource(BatteryCoupledModel.SIL_URI, SetProductBatteryEvent.class),
+//              new EventSink[] {
+//                      new EventSink(ElectricMeterCoupledModel.SIL_URI, SetProductBatteryEvent.class)
+//              }
+//      );
+//
+//      connections.put(
+//              new EventSource(BatteryCoupledModel.SIL_URI, SetConsumeBatteryEvent.class),
+//              new EventSink[] {
+//                      new EventSink(ElectricMeterCoupledModel.SIL_URI, SetConsumeBatteryEvent.class)
+//              }
+//      );
+//      
+//      connections.put(
+//              new EventSource(BatteryCoupledModel.SIL_URI, SetStandByBatteryEvent.class),
+//              new EventSink[] {
+//                      new EventSink(ElectricMeterCoupledModel.SIL_URI, SetStandByBatteryEvent.class)
+//              }
+//      );
 
 		// coupled model descriptor
 		coupledModelDescriptors.put(
