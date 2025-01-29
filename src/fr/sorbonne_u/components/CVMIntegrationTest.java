@@ -37,14 +37,14 @@ public class CVMIntegrationTest extends AbstractCVM {
 	public static long DELAY_TO_STOP = 2000L;
 	public static long END_SLEEP_DURATION = 1000000L;
 
-	public static long DELAY_TO_START_SIMULATION = 5000L;
+	public static long DELAY_TO_START_SIMULATION = 3000L;
 	public static double SIMULATION_START_TIME = 0.0;
-	public static double SIMULATION_DURATION = 3.0;
+	public static double SIMULATION_DURATION = 10.0;
 	public static TimeUnit SIMULATION_TIME_UNIT = TimeUnit.HOURS;
-	public static double ACCELERATION_FACTOR = 180.0;
+	public static double ACCELERATION_FACTOR = 360.0;
 
 	public static ExecutionType	CURRENT_EXECUTION_TYPE = ExecutionType.INTEGRATION_TEST;
-	public static SimulationType CURRENT_SIMULATION_TYPE = SimulationType.MIL_SIMULATION;
+	public static SimulationType CURRENT_SIMULATION_TYPE = SimulationType.SIL_SIMULATION;
 
 	public static String CLOCK_URI = "hem-clock";
 	public static String START_INSTANT = "2023-11-22T00:00:00.00Z";
@@ -77,12 +77,12 @@ public class CVMIntegrationTest extends AbstractCVM {
 //		ElectricMeterUnitTester.X_RELATIVE_POSITION = 2;
 //		ElectricMeterUnitTester.Y_RELATIVE_POSITION = 1;
 		
-//		Iron.VERBOSE = true;
-//		Iron.X_RELATIVE_POSITION = 1;
-//		Iron.Y_RELATIVE_POSITION = 2;
-//		IronUser.VERBOSE = true;
-//		IronUser.X_RELATIVE_POSITION = 0;
-//		IronUser.Y_RELATIVE_POSITION = 2;
+		Iron.VERBOSE = true;
+		Iron.X_RELATIVE_POSITION = 1;
+		Iron.Y_RELATIVE_POSITION = 2;
+		IronUser.VERBOSE = true;
+		IronUser.X_RELATIVE_POSITION = 0;
+		IronUser.Y_RELATIVE_POSITION = 2;
 		
 		Fridge.VERBOSE = true;
 		Fridge.X_RELATIVE_POSITION = 1;
@@ -108,8 +108,8 @@ public class CVMIntegrationTest extends AbstractCVM {
 						"!CURRENT_EXECUTION_TYPE.isUnitTest()");
 
 		String globalArchitectureURI = "";
-//		String ironLocalArchitectureURI = "";
-//		String ironUserLocalArchitectureURI = "";
+		String ironLocalArchitectureURI = "";
+		String ironUserLocalArchitectureURI = "";
 		String fridgeLocalArchitectureURI = "";
 		String fridgeUserLocalArchitectureURI = "";
 //		String meterLocalArchitectureURI = "";
@@ -121,8 +121,8 @@ public class CVMIntegrationTest extends AbstractCVM {
 		switch (CURRENT_SIMULATION_TYPE) {
 		case MIL_SIMULATION:
 			globalArchitectureURI = GlobalSupervisor.MIL_SIM_ARCHITECTURE_URI;
-//			ironLocalArchitectureURI = IronStateModel.MIL_URI;
-//			ironUserLocalArchitectureURI = IronUserModel.MIL_URI;
+			ironLocalArchitectureURI = IronStateModel.MIL_URI;
+			ironUserLocalArchitectureURI = IronUserModel.MIL_URI;
 			fridgeLocalArchitectureURI = FridgeCoupledModel.MIL_URI;
 			fridgeUserLocalArchitectureURI = FridgeUnitTestModel.MIL_URI;
 //			meterLocalArchitectureURI = ElectricMeterCoupledModel.MIL_URI;
@@ -130,8 +130,8 @@ public class CVMIntegrationTest extends AbstractCVM {
 			
 		case MIL_RT_SIMULATION:
 			globalArchitectureURI = GlobalSupervisor.MIL_SIM_ARCHITECTURE_URI;
-//			ironLocalArchitectureURI = IronStateModel.MIL_RT_URI;
-//			ironUserLocalArchitectureURI = IronUserModel.MIL_RT_URI;
+			ironLocalArchitectureURI = IronStateModel.MIL_RT_URI;
+			ironUserLocalArchitectureURI = IronUserModel.MIL_RT_URI;
 			fridgeLocalArchitectureURI = FridgeCoupledModel.MIL_RT_URI;
 			fridgeUserLocalArchitectureURI = FridgeUnitTestModel.MIL_RT_URI;
 //			meterLocalArchitectureURI = ElectricMeterCoupledModel.MIL_RT_URI;
@@ -139,8 +139,8 @@ public class CVMIntegrationTest extends AbstractCVM {
 			
 		case SIL_SIMULATION:
 			globalArchitectureURI = GlobalSupervisor.SIL_SIM_ARCHITECTURE_URI;
-//			ironLocalArchitectureURI = IronStateModel.SIL_URI;
-//			ironUserLocalArchitectureURI = "not-used";
+			ironLocalArchitectureURI = IronStateModel.SIL_URI;
+			ironUserLocalArchitectureURI = "not-used";
 			fridgeLocalArchitectureURI = FridgeCoupledModel.SIL_URI;
 			fridgeUserLocalArchitectureURI = "not-used";
 //			meterLocalArchitectureURI = ElectricMeterCoupledModel.SIL_URI;
@@ -151,28 +151,28 @@ public class CVMIntegrationTest extends AbstractCVM {
 		default:
 		}
 		
-//		AbstractComponent.createComponent(
-//				Iron.class.getCanonicalName(),
-//				new Object[]{Iron.REFLECTION_INBOUND_PORT_URI,
-//							 Iron.INBOUND_PORT_URI,
-//							 CURRENT_EXECUTION_TYPE,
-//							 CURRENT_SIMULATION_TYPE,
-//							 globalArchitectureURI,
-//							 ironLocalArchitectureURI,
-//							 SIMULATION_TIME_UNIT,
-//							 ACCELERATION_FACTOR,
-//							 CLOCK_URI});
-//		AbstractComponent.createComponent(
-//				IronUser.class.getCanonicalName(),
-//				new Object[]{IronUser.REFLECTION_INBOUND_PORT_URI,
-//							 Iron.INBOUND_PORT_URI,
-//							 CURRENT_EXECUTION_TYPE,
-//							 CURRENT_SIMULATION_TYPE,
-//							 globalArchitectureURI,
-//							 ironUserLocalArchitectureURI,
-//							 SIMULATION_TIME_UNIT,
-//							 ACCELERATION_FACTOR,
-//							 CLOCK_URI});
+		AbstractComponent.createComponent(
+				Iron.class.getCanonicalName(),
+				new Object[]{Iron.REFLECTION_INBOUND_PORT_URI,
+							 Iron.INBOUND_PORT_URI,
+							 CURRENT_EXECUTION_TYPE,
+							 CURRENT_SIMULATION_TYPE,
+							 globalArchitectureURI,
+							 ironLocalArchitectureURI,
+							 SIMULATION_TIME_UNIT,
+							 ACCELERATION_FACTOR,
+							 CLOCK_URI});
+		AbstractComponent.createComponent(
+				IronUser.class.getCanonicalName(),
+				new Object[]{IronUser.REFLECTION_INBOUND_PORT_URI,
+							 Iron.INBOUND_PORT_URI,
+							 CURRENT_EXECUTION_TYPE,
+							 CURRENT_SIMULATION_TYPE,
+							 globalArchitectureURI,
+							 ironUserLocalArchitectureURI,
+							 SIMULATION_TIME_UNIT,
+							 ACCELERATION_FACTOR,
+							 CLOCK_URI});
 
 		AbstractComponent.createComponent(
 				Fridge.class.getCanonicalName(),

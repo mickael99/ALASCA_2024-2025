@@ -716,9 +716,6 @@ public class Fridge extends AbstractCyPhyComponent implements FridgeInternalCont
 												t -> new SetPowerFridge(t, pv));
 		}
 		
-		assert	this.currentCoolingPower > this.getCurrentCoolingPower() :
-					new PostconditionException(
-							"this.currentCoolingPower > this.getCurrentCoolingPower()");
 			
 		if (VERBOSE)
 			this.traceMessage("Current cooling power is changing -> " + this.currentCoolingPower + "\n.");

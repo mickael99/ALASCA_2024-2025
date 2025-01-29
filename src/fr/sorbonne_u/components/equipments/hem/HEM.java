@@ -100,7 +100,7 @@ public class HEM extends AbstractComponent implements RegistrationI {
 								/*electricMeterOutboundPort.getCurrentConsumption()*/ "Not implemented yet\n");
 						o.traceMessage(
 								"Electric meter current production: " +
-								electricMeterOutboundPort.getCurrentProduction() + "Not implemented yet\n");
+								/*electricMeterOutboundPort.getCurrentProduction()*/ "Not implemented yet\n");
 						loop(next, end, ac);
 					} catch(Exception e) {
 						e.printStackTrace();
@@ -232,6 +232,7 @@ public class HEM extends AbstractComponent implements RegistrationI {
 					}
 				}, delay, TimeUnit.NANOSECONDS);
 
+			System.out.println("hi");
 			Instant fridge1 = ac.getStartInstant().plusSeconds(30L);
 			delay = ac.nanoDelayUntilInstant(fridge1);
 			this.logMessage("HEM schedules the heater first call in "

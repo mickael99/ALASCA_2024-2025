@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.math3.random.RandomDataGenerator;
 
+import fr.sorbonne_u.components.cyphy.plugins.devs.AtomicSimulatorPlugin;
 import fr.sorbonne_u.components.equipments.iron.mil.events.DisableEnergySavingModeIron;
 import fr.sorbonne_u.components.equipments.iron.mil.events.DisableSteamModeIron;
 import fr.sorbonne_u.components.equipments.iron.mil.events.EnableCottonModeIron;
@@ -220,6 +221,12 @@ public class IronUserModel extends AtomicES_Model {
 	public void	setSimulationRunParameters(Map<String, Object> simParams) throws MissingRunParameterException {
 		super.setSimulationRunParameters(simParams);
 
+		if (simParams.containsKey(
+				AtomicSimulatorPlugin.OWNER_RUNTIME_PARAMETER_NAME)) {
+			this.getSimulationEngine().setLogger(
+						AtomicSimulatorPlugin.createComponentLogger(simParams));
+		}
+		
 		String stepName = ModelI.createRunParameterName(getURI(), MEAN_STEP_RPNAME);
 		if (simParams.containsKey(stepName)) 
 			STEP_MEAN_DURATION = (double) simParams.get(stepName);
