@@ -19,6 +19,10 @@ import fr.sorbonne_u.components.equipments.iron.mil.IronUserModel;
 import fr.sorbonne_u.components.equipments.meter.ElectricMeter;
 import fr.sorbonne_u.components.equipments.meter.ElectricMeterUnitTester;
 import fr.sorbonne_u.components.equipments.meter.mil.ElectricMeterCoupledModel;
+import fr.sorbonne_u.components.equipments.windTurbine.WindTurbine;
+import fr.sorbonne_u.components.equipments.windTurbine.WindTurbineTester;
+import fr.sorbonne_u.components.equipments.windTurbine.mil.WindTurbineCoupledModel;
+import fr.sorbonne_u.components.equipments.windTurbine.mil.WindTurbineUserModel;
 import fr.sorbonne_u.components.utils.ExecutionType;
 import fr.sorbonne_u.components.utils.SimulationType;
 import fr.sorbonne_u.devs_simulation.exceptions.NeoSim4JavaException;
@@ -93,6 +97,13 @@ public class CVMIntegrationTest extends AbstractCVM {
 		FridgeController.VERBOSE = true;
 		FridgeController.X_RELATIVE_POSITION = 2;
 		FridgeController.Y_RELATIVE_POSITION = 3;
+		
+		WindTurbine.VERBOSE = true;
+		WindTurbine.X_RELATIVE_POSITION = 1;
+		WindTurbine.Y_RELATIVE_POSITION = 1;
+		WindTurbineTester.VERBOSE = true;
+		WindTurbineTester.X_RELATIVE_POSITION = 2;
+		WindTurbineTester.Y_RELATIVE_POSITION = 1;
 	}
 	
 	
@@ -112,6 +123,8 @@ public class CVMIntegrationTest extends AbstractCVM {
 		String ironUserLocalArchitectureURI = "";
 		String fridgeLocalArchitectureURI = "";
 		String fridgeUserLocalArchitectureURI = "";
+		String windTurbineArchitectureURI = "";
+		String windTurbineUserLocalArchitectureURI = "";
 //		String meterLocalArchitectureURI = "";
 
 		long current = System.currentTimeMillis();
@@ -125,6 +138,8 @@ public class CVMIntegrationTest extends AbstractCVM {
 			ironUserLocalArchitectureURI = IronUserModel.MIL_URI;
 			fridgeLocalArchitectureURI = FridgeCoupledModel.MIL_URI;
 			fridgeUserLocalArchitectureURI = FridgeUnitTestModel.MIL_URI;
+			windTurbineArchitectureURI = WindTurbineCoupledModel.MIL_URI;
+			windTurbineUserLocalArchitectureURI = WindTurbineUserModel.MIL_URI;
 //			meterLocalArchitectureURI = ElectricMeterCoupledModel.MIL_URI;
 			break;
 			
@@ -134,6 +149,8 @@ public class CVMIntegrationTest extends AbstractCVM {
 			ironUserLocalArchitectureURI = IronUserModel.MIL_RT_URI;
 			fridgeLocalArchitectureURI = FridgeCoupledModel.MIL_RT_URI;
 			fridgeUserLocalArchitectureURI = FridgeUnitTestModel.MIL_RT_URI;
+			windTurbineArchitectureURI = WindTurbineCoupledModel.MIL_RT_URI;
+			windTurbineUserLocalArchitectureURI = WindTurbineUserModel.MIL_RT_URI;
 //			meterLocalArchitectureURI = ElectricMeterCoupledModel.MIL_RT_URI;
 			break;
 			
@@ -143,6 +160,8 @@ public class CVMIntegrationTest extends AbstractCVM {
 			ironUserLocalArchitectureURI = "not-used";
 			fridgeLocalArchitectureURI = FridgeCoupledModel.SIL_URI;
 			fridgeUserLocalArchitectureURI = "not-used";
+			windTurbineArchitectureURI = WindTurbineCoupledModel.SIL_URI;
+			windTurbineUserLocalArchitectureURI = "not-used";
 //			meterLocalArchitectureURI = ElectricMeterCoupledModel.SIL_URI;
 			break;
 			
@@ -211,6 +230,28 @@ public class CVMIntegrationTest extends AbstractCVM {
 						 	 SIMULATION_TIME_UNIT,
 						 	 ACCELERATION_FACTOR,
 						 	 CLOCK_URI});
+		
+		AbstractComponent.createComponent(
+				WindTurbine.class.getCanonicalName(),
+				new Object[]{WindTurbine.REFLECTION_INBOUND_PORT_URI,
+							 WindTurbine.INBOUND_PORT_URI,
+							 CURRENT_EXECUTION_TYPE,
+							 CURRENT_SIMULATION_TYPE,
+							 globalArchitectureURI,
+							 windTurbineArchitectureURI,
+							 SIMULATION_TIME_UNIT,
+							 ACCELERATION_FACTOR,
+							 CLOCK_URI});
+		AbstractComponent.createComponent(
+				WindTurbineTester.class.getCanonicalName(),
+				new Object[]{WindTurbine.INBOUND_PORT_URI,
+							 CURRENT_EXECUTION_TYPE,
+							 CURRENT_SIMULATION_TYPE,
+							 globalArchitectureURI,
+							 windTurbineUserLocalArchitectureURI,
+							 SIMULATION_TIME_UNIT,
+							 ACCELERATION_FACTOR,
+							 CLOCK_URI});
 
 //		AbstractComponent.createComponent(
 //				ElectricMeter.class.getCanonicalName(),

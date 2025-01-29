@@ -22,8 +22,12 @@ import fr.sorbonne_u.components.equipments.iron.IronUser;
 import fr.sorbonne_u.components.equipments.iron.mil.IronStateModel;
 import fr.sorbonne_u.components.equipments.iron.mil.IronUserModel;
 import fr.sorbonne_u.components.equipments.iron.mil.events.*;
-import fr.sorbonne_u.components.equipments.meter.ElectricMeter;
-import fr.sorbonne_u.components.equipments.meter.mil.ElectricMeterCoupledModel;
+import fr.sorbonne_u.components.equipments.windTurbine.WindTurbine;
+import fr.sorbonne_u.components.equipments.windTurbine.WindTurbineTester;
+import fr.sorbonne_u.components.equipments.windTurbine.mil.WindTurbineCoupledModel;
+import fr.sorbonne_u.components.equipments.windTurbine.mil.WindTurbineUserModel;
+import fr.sorbonne_u.components.equipments.windTurbine.mil.events.StartWindTurbineEvent;
+import fr.sorbonne_u.components.equipments.windTurbine.mil.events.StopWindTurbineEvent;
 import fr.sorbonne_u.devs_simulation.models.architectures.AbstractAtomicModelDescriptor;
 import fr.sorbonne_u.devs_simulation.models.architectures.CoupledModelDescriptor;
 import fr.sorbonne_u.devs_simulation.models.events.EventI;
@@ -127,7 +131,30 @@ public class ComponentSimulationArchitectures {
 							SwitchOnFridge.class},
 						simulatedTimeUnit,
 						FridgeUser.REFLECTION_INBOUND_PORT_URI));
-
+		
+		// WindTurbine
+		atomicModelDescriptors.put(
+				WindTurbineCoupledModel.MIL_URI,
+				ComponentAtomicModelDescriptor.create(
+						WindTurbineCoupledModel.MIL_URI,
+						(Class<? extends EventI>[]) new Class<?>[]{
+							StartWindTurbineEvent.class,
+							StopWindTurbineEvent.class},
+						(Class<? extends EventI>[]) new Class<?>[]{
+							StartWindTurbineEvent.class,
+							StopWindTurbineEvent.class},
+						simulatedTimeUnit,
+						WindTurbine.REFLECTION_INBOUND_PORT_URI));
+		atomicModelDescriptors.put(
+				WindTurbineUserModel.MIL_URI,
+				ComponentAtomicModelDescriptor.create(
+						WindTurbineUserModel.MIL_URI,
+						(Class<? extends EventI>[]) new Class<?>[]{},
+						(Class<? extends EventI>[]) new Class<?>[]{
+							StartWindTurbineEvent.class,
+							StopWindTurbineEvent.class},
+						simulatedTimeUnit,
+						WindTurbineTester.REFLECTION_INBOUND_PORT_URI));
 		// Electric Metter
 //		atomicModelDescriptors.put(
 //				ElectricMeterCoupledModel.MIL_URI,
@@ -167,6 +194,10 @@ public class ComponentSimulationArchitectures {
 		// Fridge
 		submodels.add(FridgeCoupledModel.MIL_URI);
 		submodels.add(FridgeUnitTestModel.MIL_URI);
+		
+		//WindTurbine
+		submodels.add(WindTurbineCoupledModel.MIL_URI);
+		submodels.add(WindTurbineUserModel.MIL_URI);
 		
 		// Electric Metter
 //		submodels.add(ElectricMeterCoupledModel.MIL_URI);
@@ -396,6 +427,21 @@ public class ComponentSimulationArchitectures {
 //						new EventSink(ElectricMeterCoupledModel.MIL_URI,
 //									  SetPowerFridge.class),
 //				});
+		
+		// WindTurbineUser -> WindTurbineCoupled
+		connections.put(
+                new EventSource(WindTurbineUserModel.MIL_URI, StartWindTurbineEvent.class),
+                new EventSink[] {
+                        new EventSink(WindTurbineCoupledModel.MIL_URI, StartWindTurbineEvent.class)
+                }
+        );
+
+        connections.put(
+                new EventSource(WindTurbineUserModel.MIL_URI, StopWindTurbineEvent.class),
+                new EventSink[] {
+                        new EventSink(WindTurbineCoupledModel.MIL_URI, StopWindTurbineEvent.class)
+                }
+        );
 
 		// coupled model descriptor
 		coupledModelDescriptors.put(
@@ -520,6 +566,30 @@ public class ComponentSimulationArchitectures {
 							SwitchOnFridge.class},
 						simulatedTimeUnit,
 						FridgeUser.REFLECTION_INBOUND_PORT_URI));
+		
+		// WindTurbine
+		atomicModelDescriptors.put(
+				WindTurbineCoupledModel.MIL_RT_URI,
+				RTComponentAtomicModelDescriptor.create(
+						WindTurbineCoupledModel.MIL_RT_URI,
+						(Class<? extends EventI>[]) new Class<?>[]{
+							StartWindTurbineEvent.class,
+							StopWindTurbineEvent.class},
+						(Class<? extends EventI>[]) new Class<?>[]{
+							StartWindTurbineEvent.class,
+							StopWindTurbineEvent.class},
+						simulatedTimeUnit,
+						WindTurbine.REFLECTION_INBOUND_PORT_URI));
+		atomicModelDescriptors.put(
+				WindTurbineUserModel.MIL_RT_URI,
+				RTComponentAtomicModelDescriptor.create(
+						WindTurbineUserModel.MIL_RT_URI,
+						(Class<? extends EventI>[]) new Class<?>[]{},
+						(Class<? extends EventI>[]) new Class<?>[]{
+							StartWindTurbineEvent.class,
+							StopWindTurbineEvent.class},
+						simulatedTimeUnit,
+						WindTurbineTester.REFLECTION_INBOUND_PORT_URI));
 
 //		atomicModelDescriptors.put(
 //				ElectricMeterCoupledModel.MIL_RT_URI,
@@ -555,8 +625,13 @@ public class ComponentSimulationArchitectures {
 		Set<String> submodels = new HashSet<String>();
 		submodels.add(IronStateModel.MIL_RT_URI);
 		submodels.add(IronUserModel.MIL_RT_URI);
+		
 		submodels.add(FridgeCoupledModel.MIL_RT_URI);
 		submodels.add(FridgeUnitTestModel.MIL_RT_URI);
+		
+		submodels.add(WindTurbineCoupledModel.MIL_RT_URI);
+		submodels.add(WindTurbineUserModel.MIL_RT_URI);
+		
 //		submodels.add(ElectricMeterCoupledModel.MIL_RT_URI);
 
 		Map<EventSource,EventSink[]> connections =
@@ -783,6 +858,37 @@ public class ComponentSimulationArchitectures {
 //									  SetPowerFridge.class),
 //				});
 
+		// WindTurbineUser -> WindTurbineCoupled
+		connections.put(
+                new EventSource(WindTurbineUserModel.MIL_RT_URI, StartWindTurbineEvent.class),
+                new EventSink[] {
+                        new EventSink(WindTurbineCoupledModel.MIL_RT_URI, StartWindTurbineEvent.class)
+                }
+        );
+
+        connections.put(
+                new EventSource(WindTurbineUserModel.MIL_RT_URI, StopWindTurbineEvent.class),
+                new EventSink[] {
+                        new EventSink(WindTurbineCoupledModel.MIL_RT_URI, StopWindTurbineEvent.class)
+                }
+        );
+        
+        
+        // WindTurbineCoupled -> ElectricMeterCoupled
+//        connections.put(
+//                new EventSource(WindTurbineCoupledModel.MIL_RT_URI, StartWindTurbineEvent.class),
+//                new EventSink[] {
+//                        new EventSink(ElectricMeterCoupledModel.MIL_RT_URI, StartWindTurbineEvent.class)
+//                }
+//        );
+//        
+//        connections.put(
+//                new EventSource(WindTurbineCoupledModel.MIL_RT_URI, StopWindTurbineEvent.class),
+//                new EventSink[] {
+//                        new EventSink(ElectricMeterCoupledModel.MIL_RT_URI, StopWindTurbineEvent.class)
+//                }
+//        );
+		        
 		// coupled model descriptor
 		coupledModelDescriptors.put(
 				GlobalCoupledModel.MIL_RT_URI,
@@ -871,6 +977,20 @@ public class ComponentSimulationArchitectures {
 							SwitchOnFridge.class},
 						simulatedTimeUnit,
 						Fridge.REFLECTION_INBOUND_PORT_URI));
+		
+		// WindTurbine
+		atomicModelDescriptors.put(
+				WindTurbineCoupledModel.SIL_URI,
+				RTComponentAtomicModelDescriptor.create(
+						WindTurbineCoupledModel.SIL_URI,
+						(Class<? extends EventI>[]) new Class<?>[]{
+							StartWindTurbineEvent.class,
+							StopWindTurbineEvent.class},
+						(Class<? extends EventI>[]) new Class<?>[]{
+							StartWindTurbineEvent.class,
+							StopWindTurbineEvent.class},
+						simulatedTimeUnit,
+						WindTurbine.REFLECTION_INBOUND_PORT_URI));
 
 //		atomicModelDescriptors.put(
 //				ElectricMeterCoupledModel.SIL_URI,
@@ -904,6 +1024,7 @@ public class ComponentSimulationArchitectures {
 		Set<String> submodels = new HashSet<String>();
 		submodels.add(IronStateModel.SIL_URI);
 		submodels.add(FridgeCoupledModel.SIL_URI);
+		submodels.add(WindTurbineCoupledModel.SIL_URI);
 //		submodels.add(ElectricMeterCoupledModel.SIL_URI);
 
 		Map<EventSource,EventSink[]> connections = 	new HashMap<EventSource,EventSink[]>();
@@ -1017,6 +1138,22 @@ public class ComponentSimulationArchitectures {
 //						new EventSink(ElectricMeterCoupledModel.SIL_URI,
 //									  SetPowerFridge.class),
 //				});
+        
+  
+        // WindTurbineCoupled -> ElectricMeterCoupled
+//        connections.put(
+//                new EventSource(WindTurbineCoupledModel.SIL_URI, StartWindTurbineEvent.class),
+//                new EventSink[] {
+//                        new EventSink(ElectricMeterCoupledModel.SIL_URI, StartWindTurbineEvent.class)
+//                }
+//        );
+//        
+//        connections.put(
+//                new EventSource(WindTurbineCoupledModel.SIL_URI, StopWindTurbineEvent.class),
+//                new EventSink[] {
+//                        new EventSink(ElectricMeterCoupledModel.SIL_URI, StopWindTurbineEvent.class)
+//                }
+//        );
 
 		// coupled model descriptor
 		coupledModelDescriptors.put(

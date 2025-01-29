@@ -353,6 +353,7 @@ public class WindTurbineTester extends AbstractCyPhyComponent {
 								"currentSimulationType.isSILSimulation()");
 			
 				clock.waitUntilSimulationStart();
+				System.out.println("run test sil scenario a verifier dans wind turbine lors du test d'integration");
 				runSILTestScenario(clock);
 			}
 		}
