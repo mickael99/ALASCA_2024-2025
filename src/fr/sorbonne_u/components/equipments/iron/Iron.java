@@ -186,6 +186,7 @@ public class Iron extends AbstractCyPhyComponent implements IronImplementationI 
 				
 				this.addLocalSimulatorArchitecture(architecture);
 				this.global2localSimulationArchitectureURIS.put(this.globalArchitectureURI, this.localArchitectureURI);
+				System.out.println("plugin preparé dans initialise de iron");
 				break;
 				
 			case MIL_RT_SIMULATION:
@@ -330,6 +331,7 @@ public class Iron extends AbstractCyPhyComponent implements IronImplementationI 
 					this.asp.setPluginURI(uri);
 					this.asp.setSimulationArchitecture(architecture);
 					this.installPlugin(this.asp);
+					System.out.println("plugin installé dans start de iron");
 					break;
 					
 				case MIL_RT_SIMULATION:

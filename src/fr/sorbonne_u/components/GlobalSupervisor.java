@@ -17,37 +17,6 @@ import fr.sorbonne_u.components.utils.SimulationType;
 import fr.sorbonne_u.exceptions.PreconditionException;
 import fr.sorbonne_u.utils.aclocks.ClocksServer;
 
-// -----------------------------------------------------------------------------
-/**
- * The class <code>GlobalSupervisor</code> implements the supervisor component
- * for simulated runs of the HEM project.
- *
- * <p><strong>Description</strong></p>
- * 
- * <p>
- * In BCM-CyPhy-Components, simulated runs execute both the components and their
- * DEVS simulators. In this case, the supervisor component is responsible for
- * the creation, initialisation and execution of the global component simulation
- * architecture using models disseminated into the different application
- * components.
- * </p>
- * 
- * <p><strong>White-box Invariant</strong></p>
- * 
- * <pre>
- * invariant	{@code true}	// no more invariant
- * </pre>
- * 
- * <p><strong>Black-box Invariant</strong></p>
- * 
- * <pre>
- * invariant	{@code true}	// no more invariant
- * </pre>
- * 
- * <p>Created on : 2023-11-13</p>
- * 
- * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
- */
 @RequiredInterfaces(required = {ClocksServerWithSimulationCI.class})
 public class			GlobalSupervisor
 extends		AbstractCyPhyComponent
@@ -56,30 +25,19 @@ extends		AbstractCyPhyComponent
 	// Constants and variables
 	// -------------------------------------------------------------------------
 
-	/** when true, methods trace their actions.								*/
 	public static boolean		VERBOSE = false;
-	/** when tracing, x coordinate of the window relative position.			*/
 	public static int			X_RELATIVE_POSITION = 0;
-	/** when tracing, y coordinate of the window relative position.			*/
 	public static int			Y_RELATIVE_POSITION = 0;
-
-	/** URI of the simulation architecture when a MIL simulation is
-	 *  executed.															*/
-	public static final String	MIL_SIM_ARCHITECTURE_URI = "hem-mil-simulator";
-	/** URI of the simulation architecture when a MIL real time
-	 *  simulation is executed.												*/
+															
+	public static final String	MIL_SIM_ARCHITECTURE_URI = "hem-mil-simulator";											
 	public static final String	MIL_RT_SIM_ARCHITECTURE_URI =
 														"hem-mil-rt-simulator";
-	/** URI of the simulation architecture when a SIL simulation is
-	 *  executed.															*/
+														
 	public static final String	SIL_SIM_ARCHITECTURE_URI = "hem-sil-simulator";
 
 	// Execution/Simulation
 
-	/** current type of simulation.											*/
 	protected final SimulationType	currentSimulationType;
-	/** URI of the simulation architecture to be created or the empty string
-	 *  if the component does not execute as a SIL simulation.				*/
 	protected final String			simArchitectureURI;
 
 	// -------------------------------------------------------------------------
@@ -136,6 +94,7 @@ extends		AbstractCyPhyComponent
 	@Override
 	public void			execute() throws Exception
 	{
+		System.out.println("nqsijcdjdsq");
 		// First, get the clock and wait until the start time that it specifies.
 		AcceleratedAndSimulationClock ac = null;
 		ClocksServerWithSimulationOutboundPort clocksServerOutboundPort =
@@ -169,6 +128,7 @@ extends		AbstractCyPhyComponent
 			sp.constructSimulator();
 			this.logMessage("simulator constructed, simulation begins.");
 			sp.setSimulationRunParameters(new HashMap<>());
+
 			sp.doStandAloneSimulation(0.0, ac.getSimulatedDuration());
 			this.logMessage("simulation ends.");
 			break;

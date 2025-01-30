@@ -5,6 +5,8 @@ import java.util.concurrent.TimeUnit;
 
 import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.components.cyphy.utils.aclocks.ClocksServerWithSimulation;
+import fr.sorbonne_u.components.electricmeter2.ElectricMeter;
+import fr.sorbonne_u.components.electricmeter2.ElectricMeterUnitTester;
 import fr.sorbonne_u.components.equipments.battery.Battery;
 import fr.sorbonne_u.components.equipments.battery.BatteryTester;
 import fr.sorbonne_u.components.equipments.battery.mil.BatteryCoupledModel;
@@ -20,8 +22,6 @@ import fr.sorbonne_u.components.equipments.iron.Iron;
 import fr.sorbonne_u.components.equipments.iron.IronUser;
 import fr.sorbonne_u.components.equipments.iron.mil.IronStateModel;
 import fr.sorbonne_u.components.equipments.iron.mil.IronUserModel;
-import fr.sorbonne_u.components.equipments.meter.ElectricMeter;
-import fr.sorbonne_u.components.equipments.meter.ElectricMeterUnitTester;
 import fr.sorbonne_u.components.equipments.meter.mil.ElectricMeterCoupledModel;
 import fr.sorbonne_u.components.equipments.windTurbine.WindTurbine;
 import fr.sorbonne_u.components.equipments.windTurbine.WindTurbineTester;
@@ -33,6 +33,11 @@ import fr.sorbonne_u.devs_simulation.exceptions.NeoSim4JavaException;
 import fr.sorbonne_u.exceptions.PreconditionException;
 import fr.sorbonne_u.exceptions.VerboseException;
 import fr.sorbonne_u.utils.aclocks.ClocksServer;
+
+
+
+
+
 
 public class CVMIntegrationTest extends AbstractCVM {
 
@@ -52,7 +57,7 @@ public class CVMIntegrationTest extends AbstractCVM {
 	public static double ACCELERATION_FACTOR = 360.0;
 
 	public static ExecutionType	CURRENT_EXECUTION_TYPE = ExecutionType.INTEGRATION_TEST;
-	public static SimulationType CURRENT_SIMULATION_TYPE = SimulationType.SIL_SIMULATION;
+	public static SimulationType CURRENT_SIMULATION_TYPE = SimulationType.MIL_SIMULATION;
 
 	public static String CLOCK_URI = "hem-clock";
 	public static String START_INSTANT = "2023-11-22T00:00:00.00Z";
@@ -78,12 +83,12 @@ public class CVMIntegrationTest extends AbstractCVM {
 		HEM.X_RELATIVE_POSITION = 0;
 		HEM.Y_RELATIVE_POSITION = 1;
 		
-//		ElectricMeter.VERBOSE = true;
-//		ElectricMeter.X_RELATIVE_POSITION = 1;
-//		ElectricMeter.Y_RELATIVE_POSITION = 1;
-//		ElectricMeterUnitTester.VERBOSE = true;
-//		ElectricMeterUnitTester.X_RELATIVE_POSITION = 2;
-//		ElectricMeterUnitTester.Y_RELATIVE_POSITION = 1;
+		ElectricMeter.VERBOSE = true;
+		ElectricMeter.X_RELATIVE_POSITION = 3;
+		ElectricMeter.Y_RELATIVE_POSITION = 2;
+		ElectricMeterUnitTester.VERBOSE = true;
+		ElectricMeterUnitTester.X_RELATIVE_POSITION = 3;
+		ElectricMeterUnitTester.Y_RELATIVE_POSITION = 3;
 		
 		Iron.VERBOSE = true;
 		Iron.X_RELATIVE_POSITION = 1;
@@ -138,7 +143,7 @@ public class CVMIntegrationTest extends AbstractCVM {
 		String windTurbineUserLocalArchitectureURI = "";
 		String batteryArchitectureURI = "";
 		String batteryUserLocalArchitectureURI = "";
-//		String meterLocalArchitectureURI = "";
+		String meterLocalArchitectureURI = "";
 
 		long current = System.currentTimeMillis();
 		long unixEpochStartTimeInMillis = current + DELAY_TO_START;
@@ -155,7 +160,7 @@ public class CVMIntegrationTest extends AbstractCVM {
 			windTurbineUserLocalArchitectureURI = WindTurbineUserModel.MIL_URI;
 			batteryArchitectureURI = BatteryCoupledModel.MIL_URI;
 			batteryUserLocalArchitectureURI = BatteryUserModel.MIL_URI;
-//			meterLocalArchitectureURI = ElectricMeterCoupledModel.MIL_URI;
+			meterLocalArchitectureURI = ElectricMeterCoupledModel.MIL_URI;
 			break;
 			
 		case MIL_RT_SIMULATION:
@@ -168,7 +173,7 @@ public class CVMIntegrationTest extends AbstractCVM {
 			windTurbineUserLocalArchitectureURI = WindTurbineUserModel.MIL_RT_URI;
 			batteryArchitectureURI = BatteryCoupledModel.MIL_RT_URI;
 			batteryUserLocalArchitectureURI = BatteryUserModel.MIL_RT_URI;
-//			meterLocalArchitectureURI = ElectricMeterCoupledModel.MIL_RT_URI;
+			meterLocalArchitectureURI = ElectricMeterCoupledModel.MIL_RT_URI;
 			break;
 			
 		case SIL_SIMULATION:
@@ -181,7 +186,7 @@ public class CVMIntegrationTest extends AbstractCVM {
 			windTurbineUserLocalArchitectureURI = "not-used";
 			batteryArchitectureURI = BatteryCoupledModel.SIL_URI;
 			batteryUserLocalArchitectureURI = "not-used";
-//			meterLocalArchitectureURI = ElectricMeterCoupledModel.SIL_URI;
+			meterLocalArchitectureURI = ElectricMeterCoupledModel.SIL_URI;
 			break;
 			
 		case NO_SIMULATION:
@@ -211,100 +216,100 @@ public class CVMIntegrationTest extends AbstractCVM {
 							 SIMULATION_TIME_UNIT,
 							 ACCELERATION_FACTOR,
 							 CLOCK_URI});
-
-		AbstractComponent.createComponent(
-				Fridge.class.getCanonicalName(),
-				new Object[]{Fridge.REFLECTION_INBOUND_PORT_URI,
-							 Fridge.USER_INBOUND_PORT_URI,
-							 Fridge.INTERNAL_CONTROL_INBOUND_PORT_URI,
-							 Fridge.EXTERNAL_CONTROL_INBOUND_PORT_URI,
-							 Fridge.SENSOR_INBOUND_PORT_URI,
-							 Fridge.ACTUATOR_INBOUND_PORT_URI,
-							 CURRENT_EXECUTION_TYPE,
-							 CURRENT_SIMULATION_TYPE,
-							 globalArchitectureURI,
-							 fridgeLocalArchitectureURI,
-							 SIMULATION_TIME_UNIT,
-							 ACCELERATION_FACTOR,
-							 CLOCK_URI});
-		AbstractComponent.createComponent(
-				FridgeController.class.getCanonicalName(),
-				new Object[]{Fridge.SENSOR_INBOUND_PORT_URI,
-							 Fridge.ACTUATOR_INBOUND_PORT_URI,
-							 FridgeController.STANDARD_HYSTERESIS,
-							 FridgeController.STANDARD_CONTROL_PERIOD,
-							 CONTROL_MODE,
-							 CURRENT_EXECUTION_TYPE,
-							 CURRENT_SIMULATION_TYPE,
-							 CLOCK_URI});
-		AbstractComponent.createComponent(
-				FridgeUser.class.getCanonicalName(),
-				new Object[]{Fridge.USER_INBOUND_PORT_URI,
-						 	 Fridge.INTERNAL_CONTROL_INBOUND_PORT_URI,
-						 	 Fridge.EXTERNAL_CONTROL_INBOUND_PORT_URI,
-						 	 CURRENT_EXECUTION_TYPE,
-						 	 CURRENT_SIMULATION_TYPE,
-						 	 globalArchitectureURI,
-						 	 fridgeUserLocalArchitectureURI,
-						 	 SIMULATION_TIME_UNIT,
-						 	 ACCELERATION_FACTOR,
-						 	 CLOCK_URI});
-		
-		AbstractComponent.createComponent(
-				WindTurbine.class.getCanonicalName(),
-				new Object[]{WindTurbine.REFLECTION_INBOUND_PORT_URI,
-							 WindTurbine.INBOUND_PORT_URI,
-							 CURRENT_EXECUTION_TYPE,
-							 CURRENT_SIMULATION_TYPE,
-							 globalArchitectureURI,
-							 windTurbineArchitectureURI,
-							 SIMULATION_TIME_UNIT,
-							 ACCELERATION_FACTOR,
-							 CLOCK_URI});
-		AbstractComponent.createComponent(
-				WindTurbineTester.class.getCanonicalName(),
-				new Object[]{WindTurbine.INBOUND_PORT_URI,
-							 CURRENT_EXECUTION_TYPE,
-							 CURRENT_SIMULATION_TYPE,
-							 globalArchitectureURI,
-							 windTurbineUserLocalArchitectureURI,
-							 SIMULATION_TIME_UNIT,
-							 ACCELERATION_FACTOR,
-							 CLOCK_URI});
-		
-		AbstractComponent.createComponent(
-				Battery.class.getCanonicalName(),
-				new Object[]{Battery.REFLECTION_INBOUND_PORT_URI,
-							 Battery.INBOUND_PORT_URI,
-							 CURRENT_EXECUTION_TYPE,
-							 CURRENT_SIMULATION_TYPE,
-							 globalArchitectureURI,
-							 batteryArchitectureURI,
-							 SIMULATION_TIME_UNIT,
-							 ACCELERATION_FACTOR,
-							 CLOCK_URI});
-		AbstractComponent.createComponent(
-				BatteryTester.class.getCanonicalName(),
-				new Object[]{Battery.INBOUND_PORT_URI,
-							 CURRENT_EXECUTION_TYPE,
-							 CURRENT_SIMULATION_TYPE,
-							 globalArchitectureURI,
-							 batteryUserLocalArchitectureURI,
-							 SIMULATION_TIME_UNIT,
-							 ACCELERATION_FACTOR,
-							 CLOCK_URI});
-
+//
 //		AbstractComponent.createComponent(
-//				ElectricMeter.class.getCanonicalName(),
-//				new Object[]{ElectricMeter.REFLECTION_INBOUND_PORT_URI,
-//							 ElectricMeter.ELECTRIC_METER_INBOUND_PORT_URI,
+//				Fridge.class.getCanonicalName(),
+//				new Object[]{Fridge.REFLECTION_INBOUND_PORT_URI,
+//							 Fridge.USER_INBOUND_PORT_URI,
+//							 Fridge.INTERNAL_CONTROL_INBOUND_PORT_URI,
+//							 Fridge.EXTERNAL_CONTROL_INBOUND_PORT_URI,
+//							 Fridge.SENSOR_INBOUND_PORT_URI,
+//							 Fridge.ACTUATOR_INBOUND_PORT_URI,
 //							 CURRENT_EXECUTION_TYPE,
 //							 CURRENT_SIMULATION_TYPE,
 //							 globalArchitectureURI,
-//							 meterLocalArchitectureURI,
+//							 fridgeLocalArchitectureURI,
 //							 SIMULATION_TIME_UNIT,
 //							 ACCELERATION_FACTOR,
+//							 CLOCK_URI});
+//		AbstractComponent.createComponent(
+//				FridgeController.class.getCanonicalName(),
+//				new Object[]{Fridge.SENSOR_INBOUND_PORT_URI,
+//							 Fridge.ACTUATOR_INBOUND_PORT_URI,
+//							 FridgeController.STANDARD_HYSTERESIS,
+//							 FridgeController.STANDARD_CONTROL_PERIOD,
+//							 CONTROL_MODE,
+//							 CURRENT_EXECUTION_TYPE,
+//							 CURRENT_SIMULATION_TYPE,
+//							 CLOCK_URI});
+//		AbstractComponent.createComponent(
+//				FridgeUser.class.getCanonicalName(),
+//				new Object[]{Fridge.USER_INBOUND_PORT_URI,
+//						 	 Fridge.INTERNAL_CONTROL_INBOUND_PORT_URI,
+//						 	 Fridge.EXTERNAL_CONTROL_INBOUND_PORT_URI,
+//						 	 CURRENT_EXECUTION_TYPE,
+//						 	 CURRENT_SIMULATION_TYPE,
+//						 	 globalArchitectureURI,
+//						 	 fridgeUserLocalArchitectureURI,
+//						 	 SIMULATION_TIME_UNIT,
+//						 	 ACCELERATION_FACTOR,
 //						 	 CLOCK_URI});
+//		
+//		AbstractComponent.createComponent(
+//				WindTurbine.class.getCanonicalName(),
+//				new Object[]{WindTurbine.REFLECTION_INBOUND_PORT_URI,
+//							 WindTurbine.INBOUND_PORT_URI,
+//							 CURRENT_EXECUTION_TYPE,
+//							 CURRENT_SIMULATION_TYPE,
+//							 globalArchitectureURI,
+//							 windTurbineArchitectureURI,
+//							 SIMULATION_TIME_UNIT,
+//							 ACCELERATION_FACTOR,
+//							 CLOCK_URI});
+//		AbstractComponent.createComponent(
+//				WindTurbineTester.class.getCanonicalName(),
+//				new Object[]{WindTurbine.INBOUND_PORT_URI,
+//							 CURRENT_EXECUTION_TYPE,
+//							 CURRENT_SIMULATION_TYPE,
+//							 globalArchitectureURI,
+//							 windTurbineUserLocalArchitectureURI,
+//							 SIMULATION_TIME_UNIT,
+//							 ACCELERATION_FACTOR,
+//							 CLOCK_URI});
+//		
+//		AbstractComponent.createComponent(
+//				Battery.class.getCanonicalName(),
+//				new Object[]{Battery.REFLECTION_INBOUND_PORT_URI,
+//							 Battery.INBOUND_PORT_URI,
+//							 CURRENT_EXECUTION_TYPE,
+//							 CURRENT_SIMULATION_TYPE,
+//							 globalArchitectureURI,
+//							 batteryArchitectureURI,
+//							 SIMULATION_TIME_UNIT,
+//							 ACCELERATION_FACTOR,
+//							 CLOCK_URI});
+//		AbstractComponent.createComponent(
+//				BatteryTester.class.getCanonicalName(),
+//				new Object[]{Battery.INBOUND_PORT_URI,
+//							 CURRENT_EXECUTION_TYPE,
+//							 CURRENT_SIMULATION_TYPE,
+//							 globalArchitectureURI,
+//							 batteryUserLocalArchitectureURI,
+//							 SIMULATION_TIME_UNIT,
+//							 ACCELERATION_FACTOR,
+//							 CLOCK_URI});
+
+		AbstractComponent.createComponent(
+				ElectricMeter.class.getCanonicalName(),
+				new Object[]{ElectricMeter.REFLECTION_INBOUND_PORT_URI,
+							 ElectricMeter.ELECTRIC_METER_INBOUND_PORT_URI,
+							 CURRENT_EXECUTION_TYPE,
+							 CURRENT_SIMULATION_TYPE,
+							 globalArchitectureURI,
+							 meterLocalArchitectureURI,
+							 SIMULATION_TIME_UNIT,
+							 ACCELERATION_FACTOR,
+						 	 CLOCK_URI});
 
 		AbstractComponent.createComponent(
 				HEM.class.getCanonicalName(),

@@ -23,8 +23,11 @@ import fr.sorbonne_u.devs_simulation.utils.Pair;
 import fr.sorbonne_u.devs_simulation.utils.StandardLogger;
 import fr.sorbonne_u.exceptions.PreconditionException;
 
-@ModelImportedVariable(name = "currentFridgeConsumption", type = Double.class)
-@ModelImportedVariable(name = "currentIronConsumption", type = Double.class)
+//@ModelImportedVariable(name = "currentFridgeConsumption", type = Double.class)
+//@ModelImportedVariable(name = "currentIronConsumption", type = Double.class)
+//@ModelImportedVariable(name = "currentBatteryConsumption", type = Double.class)
+//@ModelImportedVariable(name = "currentBatteryProduction", type = Double.class)
+//@ModelImportedVariable(name = "currentWindTurbineProduction", type = Double.class)
 public class ElectricMeterElectricityModel extends AtomicHIOA {
 
 	// -------------------------------------------------------------------------
@@ -33,7 +36,6 @@ public class ElectricMeterElectricityModel extends AtomicHIOA {
 
     private static final long serialVersionUID = 1L;
 	
-    public static final String URI = ElectricMeterElectricityModel.class.getSimpleName();
 	public static final String	MIL_URI = ElectricMeterElectricityModel.class.
 													getSimpleName() + "-MIL";
 	public static final String	MIL_RT_URI = ElectricMeterElectricityModel.class.
@@ -52,12 +54,12 @@ public class ElectricMeterElectricityModel extends AtomicHIOA {
 	//@ImportedVariable(type = Double.class)
 	//protected Value<Double> currentToasterConsumption;
 	 
-	@ImportedVariable(type = Double.class)
-	protected Value<Double> currentIronConsumption = new Value<Double>(this);
-	 
-	@ImportedVariable(type = Double.class)
-	protected Value<Double> currentFridgeConsumption = new Value<Double>(this);
-	
+//	@ImportedVariable(type = Double.class)
+//	protected Value<Double> currentIronConsumption = new Value<Double>(this);
+//	 
+//	@ImportedVariable(type = Double.class)
+//	protected Value<Double> currentFridgeConsumption = new Value<Double>(this);
+//	
 //	@ImportedVariable(type = Double.class)
 //	protected Value<Double> currentBatteryConsumption = new Value<Double>(this);
 	
@@ -133,13 +135,13 @@ public class ElectricMeterElectricityModel extends AtomicHIOA {
 	}
 	
 	public double computeCurrentConsumption() {
-        double consumption =
+        double consumption = 0;
 //		        		(this.currentSmartLightingConsumption == null || this.currentSmartLightingConsumption.getValue() == null
 //		        				? 0.0 : currentSmartLightingConsumption.getValue()) +
-                        (this.currentIronConsumption == null || this.currentIronConsumption.getValue() == null
-                        		? 0.0 : currentIronConsumption.getValue()) +
-                        (this.currentFridgeConsumption == null || this.currentFridgeConsumption.getValue() == null
-                        		? 0.0 : currentFridgeConsumption.getValue());
+//                        (this.currentIronConsumption == null || this.currentIronConsumption.getValue() == null
+//                        		? 0.0 : currentIronConsumption.getValue()) +
+//                        (this.currentFridgeConsumption == null || this.currentFridgeConsumption.getValue() == null
+//                        		? 0.0 : currentFridgeConsumption.getValue()) +
 //                        (this.currentBatteryConsumption == null || this.currentBatteryConsumption.getValue() == null 
 //                        		? 0.0 : currentBatteryConsumption.getValue());
         
@@ -159,14 +161,14 @@ public class ElectricMeterElectricityModel extends AtomicHIOA {
 	
 	public double computeCurrentProduction() {
 
-//        double production =
+        double production = 0;
 //                        (this.currentWindTurbineProduction == null || this.currentWindTurbineProduction.getValue() == null
 //                        		? 0.0 : currentWindTurbineProduction.getValue()) +
 //                        (this.currentBatteryProduction == null || this.currentBatteryProduction.getValue() == null
-//                        		? 0.0 : currentBatteryProduction.getValue()) +
+//                        		? 0.0 : currentBatteryProduction.getValue());
+                        //+
 //                        (this.currentGeneratorProduction == null || this.currentGeneratorProduction.getValue() == null
 //                		? 0.0 : currentGeneratorProduction.getValue());
-		double production = 0.0;
         
         return production;
     }
@@ -182,9 +184,10 @@ public class ElectricMeterElectricityModel extends AtomicHIOA {
 		int notInitialisedYet = 0;
 
 		// Consumption
-		if (!this.currentConsumption.isInitialised()
-						&& this.currentFridgeConsumption.isInitialised()
-						&& this.currentIronConsumption.isInitialised()) {
+		if (!this.currentConsumption.isInitialised()) {
+//						&& this.currentFridgeConsumption.isInitialised()
+//						&& this.currentIronConsumption.isInitialised()
+//						&& this.currentBatteryConsumption.isInitialised()) {
 			double consumption = this.computeCurrentConsumption();
 			this.currentConsumption.initialise(consumption);
 			this.totalConsumption.initialise(0.0);
@@ -193,18 +196,18 @@ public class ElectricMeterElectricityModel extends AtomicHIOA {
 			notInitialisedYet += 1;
 		}
 		
-		// Production
-		if (!this.currentProduction.isInitialised()) {
+//		// Production
+//		if (!this.currentProduction.isInitialised() 
 //				&& this.currentBatteryProduction.isInitialised()
-//				&& this.currentGeneratorProduction.isInitialised()
+////				&& this.currentGeneratorProduction.isInitialised()
 //				&& this.currentWindTurbineProduction.isInitialised()) {
-			double production = this.computeCurrentProduction();
-			this.currentProduction.initialise(production);
-			this.totalProduction.initialise(0.0);
-			justInitialised += 1;
-		} else if (!this.currentProduction.isInitialised()) {
-			notInitialisedYet += 1;
-		}
+//			double production = this.computeCurrentProduction();
+//			this.currentProduction.initialise(production);
+//			this.totalProduction.initialise(0.0);
+//			justInitialised += 1;
+//		} else if (!this.currentProduction.isInitialised()) {
+//			notInitialisedYet += 1;
+//		}
 		return new Pair<>(justInitialised, notInitialisedYet);
 	}
 	
