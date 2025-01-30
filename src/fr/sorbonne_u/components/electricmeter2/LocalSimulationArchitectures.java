@@ -255,23 +255,23 @@ public abstract class	LocalSimulationArchitectures
 	{
 		String electricMeterElectricityModelURI = null;
 		Class<? extends AtomicHIOA> electricMeterElectricityModelClass = null;
-		String hairDryerElectricityModelURI = null;
 		String ironElectricityModelURI = null;
+		String fridgeElectricityModelURI = null;
 		String electricMeterCoupledModelURI = null;
 		switch (currentSimulationType) {
 		case MIL_RT_SIMULATION:
 			electricMeterElectricityModelURI = ElectricMeterElectricityModel.MIL_RT_URI;
 			electricMeterElectricityModelClass = ElectricMeterElectricityModel.class;
-			hairDryerElectricityModelURI = HairDryerElectricityModel.MIL_RT_URI;
 			electricMeterCoupledModelURI = ElectricMeterCoupledModel.MIL_RT_URI;
 			ironElectricityModelURI = IronElectricityModel.MIL_RT_URI;
+			fridgeElectricityModelURI = FridgeElectricityModel.MIL_RT_URI;
 			break;
 		case SIL_SIMULATION:
 			electricMeterElectricityModelURI = ElectricMeterElectricitySILModel.SIL_URI;
 			electricMeterElectricityModelClass = ElectricMeterElectricitySILModel.class;
-			hairDryerElectricityModelURI = HairDryerElectricityModel.SIL_URI;
 			electricMeterCoupledModelURI = ElectricMeterCoupledModel.SIL_URI;
 			ironElectricityModelURI = IronElectricityModel.SIL_URI;
+			fridgeElectricityModelURI = FridgeElectricityModel.SIL_URI;
 			break;
 		default:
 		}
@@ -289,18 +289,18 @@ public abstract class	LocalSimulationArchitectures
 						null,
 						accelerationFactor));
 		atomicModelDescriptors.put(
-				hairDryerElectricityModelURI,
-				RTAtomicHIOA_Descriptor.create(
-						HairDryerElectricityModel.class,
-						hairDryerElectricityModelURI,
-						simulatedTimeUnit,
-						null,
-						accelerationFactor));
-		atomicModelDescriptors.put(
 				ironElectricityModelURI,
 				RTAtomicHIOA_Descriptor.create(
 						IronElectricityModel.class,
 						ironElectricityModelURI,
+						simulatedTimeUnit,
+						null,
+						accelerationFactor));
+		atomicModelDescriptors.put(
+				fridgeElectricityModelURI,
+				RTAtomicHIOA_Descriptor.create(
+						FridgeElectricityModel.class,
+						fridgeElectricityModelURI,
 						simulatedTimeUnit,
 						null,
 						accelerationFactor));
@@ -311,34 +311,10 @@ public abstract class	LocalSimulationArchitectures
 		// the set of submodels of the coupled model, given by their URIs
 		Set<String> submodels = new HashSet<String>();
 		submodels.add(electricMeterElectricityModelURI);
-		submodels.add(hairDryerElectricityModelURI);
 		submodels.add(ironElectricityModelURI);
+		submodels.add(fridgeElectricityModelURI);
 
 		Map<Class<? extends EventI>,EventSink[]> imported = new HashMap<>();
-		imported.put(
-				SwitchOnHairDryer.class,
-				new EventSink[] {
-					new EventSink(hairDryerElectricityModelURI,
-								  SwitchOnHairDryer.class)
-				});
-		imported.put(
-				SwitchOffHairDryer.class,
-				new EventSink[] {
-					new EventSink(hairDryerElectricityModelURI,
-								  SwitchOffHairDryer.class)
-				});
-		imported.put(
-				SetLowHairDryer.class,
-				new EventSink[] {
-					new EventSink(hairDryerElectricityModelURI,
-								  SetLowHairDryer.class)
-				});
-		imported.put(
-				SetHighHairDryer.class,
-				new EventSink[] {
-					new EventSink(hairDryerElectricityModelURI,
-								  SetHighHairDryer.class)
-				});
 		
 		// Iron
 		imported.put(
@@ -396,25 +372,69 @@ public abstract class	LocalSimulationArchitectures
 							TurnOnIron.class)
 				});
 
-
+		
+		// Fridge
+		
+		imported.put(
+				CloseDoorFridge.class,
+				new EventSink[] {
+					new EventSink(fridgeElectricityModelURI,
+							CloseDoorFridge.class)
+				});
+		imported.put(
+				OpenDoorFridge.class,
+				new EventSink[] {
+					new EventSink(fridgeElectricityModelURI,
+							OpenDoorFridge.class)
+				});
+		imported.put(
+				DoNotCoolFridge.class,
+				new EventSink[] {
+					new EventSink(fridgeElectricityModelURI,
+							DoNotCoolFridge.class)
+				});
+		imported.put(
+				CoolFridge.class,
+				new EventSink[] {
+					new EventSink(fridgeElectricityModelURI,
+							CoolFridge.class)
+				});
+		imported.put(
+				SetPowerFridge.class,
+				new EventSink[] {
+					new EventSink(fridgeElectricityModelURI,
+							SetPowerFridge.class)
+				});
+		imported.put(
+				SwitchOffFridge.class,
+				new EventSink[] {
+					new EventSink(fridgeElectricityModelURI,
+							SwitchOffFridge.class)
+				});
+		imported.put(
+				SwitchOnFridge.class,
+				new EventSink[] {
+					new EventSink(fridgeElectricityModelURI,
+							SwitchOnFridge.class)
+				});
 
 		Map<VariableSource,VariableSink[]> bindings =
 								new HashMap<VariableSource,VariableSink[]>();
 		bindings.put(
 				new VariableSource("currentIntensity",
 								   Double.class,
-								   hairDryerElectricityModelURI),
+								   ironElectricityModelURI),
 				new VariableSink[] {
-					new VariableSink("currentHairDryerIntensity",
+					new VariableSink("currentIronIntensity",
 									 Double.class,
 									 electricMeterElectricityModelURI)
 				});
 		bindings.put(
 				new VariableSource("currentIntensity",
 								   Double.class,
-								   ironElectricityModelURI),
+								   fridgeElectricityModelURI),
 				new VariableSink[] {
-					new VariableSink("currentIronIntensity",
+					new VariableSink("currentFridgeIntensity",
 									 Double.class,
 									 electricMeterElectricityModelURI)
 				});
