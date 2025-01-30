@@ -216,45 +216,45 @@ public class CVMIntegrationTest extends AbstractCVM {
 							 SIMULATION_TIME_UNIT,
 							 ACCELERATION_FACTOR,
 							 CLOCK_URI});
-//
-//		AbstractComponent.createComponent(
-//				Fridge.class.getCanonicalName(),
-//				new Object[]{Fridge.REFLECTION_INBOUND_PORT_URI,
-//							 Fridge.USER_INBOUND_PORT_URI,
-//							 Fridge.INTERNAL_CONTROL_INBOUND_PORT_URI,
-//							 Fridge.EXTERNAL_CONTROL_INBOUND_PORT_URI,
-//							 Fridge.SENSOR_INBOUND_PORT_URI,
-//							 Fridge.ACTUATOR_INBOUND_PORT_URI,
-//							 CURRENT_EXECUTION_TYPE,
-//							 CURRENT_SIMULATION_TYPE,
-//							 globalArchitectureURI,
-//							 fridgeLocalArchitectureURI,
-//							 SIMULATION_TIME_UNIT,
-//							 ACCELERATION_FACTOR,
-//							 CLOCK_URI});
-//		AbstractComponent.createComponent(
-//				FridgeController.class.getCanonicalName(),
-//				new Object[]{Fridge.SENSOR_INBOUND_PORT_URI,
-//							 Fridge.ACTUATOR_INBOUND_PORT_URI,
-//							 FridgeController.STANDARD_HYSTERESIS,
-//							 FridgeController.STANDARD_CONTROL_PERIOD,
-//							 CONTROL_MODE,
-//							 CURRENT_EXECUTION_TYPE,
-//							 CURRENT_SIMULATION_TYPE,
-//							 CLOCK_URI});
-//		AbstractComponent.createComponent(
-//				FridgeUser.class.getCanonicalName(),
-//				new Object[]{Fridge.USER_INBOUND_PORT_URI,
-//						 	 Fridge.INTERNAL_CONTROL_INBOUND_PORT_URI,
-//						 	 Fridge.EXTERNAL_CONTROL_INBOUND_PORT_URI,
-//						 	 CURRENT_EXECUTION_TYPE,
-//						 	 CURRENT_SIMULATION_TYPE,
-//						 	 globalArchitectureURI,
-//						 	 fridgeUserLocalArchitectureURI,
-//						 	 SIMULATION_TIME_UNIT,
-//						 	 ACCELERATION_FACTOR,
-//						 	 CLOCK_URI});
-//		
+
+		AbstractComponent.createComponent(
+				Fridge.class.getCanonicalName(),
+				new Object[]{Fridge.REFLECTION_INBOUND_PORT_URI,
+							 Fridge.USER_INBOUND_PORT_URI,
+							 Fridge.INTERNAL_CONTROL_INBOUND_PORT_URI,
+							 Fridge.EXTERNAL_CONTROL_INBOUND_PORT_URI,
+							 Fridge.SENSOR_INBOUND_PORT_URI,
+							 Fridge.ACTUATOR_INBOUND_PORT_URI,
+							 CURRENT_EXECUTION_TYPE,
+							 CURRENT_SIMULATION_TYPE,
+							 globalArchitectureURI,
+							 fridgeLocalArchitectureURI,
+							 SIMULATION_TIME_UNIT,
+							 ACCELERATION_FACTOR,
+							 CLOCK_URI});
+		AbstractComponent.createComponent(
+				FridgeController.class.getCanonicalName(),
+				new Object[]{Fridge.SENSOR_INBOUND_PORT_URI,
+							 Fridge.ACTUATOR_INBOUND_PORT_URI,
+							 FridgeController.STANDARD_HYSTERESIS,
+							 FridgeController.STANDARD_CONTROL_PERIOD,
+							 CONTROL_MODE,
+							 CURRENT_EXECUTION_TYPE,
+							 CURRENT_SIMULATION_TYPE,
+							 CLOCK_URI});
+		AbstractComponent.createComponent(
+				FridgeUser.class.getCanonicalName(),
+				new Object[]{Fridge.USER_INBOUND_PORT_URI,
+						 	 Fridge.INTERNAL_CONTROL_INBOUND_PORT_URI,
+						 	 Fridge.EXTERNAL_CONTROL_INBOUND_PORT_URI,
+						 	 CURRENT_EXECUTION_TYPE,
+						 	 CURRENT_SIMULATION_TYPE,
+						 	 globalArchitectureURI,
+						 	 fridgeUserLocalArchitectureURI,
+						 	 SIMULATION_TIME_UNIT,
+						 	 ACCELERATION_FACTOR,
+						 	 CLOCK_URI});
+		
 //		AbstractComponent.createComponent(
 //				WindTurbine.class.getCanonicalName(),
 //				new Object[]{WindTurbine.REFLECTION_INBOUND_PORT_URI,

@@ -100,46 +100,46 @@ public class ComponentSimulationArchitectures {
 							TurnOnIron.class},
 						simulatedTimeUnit,
 						IronUser.REFLECTION_INBOUND_PORT_URI));
-//
-//		// Fridge
-//		atomicModelDescriptors.put(
-//				FridgeCoupledModel.MIL_URI,
-//				ComponentAtomicModelDescriptor.create(
-//						FridgeCoupledModel.MIL_URI,
-//						(Class<? extends EventI>[]) new Class<?>[]{
-//							CloseDoorFridge.class,
-//							CoolFridge.class,
-//							DoNotCoolFridge.class,
-//							OpenDoorFridge.class,
-//							SetPowerFridge.class,
-//							SwitchOffFridge.class,
-//							SwitchOnFridge.class},
-//						(Class<? extends EventI>[]) new Class<?>[]{
-//							CloseDoorFridge.class,
-//							CoolFridge.class,
-//							DoNotCoolFridge.class,
-//							OpenDoorFridge.class,
-//							SetPowerFridge.class,
-//							SwitchOffFridge.class,
-//							SwitchOnFridge.class},
-//						simulatedTimeUnit,
-//						Fridge.REFLECTION_INBOUND_PORT_URI));
-//		atomicModelDescriptors.put(
-//				FridgeUnitTestModel.MIL_URI,
-//				ComponentAtomicModelDescriptor.create(
-//						FridgeUnitTestModel.MIL_URI,
-//						(Class<? extends EventI>[]) new Class<?>[]{},
-//						(Class<? extends EventI>[]) new Class<?>[]{
-//							CloseDoorFridge.class,
-//							CoolFridge.class,
-//							DoNotCoolFridge.class,
-//							OpenDoorFridge.class,
-//							SetPowerFridge.class,
-//							SwitchOffFridge.class,
-//							SwitchOnFridge.class},
-//						simulatedTimeUnit,
-//						FridgeUser.REFLECTION_INBOUND_PORT_URI));
-//		
+
+		// Fridge
+		atomicModelDescriptors.put(
+				FridgeCoupledModel.MIL_URI,
+				ComponentAtomicModelDescriptor.create(
+						FridgeCoupledModel.MIL_URI,
+						(Class<? extends EventI>[]) new Class<?>[]{
+							CloseDoorFridge.class,
+							CoolFridge.class,
+							DoNotCoolFridge.class,
+							OpenDoorFridge.class,
+							SetPowerFridge.class,
+							SwitchOffFridge.class,
+							SwitchOnFridge.class},
+						(Class<? extends EventI>[]) new Class<?>[]{
+							CloseDoorFridge.class,
+							CoolFridge.class,
+							DoNotCoolFridge.class,
+							OpenDoorFridge.class,
+							SetPowerFridge.class,
+							SwitchOffFridge.class,
+							SwitchOnFridge.class},
+						simulatedTimeUnit,
+						Fridge.REFLECTION_INBOUND_PORT_URI));
+		atomicModelDescriptors.put(
+				FridgeUnitTestModel.MIL_URI,
+				ComponentAtomicModelDescriptor.create(
+						FridgeUnitTestModel.MIL_URI,
+						(Class<? extends EventI>[]) new Class<?>[]{},
+						(Class<? extends EventI>[]) new Class<?>[]{
+							CloseDoorFridge.class,
+							CoolFridge.class,
+							DoNotCoolFridge.class,
+							OpenDoorFridge.class,
+							SetPowerFridge.class,
+							SwitchOffFridge.class,
+							SwitchOnFridge.class},
+						simulatedTimeUnit,
+						FridgeUser.REFLECTION_INBOUND_PORT_URI));
+		
 //		// WindTurbine
 //		atomicModelDescriptors.put(
 //				WindTurbineCoupledModel.MIL_URI,
@@ -197,15 +197,15 @@ public class ComponentSimulationArchitectures {
 				ComponentAtomicModelDescriptor.create(
 						ElectricMeterCoupledModel.MIL_URI,
 						(Class<? extends EventI>[]) new Class<?>[]{
-//							// Fridge
-//							CloseDoorFridge.class,
-//							CoolFridge.class,
-//							DoNotCoolFridge.class,
-//							OpenDoorFridge.class,
-//							SetPowerFridge.class,
-//							SwitchOffFridge.class,
-//							SwitchOnFridge.class,
-//							
+							// Fridge
+							CloseDoorFridge.class,
+							CoolFridge.class,
+							DoNotCoolFridge.class,
+							OpenDoorFridge.class,
+							SetPowerFridge.class,
+							SwitchOffFridge.class,
+							SwitchOnFridge.class,
+							
 							// Iron
 							DisableEnergySavingModeIron.class,
 							DisableSteamModeIron.class,
@@ -237,11 +237,11 @@ public class ComponentSimulationArchitectures {
 		// Iron
 		submodels.add(IronStateModel.MIL_URI);
 		submodels.add(IronUserModel.MIL_URI);
-//		
-//		// Fridge
-//		submodels.add(FridgeCoupledModel.MIL_URI);
-//		submodels.add(FridgeUnitTestModel.MIL_URI);
-//		
+		
+		// Fridge
+		submodels.add(FridgeCoupledModel.MIL_URI);
+		submodels.add(FridgeUnitTestModel.MIL_URI);
+		
 //		// WindTurbine
 //		submodels.add(WindTurbineCoupledModel.MIL_URI);
 //		submodels.add(WindTurbineUserModel.MIL_URI);
@@ -388,97 +388,97 @@ public class ComponentSimulationArchitectures {
 					new EventSink(ElectricMeterCoupledModel.MIL_URI,
 							EnableSteamModeIron.class)
 				});
-//			
-//			
-//		// FridgeUnitTestModel -> FridgeCoupledModel
-//		connections.put(
-//				new EventSource(FridgeUnitTestModel.MIL_URI, SwitchOffFridge.class),
-//				new EventSink[] {
-//						new EventSink(FridgeCoupledModel.MIL_URI,
-//									  SwitchOffFridge.class),
-//				});
-//		connections.put(
-//				new EventSource(FridgeUnitTestModel.MIL_URI, CoolFridge.class),
-//				new EventSink[] {
-//						new EventSink(FridgeCoupledModel.MIL_URI,
-//									  CoolFridge.class),
-//				});
-//		connections.put(
-//				new EventSource(FridgeUnitTestModel.MIL_URI, DoNotCoolFridge.class),
-//				new EventSink[] {
-//						new EventSink(FridgeCoupledModel.MIL_URI,
-//									  DoNotCoolFridge.class),
-//				});
-//		connections.put(
-//				new EventSource(FridgeUnitTestModel.MIL_URI, SwitchOnFridge.class),
-//				new EventSink[] {
-//						new EventSink(FridgeCoupledModel.MIL_URI,
-//									  SwitchOnFridge.class),
-//				});
-//		connections.put(
-//				new EventSource(FridgeUnitTestModel.MIL_URI, OpenDoorFridge.class),
-//				new EventSink[] {
-//						new EventSink(FridgeCoupledModel.MIL_URI,
-//									  OpenDoorFridge.class),
-//				});
-//		connections.put(
-//				new EventSource(FridgeUnitTestModel.MIL_URI, CloseDoorFridge.class),
-//				new EventSink[] {
-//						new EventSink(FridgeCoupledModel.MIL_URI,
-//									  CloseDoorFridge.class),
-//				});
-//		connections.put(
-//				new EventSource(FridgeUnitTestModel.MIL_URI, SetPowerFridge.class),
-//				new EventSink[] {
-//						new EventSink(FridgeCoupledModel.MIL_URI,
-//									  SetPowerFridge.class),
-//				});
-//		
-//		
-//		// FridgeCoupledModel -> ElectricMeterCoupledModel
-//		connections.put(
-//				new EventSource(FridgeCoupledModel.MIL_URI, SwitchOffFridge.class),
-//				new EventSink[] {
-//						new EventSink(ElectricMeterCoupledModel.MIL_URI,
-//									  SwitchOffFridge.class),
-//				});
-//		connections.put(
-//				new EventSource(FridgeCoupledModel.MIL_URI, CoolFridge.class),
-//				new EventSink[] {
-//						new EventSink(ElectricMeterCoupledModel.MIL_URI,
-//									  CoolFridge.class),
-//				});
-//		connections.put(
-//				new EventSource(FridgeCoupledModel.MIL_URI, DoNotCoolFridge.class),
-//				new EventSink[] {
-//						new EventSink(ElectricMeterCoupledModel.MIL_URI,
-//									  DoNotCoolFridge.class),
-//				});
-//		connections.put(
-//				new EventSource(FridgeCoupledModel.MIL_URI, SwitchOnFridge.class),
-//				new EventSink[] {
-//						new EventSink(ElectricMeterCoupledModel.MIL_URI,
-//									  SwitchOnFridge.class),
-//				});
-//		connections.put(
-//				new EventSource(FridgeCoupledModel.MIL_URI, OpenDoorFridge.class),
-//				new EventSink[] {
-//						new EventSink(ElectricMeterCoupledModel.MIL_URI,
-//									  OpenDoorFridge.class),
-//				});
-//		connections.put(
-//				new EventSource(FridgeCoupledModel.MIL_URI, CloseDoorFridge.class),
-//				new EventSink[] {
-//						new EventSink(ElectricMeterCoupledModel.MIL_URI,
-//									  CloseDoorFridge.class),
-//				});
-//		connections.put(
-//				new EventSource(FridgeCoupledModel.MIL_URI, SetPowerFridge.class),
-//				new EventSink[] {
-//						new EventSink(ElectricMeterCoupledModel.MIL_URI,
-//									  SetPowerFridge.class),
-//				});
-//		
+			
+			
+		// FridgeUnitTestModel -> FridgeCoupledModel
+		connections.put(
+				new EventSource(FridgeUnitTestModel.MIL_URI, SwitchOffFridge.class),
+				new EventSink[] {
+						new EventSink(FridgeCoupledModel.MIL_URI,
+									  SwitchOffFridge.class),
+				});
+		connections.put(
+				new EventSource(FridgeUnitTestModel.MIL_URI, CoolFridge.class),
+				new EventSink[] {
+						new EventSink(FridgeCoupledModel.MIL_URI,
+									  CoolFridge.class),
+				});
+		connections.put(
+				new EventSource(FridgeUnitTestModel.MIL_URI, DoNotCoolFridge.class),
+				new EventSink[] {
+						new EventSink(FridgeCoupledModel.MIL_URI,
+									  DoNotCoolFridge.class),
+				});
+		connections.put(
+				new EventSource(FridgeUnitTestModel.MIL_URI, SwitchOnFridge.class),
+				new EventSink[] {
+						new EventSink(FridgeCoupledModel.MIL_URI,
+									  SwitchOnFridge.class),
+				});
+		connections.put(
+				new EventSource(FridgeUnitTestModel.MIL_URI, OpenDoorFridge.class),
+				new EventSink[] {
+						new EventSink(FridgeCoupledModel.MIL_URI,
+									  OpenDoorFridge.class),
+				});
+		connections.put(
+				new EventSource(FridgeUnitTestModel.MIL_URI, CloseDoorFridge.class),
+				new EventSink[] {
+						new EventSink(FridgeCoupledModel.MIL_URI,
+									  CloseDoorFridge.class),
+				});
+		connections.put(
+				new EventSource(FridgeUnitTestModel.MIL_URI, SetPowerFridge.class),
+				new EventSink[] {
+						new EventSink(FridgeCoupledModel.MIL_URI,
+									  SetPowerFridge.class),
+				});
+		
+		
+		// FridgeCoupledModel -> ElectricMeterCoupledModel
+		connections.put(
+				new EventSource(FridgeCoupledModel.MIL_URI, SwitchOffFridge.class),
+				new EventSink[] {
+						new EventSink(ElectricMeterCoupledModel.MIL_URI,
+									  SwitchOffFridge.class),
+				});
+		connections.put(
+				new EventSource(FridgeCoupledModel.MIL_URI, CoolFridge.class),
+				new EventSink[] {
+						new EventSink(ElectricMeterCoupledModel.MIL_URI,
+									  CoolFridge.class),
+				});
+		connections.put(
+				new EventSource(FridgeCoupledModel.MIL_URI, DoNotCoolFridge.class),
+				new EventSink[] {
+						new EventSink(ElectricMeterCoupledModel.MIL_URI,
+									  DoNotCoolFridge.class),
+				});
+		connections.put(
+				new EventSource(FridgeCoupledModel.MIL_URI, SwitchOnFridge.class),
+				new EventSink[] {
+						new EventSink(ElectricMeterCoupledModel.MIL_URI,
+									  SwitchOnFridge.class),
+				});
+		connections.put(
+				new EventSource(FridgeCoupledModel.MIL_URI, OpenDoorFridge.class),
+				new EventSink[] {
+						new EventSink(ElectricMeterCoupledModel.MIL_URI,
+									  OpenDoorFridge.class),
+				});
+		connections.put(
+				new EventSource(FridgeCoupledModel.MIL_URI, CloseDoorFridge.class),
+				new EventSink[] {
+						new EventSink(ElectricMeterCoupledModel.MIL_URI,
+									  CloseDoorFridge.class),
+				});
+		connections.put(
+				new EventSource(FridgeCoupledModel.MIL_URI, SetPowerFridge.class),
+				new EventSink[] {
+						new EventSink(ElectricMeterCoupledModel.MIL_URI,
+									  SetPowerFridge.class),
+				});
+		
 //		// WindTurbineUser -> WindTurbineCoupled
 //		connections.put(
 //                new EventSource(WindTurbineUserModel.MIL_URI, StartWindTurbineEvent.class),
