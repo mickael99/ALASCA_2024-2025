@@ -29,6 +29,12 @@ import fr.sorbonne_u.exceptions.PreconditionException;
 						type = Double.class)
 @ModelImportedVariable(name = "currentFridgeIntensity",
 						type = Double.class)
+@ModelImportedVariable(name = "currentWindTurbineProduction",
+								type = Double.class)
+@ModelImportedVariable(name = "currentBatteryProduction",
+						type = Double.class)
+@ModelImportedVariable(name = "currentBatteryConsumption",
+						type = Double.class)
 //-----------------------------------------------------------------------------
 public class			ElectricMeterElectricityModel
 extends		AtomicHIOA
@@ -65,6 +71,15 @@ extends		AtomicHIOA
 	
 	@ImportedVariable(type = Double.class)
 	protected Value<Double>			currentFridgeIntensity;
+	
+	@ImportedVariable(type = Double.class)
+	protected Value<Double>			currentWindTurbineProduction;
+	
+	@ImportedVariable(type = Double.class)
+	protected Value<Double>			currentBatteryConsumption;
+	
+	@ImportedVariable(type = Double.class)
+	protected Value<Double>			currentBatteryProduction;
 
 	/** current total power consumption of the house in amperes.			*/
 	@InternalVariable(type = Double.class)

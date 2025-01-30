@@ -7,6 +7,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import fr.sorbonne_u.components.equipments.battery.mil.BatteryElectricityModel;
+import fr.sorbonne_u.components.equipments.battery.mil.events.SetConsumeBatteryEvent;
+import fr.sorbonne_u.components.equipments.battery.mil.events.SetProductBatteryEvent;
+import fr.sorbonne_u.components.equipments.battery.mil.events.SetStandByBatteryEvent;
 import fr.sorbonne_u.components.equipments.fridge.mil.FridgeElectricityModel;
 import fr.sorbonne_u.components.equipments.fridge.mil.events.CloseDoorFridge;
 import fr.sorbonne_u.components.equipments.fridge.mil.events.CoolFridge;
@@ -37,6 +41,9 @@ import fr.sorbonne_u.components.equipments.iron.mil.events.EnableSteamModeIron;
 import fr.sorbonne_u.components.equipments.iron.mil.events.TurnOffIron;
 import fr.sorbonne_u.components.equipments.iron.mil.events.TurnOnIron;
 import fr.sorbonne_u.components.equipments.meter.mil.ElectricMeterCoupledModel;
+import fr.sorbonne_u.components.equipments.windTurbine.mil.WindTurbineElectricityModel;
+import fr.sorbonne_u.components.equipments.windTurbine.mil.events.StartWindTurbineEvent;
+import fr.sorbonne_u.components.equipments.windTurbine.mil.events.StopWindTurbineEvent;
 import fr.sorbonne_u.components.utils.SimulationType;
 import fr.sorbonne_u.devs_simulation.architectures.Architecture;
 import fr.sorbonne_u.devs_simulation.architectures.RTArchitecture;
@@ -86,6 +93,22 @@ public abstract class	LocalSimulationArchitectures
 						FridgeElectricityModel.MIL_URI,
 						simulatedTimeUnit,
 						null));
+		
+		atomicModelDescriptors.put(
+				WindTurbineElectricityModel.MIL_URI,
+				AtomicHIOA_Descriptor.create(
+						WindTurbineElectricityModel.class,
+						WindTurbineElectricityModel.MIL_URI,
+						simulatedTimeUnit,
+						null));
+		
+		atomicModelDescriptors.put(
+				BatteryElectricityModel.MIL_URI,
+				AtomicHIOA_Descriptor.create(
+						BatteryElectricityModel.class,
+						BatteryElectricityModel.MIL_URI,
+						simulatedTimeUnit,
+						null));
 
 		Map<String,CoupledModelDescriptor> coupledModelDescriptors =
 				new HashMap<>();
@@ -94,6 +117,8 @@ public abstract class	LocalSimulationArchitectures
 		submodels.add(ElectricMeterElectricityModel.MIL_URI);
 		submodels.add(FridgeElectricityModel.MIL_URI);
 		submodels.add(IronElectricityModel.MIL_URI);
+		submodels.add(WindTurbineElectricityModel.MIL_URI);
+		submodels.add(BatteryElectricityModel.MIL_URI);
 
 		Map<Class<? extends EventI>,EventSink[]> imported = new HashMap<>();
 		
@@ -197,7 +222,42 @@ public abstract class	LocalSimulationArchitectures
 					new EventSink(FridgeElectricityModel.MIL_URI,
 							SwitchOnFridge.class)
 				});
-
+		
+		// Wind turbine
+		imported.put(
+				StartWindTurbineEvent.class,
+				new EventSink[] {
+					new EventSink(WindTurbineElectricityModel.MIL_URI,
+							StartWindTurbineEvent.class)
+				});
+		imported.put(
+				StopWindTurbineEvent.class,
+				new EventSink[] {
+					new EventSink(WindTurbineElectricityModel.MIL_URI,
+							StopWindTurbineEvent.class)
+				});
+		
+		// Battery
+		imported.put(
+				SetConsumeBatteryEvent.class,
+				new EventSink[] {
+					new EventSink(BatteryElectricityModel.MIL_URI,
+							SetConsumeBatteryEvent.class)
+				});
+		imported.put(
+				SetProductBatteryEvent.class,
+				new EventSink[] {
+					new EventSink(BatteryElectricityModel.MIL_URI,
+							SetProductBatteryEvent.class)
+				});
+		imported.put(
+				SetStandByBatteryEvent.class,
+				new EventSink[] {
+					new EventSink(BatteryElectricityModel.MIL_URI,
+							SetStandByBatteryEvent.class)
+				});
+		
+		
 		Map<VariableSource,VariableSink[]> bindings =
 								new HashMap<VariableSource,VariableSink[]>();
 								
@@ -216,6 +276,33 @@ public abstract class	LocalSimulationArchitectures
 								   FridgeElectricityModel.MIL_URI),
 				new VariableSink[] {
 					new VariableSink("currentFridgeIntensity",
+									 Double.class,
+									 ElectricMeterElectricityModel.MIL_URI)
+				});
+		bindings.put(
+				new VariableSource("currentProduction",
+								   Double.class,
+								   WindTurbineElectricityModel.MIL_URI),
+				new VariableSink[] {
+					new VariableSink("currentWindTurbineProduction",
+									 Double.class,
+									 ElectricMeterElectricityModel.MIL_URI)
+				});
+		bindings.put(
+				new VariableSource("currentProduction",
+								   Double.class,
+								   BatteryElectricityModel.MIL_URI),
+				new VariableSink[] {
+					new VariableSink("currentBatteryProduction",
+									 Double.class,
+									 ElectricMeterElectricityModel.MIL_URI)
+				});
+		bindings.put(
+				new VariableSource("currentConsumption",
+								   Double.class,
+								   BatteryElectricityModel.MIL_URI),
+				new VariableSink[] {
+					new VariableSink("currentBatteryConsumption",
 									 Double.class,
 									 ElectricMeterElectricityModel.MIL_URI)
 				});
@@ -257,7 +344,9 @@ public abstract class	LocalSimulationArchitectures
 		Class<? extends AtomicHIOA> electricMeterElectricityModelClass = null;
 		String ironElectricityModelURI = null;
 		String fridgeElectricityModelURI = null;
+		String windTurbineElectricityModelURI = null;
 		String electricMeterCoupledModelURI = null;
+		String batteryElectricityModelURI = null;
 		switch (currentSimulationType) {
 		case MIL_RT_SIMULATION:
 			electricMeterElectricityModelURI = ElectricMeterElectricityModel.MIL_RT_URI;
@@ -265,6 +354,8 @@ public abstract class	LocalSimulationArchitectures
 			electricMeterCoupledModelURI = ElectricMeterCoupledModel.MIL_RT_URI;
 			ironElectricityModelURI = IronElectricityModel.MIL_RT_URI;
 			fridgeElectricityModelURI = FridgeElectricityModel.MIL_RT_URI;
+			windTurbineElectricityModelURI = WindTurbineElectricityModel.MIL_RT_URI;
+			batteryElectricityModelURI = BatteryElectricityModel.MIL_RT_URI;
 			break;
 		case SIL_SIMULATION:
 			electricMeterElectricityModelURI = ElectricMeterElectricitySILModel.SIL_URI;
@@ -272,6 +363,8 @@ public abstract class	LocalSimulationArchitectures
 			electricMeterCoupledModelURI = ElectricMeterCoupledModel.SIL_URI;
 			ironElectricityModelURI = IronElectricityModel.SIL_URI;
 			fridgeElectricityModelURI = FridgeElectricityModel.SIL_URI;
+			windTurbineElectricityModelURI = WindTurbineElectricityModel.SIL_URI;
+			batteryElectricityModelURI = BatteryElectricityModel.SIL_URI;
 			break;
 		default:
 		}
@@ -304,6 +397,22 @@ public abstract class	LocalSimulationArchitectures
 						simulatedTimeUnit,
 						null,
 						accelerationFactor));
+		atomicModelDescriptors.put(
+				windTurbineElectricityModelURI,
+				RTAtomicHIOA_Descriptor.create(
+						WindTurbineElectricityModel.class,
+						windTurbineElectricityModelURI,
+						simulatedTimeUnit,
+						null,
+						accelerationFactor));
+		atomicModelDescriptors.put(
+				batteryElectricityModelURI,
+				RTAtomicHIOA_Descriptor.create(
+						BatteryElectricityModel.class,
+						batteryElectricityModelURI,
+						simulatedTimeUnit,
+						null,
+						accelerationFactor));
 		
 		Map<String,CoupledModelDescriptor> coupledModelDescriptors =
 				new HashMap<>();
@@ -313,6 +422,8 @@ public abstract class	LocalSimulationArchitectures
 		submodels.add(electricMeterElectricityModelURI);
 		submodels.add(ironElectricityModelURI);
 		submodels.add(fridgeElectricityModelURI);
+		submodels.add(windTurbineElectricityModelURI);
+		submodels.add(batteryElectricityModelURI);
 
 		Map<Class<? extends EventI>,EventSink[]> imported = new HashMap<>();
 		
@@ -417,6 +528,40 @@ public abstract class	LocalSimulationArchitectures
 					new EventSink(fridgeElectricityModelURI,
 							SwitchOnFridge.class)
 				});
+		
+		// Wind turbine
+		imported.put(
+				StartWindTurbineEvent.class,
+				new EventSink[] {
+					new EventSink(windTurbineElectricityModelURI,
+							StartWindTurbineEvent.class)
+				});
+		imported.put(
+				StopWindTurbineEvent.class,
+				new EventSink[] {
+					new EventSink(windTurbineElectricityModelURI,
+							StopWindTurbineEvent.class)
+				});
+		
+		// Battery 
+		imported.put(
+				SetConsumeBatteryEvent.class,
+				new EventSink[] {
+					new EventSink(batteryElectricityModelURI,
+							SetConsumeBatteryEvent.class)
+				});
+		imported.put(
+				SetProductBatteryEvent.class,
+				new EventSink[] {
+					new EventSink(batteryElectricityModelURI,
+							SetProductBatteryEvent.class)
+				});
+		imported.put(
+				SetStandByBatteryEvent.class,
+				new EventSink[] {
+					new EventSink(batteryElectricityModelURI,
+							SetStandByBatteryEvent.class)
+				});
 
 		Map<VariableSource,VariableSink[]> bindings =
 								new HashMap<VariableSource,VariableSink[]>();
@@ -435,6 +580,33 @@ public abstract class	LocalSimulationArchitectures
 								   fridgeElectricityModelURI),
 				new VariableSink[] {
 					new VariableSink("currentFridgeIntensity",
+									 Double.class,
+									 electricMeterElectricityModelURI)
+				});
+		bindings.put(
+				new VariableSource("currentProduction",
+								   Double.class,
+								   windTurbineElectricityModelURI),
+				new VariableSink[] {
+					new VariableSink("currentWindTurbineProduction",
+									 Double.class,
+									 electricMeterElectricityModelURI)
+				});
+		bindings.put(
+				new VariableSource("currentProduction",
+								   Double.class,
+								   batteryElectricityModelURI),
+				new VariableSink[] {
+					new VariableSink("currentBatteryProduction",
+									 Double.class,
+									 electricMeterElectricityModelURI)
+				});
+		bindings.put(
+				new VariableSource("currentConsumption",
+								   Double.class,
+								   batteryElectricityModelURI),
+				new VariableSink[] {
+					new VariableSink("currentBatteryConsumption",
 									 Double.class,
 									 electricMeterElectricityModelURI)
 				});

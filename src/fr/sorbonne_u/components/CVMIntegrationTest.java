@@ -35,10 +35,6 @@ import fr.sorbonne_u.exceptions.VerboseException;
 import fr.sorbonne_u.utils.aclocks.ClocksServer;
 
 
-
-
-
-
 public class CVMIntegrationTest extends AbstractCVM {
 
 	// -------------------------------------------------------------------------
@@ -255,49 +251,49 @@ public class CVMIntegrationTest extends AbstractCVM {
 						 	 ACCELERATION_FACTOR,
 						 	 CLOCK_URI});
 		
-//		AbstractComponent.createComponent(
-//				WindTurbine.class.getCanonicalName(),
-//				new Object[]{WindTurbine.REFLECTION_INBOUND_PORT_URI,
-//							 WindTurbine.INBOUND_PORT_URI,
-//							 CURRENT_EXECUTION_TYPE,
-//							 CURRENT_SIMULATION_TYPE,
-//							 globalArchitectureURI,
-//							 windTurbineArchitectureURI,
-//							 SIMULATION_TIME_UNIT,
-//							 ACCELERATION_FACTOR,
-//							 CLOCK_URI});
-//		AbstractComponent.createComponent(
-//				WindTurbineTester.class.getCanonicalName(),
-//				new Object[]{WindTurbine.INBOUND_PORT_URI,
-//							 CURRENT_EXECUTION_TYPE,
-//							 CURRENT_SIMULATION_TYPE,
-//							 globalArchitectureURI,
-//							 windTurbineUserLocalArchitectureURI,
-//							 SIMULATION_TIME_UNIT,
-//							 ACCELERATION_FACTOR,
-//							 CLOCK_URI});
-//		
-//		AbstractComponent.createComponent(
-//				Battery.class.getCanonicalName(),
-//				new Object[]{Battery.REFLECTION_INBOUND_PORT_URI,
-//							 Battery.INBOUND_PORT_URI,
-//							 CURRENT_EXECUTION_TYPE,
-//							 CURRENT_SIMULATION_TYPE,
-//							 globalArchitectureURI,
-//							 batteryArchitectureURI,
-//							 SIMULATION_TIME_UNIT,
-//							 ACCELERATION_FACTOR,
-//							 CLOCK_URI});
-//		AbstractComponent.createComponent(
-//				BatteryTester.class.getCanonicalName(),
-//				new Object[]{Battery.INBOUND_PORT_URI,
-//							 CURRENT_EXECUTION_TYPE,
-//							 CURRENT_SIMULATION_TYPE,
-//							 globalArchitectureURI,
-//							 batteryUserLocalArchitectureURI,
-//							 SIMULATION_TIME_UNIT,
-//							 ACCELERATION_FACTOR,
-//							 CLOCK_URI});
+		AbstractComponent.createComponent(
+				WindTurbine.class.getCanonicalName(),
+				new Object[]{WindTurbine.REFLECTION_INBOUND_PORT_URI,
+							 WindTurbine.INBOUND_PORT_URI,
+							 CURRENT_EXECUTION_TYPE,
+							 CURRENT_SIMULATION_TYPE,
+							 globalArchitectureURI,
+							 windTurbineArchitectureURI,
+							 SIMULATION_TIME_UNIT,
+							 ACCELERATION_FACTOR,
+							 CLOCK_URI});
+		AbstractComponent.createComponent(
+				WindTurbineTester.class.getCanonicalName(),
+				new Object[]{WindTurbine.INBOUND_PORT_URI,
+							 CURRENT_EXECUTION_TYPE,
+							 CURRENT_SIMULATION_TYPE,
+							 globalArchitectureURI,
+							 windTurbineUserLocalArchitectureURI,
+							 SIMULATION_TIME_UNIT,
+							 ACCELERATION_FACTOR,
+							 CLOCK_URI});
+		
+		AbstractComponent.createComponent(
+				Battery.class.getCanonicalName(),
+				new Object[]{Battery.REFLECTION_INBOUND_PORT_URI,
+							 Battery.INBOUND_PORT_URI,
+							 CURRENT_EXECUTION_TYPE,
+							 CURRENT_SIMULATION_TYPE,
+							 globalArchitectureURI,
+							 batteryArchitectureURI,
+							 SIMULATION_TIME_UNIT,
+							 ACCELERATION_FACTOR,
+							 CLOCK_URI});
+		AbstractComponent.createComponent(
+				BatteryTester.class.getCanonicalName(),
+				new Object[]{Battery.INBOUND_PORT_URI,
+							 CURRENT_EXECUTION_TYPE,
+							 CURRENT_SIMULATION_TYPE,
+							 globalArchitectureURI,
+							 batteryUserLocalArchitectureURI,
+							 SIMULATION_TIME_UNIT,
+							 ACCELERATION_FACTOR,
+							 CLOCK_URI});
 
 		AbstractComponent.createComponent(
 				ElectricMeter.class.getCanonicalName(),

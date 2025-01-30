@@ -188,8 +188,12 @@ public class WindTurbineElectricityModel extends AtomicHIOA implements WindTurbi
         super.userDefinedInternalTransition(elapsedTime);
 
         if(this.getState() == WindTurbineState.ACTIVE) {
-            currentProduction.setNewValue(externalWindSpeed.getValue() * 5000 / 150.0, 
-            								this.getCurrentStateTime());
+        	if (externalWindSpeed != null && externalWindSpeed.getValue() != null) {
+        		currentProduction.setNewValue(externalWindSpeed.getValue() * 5000 / 150.0, 
+						this.getCurrentStateTime());
+        	}
+        	else 
+        		currentProduction.setNewValue(0.0, this.getCurrentStateTime());
             
             this.totalProduction += currentProduction.getValue() * elapsedTime.getSimulatedDuration();
         } 

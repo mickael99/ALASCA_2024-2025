@@ -14,6 +14,7 @@ import fr.sorbonne_u.components.equipments.battery.mil.events.SetConsumeBatteryE
 import fr.sorbonne_u.devs_simulation.exceptions.MissingRunParameterException;
 import fr.sorbonne_u.devs_simulation.exceptions.NeoSim4JavaException;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ExportedVariable;
+import fr.sorbonne_u.devs_simulation.hioa.annotations.ModelExportedVariable;
 import fr.sorbonne_u.devs_simulation.hioa.models.AtomicHIOA;
 import fr.sorbonne_u.devs_simulation.hioa.models.vars.Value;
 import fr.sorbonne_u.devs_simulation.models.annotations.ModelExternalEvents;
@@ -32,6 +33,8 @@ import fr.sorbonne_u.exceptions.InvariantChecking;
         SetConsumeBatteryEvent.class,
         SetStandByBatteryEvent.class
 })
+@ModelExportedVariable(name = "currentProduction", type = Double.class)
+@ModelExportedVariable(name = "currentConsumption", type = Double.class)
 public class BatteryElectricityModel extends AtomicHIOA implements BatteryOperationI {
 
 	// -------------------------------------------------------------------------
