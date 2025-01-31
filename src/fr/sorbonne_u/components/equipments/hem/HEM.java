@@ -16,6 +16,7 @@ import fr.sorbonne_u.components.equipments.hem.adjustable.AdjustableOutboundPort
 import fr.sorbonne_u.components.equipments.hem.adjustable.FridgeConnector;
 import fr.sorbonne_u.components.equipments.hem.registration.RegistrationI;
 import fr.sorbonne_u.components.equipments.hem.registration.RegistrationInboundPort;
+import fr.sorbonne_u.components.equipments.meter.ElectricMeter;
 import fr.sorbonne_u.components.equipments.meter.connections.ElectricMeterConnector;
 import fr.sorbonne_u.components.equipments.meter.connections.ElectricMeterOutboundPort;
 import fr.sorbonne_u.components.equipments.windTurbine.WindTurbine;
@@ -61,10 +62,10 @@ public class HEM extends AbstractComponent implements RegistrationI {
 	// Components ports
 	protected ElectricMeterOutboundPort electricMeterOutboundPort;
 	protected AdjustableOutboundPort controlFridgeOutboundPort;
-	//protected AdjustableOutboundPort controlSmartLightingPort;
+//	protected AdjustableOutboundPort controlSmartLightingPort;
 	protected BatteryOutboundPort batteryOutboundPort;
 	protected WindTurbineOutboundPort windTurbineOutboundPort;
-	//protected GeneratorHEMOutboundPort generatorHEMOutboundPort;
+//	protected GeneratorHEMOutboundPort generatorHEMOutboundPort;
 	
 	
 	// Execution/Simulation
@@ -168,36 +169,37 @@ public class HEM extends AbstractComponent implements RegistrationI {
 		super.start();
 
 		try {
-//			this.electricMeterOutboundPort = new ElectricMeterOutboundPort(this);
-//			this.electricMeterOutboundPort.publishPort();
-//			this.doPortConnection(
-//					this.electricMeterOutboundPort.getPortURI(),
-//					ElectricMeter.ELECTRIC_METER_INBOUND_PORT_URI,
-//					ElectricMeterConnector.class.getCanonicalName());
+			this.electricMeterOutboundPort = new ElectricMeterOutboundPort(this);
+			this.electricMeterOutboundPort.publishPort();
 
-//			this.controlFridgeOutboundPort = new AdjustableOutboundPort(this);
-//			this.controlFridgeOutboundPort.publishPort();
-//			
-//			this.windTurbineOutboundPort = new WindTurbineOutboundPort(this);
-//			this.windTurbineOutboundPort.publishPort();
-//			
-//			this.batteryOutboundPort = new BatteryOutboundPort(this);
-//			this.batteryOutboundPort.publishPort();
+			this.controlFridgeOutboundPort = new AdjustableOutboundPort(this);
+			this.controlFridgeOutboundPort.publishPort();
 			
-//			this.doPortConnection(
-//					this.controlFridgeOutboundPort.getPortURI(),
-//					Fridge.EXTERNAL_CONTROL_INBOUND_PORT_URI,
-//					FridgeConnector.class.getCanonicalName());
-//			
-//			this.doPortConnection(
-//					this.windTurbineOutboundPort.getPortURI(),
-//					WindTurbine.INBOUND_PORT_URI,
-//					WindTurbineConnector.class.getCanonicalName());
-//			
-//			this.doPortConnection(
-//					this.batteryOutboundPort.getPortURI(),
-//					Battery.INBOUND_PORT_URI,
-//					BatteryConnector.class.getCanonicalName());
+			this.windTurbineOutboundPort = new WindTurbineOutboundPort(this);
+			this.windTurbineOutboundPort.publishPort();
+			
+			this.batteryOutboundPort = new BatteryOutboundPort(this);
+			this.batteryOutboundPort.publishPort();
+			
+			this.doPortConnection(
+					this.electricMeterOutboundPort.getPortURI(),
+					ElectricMeter.ELECTRIC_METER_INBOUND_PORT_URI,
+					ElectricMeterConnector.class.getCanonicalName());
+			
+			this.doPortConnection(
+					this.controlFridgeOutboundPort.getPortURI(),
+					Fridge.EXTERNAL_CONTROL_INBOUND_PORT_URI,
+					FridgeConnector.class.getCanonicalName());
+			
+			this.doPortConnection(
+					this.windTurbineOutboundPort.getPortURI(),
+					WindTurbine.INBOUND_PORT_URI,
+					WindTurbineConnector.class.getCanonicalName());
+			
+			this.doPortConnection(
+					this.batteryOutboundPort.getPortURI(),
+					Battery.INBOUND_PORT_URI,
+					BatteryConnector.class.getCanonicalName());
 		} catch (Exception e) {
 			throw new ComponentStartException(e) ;
 		}
@@ -232,7 +234,6 @@ public class HEM extends AbstractComponent implements RegistrationI {
 			Instant end = ac.getSimulationEndInstant().minusSeconds(600L);
 			this.logMessage("HEM schedules the SIL integration test.");
 			
-			//this.windTurbineOutboundPort.activate(); //emergency
 			this.loop(first, end, ac);
 		} else {
 			Instant meterTest = ac.getStartInstant().plusSeconds(60L);
@@ -246,10 +247,10 @@ public class HEM extends AbstractComponent implements RegistrationI {
 						try {
 							traceMessage(
 									"Electric meter current consumption: " +
-									/*electricMeterOutboundPort.getCurrentConsumption()*/ "Not implemented yet\n");
+									electricMeterOutboundPort.getCurrentConsumption() + "Not implemented yet\n");
 							traceMessage(
 									"Electric meter current production: " +
-									/*electricMeterOutboundPort.getCurrentProduction()*/ "Not implemented yet\n");
+									electricMeterOutboundPort.getCurrentProduction() + "Not implemented yet\n");
 							traceMessage("HEM meter test ends.\n");
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -257,144 +258,144 @@ public class HEM extends AbstractComponent implements RegistrationI {
 					}
 				}, delay, TimeUnit.NANOSECONDS);
 
-//			Instant fridge1 = ac.getStartInstant().plusSeconds(30L);
-//			delay = ac.nanoDelayUntilInstant(fridge1);
-//			this.logMessage("HEM schedules the heater first call in "
-//										+ delay + " " + TimeUnit.NANOSECONDS);
-//			this.scheduleTaskOnComponent(
-//					new AbstractComponent.AbstractTask() {
-//						@Override
-//						public void run() {
-//							try {
-//								traceMessage("HEM fridge first call begins.\n");
-//								traceMessage("Fridge maxMode index? " +
-//												controlFridgeOutboundPort.maxMode() + "\n");
-//								traceMessage("Fridge current mode index? " +
-//												controlFridgeOutboundPort.currentMode() + "\n");
-//								traceMessage("Fridge going down one mode? " +
-//												controlFridgeOutboundPort.downMode() + "\n");
-//								traceMessage("Fridge current mode is? " +
-//												controlFridgeOutboundPort.currentMode() + "\n");
-//								traceMessage("Fridge going up one mode? " +
-//												controlFridgeOutboundPort.upMode() + "\n");
-//								traceMessage("Fridge current mode is? " +
-//												controlFridgeOutboundPort.currentMode() + "\n");
-//								traceMessage("Fridge setting current mode? " +
-//												controlFridgeOutboundPort.setMode(2) + "\n");
-//								traceMessage("Fridge current mode is? " +
-//												controlFridgeOutboundPort.currentMode() + "\n");
-//								traceMessage("Fridge is suspended? " +
-//												controlFridgeOutboundPort.suspended() + "\n");
-//								traceMessage("HEM fridge first call ends.\n");
-//							} catch (Exception e) {
-//								e.printStackTrace();
-//							}
-//						}
-//					}, delay, TimeUnit.NANOSECONDS);
-//
-//			Instant fridge2 = ac.getStartInstant().plusSeconds(120L);
-//			delay = ac.nanoDelayUntilInstant(fridge2);
-//			this.logMessage("HEM schedules the fridge second call in "
-//										+ delay + " " + TimeUnit.NANOSECONDS);
-//			this.scheduleTaskOnComponent(
-//					new AbstractComponent.AbstractTask() {
-//						@Override
-//						public void run() {
-//							try {
-//								traceMessage("HEM fridge second call begins.\n");
-//								traceMessage("Fridge suspends? " +
-//												controlFridgeOutboundPort.suspend() + "\n");
-//								traceMessage("Fridge is suspended? " +
-//												controlFridgeOutboundPort.suspended() + "\n");
-//								traceMessage("Fridge emergency? " +
-//												controlFridgeOutboundPort.emergency() + "\n");
-//								traceMessage("HEM fridge second call ends.\n");
-//							} catch (Exception e) {
-//								e.printStackTrace();
-//							}
-//						}
-//					}, delay, TimeUnit.NANOSECONDS);
-//
-//			Instant fridge3 = ac.getStartInstant().plusSeconds(240L);
-//			delay = ac.nanoDelayUntilInstant(fridge3);
-//			this.logMessage("HEM schedules the fridge third call in "
-//										+ delay + " " + TimeUnit.NANOSECONDS);
-//			this.scheduleTaskOnComponent(
-//					new AbstractComponent.AbstractTask() {
-//						@Override
-//						public void run() {
-//							try {
-//								traceMessage("HEM fridge third call begins.\n");
-//								traceMessage("Fridge emergency? " +
-//												controlFridgeOutboundPort.emergency() + "\n");
-//								traceMessage("Fridge resumes? " +
-//												controlFridgeOutboundPort.resume() + "\n");
-//								traceMessage("Fridge is suspended? " +
-//												controlFridgeOutboundPort.suspended() + "\n");
-//								traceMessage("Fridge current mode is? " +
-//												controlFridgeOutboundPort.currentMode() + "\n");
-//								traceMessage("HEM fridge third call ends.\n");
-//							} catch (Exception e) {
-//								e.printStackTrace();
-//							}
-//						}
-//					}, delay, TimeUnit.NANOSECONDS);
-//			
-//			// Wind turbine
-//			Instant windTurbine = ac.getStartInstant().plusSeconds(300L);
-//			delay = ac.nanoDelayUntilInstant(windTurbine);
-//			this.logMessage("HEM schedules the wind turbine call in "
-//										+ delay + " " + TimeUnit.NANOSECONDS);
-//			this.scheduleTaskOnComponent(
-//					new AbstractComponent.AbstractTask() {
-//						@Override
-//						public void run() {
-//							try {
-//								traceMessage("HEM wind turbine call begins.\n");
-//								traceMessage("Shouldn't be activate " +
-//												windTurbineOutboundPort.isActivate() + "\n");
-//								windTurbineOutboundPort.activate();
-//								traceMessage("Should be activate " +
-//										windTurbineOutboundPort.isActivate() + "\n");
-//								windTurbineOutboundPort.stop();
-//								traceMessage("Shouldn't be activate " +
-//										windTurbineOutboundPort.isActivate() + "\n");
-//								windTurbineOutboundPort.activate();
-//								traceMessage("HEM wind turbine call ends.\n");
-//							} catch (Exception e) {
-//								e.printStackTrace();
-//							}
-//						}
-//					}, delay, TimeUnit.NANOSECONDS);
-//			
-//			// Wind turbine
-//			Instant battery = ac.getStartInstant().plusSeconds(350L);
-//			delay = ac.nanoDelayUntilInstant(battery);
-//			this.logMessage("HEM schedules the battery call in "
-//										+ delay + " " + TimeUnit.NANOSECONDS);
-//			this.scheduleTaskOnComponent(
-//					new AbstractComponent.AbstractTask() {
-//						@Override
-//						public void run() {
-//							try {
-//								traceMessage("HEM battery call begins.\n");
-//								batteryOutboundPort.setState(BATTERY_STATE.CONSUME);
-//								traceMessage("Battery state -> " + batteryOutboundPort.getState() + "\n");
-//								
-//								batteryOutboundPort.setState(BATTERY_STATE.STANDBY);
-//								traceMessage("Battery state -> " + batteryOutboundPort.getState() + "\n");
-//								
-//								batteryOutboundPort.setState(BATTERY_STATE.PRODUCT);
-//								traceMessage("Battery state -> " + batteryOutboundPort.getState() + "\n");
-//								
-//								traceMessage("Battery level -> " + batteryOutboundPort.getBatteryLevel() + "\n");
-//								
-//								traceMessage("HEM battery call ends.\n");
-//							} catch (Exception e) {
-//								e.printStackTrace();
-//							}
-//						}
-//					}, delay, TimeUnit.NANOSECONDS);
+			Instant fridge1 = ac.getStartInstant().plusSeconds(30L);
+			delay = ac.nanoDelayUntilInstant(fridge1);
+			this.logMessage("HEM schedules the heater first call in "
+										+ delay + " " + TimeUnit.NANOSECONDS);
+			this.scheduleTaskOnComponent(
+					new AbstractComponent.AbstractTask() {
+						@Override
+						public void run() {
+							try {
+								traceMessage("HEM fridge first call begins.\n");
+								traceMessage("Fridge maxMode index? " +
+												controlFridgeOutboundPort.maxMode() + "\n");
+								traceMessage("Fridge current mode index? " +
+												controlFridgeOutboundPort.currentMode() + "\n");
+								traceMessage("Fridge going down one mode? " +
+												controlFridgeOutboundPort.downMode() + "\n");
+								traceMessage("Fridge current mode is? " +
+												controlFridgeOutboundPort.currentMode() + "\n");
+								traceMessage("Fridge going up one mode? " +
+												controlFridgeOutboundPort.upMode() + "\n");
+								traceMessage("Fridge current mode is? " +
+												controlFridgeOutboundPort.currentMode() + "\n");
+								traceMessage("Fridge setting current mode? " +
+												controlFridgeOutboundPort.setMode(2) + "\n");
+								traceMessage("Fridge current mode is? " +
+												controlFridgeOutboundPort.currentMode() + "\n");
+								traceMessage("Fridge is suspended? " +
+												controlFridgeOutboundPort.suspended() + "\n");
+								traceMessage("HEM fridge first call ends.\n");
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					}, delay, TimeUnit.NANOSECONDS);
+
+			Instant fridge2 = ac.getStartInstant().plusSeconds(120L);
+			delay = ac.nanoDelayUntilInstant(fridge2);
+			this.logMessage("HEM schedules the fridge second call in "
+										+ delay + " " + TimeUnit.NANOSECONDS);
+			this.scheduleTaskOnComponent(
+					new AbstractComponent.AbstractTask() {
+						@Override
+						public void run() {
+							try {
+								traceMessage("HEM fridge second call begins.\n");
+								traceMessage("Fridge suspends? " +
+												controlFridgeOutboundPort.suspend() + "\n");
+								traceMessage("Fridge is suspended? " +
+												controlFridgeOutboundPort.suspended() + "\n");
+								traceMessage("Fridge emergency? " +
+												controlFridgeOutboundPort.emergency() + "\n");
+								traceMessage("HEM fridge second call ends.\n");
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					}, delay, TimeUnit.NANOSECONDS);
+
+			Instant fridge3 = ac.getStartInstant().plusSeconds(240L);
+			delay = ac.nanoDelayUntilInstant(fridge3);
+			this.logMessage("HEM schedules the fridge third call in "
+										+ delay + " " + TimeUnit.NANOSECONDS);
+			this.scheduleTaskOnComponent(
+					new AbstractComponent.AbstractTask() {
+						@Override
+						public void run() {
+							try {
+								traceMessage("HEM fridge third call begins.\n");
+								traceMessage("Fridge emergency? " +
+												controlFridgeOutboundPort.emergency() + "\n");
+								traceMessage("Fridge resumes? " +
+												controlFridgeOutboundPort.resume() + "\n");
+								traceMessage("Fridge is suspended? " +
+												controlFridgeOutboundPort.suspended() + "\n");
+								traceMessage("Fridge current mode is? " +
+												controlFridgeOutboundPort.currentMode() + "\n");
+								traceMessage("HEM fridge third call ends.\n");
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					}, delay, TimeUnit.NANOSECONDS);
+			
+			// Wind turbine
+			Instant windTurbine = ac.getStartInstant().plusSeconds(300L);
+			delay = ac.nanoDelayUntilInstant(windTurbine);
+			this.logMessage("HEM schedules the wind turbine call in "
+										+ delay + " " + TimeUnit.NANOSECONDS);
+			this.scheduleTaskOnComponent(
+					new AbstractComponent.AbstractTask() {
+						@Override
+						public void run() {
+							try {
+								traceMessage("HEM wind turbine call begins.\n");
+								traceMessage("Shouldn't be activate " +
+												windTurbineOutboundPort.isActivate() + "\n");
+								windTurbineOutboundPort.activate();
+								traceMessage("Should be activate " +
+										windTurbineOutboundPort.isActivate() + "\n");
+								windTurbineOutboundPort.stop();
+								traceMessage("Shouldn't be activate " +
+										windTurbineOutboundPort.isActivate() + "\n");
+								windTurbineOutboundPort.activate();
+								traceMessage("HEM wind turbine call ends.\n");
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					}, delay, TimeUnit.NANOSECONDS);
+			
+			// Wind turbine
+			Instant battery = ac.getStartInstant().plusSeconds(350L);
+			delay = ac.nanoDelayUntilInstant(battery);
+			this.logMessage("HEM schedules the battery call in "
+										+ delay + " " + TimeUnit.NANOSECONDS);
+			this.scheduleTaskOnComponent(
+					new AbstractComponent.AbstractTask() {
+						@Override
+						public void run() {
+							try {
+								traceMessage("HEM battery call begins.\n");
+								batteryOutboundPort.setState(BATTERY_STATE.CONSUME);
+								traceMessage("Battery state -> " + batteryOutboundPort.getState() + "\n");
+								
+								batteryOutboundPort.setState(BATTERY_STATE.STANDBY);
+								traceMessage("Battery state -> " + batteryOutboundPort.getState() + "\n");
+								
+								batteryOutboundPort.setState(BATTERY_STATE.PRODUCT);
+								traceMessage("Battery state -> " + batteryOutboundPort.getState() + "\n");
+								
+								traceMessage("Battery level -> " + batteryOutboundPort.getBatteryLevel() + "\n");
+								
+								traceMessage("HEM battery call ends.\n");
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					}, delay, TimeUnit.NANOSECONDS);
 		}
 	}
 	
@@ -403,9 +404,9 @@ public class HEM extends AbstractComponent implements RegistrationI {
 		this.logMessage("HEM ends.");
 		
 		this.doPortDisconnection(this.electricMeterOutboundPort.getPortURI());
-//		this.doPortDisconnection(this.controlFridgeOutboundPort.getPortURI());
-//		this.doPortDisconnection(this.windTurbineOutboundPort.getPortURI());
-//		this.doPortDisconnection(this.batteryOutboundPort.getPortURI());
+		this.doPortDisconnection(this.controlFridgeOutboundPort.getPortURI());
+		this.doPortDisconnection(this.windTurbineOutboundPort.getPortURI());
+		this.doPortDisconnection(this.batteryOutboundPort.getPortURI());
 		
 		super.finalise();
 	}
@@ -414,9 +415,9 @@ public class HEM extends AbstractComponent implements RegistrationI {
 	public synchronized void shutdown() throws ComponentShutdownException {
 		try {
 			this.electricMeterOutboundPort.unpublishPort();
-//			this.controlFridgeOutboundPort.unpublishPort();
-//			this.windTurbineOutboundPort.unpublishPort();
-//			this.batteryOutboundPort.unpublishPort();
+			this.controlFridgeOutboundPort.unpublishPort();
+			this.windTurbineOutboundPort.unpublishPort();
+			this.batteryOutboundPort.unpublishPort();
 		} catch (Exception e) {
 			throw new ComponentShutdownException(e) ;
 		}
