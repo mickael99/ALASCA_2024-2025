@@ -16,7 +16,6 @@ import fr.sorbonne_u.components.equipments.hem.adjustable.AdjustableOutboundPort
 import fr.sorbonne_u.components.equipments.hem.adjustable.FridgeConnector;
 import fr.sorbonne_u.components.equipments.hem.registration.RegistrationI;
 import fr.sorbonne_u.components.equipments.hem.registration.RegistrationInboundPort;
-import fr.sorbonne_u.components.equipments.meter.ElectricMeter;
 import fr.sorbonne_u.components.equipments.meter.connections.ElectricMeterConnector;
 import fr.sorbonne_u.components.equipments.meter.connections.ElectricMeterOutboundPort;
 import fr.sorbonne_u.components.equipments.windTurbine.WindTurbine;

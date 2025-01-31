@@ -8,37 +8,43 @@ import fr.sorbonne_u.components.equipments.meter.connections.ElectricMeterOutbou
 import fr.sorbonne_u.components.equipments.meter.interfaces.ElectricMeterCI;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
-import fr.sorbonne_u.utils.aclocks.*;
-
+import fr.sorbonne_u.utils.aclocks.AcceleratedClock;
+import fr.sorbonne_u.utils.aclocks.ClocksServer;
+import fr.sorbonne_u.utils.aclocks.ClocksServerCI;
+import fr.sorbonne_u.utils.aclocks.ClocksServerConnector;
+import fr.sorbonne_u.utils.aclocks.ClocksServerOutboundPort;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
-@RequiredInterfaces(required={ElectricMeterCI.class, ClocksServerCI.class})
-public class ElectricMeterUnitTester extends AbstractComponent {
+@RequiredInterfaces(required={ElectricMeterCI.class,ClocksServerCI.class})
+public class			ElectricMeterUnitTester
+extends		AbstractComponent
+{
 	// -------------------------------------------------------------------------
 	// Constants and variables
 	// -------------------------------------------------------------------------
 
-	public static boolean		VERBOSE = false;
-	public static int			X_RELATIVE_POSITION = 0;
-	public static int			Y_RELATIVE_POSITION = 0;
+	public static boolean	VERBOSE = false;
+	public static int		X_RELATIVE_POSITION = 0;
+	public static int		Y_RELATIVE_POSITION = 0;
 
-	protected ElectricMeterOutboundPort outboundPort;
-	protected String clockURI;
+	protected ElectricMeterOutboundPort emop;
+	protected final String	clockURI;
 
 	// -------------------------------------------------------------------------
 	// Constructors
 	// -------------------------------------------------------------------------
 
-	protected ElectricMeterUnitTester(String clockURI) throws Exception {
+	protected			ElectricMeterUnitTester(String clockURI)
+	throws Exception
+	{
 		super(1, 0);
 
 		this.clockURI = clockURI;
 
-		this.outboundPort = new ElectricMeterOutboundPort(this);
-		this.outboundPort.publishPort();
+		this.emop = new ElectricMeterOutboundPort(this);
+		this.emop.publishPort();
 
-		if(VERBOSE) {
+		if (VERBOSE) {
 			this.tracer.get().setTitle("Electric meter tester component");
 			this.tracer.get().setRelativePosition(X_RELATIVE_POSITION,
 												  Y_RELATIVE_POSITION);
@@ -50,21 +56,25 @@ public class ElectricMeterUnitTester extends AbstractComponent {
 	// Component internal methods
 	// -------------------------------------------------------------------------
 
-	protected void testGetCurrentConsumption() {
+	protected void		testGetCurrentConsumption()
+	{
 		this.traceMessage("testGetCurrentConsumption()...\n");
 		try {
-			this.outboundPort.getCurrentConsumption();
+			this.traceMessage("Electric meter current consumption? " +
+									this.emop.getCurrentConsumption() + "\n");
 		} catch (Exception e) {
-			System.out.println("ko");
 			this.traceMessage("...KO.\n");
 			assertTrue(false);
 		}
 		this.traceMessage("...done.\n");
 	}
 
-	protected void testGetCurrentProduction() {
+	protected void		testGetCurrentProduction()
+	{
 		this.traceMessage("testGetCurrentProduction()...\n");
 		try {
+			this.traceMessage("Electric meter current production? " +
+									this.emop.getCurrentProduction() + "\n");
 		} catch (Exception e) {
 			this.traceMessage("...KO.\n");
 			assertTrue(false);
@@ -72,7 +82,8 @@ public class ElectricMeterUnitTester extends AbstractComponent {
 		this.traceMessage("...done.\n");
 	}
 
-	protected void runAllTests() {
+	protected void			runAllTests()
+	{
 		this.testGetCurrentConsumption();
 		this.testGetCurrentProduction();
 	}
@@ -82,12 +93,13 @@ public class ElectricMeterUnitTester extends AbstractComponent {
 	// -------------------------------------------------------------------------
 
 	@Override
-	public synchronized void start() throws ComponentStartException {
+	public synchronized void	start() throws ComponentStartException
+	{
 		super.start();
 
 		try {
 			this.doPortConnection(
-					this.outboundPort.getPortURI(),
+					this.emop.getPortURI(),
 					ElectricMeter.ELECTRIC_METER_INBOUND_PORT_URI,
 					ElectricMeterConnector.class.getCanonicalName());
 		} catch (Exception e) {
@@ -96,9 +108,10 @@ public class ElectricMeterUnitTester extends AbstractComponent {
 	}
 
 	@Override
-	public synchronized void execute() throws Exception {
+	public synchronized void	execute() throws Exception
+	{
 		ClocksServerOutboundPort clocksServerOutboundPort =
-				new ClocksServerOutboundPort(this);
+										new ClocksServerOutboundPort(this);
 		clocksServerOutboundPort.publishPort();
 		this.doPortConnection(
 				clocksServerOutboundPort.getPortURI(),
@@ -106,7 +119,7 @@ public class ElectricMeterUnitTester extends AbstractComponent {
 				ClocksServerConnector.class.getCanonicalName());
 		this.logMessage("ElectricMeterUnitTester gets the clock.");
 		AcceleratedClock ac =
-				clocksServerOutboundPort.getClock(this.clockURI);
+			clocksServerOutboundPort.getClock(this.clockURI);
 		this.doPortDisconnection(clocksServerOutboundPort.getPortURI());
 		clocksServerOutboundPort.unpublishPort();
 
@@ -119,18 +132,21 @@ public class ElectricMeterUnitTester extends AbstractComponent {
 	}
 
 	@Override
-	public synchronized void finalise() throws Exception {
-		this.doPortDisconnection(this.outboundPort.getPortURI());
+	public synchronized void	finalise() throws Exception
+	{
+		this.doPortDisconnection(this.emop.getPortURI());
 		super.finalise();
 	}
 
 	@Override
-	public synchronized void shutdown() throws ComponentShutdownException {
+	public synchronized void	shutdown() throws ComponentShutdownException
+	{
 		try {
-			this.outboundPort.unpublishPort();
+			this.emop.unpublishPort();
 		} catch (Exception e) {
 			throw new ComponentShutdownException(e) ;
 		}
 		super.shutdown();
 	}
 }
+// -----------------------------------------------------------------------------

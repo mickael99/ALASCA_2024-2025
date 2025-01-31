@@ -1,4 +1,4 @@
-package fr.sorbonne_u.components.electricmeter2;
+package fr.sorbonne_u.components.equipments.meter;
 
 
 import java.util.HashMap;
@@ -19,17 +19,6 @@ import fr.sorbonne_u.components.equipments.fridge.mil.events.OpenDoorFridge;
 import fr.sorbonne_u.components.equipments.fridge.mil.events.SetPowerFridge;
 import fr.sorbonne_u.components.equipments.fridge.mil.events.SwitchOffFridge;
 import fr.sorbonne_u.components.equipments.fridge.mil.events.SwitchOnFridge;
-import fr.sorbonne_u.components.equipments.hairdryer.mil.HairDryerElectricityModel;
-import fr.sorbonne_u.components.equipments.hairdryer.mil.events.SetHighHairDryer;
-import fr.sorbonne_u.components.equipments.hairdryer.mil.events.SetLowHairDryer;
-import fr.sorbonne_u.components.equipments.hairdryer.mil.events.SwitchOffHairDryer;
-import fr.sorbonne_u.components.equipments.hairdryer.mil.events.SwitchOnHairDryer;
-import fr.sorbonne_u.components.equipments.heater.mil.HeaterElectricityModel;
-import fr.sorbonne_u.components.equipments.heater.mil.events.DoNotHeat;
-import fr.sorbonne_u.components.equipments.heater.mil.events.Heat;
-import fr.sorbonne_u.components.equipments.heater.mil.events.SetPowerHeater;
-import fr.sorbonne_u.components.equipments.heater.mil.events.SwitchOffHeater;
-import fr.sorbonne_u.components.equipments.heater.mil.events.SwitchOnHeater;
 import fr.sorbonne_u.components.equipments.iron.mil.IronElectricityModel;
 import fr.sorbonne_u.components.equipments.iron.mil.events.DisableEnergySavingModeIron;
 import fr.sorbonne_u.components.equipments.iron.mil.events.DisableSteamModeIron;
@@ -41,6 +30,8 @@ import fr.sorbonne_u.components.equipments.iron.mil.events.EnableSteamModeIron;
 import fr.sorbonne_u.components.equipments.iron.mil.events.TurnOffIron;
 import fr.sorbonne_u.components.equipments.iron.mil.events.TurnOnIron;
 import fr.sorbonne_u.components.equipments.meter.mil.ElectricMeterCoupledModel;
+import fr.sorbonne_u.components.equipments.meter.mil.ElectricMeterElectricityModel;
+import fr.sorbonne_u.components.equipments.meter.mil.ElectricMeterElectricitySILModel;
 import fr.sorbonne_u.components.equipments.windTurbine.mil.WindTurbineElectricityModel;
 import fr.sorbonne_u.components.equipments.windTurbine.mil.events.StartWindTurbineEvent;
 import fr.sorbonne_u.components.equipments.windTurbine.mil.events.StopWindTurbineEvent;

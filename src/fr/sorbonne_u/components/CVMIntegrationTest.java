@@ -5,8 +5,6 @@ import java.util.concurrent.TimeUnit;
 
 import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.components.cyphy.utils.aclocks.ClocksServerWithSimulation;
-import fr.sorbonne_u.components.electricmeter2.ElectricMeter;
-import fr.sorbonne_u.components.electricmeter2.ElectricMeterUnitTester;
 import fr.sorbonne_u.components.equipments.battery.Battery;
 import fr.sorbonne_u.components.equipments.battery.BatteryTester;
 import fr.sorbonne_u.components.equipments.battery.mil.BatteryCoupledModel;
@@ -22,6 +20,8 @@ import fr.sorbonne_u.components.equipments.iron.Iron;
 import fr.sorbonne_u.components.equipments.iron.IronUser;
 import fr.sorbonne_u.components.equipments.iron.mil.IronStateModel;
 import fr.sorbonne_u.components.equipments.iron.mil.IronUserModel;
+import fr.sorbonne_u.components.equipments.meter.ElectricMeter;
+import fr.sorbonne_u.components.equipments.meter.ElectricMeterUnitTester;
 import fr.sorbonne_u.components.equipments.meter.mil.ElectricMeterCoupledModel;
 import fr.sorbonne_u.components.equipments.windTurbine.WindTurbine;
 import fr.sorbonne_u.components.equipments.windTurbine.WindTurbineTester;
