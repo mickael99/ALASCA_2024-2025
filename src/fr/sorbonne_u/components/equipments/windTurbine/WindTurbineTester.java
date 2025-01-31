@@ -318,7 +318,6 @@ public class WindTurbineTester extends AbstractCyPhyComponent {
 	
 	@Override
 	public synchronized void execute() throws Exception {
-		
 		if (!this.currentExecutionType.isStandard() &&
 				!this.currentSimulationType.isMilSimulation() &&
 				!this.currentSimulationType.isMILRTSimulation()) {
@@ -338,7 +337,6 @@ public class WindTurbineTester extends AbstractCyPhyComponent {
 			
 			this.logMessage("Wind turbine tester waits until start.");
 			clock.waitUntilStart();
-			
 			if (this.currentSimulationType.isNoSimulation()) {
 				if (this.currentExecutionType.isUnitTest()) {
 					this.runUnitTestsNoSimulation(clock);
@@ -353,9 +351,13 @@ public class WindTurbineTester extends AbstractCyPhyComponent {
 								"currentSimulationType.isSILSimulation()");
 			
 				clock.waitUntilSimulationStart();
-				System.out.println("run test sil scenario a verifier dans wind turbine lors du test d'integration");
 				runSILTestScenario(clock);
 			}
+		}
+		
+		if(this.currentExecutionType.isIntegrationTest()) {
+			System.out.println("j'active l'éolienne");
+			this.outboundPort.activate();
 		}
 	}
 	
@@ -458,7 +460,7 @@ public class WindTurbineTester extends AbstractCyPhyComponent {
 		assert	clock != null : new PreconditionException("clock != null");
 		assert	!clock.startTimeNotReached() :
 				new PreconditionException("!clock.startTimeNotReached()");
-		
+		System.out.println("jnqjd");
 		this.outboundPort.activate();
 	}
 	

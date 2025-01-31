@@ -391,7 +391,10 @@ public class FridgeElectricityModel extends AtomicHIOA implements FridgeOperatio
 		Duration d = endTime.subtract(this.getCurrentStateTime());
 		
 		this.updateTotalConsumption(d);
-
+		
+		FridgeElectricityReport report = (FridgeElectricityReport)this.getFinalReport();
+		this.logMessage(report.printout(""));
+		
 		this.logMessage("simulation ends.\n");
 		
 		super.endSimulation(endTime);

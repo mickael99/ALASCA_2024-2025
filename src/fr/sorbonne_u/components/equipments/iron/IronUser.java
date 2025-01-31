@@ -239,7 +239,6 @@ public class IronUser extends AbstractCyPhyComponent implements IronOperationI {
 				this.addLocalSimulatorArchitecture(architecture);
 				this.global2localSimulationArchitectureURIS.
 						put(this.globalArchitectureURI, this.localArchitectureURI);
-				System.out.println("Plugin préparé dans initialise de iron user");
 				break;
 				
 			case MIL_RT_SIMULATION:
@@ -505,7 +504,6 @@ public class IronUser extends AbstractCyPhyComponent implements IronOperationI {
 					asp.setPluginURI(uri);
 					asp.setSimulationArchitecture(architecture);
 					this.installPlugin(asp);
-					System.out.println("Plugin installé dans start de iron user");
 					break;
 				case MIL_RT_SIMULATION:
 					RTAtomicSimulatorPlugin rtasp = new RTAtomicSimulatorPlugin();

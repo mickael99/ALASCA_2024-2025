@@ -266,10 +266,8 @@ extends		AtomicHIOA
 		this.updateTotalConsumption(
 				endTime.subtract(this.totalConsumption.getTime()));
 
-		this.finalReport = new ElectricMeterElectricityReport(
-								this.getURI(),
-								this.totalConsumption.getValue(),
-								this.totalProduction.getValue());
+		ElectricMeterElectricityReport report = (ElectricMeterElectricityReport)this.getFinalReport();
+		this.logMessage(report.printout(""));
 
 		this.logMessage("simulation ends.");
 		super.endSimulation(endTime);
@@ -365,6 +363,8 @@ extends		AtomicHIOA
 	@Override
 	public SimulationReportI	getFinalReport()
 	{
-		return this.finalReport;
+		return new ElectricMeterElectricityReport(  this.getURI(), 
+													this.totalConsumption.getValue(), 
+													this.totalProduction.getValue());
 	}
 }

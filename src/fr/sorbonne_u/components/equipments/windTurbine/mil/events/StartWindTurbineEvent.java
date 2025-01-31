@@ -24,9 +24,6 @@ public class StartWindTurbineEvent extends AbstractWindTurbineEvent {
     public void executeOn(AtomicModelI model) {
     	assert model instanceof WindTurbineOperationI;
     	WindTurbineOperationI w = (WindTurbineOperationI)model;
-        
-    	assert w.getState() == WindTurbineState.STANDBY:
-    		new PreconditionException("w.getState() == WindTurbineState.STANDBY");
     	
     	w.activate();
     }

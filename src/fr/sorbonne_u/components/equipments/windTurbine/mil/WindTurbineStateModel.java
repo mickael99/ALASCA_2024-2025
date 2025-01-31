@@ -169,11 +169,14 @@ public class WindTurbineStateModel extends AtomicModel implements WindTurbineOpe
 
 	@Override
 	public void activate() {
+		System.out.println("state wind turbine activate");
+		this.logMessage("Wind turbine activated\n");
 		this.currentState = WindTurbineState.ACTIVE;
 	}
 
 	@Override
 	public void stop() {
+		this.logMessage("Wind turbine stoped\n");
 		this.currentState = WindTurbineState.STANDBY;
 	}
 

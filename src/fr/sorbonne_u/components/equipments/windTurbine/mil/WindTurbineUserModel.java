@@ -36,7 +36,6 @@ public class WindTurbineUserModel extends AtomicES_Model {
 	public static final String SIL = WindTurbineUserModel.class.getSimpleName() + "-SIL";
 
     protected static double STEP_MEAN_DURATION = 10.0;
-    protected RandomDataGenerator generator;
     
     
     // -------------------------------------------------------------------------
@@ -45,7 +44,6 @@ public class WindTurbineUserModel extends AtomicES_Model {
     
     public WindTurbineUserModel(String uri, TimeUnit simulatedTimeUnit, AtomicSimulatorI simulationEngine) throws Exception {
         super(uri, simulatedTimeUnit, simulationEngine);
-        generator = new RandomDataGenerator();
 		this.getSimulationEngine().setLogger(new StandardLogger());
     }
     
@@ -57,11 +55,9 @@ public class WindTurbineUserModel extends AtomicES_Model {
     @Override
     public void initialiseState(Time initialTime) {
         super.initialiseState(initialTime);
-        generator.reSeedSecure();
 
         // The first event
-        Time nextTime = this.computeTimeOfNextEvent(getCurrentStateTime());
-        scheduleEvent(new StartWindTurbineEvent(nextTime));
+        scheduleEvent(new StartWindTurbineEvent(initialTime));
 
         nextTimeAdvance = timeAdvance();
         timeOfNextEvent = getCurrentStateTime().add(getNextTimeAdvance());
@@ -70,30 +66,8 @@ public class WindTurbineUserModel extends AtomicES_Model {
         logMessage("Simulation starts...\n");
     }
     
-    protected void generateNextEvent() {
-        EventI current = eventList.peek();
-        assert current != null;
-        Time nextTime = this.computeTimeOfNextEvent(current.getTimeOfOccurrence());
-
-        ES_EventI next = null;
-        if(current instanceof StartWindTurbineEvent) 
-            next = new StopWindTurbineEvent(nextTime);
-        else if(current instanceof StopWindTurbineEvent) 
-            next = new StartWindTurbineEvent(nextTime);
-        
-        scheduleEvent(next);
-    }
-    
-    protected Time computeTimeOfNextEvent(Time from) {
-    	double delay = Math.max(generator.nextGaussian(STEP_MEAN_DURATION, STEP_MEAN_DURATION/2.0), 0.1);
-        return from.add(new Duration(delay, this.getSimulatedTimeUnit()));
-	}
-    
     @Override
-    public ArrayList<EventI> output() {
-        if(eventList.peek() != null) 
-        	generateNextEvent();
-        
+    public ArrayList<EventI> output() {        
         return super.output();
     }
 

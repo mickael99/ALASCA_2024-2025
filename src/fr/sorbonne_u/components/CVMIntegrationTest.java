@@ -53,7 +53,7 @@ public class CVMIntegrationTest extends AbstractCVM {
 	public static double ACCELERATION_FACTOR = 360.0;
 
 	public static ExecutionType	CURRENT_EXECUTION_TYPE = ExecutionType.INTEGRATION_TEST;
-	public static SimulationType CURRENT_SIMULATION_TYPE = SimulationType.SIL_SIMULATION;
+	public static SimulationType CURRENT_SIMULATION_TYPE = SimulationType.MIL_SIMULATION;
 
 	public static String CLOCK_URI = "hem-clock";
 	public static String START_INSTANT = "2023-11-22T00:00:00.00Z";
@@ -65,41 +65,41 @@ public class CVMIntegrationTest extends AbstractCVM {
 	// -------------------------------------------------------------------------
 	
 	public CVMIntegrationTest() throws Exception {
-		ClocksServer.VERBOSE = true;
+		ClocksServer.VERBOSE = false;
 		ClocksServer.X_RELATIVE_POSITION = 0;
 		ClocksServer.Y_RELATIVE_POSITION = 0;
 		GlobalSupervisor.VERBOSE = true;
 		GlobalSupervisor.X_RELATIVE_POSITION = 1;
 		GlobalSupervisor.Y_RELATIVE_POSITION = 0;
-		CoordinatorComponent.VERBOSE = true;
+		CoordinatorComponent.VERBOSE = false;
 		CoordinatorComponent.X_RELATIVE_POSITION = 2;
 		CoordinatorComponent.Y_RELATIVE_POSITION = 0;
 
-		HEM.VERBOSE = true;
+		HEM.VERBOSE = false;
 		HEM.X_RELATIVE_POSITION = 0;
 		HEM.Y_RELATIVE_POSITION = 1;
 		
 		ElectricMeter.VERBOSE = true;
 		ElectricMeter.X_RELATIVE_POSITION = 3;
 		ElectricMeter.Y_RELATIVE_POSITION = 2;
-		ElectricMeterUnitTester.VERBOSE = true;
+		ElectricMeterUnitTester.VERBOSE = false;
 		ElectricMeterUnitTester.X_RELATIVE_POSITION = 3;
 		ElectricMeterUnitTester.Y_RELATIVE_POSITION = 3;
 		
-		Iron.VERBOSE = true;
+		Iron.VERBOSE = false;
 		Iron.X_RELATIVE_POSITION = 1;
 		Iron.Y_RELATIVE_POSITION = 2;
-		IronUser.VERBOSE = true;
+		IronUser.VERBOSE = false;
 		IronUser.X_RELATIVE_POSITION = 0;
 		IronUser.Y_RELATIVE_POSITION = 2;
 		
-		Fridge.VERBOSE = true;
+		Fridge.VERBOSE = false;
 		Fridge.X_RELATIVE_POSITION = 1;
 		Fridge.Y_RELATIVE_POSITION = 3;
-		FridgeUser.VERBOSE = true;
+		FridgeUser.VERBOSE = false;
 		FridgeUser.X_RELATIVE_POSITION = 0;
 		FridgeUser.Y_RELATIVE_POSITION = 3;
-		FridgeController.VERBOSE = true;
+		FridgeController.VERBOSE = false;
 		FridgeController.X_RELATIVE_POSITION = 2;
 		FridgeController.Y_RELATIVE_POSITION = 3;
 		
@@ -110,10 +110,10 @@ public class CVMIntegrationTest extends AbstractCVM {
 		WindTurbineTester.X_RELATIVE_POSITION = 2;
 		WindTurbineTester.Y_RELATIVE_POSITION = 1;
 		
-		Battery.VERBOSE = true;
+		Battery.VERBOSE = false;
 		Battery.X_RELATIVE_POSITION = 3;
 		Battery.Y_RELATIVE_POSITION = 0;
-		BatteryTester.VERBOSE = true;
+		BatteryTester.VERBOSE = false;
 		BatteryTester.X_RELATIVE_POSITION = 3;
 		BatteryTester.Y_RELATIVE_POSITION = 1;
 	}
