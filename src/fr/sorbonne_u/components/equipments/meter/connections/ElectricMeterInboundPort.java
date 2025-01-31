@@ -40,7 +40,6 @@ implements	ElectricMeterCI
 	@Override
 	public SensorData<Measure<Double>>	getCurrentConsumption() throws Exception
 	{
-		System.out.println("je suis dans le port interne");
 		return this.getOwner().handleRequest(
 				o -> ((ElectricMeterImplementationI)o).getCurrentConsumption());
 	}

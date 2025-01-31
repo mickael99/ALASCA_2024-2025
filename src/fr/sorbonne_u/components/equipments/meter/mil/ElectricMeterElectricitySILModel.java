@@ -40,18 +40,36 @@ extends		ElectricMeterElectricityModel
 	public void			userDefinedInternalTransition(Duration elapsedTime)
 	{
 		super.userDefinedInternalTransition(elapsedTime);
-		this.updateCumulativeConsumption(elapsedTime);
-		double old = this.currentPowerConsumption.getValue();
-		double i = this.computePowerConsumption();
-		this.currentPowerConsumption.setNewValue(i, this.getCurrentStateTime());
+		this.updateTotalConsumption(elapsedTime);
+		double oldConsumption = this.currentPowerConsumption.getValue();
+		double currentConsumption = this.computePowerConsumption();
+		this.currentPowerConsumption.setNewValue(currentConsumption, this.getCurrentStateTime());
 
 		this.ownerComponent.setCurrentPowerConsumption(
-							new Measure<Double>(i, MeasurementUnit.AMPERES));
+							new Measure<Double>(currentConsumption, MeasurementUnit.AMPERES));
 		
-		if (Math.abs(old - i) > 0.000001) {
+		if (Math.abs(oldConsumption - currentConsumption) > 0.000001) {
 			StringBuffer message =
 						new StringBuffer("current power consumption: ");
 			message.append(this.currentPowerConsumption.getValue());
+			message.append(" at ");
+			message.append(this.getCurrentStateTime());
+			message.append('\n');
+			this.logMessage(message.toString());
+		}
+		
+		this.updateTotalProduction(elapsedTime);
+		double oldProduction = this.currentPowerProduction.getValue();
+		double currentProduction = this.computePowerProduction();
+		this.currentPowerProduction.setNewValue(oldProduction, this.getCurrentStateTime());
+
+		this.ownerComponent.setCurrentPowerProduction(
+							new Measure<Double>(currentProduction, MeasurementUnit.AMPERES));
+		
+		if (Math.abs(oldProduction - currentProduction) > 0.000001) {
+			StringBuffer message =
+						new StringBuffer("current power production: ");
+			message.append(this.currentPowerProduction.getValue());
 			message.append(" at ");
 			message.append(this.getCurrentStateTime());
 			message.append('\n');

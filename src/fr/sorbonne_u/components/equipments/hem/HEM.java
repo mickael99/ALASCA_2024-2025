@@ -104,10 +104,10 @@ public class HEM extends AbstractComponent implements RegistrationI {
 					try	{
 						o.traceMessage(
 								"Electric meter current consumption: " +
-								/*electricMeterOutboundPort.getCurrentConsumption()*/ "Not implemented yet\n");
+								electricMeterOutboundPort.getCurrentConsumption() + "\n");
 						o.traceMessage(
 								"Electric meter current production: " +
-								/*electricMeterOutboundPort.getCurrentProduction()*/ "Not implemented yet\n");
+								electricMeterOutboundPort.getCurrentProduction() + "\n");
 						loop(next, end, ac);
 					} catch(Exception e) {
 						e.printStackTrace();

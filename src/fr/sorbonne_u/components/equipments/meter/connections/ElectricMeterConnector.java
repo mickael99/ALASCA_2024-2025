@@ -70,7 +70,6 @@ implements	ElectricMeterCI
 	@Override
 	public SensorData<Measure<Double>>	getCurrentConsumption() throws Exception
 	{
-		System.out.println("je suis dans le connector");
 		return ((ElectricMeterCI)this.offering).getCurrentConsumption();
 	}
 
