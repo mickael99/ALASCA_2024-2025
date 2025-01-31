@@ -365,68 +365,14 @@ public class LocalSimulationArchitectures {
 							WindTurbineStateModel.MIL_URI,
 							simulatedTimeUnit,
 							null));
-			atomicModelDescriptors.put(
-					ExternalWindModel.MIL_URI,
-					AtomicHIOA_Descriptor.create(
-							ExternalWindModel.class,
-							ExternalWindModel.MIL_URI,
-							simulatedTimeUnit,
-							null));
 
 			Map<String,CoupledModelDescriptor> coupledModelDescriptors = new HashMap<>();
 
-			Set<String> submodels = new HashSet<String>();
-			submodels.add(WindTurbineStateModel.MIL_URI);
-			submodels.add(ExternalWindModel.MIL_URI);
-
-			// events received by the coupled model transmitted to its submodels
-			Map<Class<? extends EventI>, EventSink[]> imported = new HashMap<>();
-
-			imported.put(
-					StartWindTurbineEvent.class,
-					new EventSink[] {
-						new EventSink(WindTurbineStateModel.MIL_URI,
-										StartWindTurbineEvent.class)
-					});
-			imported.put(
-					StopWindTurbineEvent.class,
-					new EventSink[] {
-						new EventSink(WindTurbineStateModel.MIL_URI,
-									StopWindTurbineEvent.class)
-					});
-
-			Map<Class<? extends EventI>,ReexportedEvent> reexported =
-					new HashMap<Class<? extends EventI>,ReexportedEvent>();
-
-			reexported.put(
-					StartWindTurbineEvent.class,
-					new ReexportedEvent(WindTurbineStateModel.MIL_URI,
-							StartWindTurbineEvent.class));
-			reexported.put(
-					StopWindTurbineEvent.class,
-					new ReexportedEvent(WindTurbineStateModel.MIL_URI,
-							StopWindTurbineEvent.class));
-
-			// coupled model descriptor
-			coupledModelDescriptors.put(
-					WindTurbineCoupledModel.MIL_URI,
-					new CoupledHIOA_Descriptor(
-							WindTurbineCoupledModel.class,
-							WindTurbineCoupledModel.MIL_URI,
-							submodels,
-							imported,
-							reexported,
-							null,
-							null,
-							null,
-							null,
-							null));
-
-			// simulation architecture
+			
 			Architecture architecture =
 					new Architecture(
 							architectureURI,
-							WindTurbineCoupledModel.MIL_URI,
+							WindTurbineStateModel.MIL_URI,
 							atomicModelDescriptors,
 							coupledModelDescriptors,
 							simulatedTimeUnit);
@@ -448,20 +394,14 @@ public class LocalSimulationArchitectures {
 								+ "currentSimulationType.isSILSimulation()");
 
 				String windTurbineStateModelURI = null;
-				String externalWindModelURI = null;
-				String windTurbineCoupledModelURI = null;
 				
 				switch (currentSimulationType) {
 					case MIL_RT_SIMULATION:
 						windTurbineStateModelURI = WindTurbineStateModel.MIL_RT_URI;
-						externalWindModelURI = ExternalWindModel.MIL_RT_URI;
-						windTurbineCoupledModelURI = WindTurbineCoupledModel.MIL_RT_URI;
 						break;
 						
 					case SIL_SIMULATION:
 						windTurbineStateModelURI = WindTurbineStateModel.SIL_URI;
-						externalWindModelURI = ExternalWindModel.SIL_URI;
-						windTurbineCoupledModelURI = WindTurbineCoupledModel.SIL_URI;
 						break;
 					
 					default:
@@ -478,71 +418,15 @@ public class LocalSimulationArchitectures {
 								null,
 								accelerationFactor));
 
-				atomicModelDescriptors.put(
-						externalWindModelURI,
-						RTAtomicHIOA_Descriptor.create(
-								ExternalWindModel.class,
-								externalWindModelURI,
-								simulatedTimeUnit,
-								null,
-								accelerationFactor));
 
 				Map<String,CoupledModelDescriptor> coupledModelDescriptors = new HashMap<>();
 
-				Set<String> submodels = new HashSet<String>();
-				submodels.add(windTurbineStateModelURI);
-				submodels.add(externalWindModelURI);
-
-				Map<Class<? extends EventI>, EventSink[]> imported = new HashMap<>();
-
-				imported.put(
-						StartWindTurbineEvent.class,
-						new EventSink[] {
-							new EventSink(windTurbineStateModelURI,
-									StartWindTurbineEvent.class)
-						});
-				imported.put(
-						StopWindTurbineEvent.class,
-						new EventSink[] {
-							new EventSink(windTurbineStateModelURI,
-											StopWindTurbineEvent.class)
-						});
-
-				// events emitted by submodels that are reexported towards other models
-				Map<Class<? extends EventI>,ReexportedEvent> reexported =
-						new HashMap<Class<? extends EventI>,ReexportedEvent>();
-
-				reexported.put(
-						StartWindTurbineEvent.class,
-						new ReexportedEvent(windTurbineStateModelURI,
-											StartWindTurbineEvent.class));
-				reexported.put(
-						StopWindTurbineEvent.class,
-						new ReexportedEvent(windTurbineStateModelURI,
-											StopWindTurbineEvent.class));
-
-
-				// coupled model descriptor
-				coupledModelDescriptors.put(
-						windTurbineCoupledModelURI,
-						new RTCoupledHIOA_Descriptor(
-								WindTurbineCoupledModel.class,
-								windTurbineCoupledModelURI,
-								submodels,
-								imported,
-								reexported,
-								null,
-								null,
-								null,
-								null,
-								null,
-								accelerationFactor));
 
 				// simulation architecture
 				Architecture architecture =
 						new RTArchitecture(
 								architectureURI,
-								windTurbineCoupledModelURI,
+								windTurbineStateModelURI,
 								atomicModelDescriptors,
 								coupledModelDescriptors,
 								simulatedTimeUnit,

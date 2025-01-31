@@ -200,15 +200,6 @@ public class WindTurbineElectricityModel extends AtomicHIOA implements WindTurbi
         else 
         	currentProduction.setNewValue(0.0, this.getCurrentStateTime());
         
-//        try {
-//        	System.out.println("production -> " + this.currentProduction.getValue());
-//			Thread.sleep(5000);
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-        System.out.println("state -> " + this.currentState);
-        System.out.println("Current production " + currentProduction.getValue() + " at " + currentProduction.getTime() + "\n");
         logMessage("Current production " + currentProduction.getValue() + " at " + currentProduction.getTime() + "\n");
     }
 	

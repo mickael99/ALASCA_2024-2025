@@ -25,7 +25,7 @@ import fr.sorbonne_u.components.equipments.meter.ElectricMeterUnitTester;
 import fr.sorbonne_u.components.equipments.meter.mil.ElectricMeterCoupledModel;
 import fr.sorbonne_u.components.equipments.windTurbine.WindTurbine;
 import fr.sorbonne_u.components.equipments.windTurbine.WindTurbineTester;
-import fr.sorbonne_u.components.equipments.windTurbine.mil.WindTurbineCoupledModel;
+import fr.sorbonne_u.components.equipments.windTurbine.mil.WindTurbineStateModel;
 import fr.sorbonne_u.components.equipments.windTurbine.mil.WindTurbineUserModel;
 import fr.sorbonne_u.components.utils.ExecutionType;
 import fr.sorbonne_u.components.utils.SimulationType;
@@ -65,41 +65,41 @@ public class CVMIntegrationTest extends AbstractCVM {
 	// -------------------------------------------------------------------------
 	
 	public CVMIntegrationTest() throws Exception {
-		ClocksServer.VERBOSE = false;
+		ClocksServer.VERBOSE = true;
 		ClocksServer.X_RELATIVE_POSITION = 0;
 		ClocksServer.Y_RELATIVE_POSITION = 0;
 		GlobalSupervisor.VERBOSE = true;
 		GlobalSupervisor.X_RELATIVE_POSITION = 1;
 		GlobalSupervisor.Y_RELATIVE_POSITION = 0;
-		CoordinatorComponent.VERBOSE = false;
+		CoordinatorComponent.VERBOSE = true;
 		CoordinatorComponent.X_RELATIVE_POSITION = 2;
 		CoordinatorComponent.Y_RELATIVE_POSITION = 0;
 
-		HEM.VERBOSE = false;
+		HEM.VERBOSE = true;
 		HEM.X_RELATIVE_POSITION = 0;
 		HEM.Y_RELATIVE_POSITION = 1;
 		
 		ElectricMeter.VERBOSE = true;
 		ElectricMeter.X_RELATIVE_POSITION = 3;
 		ElectricMeter.Y_RELATIVE_POSITION = 2;
-		ElectricMeterUnitTester.VERBOSE = false;
+		ElectricMeterUnitTester.VERBOSE = true;
 		ElectricMeterUnitTester.X_RELATIVE_POSITION = 3;
 		ElectricMeterUnitTester.Y_RELATIVE_POSITION = 3;
 		
-		Iron.VERBOSE = false;
+		Iron.VERBOSE = true;
 		Iron.X_RELATIVE_POSITION = 1;
 		Iron.Y_RELATIVE_POSITION = 2;
-		IronUser.VERBOSE = false;
+		IronUser.VERBOSE = true;
 		IronUser.X_RELATIVE_POSITION = 0;
 		IronUser.Y_RELATIVE_POSITION = 2;
 		
-		Fridge.VERBOSE = false;
+		Fridge.VERBOSE = true;
 		Fridge.X_RELATIVE_POSITION = 1;
 		Fridge.Y_RELATIVE_POSITION = 3;
-		FridgeUser.VERBOSE = false;
+		FridgeUser.VERBOSE = true;
 		FridgeUser.X_RELATIVE_POSITION = 0;
 		FridgeUser.Y_RELATIVE_POSITION = 3;
-		FridgeController.VERBOSE = false;
+		FridgeController.VERBOSE = true;
 		FridgeController.X_RELATIVE_POSITION = 2;
 		FridgeController.Y_RELATIVE_POSITION = 3;
 		
@@ -110,10 +110,10 @@ public class CVMIntegrationTest extends AbstractCVM {
 		WindTurbineTester.X_RELATIVE_POSITION = 2;
 		WindTurbineTester.Y_RELATIVE_POSITION = 1;
 		
-		Battery.VERBOSE = false;
+		Battery.VERBOSE = true;
 		Battery.X_RELATIVE_POSITION = 3;
 		Battery.Y_RELATIVE_POSITION = 0;
-		BatteryTester.VERBOSE = false;
+		BatteryTester.VERBOSE = true;
 		BatteryTester.X_RELATIVE_POSITION = 3;
 		BatteryTester.Y_RELATIVE_POSITION = 1;
 	}
@@ -152,7 +152,7 @@ public class CVMIntegrationTest extends AbstractCVM {
 			ironUserLocalArchitectureURI = IronUserModel.MIL_URI;
 			fridgeLocalArchitectureURI = FridgeCoupledModel.MIL_URI;
 			fridgeUserLocalArchitectureURI = FridgeUnitTestModel.MIL_URI;
-			windTurbineArchitectureURI = WindTurbineCoupledModel.MIL_URI;
+			windTurbineArchitectureURI = WindTurbineStateModel.MIL_URI;
 			windTurbineUserLocalArchitectureURI = WindTurbineUserModel.MIL_URI;
 			batteryArchitectureURI = BatteryCoupledModel.MIL_URI;
 			batteryUserLocalArchitectureURI = BatteryUserModel.MIL_URI;
@@ -165,7 +165,7 @@ public class CVMIntegrationTest extends AbstractCVM {
 			ironUserLocalArchitectureURI = IronUserModel.MIL_RT_URI;
 			fridgeLocalArchitectureURI = FridgeCoupledModel.MIL_RT_URI;
 			fridgeUserLocalArchitectureURI = FridgeUnitTestModel.MIL_RT_URI;
-			windTurbineArchitectureURI = WindTurbineCoupledModel.MIL_RT_URI;
+			windTurbineArchitectureURI = WindTurbineStateModel.MIL_RT_URI;
 			windTurbineUserLocalArchitectureURI = WindTurbineUserModel.MIL_RT_URI;
 			batteryArchitectureURI = BatteryCoupledModel.MIL_RT_URI;
 			batteryUserLocalArchitectureURI = BatteryUserModel.MIL_RT_URI;
@@ -178,7 +178,7 @@ public class CVMIntegrationTest extends AbstractCVM {
 			ironUserLocalArchitectureURI = "not-used";
 			fridgeLocalArchitectureURI = FridgeCoupledModel.SIL_URI;
 			fridgeUserLocalArchitectureURI = "not-used";
-			windTurbineArchitectureURI = WindTurbineCoupledModel.SIL_URI;
+			windTurbineArchitectureURI = WindTurbineStateModel.SIL_URI;
 			windTurbineUserLocalArchitectureURI = "not-used";
 			batteryArchitectureURI = BatteryCoupledModel.SIL_URI;
 			batteryUserLocalArchitectureURI = "not-used";

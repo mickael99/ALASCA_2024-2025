@@ -94,7 +94,6 @@ extends		AbstractCyPhyComponent
 	@Override
 	public void			execute() throws Exception
 	{
-		System.out.println("nqsijcdjdsq");
 		// First, get the clock and wait until the start time that it specifies.
 		AcceleratedAndSimulationClock ac = null;
 		ClocksServerWithSimulationOutboundPort clocksServerOutboundPort =

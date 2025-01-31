@@ -34,8 +34,8 @@ public class ExternalWindModel extends AtomicHIOA {
 
 	// In m/s
     public static double MIN_EXTERNAL_WIND_SPEED = 0.0;
-    public static double MAX_EXTERNAL_WIND_SPEED = 25.0;
-    protected static final double INITIAL_WIND_SPEED = 10.0;
+    public static double MAX_EXTERNAL_WIND_SPEED = 15.0;
+    protected static final double INITIAL_WIND_SPEED = 5.0;
 
     protected static final double PERIOD = 24.0;
     public static final double STEP = 1.0;

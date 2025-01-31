@@ -33,7 +33,7 @@ import fr.sorbonne_u.components.equipments.meter.ElectricMeter;
 import fr.sorbonne_u.components.equipments.meter.mil.ElectricMeterCoupledModel;
 import fr.sorbonne_u.components.equipments.windTurbine.WindTurbine;
 import fr.sorbonne_u.components.equipments.windTurbine.WindTurbineTester;
-import fr.sorbonne_u.components.equipments.windTurbine.mil.WindTurbineCoupledModel;
+import fr.sorbonne_u.components.equipments.windTurbine.mil.WindTurbineStateModel;
 import fr.sorbonne_u.components.equipments.windTurbine.mil.WindTurbineUserModel;
 import fr.sorbonne_u.components.equipments.windTurbine.mil.events.StartWindTurbineEvent;
 import fr.sorbonne_u.components.equipments.windTurbine.mil.events.StopWindTurbineEvent;
@@ -142,9 +142,9 @@ public class ComponentSimulationArchitectures {
 		
 		// WindTurbine
 		atomicModelDescriptors.put(
-				WindTurbineCoupledModel.MIL_URI,
+				WindTurbineStateModel.MIL_URI,
 				ComponentAtomicModelDescriptor.create(
-						WindTurbineCoupledModel.MIL_URI,
+						WindTurbineStateModel.MIL_URI,
 						(Class<? extends EventI>[]) new Class<?>[]{
 							StartWindTurbineEvent.class,
 							StopWindTurbineEvent.class},
@@ -243,7 +243,7 @@ public class ComponentSimulationArchitectures {
 		submodels.add(FridgeUnitTestModel.MIL_URI);
 		
 		// WindTurbine
-		submodels.add(WindTurbineCoupledModel.MIL_URI);
+		submodels.add(WindTurbineStateModel.MIL_URI);
 		submodels.add(WindTurbineUserModel.MIL_URI);
 		
 		// Battery
@@ -483,27 +483,27 @@ public class ComponentSimulationArchitectures {
 		connections.put(
                 new EventSource(WindTurbineUserModel.MIL_URI, StartWindTurbineEvent.class),
                 new EventSink[] {
-                        new EventSink(WindTurbineCoupledModel.MIL_URI, StartWindTurbineEvent.class)
+                        new EventSink(WindTurbineStateModel.MIL_URI, StartWindTurbineEvent.class)
                 }
         );
 
         connections.put(
                 new EventSource(WindTurbineUserModel.MIL_URI, StopWindTurbineEvent.class),
                 new EventSink[] {
-                        new EventSink(WindTurbineCoupledModel.MIL_URI, StopWindTurbineEvent.class)
+                        new EventSink(WindTurbineStateModel.MIL_URI, StopWindTurbineEvent.class)
                 }
         );
         
         // WindTurbineCoupled -> ElectricMeterCoupled
       connections.put(
-              new EventSource(WindTurbineCoupledModel.MIL_URI, StartWindTurbineEvent.class),
+              new EventSource(WindTurbineStateModel.MIL_URI, StartWindTurbineEvent.class),
               new EventSink[] {
                       new EventSink(ElectricMeterCoupledModel.MIL_URI, StartWindTurbineEvent.class)
               }
       );
       
       connections.put(
-              new EventSource(WindTurbineCoupledModel.MIL_URI, StopWindTurbineEvent.class),
+              new EventSource(WindTurbineStateModel.MIL_URI, StopWindTurbineEvent.class),
               new EventSink[] {
                       new EventSink(ElectricMeterCoupledModel.MIL_URI, StopWindTurbineEvent.class)
               }
@@ -679,9 +679,9 @@ public class ComponentSimulationArchitectures {
 		
 		// WindTurbine
 		atomicModelDescriptors.put(
-				WindTurbineCoupledModel.MIL_RT_URI,
+				WindTurbineStateModel.MIL_RT_URI,
 				RTComponentAtomicModelDescriptor.create(
-						WindTurbineCoupledModel.MIL_RT_URI,
+						WindTurbineStateModel.MIL_RT_URI,
 						(Class<? extends EventI>[]) new Class<?>[]{
 							StartWindTurbineEvent.class,
 							StopWindTurbineEvent.class},
@@ -778,7 +778,7 @@ public class ComponentSimulationArchitectures {
 		submodels.add(FridgeCoupledModel.MIL_RT_URI);
 		submodels.add(FridgeUnitTestModel.MIL_RT_URI);
 		
-		submodels.add(WindTurbineCoupledModel.MIL_RT_URI);
+		submodels.add(WindTurbineStateModel.MIL_RT_URI);
 		submodels.add(WindTurbineUserModel.MIL_RT_URI);
 		
 		submodels.add(BatteryUserModel.MIL_RT_URI);
@@ -1014,27 +1014,27 @@ public class ComponentSimulationArchitectures {
 		connections.put(
                 new EventSource(WindTurbineUserModel.MIL_RT_URI, StartWindTurbineEvent.class),
                 new EventSink[] {
-                        new EventSink(WindTurbineCoupledModel.MIL_RT_URI, StartWindTurbineEvent.class)
+                        new EventSink(WindTurbineStateModel.MIL_RT_URI, StartWindTurbineEvent.class)
                 }
         );
 
         connections.put(
                 new EventSource(WindTurbineUserModel.MIL_RT_URI, StopWindTurbineEvent.class),
                 new EventSink[] {
-                        new EventSink(WindTurbineCoupledModel.MIL_RT_URI, StopWindTurbineEvent.class)
+                        new EventSink(WindTurbineStateModel.MIL_RT_URI, StopWindTurbineEvent.class)
                 }
         );
         
         // WindTurbineCoupled -> ElectricMeterCoupled
         connections.put(
-                new EventSource(WindTurbineCoupledModel.MIL_RT_URI, StartWindTurbineEvent.class),
+                new EventSource(WindTurbineStateModel.MIL_RT_URI, StartWindTurbineEvent.class),
                 new EventSink[] {
                         new EventSink(ElectricMeterCoupledModel.MIL_RT_URI, StartWindTurbineEvent.class)
                 }
         );
         
         connections.put(
-                new EventSource(WindTurbineCoupledModel.MIL_RT_URI, StopWindTurbineEvent.class),
+                new EventSource(WindTurbineStateModel.MIL_RT_URI, StopWindTurbineEvent.class),
                 new EventSink[] {
                         new EventSink(ElectricMeterCoupledModel.MIL_RT_URI, StopWindTurbineEvent.class)
                 }
@@ -1175,9 +1175,9 @@ public class ComponentSimulationArchitectures {
 		
 		// WindTurbine
 		atomicModelDescriptors.put(
-				WindTurbineCoupledModel.SIL_URI,
+				WindTurbineStateModel.SIL_URI,
 				RTComponentAtomicModelDescriptor.create(
-						WindTurbineCoupledModel.SIL_URI,
+						WindTurbineStateModel.SIL_URI,
 						(Class<? extends EventI>[]) new Class<?>[]{
 							StartWindTurbineEvent.class,
 							StopWindTurbineEvent.class},
@@ -1247,7 +1247,7 @@ public class ComponentSimulationArchitectures {
 		Set<String> submodels = new HashSet<String>();
 		submodels.add(IronStateModel.SIL_URI);
 		submodels.add(FridgeCoupledModel.SIL_URI);
-		submodels.add(WindTurbineCoupledModel.SIL_URI);
+		submodels.add(WindTurbineStateModel.SIL_URI);
 		submodels.add(BatteryCoupledModel.SIL_URI);
 		submodels.add(ElectricMeterCoupledModel.SIL_URI);
 
@@ -1366,14 +1366,14 @@ public class ComponentSimulationArchitectures {
   
         // WindTurbineCoupled -> ElectricMeterCoupled
         connections.put(
-                new EventSource(WindTurbineCoupledModel.SIL_URI, StartWindTurbineEvent.class),
+                new EventSource(WindTurbineStateModel.SIL_URI, StartWindTurbineEvent.class),
                 new EventSink[] {
                         new EventSink(ElectricMeterCoupledModel.SIL_URI, StartWindTurbineEvent.class)
                 }
         );
         
         connections.put(
-                new EventSource(WindTurbineCoupledModel.SIL_URI, StopWindTurbineEvent.class),
+                new EventSource(WindTurbineStateModel.SIL_URI, StopWindTurbineEvent.class),
                 new EventSink[] {
                         new EventSink(ElectricMeterCoupledModel.SIL_URI, StopWindTurbineEvent.class)
                 }

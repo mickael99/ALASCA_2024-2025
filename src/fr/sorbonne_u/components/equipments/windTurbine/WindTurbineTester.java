@@ -354,11 +354,6 @@ public class WindTurbineTester extends AbstractCyPhyComponent {
 				runSILTestScenario(clock);
 			}
 		}
-		
-		if(this.currentExecutionType.isIntegrationTest()) {
-			System.out.println("j'active l'éolienne");
-			this.outboundPort.activate();
-		}
 	}
 	
 	@Override
@@ -460,7 +455,7 @@ public class WindTurbineTester extends AbstractCyPhyComponent {
 		assert	clock != null : new PreconditionException("clock != null");
 		assert	!clock.startTimeNotReached() :
 				new PreconditionException("!clock.startTimeNotReached()");
-		System.out.println("jnqjd");
+
 		this.outboundPort.activate();
 	}
 	
