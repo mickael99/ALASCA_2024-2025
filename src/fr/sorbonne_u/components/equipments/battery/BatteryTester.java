@@ -469,8 +469,6 @@ public class BatteryTester extends AbstractCyPhyComponent {
 
 		Instant simulationStartInstant = clock.getSimulationStartInstant();
 		Instant currentInstant = clock.currentInstant();
-
-		
 		
 		Instant consumeInstant = simulationStartInstant.plusSeconds(3600L);
 		assert	consumeInstant.isAfter(currentInstant) :

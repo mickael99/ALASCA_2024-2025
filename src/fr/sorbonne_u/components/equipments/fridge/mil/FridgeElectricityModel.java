@@ -298,34 +298,35 @@ public class FridgeElectricityModel extends AtomicHIOA implements FridgeOperatio
 		return ret;
 	}
 	
-	protected void updateTotalConsumption(Duration elapsedTime) {
-	    switch (this.currentState) {
-	        case ON:
-	            this.totalConsumption += Electricity.computeConsumption(
-	                elapsedTime, TENSION * IDLE_POWER);
-	            break;
-
-	        case COOLING:
-	            this.totalConsumption += Electricity.computeConsumption(
-	                elapsedTime, TENSION * this.currentCoolingPower.getValue());
-	            break;
-	         
-	        case DOOR_OPEN:
-	        	this.totalConsumption += Electricity.computeConsumption(
-		                elapsedTime, TENSION * IDLE_POWER * DOOR_OPEN_EXTRA_CONSUMPTION_FACTOR);
-		            break;
-
-	        case OFF:
-	            // No consumption if the fridge is turning off
-	            break;
-	    }
-	}
+//	protected void updateTotalConsumption(Duration elapsedTime) {
+//	    switch (this.currentState) {
+//	        case ON:
+//	            this.totalConsumption += Electricity.computeConsumption(
+//	                elapsedTime, TENSION * IDLE_POWER);
+//	            break;
+//
+//	        case COOLING:
+//	            this.totalConsumption += Electricity.computeConsumption(
+//	                elapsedTime, TENSION * this.currentCoolingPower.getValue());
+//	            break;
+//	         
+//	        case DOOR_OPEN:
+//	        	this.totalConsumption += Electricity.computeConsumption(
+//		                elapsedTime, TENSION * IDLE_POWER * DOOR_OPEN_EXTRA_CONSUMPTION_FACTOR);
+//		            break;
+//
+//	        case OFF:
+//	            // No consumption if the fridge is turning off
+//	            break;
+//	    }
+//	}
 	
 	@Override
 	public void userDefinedInternalTransition(Duration elapsedTime) {
 	    super.userDefinedInternalTransition(elapsedTime);
 
 	    Time t = this.getCurrentStateTime();
+	    
 	    
 	    switch(this.currentState) {
 		    case ON:
@@ -347,6 +348,8 @@ public class FridgeElectricityModel extends AtomicHIOA implements FridgeOperatio
 		    	 this.currentIntensity.setNewValue(0.0, t);
 		    	 break;
 	    }
+	    
+	    this.totalConsumption += currentIntensity.getValue() * elapsedTime.getSimulatedDuration(); // a enlever si ca bug
 	    
 	    StringBuffer sb = new StringBuffer("new consumption: ");
 	    sb.append(this.currentIntensity.getValue());
@@ -370,8 +373,9 @@ public class FridgeElectricityModel extends AtomicHIOA implements FridgeOperatio
 
 	    Event ce = (Event)currentEvents.get(0);
 	    assert ce instanceof FridgeEventI;
-
-	    this.updateTotalConsumption(elapsedTime);
+	    
+	    ce.executeOn(this); // a enlever si ca bug
+	    //this.updateTotalConsumption(elapsedTime);
 
 	    StringBuffer sb = new StringBuffer("execute the external event: ");
 	    sb.append(ce.eventAsString());
@@ -390,7 +394,7 @@ public class FridgeElectricityModel extends AtomicHIOA implements FridgeOperatio
 	public void endSimulation(Time endTime) {
 		Duration d = endTime.subtract(this.getCurrentStateTime());
 		
-		this.updateTotalConsumption(d);
+//		this.updateTotalConsumption(d);
 		
 		FridgeElectricityReport report = (FridgeElectricityReport)this.getFinalReport();
 		this.logMessage(report.printout(""));

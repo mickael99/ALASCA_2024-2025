@@ -72,6 +72,8 @@ public class HEM extends AbstractComponent implements RegistrationI {
 	protected final SimulationType currentSimulationType;
 	protected final long PERIOD_IN_SECONDS = 60L;
 	
+	protected static final double CRITICAL_DIFFERENCE = 300.0;
+	
 	
 	// -------------------------------------------------------------------------
 	// Constructors
@@ -102,12 +104,52 @@ public class HEM extends AbstractComponent implements RegistrationI {
 			this.scheduleTask(
 				o -> {
 					try	{
-						o.traceMessage(
-								"Electric meter current consumption: " +
-								electricMeterOutboundPort.getCurrentConsumption() + "\n");
-						o.traceMessage(
-								"Electric meter current production: " +
-								electricMeterOutboundPort.getCurrentProduction() + "\n");
+						// Get the devices production and devices consumption
+						double currentConsumption = this.electricMeterOutboundPort.
+																		getCurrentConsumption().
+																		getMeasure().getData();
+						double currentProduction = this.electricMeterOutboundPort.
+																		getCurrentProduction().
+																		getMeasure().getData();
+						double difference = Math.abs(currentProduction - currentConsumption);
+						
+						this.logMessage("current consumption -> " + currentConsumption);
+						this.logMessage("current production -> " + currentProduction);
+						
+						BATTERY_STATE batteryState = this.batteryOutboundPort.getState();
+						double batteryChargeLevel = this.batteryOutboundPort.getBatteryLevel();
+						
+						if(difference > CRITICAL_DIFFERENCE) {
+							if(currentConsumption > currentProduction) {
+//								System.out.println("trop d'energy consommé");
+								// Handle battery, the battery has to give energy to the devices
+								if(batteryState != BATTERY_STATE.CONSUME && batteryChargeLevel > 0.0)
+									this.batteryOutboundPort.setState(BATTERY_STATE.CONSUME);
+								
+								// Suspend devices to save energy
+								if(!this.controlFridgeOutboundPort.suspended())
+									this.controlFridgeOutboundPort.suspend();
+							} else {
+//								System.out.println("trop d'energy produit");
+								// Handle battery, the battery has to save energy
+								if(batteryState != BATTERY_STATE.PRODUCT && batteryChargeLevel < 1.0)
+									this.batteryOutboundPort.setState(BATTERY_STATE.PRODUCT);
+								
+								// trigger devices if there are suspended
+								if(this.controlFridgeOutboundPort.suspended())
+									this.controlFridgeOutboundPort.resume();
+							}
+						} else {
+							// Handle battery, the battery doesn't need to do anything
+							if(batteryState != BATTERY_STATE.STANDBY)
+								this.batteryOutboundPort.setState(BATTERY_STATE.STANDBY);
+							
+							// trigger devices if there are suspended
+							if(this.controlFridgeOutboundPort.suspended())
+								this.controlFridgeOutboundPort.resume();
+						}
+						
+						
 						loop(next, end, ac);
 					} catch(Exception e) {
 						e.printStackTrace();

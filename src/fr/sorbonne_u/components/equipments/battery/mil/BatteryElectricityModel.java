@@ -49,9 +49,11 @@ public class BatteryElectricityModel extends AtomicHIOA implements BatteryOperat
 	
 	protected static double PRODUCTION = 1200.0;
 	protected static double CONSUMPTION = 1000.0;
+	protected final static double TENSION = 220.0;
 	
 	protected BATTERY_STATE currentState;
 	protected double totalConsumption = 0.0;
+	protected double totalProduction = 0.0;
 	protected boolean hasChanged;
 	protected Time lastInternalTransitionTime;
 	
@@ -231,22 +233,30 @@ public class BatteryElectricityModel extends AtomicHIOA implements BatteryOperat
         
         switch (this.currentState) {
             case PRODUCT:
-                this.currentProduction.setNewValue(PRODUCTION, t);
-                this.currentConsumption.setNewValue(0.0, t);
-                
-                this.totalConsumption += PRODUCTION / 1000 * timeElapsed;
+                this.currentProduction.setNewValue(PRODUCTION / TENSION, t);
+                this.currentConsumption.setNewValue(0.0, t); 
 
                 break;
 
             case CONSUME:
             	this.currentProduction.setNewValue(0.0, t);
-                this.currentConsumption.setNewValue(CONSUMPTION, t);
-                this.totalConsumption += CONSUMPTION / 1000 * timeElapsed;
+                this.currentConsumption.setNewValue(CONSUMPTION / TENSION, t);
 
                 break;
-		default:
-			break;
+                
+			default:
+				this.currentProduction.setNewValue(0.0, t);
+				this.currentConsumption.setNewValue(0.0, t);
+				break;
         }
+        
+        System.out.println("etat -> " + this.currentState.toString());
+        System.out.println("consommation -> " + this.currentConsumption.getValue());
+        System.out.println("production -> " + this.currentProduction.getValue());
+        
+        this.totalConsumption += this.currentConsumption.getValue() * timeElapsed;
+        this.totalProduction += this.currentProduction.getValue() * timeElapsed;
+     
         
         logMessage("Current production " + this.currentProduction.getValue() + " at " + this.currentProduction.getTime()
         		+ " current consumption" + this.currentConsumption.getValue() + " at " + this.currentProduction.getTime());
@@ -325,12 +335,14 @@ public class BatteryElectricityModel extends AtomicHIOA implements BatteryOperat
 		private static final long serialVersionUID = 1L;
 		protected String modelURI;
 		protected double totalConsumption;
+		protected double totalProduction;
 
 
-		public BatteryElectricityReport(String modelURI, double totalConsumption) {
+		public BatteryElectricityReport(String modelURI, double totalConsumption, double totalProduction) {
 			super();
 			this.modelURI = modelURI;
 			this.totalConsumption = totalConsumption;
+			this.totalProduction = totalProduction;
 		}
 
 		@Override
@@ -353,6 +365,19 @@ public class BatteryElectricityModel extends AtomicHIOA implements BatteryOperat
 			ret.append(".\n");
 			ret.append(indent);
 			ret.append("---\n");
+			
+			ret.append("---\n");
+			ret.append(indent);
+			ret.append('|');
+			ret.append(this.modelURI);
+			ret.append(" report\n");
+			ret.append(indent);
+			ret.append('|');
+			ret.append("total production in kwh = ");
+			ret.append(this.totalProduction);
+			ret.append(".\n");
+			ret.append(indent);
+			ret.append("---\n");
 			return ret.toString();
 		}		
 	}
@@ -363,6 +388,6 @@ public class BatteryElectricityModel extends AtomicHIOA implements BatteryOperat
 
 	@Override
 	public SimulationReportI getFinalReport() {
-		return new BatteryElectricityReport(this.getURI(), this.totalConsumption);
+		return new BatteryElectricityReport(this.getURI(), this.totalConsumption, this.totalProduction);
 	}
 }

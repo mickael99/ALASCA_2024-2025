@@ -155,7 +155,7 @@ extends		AtomicHIOA
 			        		? 0.0 : currentFridgeIntensity.getValue()) +
 			        (this.currentBatteryConsumption == null || this.currentBatteryConsumption.getValue() == null 
 			        		? 0.0 : currentBatteryConsumption.getValue());
-
+		
 		return consumption;
 	}
 	

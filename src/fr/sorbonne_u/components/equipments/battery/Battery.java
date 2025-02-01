@@ -50,7 +50,7 @@ public class Battery extends AbstractCyPhyComponent implements BatteryI {
 	protected static final BATTERY_STATE INIT_STATE = BATTERY_STATE.STANDBY;
 	protected BATTERY_STATE currentState;
 	
-	protected static final double FAKE_BATTERY_LEVEL = 50.0;
+	public static final double FAKE_BATTERY_LEVEL = 0.5;
 	protected double batteryLevel;
 	
 	public static final String INBOUND_PORT_URI = "BATTERY_INBOUND_PORT";

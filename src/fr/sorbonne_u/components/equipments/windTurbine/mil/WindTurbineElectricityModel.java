@@ -49,6 +49,17 @@ public class WindTurbineElectricityModel extends AtomicHIOA implements WindTurbi
     protected WindTurbineState currentState;
     protected double totalProduction = 0.0;
     protected final Duration evaluationStep;
+    
+    protected double TENSION = 220;
+    
+    // Minimum wind speed to start production (m/s)
+    final double min_speed = 3.5;    
+    
+    // Rated wind speed (m/s) where maximum production is reached
+    final double rated_wind_speed = 15.0; 
+    
+    // Nominal power of the wind turbine (Watts or kW)
+    final double nominal_power = 5000.0;      
 
     @ImportedVariable(type = Double.class)
     protected Value<Double> externalWindSpeed;
@@ -188,14 +199,26 @@ public class WindTurbineElectricityModel extends AtomicHIOA implements WindTurbi
         super.userDefinedInternalTransition(elapsedTime);
 
         if(this.getState() == WindTurbineState.ACTIVE) {
-        	if (externalWindSpeed != null && externalWindSpeed.getValue() != null) {
-        		currentProduction.setNewValue(externalWindSpeed.getValue() * 5000 / 150.0, 
-						this.getCurrentStateTime());
-        	}
-        	else 
+//        	if (externalWindSpeed != null && externalWindSpeed.getValue() != null) {
+//        		currentProduction.setNewValue(externalWindSpeed.getValue() * 5000 / 150.0, 
+//						this.getCurrentStateTime());
+//        	}
+//        	else 
+//        		currentProduction.setNewValue(0.0, this.getCurrentStateTime());
+//            
+//            this.totalProduction += currentProduction.getValue() * elapsedTime.getSimulatedDuration();
+        	double windSpeed = this.externalWindSpeed.getValue();
+        	if (windSpeed < this.min_speed) {
         		currentProduction.setNewValue(0.0, this.getCurrentStateTime());
-            
-            this.totalProduction += currentProduction.getValue() * elapsedTime.getSimulatedDuration();
+            }  else if (windSpeed < this.rated_wind_speed) {
+                double factor = (windSpeed - this.min_speed) / (this.rated_wind_speed - this.min_speed);
+                
+                this.currentProduction.setNewValue(this.nominal_power * Math.pow(factor, 3) / TENSION, this.getCurrentStateTime());
+            } else {
+            	this.currentProduction.setNewValue(this.nominal_power / TENSION, this.getCurrentStateTime());
+            }
+        	
+        	this.totalProduction += currentProduction.getValue() * elapsedTime.getSimulatedDuration();
         } 
         else 
         	currentProduction.setNewValue(0.0, this.getCurrentStateTime());

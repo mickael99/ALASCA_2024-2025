@@ -44,6 +44,7 @@ public class BatteryChargeLevelModel extends AtomicHIOA implements BatteryOperat
 	
     protected static final double STEP = 0.1;
     
+    protected static final double INITIAL_BATTERY_LEVEL = 0.5;
     // Drain 15% of its total capacity in hour
 	protected static double DISCHARGE_SPEED = 0.15;
 	
@@ -182,7 +183,7 @@ public class BatteryChargeLevelModel extends AtomicHIOA implements BatteryOperat
     public void initialiseState(Time initialTime) {
         super.initialiseState(initialTime);
 
-        this.currentChargeLevel.initialise(1.0);
+        this.currentChargeLevel.initialise(INITIAL_BATTERY_LEVEL);
 
         this.getSimulationEngine().toggleDebugMode();
         logMessage("Simulations starts...\n");
@@ -215,8 +216,6 @@ public class BatteryChargeLevelModel extends AtomicHIOA implements BatteryOperat
         else if (v <= 1.0 && this.currentState == BATTERY_STATE.PRODUCT) 
             this.charge(elapsedTime);
      
-        this.currentChargeLevel.setNewValue(this.currentChargeLevel.getValue(), getCurrentStateTime());
-
         // Tracing
         String stateString;
         if(this.currentState == BATTERY_STATE.STANDBY)
