@@ -11,6 +11,7 @@ import fr.sorbonne_u.devs_simulation.exceptions.NeoSim4JavaException;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ExportedVariable;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ImportedVariable;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ModelExportedVariable;
+import fr.sorbonne_u.devs_simulation.hioa.annotations.ModelImportedVariable;
 import fr.sorbonne_u.devs_simulation.hioa.models.AtomicHIOA;
 import fr.sorbonne_u.devs_simulation.hioa.models.vars.Value;
 import fr.sorbonne_u.devs_simulation.models.annotations.ModelExternalEvents;
@@ -20,6 +21,7 @@ import fr.sorbonne_u.devs_simulation.models.time.Duration;
 import fr.sorbonne_u.devs_simulation.models.time.Time;
 import fr.sorbonne_u.devs_simulation.simulators.interfaces.AtomicSimulatorI;
 import fr.sorbonne_u.devs_simulation.utils.InvariantChecking;
+import fr.sorbonne_u.devs_simulation.utils.Pair;
 import fr.sorbonne_u.devs_simulation.utils.StandardLogger;
 
 @ModelExternalEvents(imported = {
@@ -27,7 +29,7 @@ import fr.sorbonne_u.devs_simulation.utils.StandardLogger;
         StopGeneratorEvent.class
 })
 @ModelExportedVariable(name = "currentProduction", type = Double.class)
-@ModelExportedVariable(name = "currentFuelLevel", type = Double.class)
+@ModelImportedVariable(name = "currentFuelLevel", type = Double.class)
 public class GeneratorElectricityModel extends AtomicHIOA implements GeneratorOperationI {
 
     private static final long serialVersionUID = 1L;
@@ -64,11 +66,11 @@ public class GeneratorElectricityModel extends AtomicHIOA implements GeneratorOp
                 GeneratorElectricityModel.class,
                 m,
                 "currentProduction >= 0.0");
-        ret &= InvariantChecking.checkGlassBoxInvariant(
-                !m.currentFuelLevel.isInitialised() || m.currentFuelLevel.getValue() >= 0.0,
-                GeneratorElectricityModel.class,
-                m,
-                "currentFuelLevel >= 0.0");
+//        ret &= InvariantChecking.checkGlassBoxInvariant(
+//                !m.currentFuelLevel.isInitialised() || m.currentFuelLevel.getValue() >= 0.0,
+//                GeneratorElectricityModel.class,
+//                m,
+//                "currentFuelLevel >= 0.0");
         ret &= InvariantChecking.checkGlassBoxInvariant(
                 PRODUCTION >= 0.0,
                 GeneratorElectricityModel.class,
@@ -177,6 +179,36 @@ public class GeneratorElectricityModel extends AtomicHIOA implements GeneratorOp
         assert blackBoxInvariants(this) :
                 new NeoSim4JavaException("GeneratorElectricityModel.blackBoxInvariants(this)");
 	}
+
+//    public void initialiseState(Time initialTime){
+//        super.initialiseState(initialTime);
+//
+//        this.isRunning = false;
+//        this.productionHasChanged = false;
+//
+//        this.getSimulationEngine().toggleDebugMode();
+//        this.logMessage("simulation begins.\n");
+//
+//        assert glassBoxInvariants(this) :
+//                new NeoSim4JavaException("GeneratorElectricityModel.glassBoxInvariants(this)");
+//        assert blackBoxInvariants(this) :
+//                new NeoSim4JavaException("GeneratorElectricityModel.blackBoxInvariants(this)");
+//    }
+//
+//    @Override
+//    public boolean		useFixpointInitialiseVariables()
+//    {
+//        return true;
+//    }
+//
+//    public Pair<Integer, Integer> fixpointInitialiseVariables(int modelId, Object globalState) {
+//        Pair<Integer, Integer> ret = null;
+//
+//        if(!this.currentProduction.isInitialised() || !this.currentProduction.) {
+//            this.currentProduction.setNewValue(0.0, this.getCurrentStateTime());
+//            ret = new Pair<Integer, Integer>(1, 0);
+//        }
+//    }
     
     @Override
     public ArrayList<EventI> output() {
