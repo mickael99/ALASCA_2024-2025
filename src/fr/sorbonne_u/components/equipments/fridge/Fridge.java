@@ -59,6 +59,9 @@ import fr.sorbonne_u.components.equipments.fridge.sil.FridgeActuatorCI;
 import fr.sorbonne_u.components.equipments.fridge.sil.FridgeSensorDataCI;
 import fr.sorbonne_u.components.equipments.fridge.sil.connectors.FridgeActuatorInboundPort;
 import fr.sorbonne_u.components.equipments.fridge.sil.connectors.FridgeSensorDataInboundPort;
+import fr.sorbonne_u.components.equipments.hem.HEM;
+import fr.sorbonne_u.components.equipments.hem.registration.RegistrationCI;
+import fr.sorbonne_u.components.equipments.hem.registration.RegistrationConnector;
 import fr.sorbonne_u.components.equipments.hem.registration.RegistrationOutboundPort;
 import fr.sorbonne_u.components.equipments.fridge.mil.LocalSimulationArchitectures;
 
@@ -68,7 +71,7 @@ import fr.sorbonne_u.components.equipments.fridge.mil.LocalSimulationArchitectur
 							  FridgeUserCI.class,
 							  FridgeSensorDataCI.FridgeSensorOfferedPullCI.class, 
 							  FridgeActuatorCI.class})
-@RequiredInterfaces(required = {/*RegistrationCI.class, */DataOfferedCI.PushCI.class, ClocksServerWithSimulationCI.class})
+@RequiredInterfaces(required = {RegistrationCI.class, DataOfferedCI.PushCI.class, ClocksServerWithSimulationCI.class})
 public class Fridge extends AbstractCyPhyComponent implements FridgeInternalControlI, FridgeUserI {
 	
 	
@@ -407,6 +410,11 @@ public class Fridge extends AbstractCyPhyComponent implements FridgeInternalCont
 		
 		this.actuatorInboundPort = new FridgeActuatorInboundPort(fridgeActuatorInboundPortURI, this);
 		this.actuatorInboundPort.publishPort();
+		
+		if(this.currentExecutionType.isIntegrationTest()) {
+			this.registrationPort = new RegistrationOutboundPort(this);
+			this.registrationPort.publishPort();
+		}
 
 		//Create simulation architecture
 		switch (this.currentSimulationType) {
@@ -548,21 +556,19 @@ public class Fridge extends AbstractCyPhyComponent implements FridgeInternalCont
 		} catch (Exception e) {
 			throw new ComponentStartException(e) ;
 		}		
+		// Registration
+		if(this.currentExecutionType.isIntegrationTest()) {
+			try {
+				this.doPortConnection(
+						this.registrationPort.getPortURI(),
+						HEM.URI_REGISTRATION_INBOUND_PORT,
+						RegistrationConnector.class.getCanonicalName());
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		
-		
-//		super.start();
-//
-//		try {
-//			// Registration
-//			if(this.isHEMConnectionRequired) {
-//				this.doPortConnection(
-//						this.registrationPort.getPortURI(),
-//						HEM.URI_REGISTRATION_INBOUND_PORT,
-//						RegistrationConnector.class.getCanonicalName());
-//			}
-//		} catch (Exception e) {
-//			throw new ComponentStartException(e) ;
-//		}
 	}
 	
 	@Override
@@ -610,8 +616,8 @@ public class Fridge extends AbstractCyPhyComponent implements FridgeInternalCont
 			}
 		}
 		
-//		if (this.isHEMConnectionRequired && TEST_REGISTRATION) 
-//			this.runAllRegistrationTest();
+		if(this.currentExecutionType.isIntegrationTest())
+			this.registrationPort.register(URI, this.externalInbound.getPortURI(), XML_PATH);
 	}
 	
 	@Override
@@ -624,9 +630,8 @@ public class Fridge extends AbstractCyPhyComponent implements FridgeInternalCont
 			this.sensorInboundPort.unpublishPort();
 			this.actuatorInboundPort.unpublishPort();
 			
-			// Registration
-//			if(this.isHEMConnectionRequired)
-//				this.registrationPort.unpublishPort();
+			if(this.currentExecutionType.isIntegrationTest()) 
+				this.registrationPort.unpublishPort();
 			
 		} catch (Exception e) {
 			throw new ComponentShutdownException(e) ;
@@ -636,9 +641,8 @@ public class Fridge extends AbstractCyPhyComponent implements FridgeInternalCont
 	
 	@Override
 	public synchronized void finalise() throws Exception {
-		// Registration
-//		if(this.isHEMConnectionRequired)
-//			this.doPortDisconnection(this.registrationPort.getPortURI());
+		if(this.currentExecutionType.isIntegrationTest())
+			this.doPortDisconnection(this.registrationPort.getPortURI());
 		
 		super.finalise();
 	}

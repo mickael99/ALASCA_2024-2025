@@ -53,7 +53,7 @@ public class CVMIntegrationTest extends AbstractCVM {
 	public static double ACCELERATION_FACTOR = 360.0;
 
 	public static ExecutionType	CURRENT_EXECUTION_TYPE = ExecutionType.INTEGRATION_TEST;
-	public static SimulationType CURRENT_SIMULATION_TYPE = SimulationType.SIL_SIMULATION;
+	public static SimulationType CURRENT_SIMULATION_TYPE = SimulationType.MIL_SIMULATION;
 
 	public static String CLOCK_URI = "hem-clock";
 	public static String START_INSTANT = "2023-11-22T00:00:00.00Z";
@@ -375,7 +375,6 @@ public class CVMIntegrationTest extends AbstractCVM {
 				
 			default:
 			}
-			System.out.println("starting for " + executionDurationInMillis);
 			cvm.startStandardLifeCycle(executionDurationInMillis);
 			Thread.sleep(END_SLEEP_DURATION);
 			System.exit(0);

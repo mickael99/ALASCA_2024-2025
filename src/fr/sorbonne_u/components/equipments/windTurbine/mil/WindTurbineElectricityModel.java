@@ -223,9 +223,6 @@ public class WindTurbineElectricityModel extends AtomicHIOA implements WindTurbi
         
         this.totalProduction += Electricity.computeProduction(elapsedTime, this.currentProduction.getValue() * TENSION);
 
-//        System.out.println("state -> " + this.currentState);
-//        System.out.println("production -> " + this.currentProduction.getValue());
-//        System.out.println("total production -> " + this.totalProduction);
         logMessage("Current production " + currentProduction.getValue() + " at " + currentProduction.getTime() + "\n");
     }
 	
@@ -237,7 +234,6 @@ public class WindTurbineElectricityModel extends AtomicHIOA implements WindTurbi
 
         assert currentEvent instanceof AbstractWindTurbineEvent;
         currentEvent.executeOn(this);
-        System.out.println("action externe");
 
         super.userDefinedExternalTransition(elapsedTime);
         

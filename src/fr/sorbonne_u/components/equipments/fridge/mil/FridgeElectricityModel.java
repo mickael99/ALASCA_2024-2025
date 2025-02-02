@@ -304,7 +304,6 @@ public class FridgeElectricityModel extends AtomicHIOA implements FridgeOperatio
 
 	    Time t = this.getCurrentStateTime();
 	    
-	    System.out.println("etat du frigo -> " + this.currentState);
 	    switch(this.currentState) {
 		    case ON:
 		    	 this.currentIntensity.setNewValue(FridgeElectricityModel.IDLE_POWER / 
@@ -325,10 +324,6 @@ public class FridgeElectricityModel extends AtomicHIOA implements FridgeOperatio
 		    	 this.currentIntensity.setNewValue(0.0, t);
 		    	 break;
 	    }
-	    
-//	    System.out.println("état du frigo -> " + this.currentState.toString());
-//	    System.out.println("intensité -> " + this.currentIntensity.getValue());
-//	    System.out.println("cooling power " + this.currentCoolingPower);
 	    
 	    StringBuffer sb = new StringBuffer("new consumption: ");
 	    sb.append(this.currentIntensity.getValue());
