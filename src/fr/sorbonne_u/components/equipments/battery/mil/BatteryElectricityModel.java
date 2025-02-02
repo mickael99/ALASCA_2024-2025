@@ -9,6 +9,7 @@ import fr.sorbonne_u.components.equipments.battery.BatteryI.BATTERY_STATE;
 import fr.sorbonne_u.components.equipments.battery.mil.events.SetProductBatteryEvent;
 import fr.sorbonne_u.components.equipments.battery.mil.events.SetStandByBatteryEvent;
 import fr.sorbonne_u.components.equipments.hem.mil.HEM_ReportI;
+import fr.sorbonne_u.components.utils.Electricity;
 import fr.sorbonne_u.components.equipments.battery.mil.events.AbstractBatteryEvent;
 import fr.sorbonne_u.components.equipments.battery.mil.events.SetConsumeBatteryEvent;
 import fr.sorbonne_u.devs_simulation.exceptions.MissingRunParameterException;
@@ -52,16 +53,16 @@ public class BatteryElectricityModel extends AtomicHIOA implements BatteryOperat
 	protected final static double TENSION = 220.0;
 	
 	protected BATTERY_STATE currentState;
-	protected double totalConsumption = 0.0;
-	protected double totalProduction = 0.0;
+	protected double totalConsumption = 0.0; // KW.H
+	protected double totalProduction = 0.0; // KW.H
 	protected boolean hasChanged;
 	protected Time lastInternalTransitionTime;
 	
 	@ExportedVariable(type = Double.class)
-	protected final Value<Double> currentProduction = new Value<Double>(this);
+	protected final Value<Double> currentProduction = new Value<Double>(this); // Ampere
 
     @ExportedVariable(type = Double.class)
-    protected final Value<Double> currentConsumption = new Value<Double>(this);
+    protected final Value<Double> currentConsumption = new Value<Double>(this); // Ampere
 	
     
     // -------------------------------------------------------------------------
@@ -228,8 +229,6 @@ public class BatteryElectricityModel extends AtomicHIOA implements BatteryOperat
         super.userDefinedInternalTransition(elapsedTime);
         
         Time t = this.getCurrentStateTime();
-        double timeElapsed = t.subtract(this.lastInternalTransitionTime).getSimulatedDuration();
-        this.lastInternalTransitionTime = t;
         
         switch (this.currentState) {
             case PRODUCT:
@@ -249,17 +248,9 @@ public class BatteryElectricityModel extends AtomicHIOA implements BatteryOperat
 				this.currentConsumption.setNewValue(0.0, t);
 				break;
         }
-        
-        System.out.println("etat -> " + this.currentState.toString());
-        System.out.println("consommation -> " + this.currentConsumption.getValue());
-        System.out.println("production -> " + this.currentProduction.getValue());
-        
-        this.totalConsumption += this.currentConsumption.getValue() * timeElapsed;
-        this.totalProduction += this.currentProduction.getValue() * timeElapsed;
      
-        
-        logMessage("Current production " + this.currentProduction.getValue() + " at " + this.currentProduction.getTime()
-        		+ " current consumption" + this.currentConsumption.getValue() + " at " + this.currentProduction.getTime());
+        logMessage("Current production " + this.currentProduction.getValue() + " ampere(s) at " + this.currentProduction.getTime()
+        		+ " current consumption" + this.currentConsumption.getValue() + " ampere(s) at " + this.currentConsumption.getTime());
         
         assert	glassBoxInvariants(this) :
 			new NeoSim4JavaException(
@@ -275,6 +266,16 @@ public class BatteryElectricityModel extends AtomicHIOA implements BatteryOperat
         assert currentEvents != null && currentEvents.size() == 1;
         Event currentEvent = (Event) currentEvents.get(0);
 
+        this.totalConsumption +=
+				Electricity.computeConsumption(
+									elapsedTime,
+									TENSION * this.currentConsumption.getValue());
+        
+        this.totalProduction +=
+				Electricity.computeProduction(
+									elapsedTime,
+									TENSION * this.currentProduction.getValue());
+        
         assert currentEvent instanceof AbstractBatteryEvent;
         currentEvent.executeOn(this);
         
@@ -290,6 +291,16 @@ public class BatteryElectricityModel extends AtomicHIOA implements BatteryOperat
 	 
 	@Override
     public void endSimulation(Time endTime) {
+		Duration d = endTime.subtract(this.getCurrentStateTime());
+		this.totalConsumption +=
+				Electricity.computeConsumption(
+									d,
+									TENSION * this.currentConsumption.getValue());
+		this.totalProduction +=
+				Electricity.computeProduction(
+									d,
+									TENSION * this.currentProduction.getValue());
+		
 		 BatteryElectricityReport report = (BatteryElectricityReport)this.getFinalReport();
 		 logMessage(report.printout(""));
 		 

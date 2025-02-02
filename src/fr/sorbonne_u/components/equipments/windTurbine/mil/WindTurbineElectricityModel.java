@@ -10,6 +10,7 @@ import fr.sorbonne_u.components.equipments.windTurbine.WindTurbineI.WindTurbineS
 import fr.sorbonne_u.components.equipments.windTurbine.mil.events.AbstractWindTurbineEvent;
 import fr.sorbonne_u.components.equipments.windTurbine.mil.events.StartWindTurbineEvent;
 import fr.sorbonne_u.components.equipments.windTurbine.mil.events.StopWindTurbineEvent;
+import fr.sorbonne_u.components.utils.Electricity;
 import fr.sorbonne_u.devs_simulation.exceptions.MissingRunParameterException;
 import fr.sorbonne_u.devs_simulation.exceptions.NeoSim4JavaException;
 import fr.sorbonne_u.devs_simulation.hioa.annotations.ExportedVariable;
@@ -59,7 +60,9 @@ public class WindTurbineElectricityModel extends AtomicHIOA implements WindTurbi
     final double rated_wind_speed = 15.0; 
     
     // Nominal power of the wind turbine (Watts or kW)
-    final double nominal_power = 5000.0;      
+    final double nominal_power = 5000.0;     
+    
+    protected Time lastInternalTransitionTime;
 
     @ImportedVariable(type = Double.class)
     protected Value<Double> externalWindSpeed;
@@ -197,7 +200,7 @@ public class WindTurbineElectricityModel extends AtomicHIOA implements WindTurbi
 	@Override
     public void userDefinedInternalTransition(Duration elapsedTime) {
         super.userDefinedInternalTransition(elapsedTime);
-
+        
         if(this.getState() == WindTurbineState.ACTIVE) {
 //        	if (externalWindSpeed != null && externalWindSpeed.getValue() != null) {
 //        		currentProduction.setNewValue(externalWindSpeed.getValue() * 5000 / 150.0, 
@@ -217,11 +220,14 @@ public class WindTurbineElectricityModel extends AtomicHIOA implements WindTurbi
             } else {
             	this.currentProduction.setNewValue(this.nominal_power / TENSION, this.getCurrentStateTime());
             }
-        	
+            
         	this.totalProduction += currentProduction.getValue() * elapsedTime.getSimulatedDuration();
         } 
         else 
         	currentProduction.setNewValue(0.0, this.getCurrentStateTime());
+        
+        this.totalProduction += Electricity.computeProduction(elapsedTime, this.currentProduction.getValue() * TENSION);
+
         
         logMessage("Current production " + currentProduction.getValue() + " at " + currentProduction.getTime() + "\n");
     }
@@ -247,8 +253,11 @@ public class WindTurbineElectricityModel extends AtomicHIOA implements WindTurbi
 	 
 	@Override
     public void endSimulation(Time endTime) {
-		WindTurbineReport report = (WindTurbineReport)this.getFinalReport();
-		logMessage(report.printout(""));
+		Duration d = endTime.subtract(this.getCurrentStateTime());
+		this.totalProduction += Electricity.computeProduction(
+        	    d,
+        	    TENSION * this.currentProduction.getValue()
+        	);
 		 
 		logMessage("simulations ends!\n");
 		super.endSimulation(endTime);
