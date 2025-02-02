@@ -13,70 +13,81 @@ import fr.sorbonne_u.exceptions.PreconditionException;
 
 import java.util.concurrent.TimeUnit;
 
-public class SmartLightingSensorDataInboundPort extends AbstractDataInboundPort implements SmartLightingSensorDataCI.SmartLightingSensorOfferedPullCI {
-    // ------------------------------------------------------------------------
-    // Constants
-    // ------------------------------------------------------------------------
+public class SmartLightingSensorDataInboundPort extends AbstractDataInboundPort
+    implements SmartLightingSensorDataCI.SmartLightingSensorOfferedPullCI {
+  // ------------------------------------------------------------------------
+  // Constants
+  // ------------------------------------------------------------------------
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    // ------------------------------------------------------------------------
-    // Constructors
-    // ------------------------------------------------------------------------
+  // ------------------------------------------------------------------------
+  // Constructors
+  // ------------------------------------------------------------------------
 
-    public SmartLightingSensorDataInboundPort(ComponentI owner) throws Exception {
-        super(SmartLightingSensorDataCI.SmartLightingSensorOfferedPullCI.class, DataOfferedCI.PushCI.class, owner);
-        assert owner instanceof SmartLightingInternalControlI :
-                new PreconditionException("owner instanceof SmartLightingInternalControlI");
-    }
+  public SmartLightingSensorDataInboundPort(ComponentI owner) throws Exception {
+    super(
+        SmartLightingSensorDataCI.SmartLightingSensorOfferedPullCI.class,
+        DataOfferedCI.PushCI.class,
+        owner);
+    assert owner instanceof SmartLightingInternalControlI
+        : new PreconditionException("owner instanceof SmartLightingInternalControlI");
+  }
 
-    public SmartLightingSensorDataInboundPort(String uri, ComponentI owner) throws Exception {
-        super(uri, SmartLightingSensorDataCI.SmartLightingSensorOfferedPullCI.class, DataOfferedCI.PushCI.class, owner);
-        assert owner instanceof SmartLightingInternalControlI :
-                new PreconditionException("owner instanceof SmartLightingInternalControlI");
-    }
+  public SmartLightingSensorDataInboundPort(String uri, ComponentI owner) throws Exception {
+    super(
+        uri,
+        SmartLightingSensorDataCI.SmartLightingSensorOfferedPullCI.class,
+        DataOfferedCI.PushCI.class,
+        owner);
+    assert owner instanceof SmartLightingInternalControlI
+        : new PreconditionException("owner instanceof SmartLightingInternalControlI");
+  }
 
-    // ------------------------------------------------------------------------
-    // Methods
-    // ------------------------------------------------------------------------
+  // ------------------------------------------------------------------------
+  // Methods
+  // ------------------------------------------------------------------------
 
-    @Override
-    public SmartLightingSensorData<Measure<Boolean>> automaticModePullSensor() throws Exception {
-        return this.getOwner().handleRequest(
-                owner -> {
-                    return ((SmartLighting) owner).automaticModePullSensor();
-                });
-    }
+  @Override
+  public SmartLightingSensorData<Measure<Boolean>> automaticModePullSensor() throws Exception {
+    return this.getOwner()
+        .handleRequest(
+            owner -> {
+              return ((SmartLighting) owner).automaticModePullSensor();
+            });
+  }
 
-    public SmartLightingSensorData<Measure<Double>> targetIlluminationPullSensor() throws Exception {
-        return this.getOwner().handleRequest(
-                owner -> {
-                    return ((SmartLighting) owner).targetIlluminationPullSensor();
-                });
-    }
+  public SmartLightingSensorData<Measure<Double>> targetIlluminationPullSensor() throws Exception {
+    return this.getOwner()
+        .handleRequest(
+            owner -> {
+              return ((SmartLighting) owner).targetIlluminationPullSensor();
+            });
+  }
 
-    public SmartLightingSensorData<Measure<Double>> currentIlluminationPullSensor() throws Exception {
-        return this.getOwner().handleRequest(
-                owner -> {
-                    return ((SmartLighting) owner).currentIlluminationPullSensor();
-                });
-    }
+  public SmartLightingSensorData<Measure<Double>> currentIlluminationPullSensor() throws Exception {
+    return this.getOwner()
+        .handleRequest(
+            owner -> {
+              return ((SmartLighting) owner).currentIlluminationPullSensor();
+            });
+  }
 
-    public void startIlluminationPushSensor(long controlPeriod, java.util.concurrent.TimeUnit tu) throws Exception {
-        this.getOwner().handleRequest(
-                owner -> {
-                    ((SmartLighting) owner).startIlluminationPushSensor(controlPeriod, tu);
-                    return null;
-                });
-    }
+  public void startIlluminationPushSensor(long controlPeriod, java.util.concurrent.TimeUnit tu)
+      throws Exception {
+    this.getOwner()
+        .handleRequest(
+            owner -> {
+              ((SmartLighting) owner).startIlluminationPushSensor(controlPeriod, tu);
+              return null;
+            });
+  }
 
-    @Override
-    public DataOfferedCI.DataI get() throws Exception {
-        return new SmartLightingSensorData<SmartLightingCompoundMeasure>(
-                new SmartLightingCompoundMeasure(
-                        this.targetIlluminationPullSensor().getMeasure(),
-                        this.currentIlluminationPullSensor().getMeasure()
-                )
-        );
-    }
+  @Override
+  public DataOfferedCI.DataI get() throws Exception {
+    return new SmartLightingSensorData<SmartLightingCompoundMeasure>(
+        new SmartLightingCompoundMeasure(
+            this.targetIlluminationPullSensor().getMeasure(),
+            this.currentIlluminationPullSensor().getMeasure()));
+  }
 }
