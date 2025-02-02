@@ -1,6 +1,6 @@
-package fr.sorbonne_u.components.equipments.smartLightingE3;
+package fr.sorbonne_u.components.equipments.smartLighting;
 
-import fr.sorbonne_u.components.equipments.smartLightingE3.measures.SmartLightingSensorData;
+import fr.sorbonne_u.components.equipments.smartLighting.measures.SmartLightingSensorData;
 import fr.sorbonne_u.components.interfaces.DataOfferedCI;
 import fr.sorbonne_u.components.interfaces.DataRequiredCI;
 import fr.sorbonne_u.components.interfaces.OfferedCI;

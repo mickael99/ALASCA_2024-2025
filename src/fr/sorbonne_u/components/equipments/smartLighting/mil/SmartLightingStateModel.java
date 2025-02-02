@@ -1,7 +1,7 @@
-package fr.sorbonne_u.components.equipments.smartLightingE3.mil;
+package fr.sorbonne_u.components.equipments.smartLighting.mil;
 
 import fr.sorbonne_u.components.cyphy.plugins.devs.AtomicSimulatorPlugin;
-import fr.sorbonne_u.components.equipments.smartLightingE3.mil.events.*;
+import fr.sorbonne_u.components.equipments.smartLighting.mil.events.*;
 import fr.sorbonne_u.devs_simulation.exceptions.MissingRunParameterException;
 import fr.sorbonne_u.devs_simulation.exceptions.NeoSim4JavaException;
 import fr.sorbonne_u.devs_simulation.models.AtomicModel;
@@ -20,14 +20,6 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @ModelExternalEvents(
-    imported = {
-      TurnOffSmartLighting.class,
-      IncreaseLighting.class,
-      DecreaseLighting.class,
-      StopAdjustingLighting.class,
-      TurnOnSmartLighting.class,
-      SetPowerSmartLighting.class
-    },
     exported = {
       TurnOffSmartLighting.class,
       IncreaseLighting.class,
@@ -35,7 +27,16 @@ import java.util.concurrent.TimeUnit;
       StopAdjustingLighting.class,
       TurnOnSmartLighting.class,
       SetPowerSmartLighting.class
+    },
+    imported = {
+      TurnOffSmartLighting.class,
+      IncreaseLighting.class,
+      DecreaseLighting.class,
+      StopAdjustingLighting.class,
+      TurnOnSmartLighting.class,
+      SetPowerSmartLighting.class
     })
+// ------------------------------------------------------------------------------------------------------
 public class SmartLightingStateModel extends AtomicModel implements SmartLightingOperationI {
   // -------------------------------------------------------------------------
   // Inner classes and types

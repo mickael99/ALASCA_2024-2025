@@ -1,4 +1,4 @@
-package fr.sorbonne_u.components.equipments.smartLightingE3;
+package fr.sorbonne_u.components.equipments.smartLighting;
 
 import fr.sorbonne_u.components.interfaces.DataRequiredCI;
 

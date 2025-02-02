@@ -13,9 +13,8 @@ public class CVMUnitTest extends AbstractCVM {
         SmartLightingTester.VERBOSE = true;
         SmartLightingTester.X_RELATIVE_POSITION = 0;
         SmartLightingTester.Y_RELATIVE_POSITION = 0;
-        SmartLighting.VERBOSE = true;
-        SmartLighting.X_RELATIVE_POSITION = 1;
-        SmartLighting.Y_RELATIVE_POSITION = 0;
+        fr.sorbonne_u.components.equipments.smartLighting.SmartLighting.X_RELATIVE_POSITION = 1;
+        fr.sorbonne_u.components.equipments.smartLighting.SmartLighting.Y_RELATIVE_POSITION = 0;
     }
 
     // -------------------------------------------------------------------------
@@ -23,7 +22,7 @@ public class CVMUnitTest extends AbstractCVM {
     // -------------------------------------------------------------------------
 
     /**
-     * @see fr.sorbonne_u.components.cvm.AbstractCVM#deploy()
+     * @see AbstractCVM#deploy()
      */
     @Override
     public void deploy() throws Exception {

@@ -1,17 +1,15 @@
-package fr.sorbonne_u.components.equipments.smartLightingE3.connections;
+package fr.sorbonne_u.components.equipments.smartLighting.connections;
 
 import fr.sorbonne_u.components.ComponentI;
-import fr.sorbonne_u.components.equipments.smartLightingE3.SmartLighting;
-import fr.sorbonne_u.components.equipments.smartLightingE3.SmartLightingSensorDataCI;
-import fr.sorbonne_u.components.equipments.smartLightingE3.interfaces.SmartLightingInternalControlI;
-import fr.sorbonne_u.components.equipments.smartLightingE3.measures.SmartLightingCompoundMeasure;
-import fr.sorbonne_u.components.equipments.smartLightingE3.measures.SmartLightingSensorData;
+import fr.sorbonne_u.components.equipments.smartLighting.SmartLighting;
+import fr.sorbonne_u.components.equipments.smartLighting.SmartLightingSensorDataCI;
+import fr.sorbonne_u.components.equipments.smartLighting.interfaces.SmartLightingInternalControlI;
+import fr.sorbonne_u.components.equipments.smartLighting.measures.SmartLightingCompoundMeasure;
+import fr.sorbonne_u.components.equipments.smartLighting.measures.SmartLightingSensorData;
 import fr.sorbonne_u.components.interfaces.DataOfferedCI;
 import fr.sorbonne_u.components.ports.AbstractDataInboundPort;
 import fr.sorbonne_u.components.utils.Measure;
 import fr.sorbonne_u.exceptions.PreconditionException;
-
-import java.util.concurrent.TimeUnit;
 
 public class SmartLightingSensorDataInboundPort extends AbstractDataInboundPort
     implements SmartLightingSensorDataCI.SmartLightingSensorOfferedPullCI {

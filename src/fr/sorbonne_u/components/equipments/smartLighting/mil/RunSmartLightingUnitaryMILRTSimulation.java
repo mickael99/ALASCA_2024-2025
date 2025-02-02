@@ -1,15 +1,13 @@
-package fr.sorbonne_u.components.equipments.smartLightingE3.mil;
+package fr.sorbonne_u.components.equipments.smartLighting.mil;
 
-import fr.sorbonne_u.components.equipments.smartLightingE3.mil.events.*;
-import fr.sorbonne_u.devs_simulation.architectures.Architecture;
+import fr.sorbonne_u.components.equipments.smartLighting.mil.events.*;
+import fr.sorbonne_u.devs_simulation.architectures.ArchitectureI;
 import fr.sorbonne_u.devs_simulation.architectures.RTArchitecture;
-import fr.sorbonne_u.devs_simulation.hioa.architectures.AtomicHIOA_Descriptor;
 import fr.sorbonne_u.devs_simulation.hioa.architectures.RTAtomicHIOA_Descriptor;
 import fr.sorbonne_u.devs_simulation.hioa.architectures.RTCoupledHIOA_Descriptor;
 import fr.sorbonne_u.devs_simulation.hioa.models.vars.VariableSink;
 import fr.sorbonne_u.devs_simulation.hioa.models.vars.VariableSource;
 import fr.sorbonne_u.devs_simulation.models.architectures.AbstractAtomicModelDescriptor;
-import fr.sorbonne_u.devs_simulation.models.architectures.AtomicModelDescriptor;
 import fr.sorbonne_u.devs_simulation.models.architectures.CoupledModelDescriptor;
 import fr.sorbonne_u.devs_simulation.models.architectures.RTAtomicModelDescriptor;
 import fr.sorbonne_u.devs_simulation.models.events.EventSink;
@@ -68,7 +66,8 @@ public class RunSmartLightingUnitaryMILRTSimulation {
               SmartLightingUnitTesterModel.class,
               SmartLightingStateModel.MIL_RT_URI,
               TimeUnit.HOURS,
-              null));
+              null,
+              ACCELERATION_FACTOR));
 
       Map<String, CoupledModelDescriptor> coupledModelDescriptors = new HashMap<>();
 
@@ -106,6 +105,11 @@ public class RunSmartLightingUnitaryMILRTSimulation {
             new EventSink(SmartLightingStateModel.MIL_RT_URI, DecreaseLighting.class)
           });
       connections.put(
+          new EventSource(SmartLightingUnitTesterModel.MIL_RT_URI, StopAdjustingLighting.class),
+          new EventSink[] {
+            new EventSink(SmartLightingStateModel.MIL_RT_URI, StopAdjustingLighting.class)
+          });
+      connections.put(
           new EventSource(SmartLightingStateModel.MIL_RT_URI, TurnOnSmartLighting.class),
           new EventSink[] {
             new EventSink(SmartLightingElectricityModel.MIL_RT_URI, TurnOnSmartLighting.class)
@@ -113,7 +117,8 @@ public class RunSmartLightingUnitaryMILRTSimulation {
       connections.put(
           new EventSource(SmartLightingStateModel.MIL_RT_URI, TurnOffSmartLighting.class),
           new EventSink[] {
-            new EventSink(SmartLightingElectricityModel.MIL_RT_URI, TurnOffSmartLighting.class)
+            new EventSink(SmartLightingElectricityModel.MIL_RT_URI, TurnOffSmartLighting.class),
+            new EventSink(SmartLightingIlluminanceModel.MIL_RT_URI, TurnOffSmartLighting.class)
           });
       connections.put(
           new EventSource(SmartLightingStateModel.MIL_RT_URI, SetPowerSmartLighting.class),
@@ -132,6 +137,12 @@ public class RunSmartLightingUnitaryMILRTSimulation {
           new EventSink[] {
             new EventSink(SmartLightingElectricityModel.MIL_RT_URI, DecreaseLighting.class),
             new EventSink(SmartLightingIlluminanceModel.MIL_RT_URI, DecreaseLighting.class)
+          });
+      connections.put(
+          new EventSource(SmartLightingStateModel.MIL_RT_URI, StopAdjustingLighting.class),
+          new EventSink[] {
+            new EventSink(SmartLightingElectricityModel.MIL_RT_URI, StopAdjustingLighting.class),
+            new EventSink(SmartLightingIlluminanceModel.MIL_RT_URI, StopAdjustingLighting.class)
           });
 
       Map<VariableSource, VariableSink[]> bindings = new HashMap<VariableSource, VariableSink[]>();
@@ -158,7 +169,7 @@ public class RunSmartLightingUnitaryMILRTSimulation {
               bindings,
               ACCELERATION_FACTOR));
 
-      Architecture architecture =
+      ArchitectureI architecture =
           new RTArchitecture(
               SmartLightingCoupledModel.MIL_RT_URI,
               atomicModelDescriptors,
@@ -166,8 +177,6 @@ public class RunSmartLightingUnitaryMILRTSimulation {
               TimeUnit.HOURS);
 
       SimulatorI se = architecture.constructSimulator();
-      // run a simulation with the simulation beginning at 0.0 and
-      // ending at 24.0
       long start = System.currentTimeMillis() + 100;
       double simulationDuration = 24.1;
       se.startRTSimulation(start, 0.0, simulationDuration);

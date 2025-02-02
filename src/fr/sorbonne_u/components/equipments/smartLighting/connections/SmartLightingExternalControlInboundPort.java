@@ -6,58 +6,65 @@ import fr.sorbonne_u.components.equipments.smartLighting.interfaces.SmartLightin
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
 import fr.sorbonne_u.exceptions.PreconditionException;
 
-public class SmartLightingExternalControlInboundPort extends AbstractInboundPort implements SmartLightingExternalControlCI {
+public class SmartLightingExternalControlInboundPort extends AbstractInboundPort
+    implements SmartLightingExternalControlCI {
 
-    // -------------------------------------------------------------------------
-    // Constants and variables
-    // -------------------------------------------------------------------------
-    private static final long serialVersionUID = 1L;
+  // -------------------------------------------------------------------------
+  // Constants and variables
+  // -------------------------------------------------------------------------
+  private static final long serialVersionUID = 1L;
 
-    // -------------------------------------------------------------------------
-    // Constructors
-    // -------------------------------------------------------------------------
+  // -------------------------------------------------------------------------
+  // Constructors
+  // -------------------------------------------------------------------------
 
-    public SmartLightingExternalControlInboundPort(ComponentI owner) throws Exception {
-        super(SmartLightingExternalControlCI.class, owner);
-        assert owner instanceof SmartLightingExternalControlI:
-            new PreconditionException("Owner is not an instance of SmartLightingExternalControlI");
-    }
+  public SmartLightingExternalControlInboundPort(ComponentI owner) throws Exception {
+    super(SmartLightingExternalControlCI.class, owner);
+    assert owner instanceof SmartLightingExternalControlI
+        : new PreconditionException("Owner is not an instance of SmartLightingExternalControlI");
+  }
 
-    public SmartLightingExternalControlInboundPort(String uri, ComponentI owner) throws Exception {
-        super(uri, SmartLightingExternalControlCI.class, owner);
-        assert owner instanceof SmartLightingExternalControlI:
-            new PreconditionException("Owner is not an instance of SmartLightingExternalControlI");
-    }
+  public SmartLightingExternalControlInboundPort(String uri, ComponentI owner) throws Exception {
+    super(uri, SmartLightingExternalControlCI.class, owner);
+    assert owner instanceof SmartLightingExternalControlI
+        : new PreconditionException("Owner is not an instance of SmartLightingExternalControlI");
+  }
 
-    // -------------------------------------------------------------------------
-    // Methods
-    // -------------------------------------------------------------------------
+  // -------------------------------------------------------------------------
+  // Methods
+  // -------------------------------------------------------------------------
 
-    @Override
-    public double getMaxPowerLevel() throws Exception {
-        return this.getOwner().handleRequest(owner -> ((SmartLightingExternalControlI) owner).getMaxPowerLevel());
-    }
+  @Override
+  public double getMaxPowerLevel() throws Exception {
+    return this.getOwner()
+        .handleRequest(owner -> ((SmartLightingExternalControlI) owner).getMaxPowerLevel());
+  }
 
-    @Override
-    public double getCurrentPowerLevel() throws Exception {
-        return this.getOwner().handleRequest(owner -> ((SmartLightingExternalControlI) owner).getCurrentPowerLevel());
-    }
+  @Override
+  public double getCurrentPowerLevel() throws Exception {
+    return this.getOwner()
+        .handleRequest(owner -> ((SmartLightingExternalControlI) owner).getCurrentPowerLevel());
+  }
 
-    @Override
-    public void setCurrentPowerLevel(double powerLevel) throws Exception {
-        this.getOwner().handleRequest(owner -> {
-            ((SmartLightingExternalControlI) owner).setCurrentPowerLevel(powerLevel);
-            return null;
-        });
-    }
+  @Override
+  public void setCurrentPowerLevel(double powerLevel) throws Exception {
+    this.getOwner()
+        .handleRequest(
+            owner -> {
+              ((SmartLightingExternalControlI) owner).setCurrentPowerLevel(powerLevel);
+              return null;
+            });
+  }
 
-    @Override
-    public double getTargetIllumination() throws Exception {
-        return this.getOwner().handleRequest(owner -> ((SmartLightingExternalControlI) owner).getTargetIllumination());
-    }
+  @Override
+  public double getTargetIllumination() throws Exception {
+    return this.getOwner()
+        .handleRequest(owner -> ((SmartLightingExternalControlI) owner).getTargetIllumination());
+  }
 
-    @Override
-    public double getCurrentIllumination() throws Exception {
-        return this.getOwner().handleRequest(owner -> ((SmartLightingExternalControlI) owner).getCurrentIllumination());
-    }
+  @Override
+  public double getCurrentIllumination() throws Exception {
+    return this.getOwner()
+        .handleRequest(owner -> ((SmartLightingExternalControlI) owner).getCurrentIllumination());
+  }
 }

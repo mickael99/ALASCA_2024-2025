@@ -1,7 +1,7 @@
-package fr.sorbonne_u.components.equipments.smartLightingE3.connections;
+package fr.sorbonne_u.components.equipments.smartLighting.connections;
 
 import fr.sorbonne_u.components.connectors.AbstractConnector;
-import fr.sorbonne_u.components.equipments.smartLightingE3.SmartLightingActuatorCI;
+import fr.sorbonne_u.components.equipments.smartLighting.SmartLightingActuatorCI;
 
 public class SmartLightingActuatorConnector extends AbstractConnector
     implements SmartLightingActuatorCI {

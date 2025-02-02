@@ -1,6 +1,6 @@
-package fr.sorbonne_u.components.equipments.smartLightingE3.mil;
+package fr.sorbonne_u.components.equipments.smartLighting.mil;
 
-import fr.sorbonne_u.components.equipments.smartLightingE3.mil.events.*;
+import fr.sorbonne_u.components.equipments.smartLighting.mil.events.*;
 import fr.sorbonne_u.components.utils.SimulationType;
 import fr.sorbonne_u.devs_simulation.architectures.Architecture;
 import fr.sorbonne_u.devs_simulation.architectures.RTArchitecture;

@@ -1,4 +1,4 @@
-package fr.sorbonne_u.components.equipments.smartLightingE3.measures;
+package fr.sorbonne_u.components.equipments.smartLighting.measures;
 
 import fr.sorbonne_u.components.utils.CompoundMeasure;
 import fr.sorbonne_u.components.utils.Measure;
@@ -8,8 +8,6 @@ import fr.sorbonne_u.exceptions.ImplementationInvariantException;
 import fr.sorbonne_u.exceptions.InvariantChecking;
 import fr.sorbonne_u.exceptions.InvariantException;
 import fr.sorbonne_u.exceptions.PreconditionException;
-
-import java.io.Serializable;
 
 public class SmartLightingCompoundMeasure extends CompoundMeasure implements SmartLightingMeasureI {
 

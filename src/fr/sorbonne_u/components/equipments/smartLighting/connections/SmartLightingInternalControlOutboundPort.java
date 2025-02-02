@@ -4,67 +4,70 @@ import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.equipments.smartLighting.interfaces.SmartLightingInternalControlCI;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 
-public class SmartLightingInternalControlOutboundPort extends AbstractOutboundPort implements SmartLightingInternalControlCI {
+public class SmartLightingInternalControlOutboundPort extends AbstractOutboundPort
+    implements SmartLightingInternalControlCI {
 
-    //----------------------------------------------------------------------------
-    // Constants and variables
-    //----------------------------------------------------------------------------
+  // ----------------------------------------------------------------------------
+  // Constants and variables
+  // ----------------------------------------------------------------------------
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    //----------------------------------------------------------------------------
-    // Constructors
-    //----------------------------------------------------------------------------
+  // ----------------------------------------------------------------------------
+  // Constructors
+  // ----------------------------------------------------------------------------
 
-    public SmartLightingInternalControlOutboundPort(String uri, ComponentI owner) throws Exception {
-        super(uri, SmartLightingInternalControlCI.class, owner);
-    }
+  public SmartLightingInternalControlOutboundPort(String uri, ComponentI owner) throws Exception {
+    super(uri, SmartLightingInternalControlCI.class, owner);
+  }
 
-    public SmartLightingInternalControlOutboundPort(ComponentI owner) throws Exception {
-        super(SmartLightingInternalControlCI.class, owner);
-    }
+  public SmartLightingInternalControlOutboundPort(ComponentI owner) throws Exception {
+    super(SmartLightingInternalControlCI.class, owner);
+  }
 
-    //----------------------------------------------------------------------------
-    // Methods
-    //----------------------------------------------------------------------------
+  // ----------------------------------------------------------------------------
+  // Methods
+  // ----------------------------------------------------------------------------
 
-    /**
-     * @see fr.sorbonne_u.components.equipments.smartLighting.interfaces.SmartLightingInternalControlCI#IncreaseLightIntensity()
-     */
-    @Override
-    public void IncreaseLightIntensity() throws Exception {
-        ((SmartLightingInternalControlCI)this.getConnector()).IncreaseLightIntensity();
-    }
+  /**
+   * @see SmartLightingInternalControlCI#IncreaseLightIntensity()
+   */
+  @Override
+  public void IncreaseLightIntensity() throws Exception {
+    ((SmartLightingInternalControlCI) this.getConnector()).IncreaseLightIntensity();
+  }
 
-    /**
-     * @see fr.sorbonne_u.components.equipments.smartLighting.interfaces.SmartLightingInternalControlCI#DecreaseLightIntensity()
-     */
-    @Override
-    public void DecreaseLightIntensity() throws Exception {
-        ((SmartLightingInternalControlCI)this.getConnector()).DecreaseLightIntensity();
-    }
+  /**
+   * @see SmartLightingInternalControlCI#DecreaseLightIntensity()
+   */
+  @Override
+  public void DecreaseLightIntensity() throws Exception {
+    ((SmartLightingInternalControlCI) this.getConnector()).DecreaseLightIntensity();
+  }
 
-    /**
-     * @see fr.sorbonne_u.components.equipments.smartLighting.interfaces.SmartLightingInternalControlCI#isSwitchingAutomatically()
-     */
-    @Override
-    public boolean isSwitchingAutomatically() throws Exception {
-        return ((SmartLightingInternalControlCI)this.getConnector()).isSwitchingAutomatically();
-    }
+  /**
+   * @see SmartLightingInternalControlCI#isSwitchingAutomatically()
+   */
+  @Override
+  public boolean isSwitchingAutomatically() throws Exception {
+    return ((SmartLightingInternalControlCI) this.getConnector()).isSwitchingAutomatically();
+  }
 
-    /**
-     * @see fr.sorbonne_u.components.equipments.smartLighting.interfaces.SmartLightingIlluminationI#getTargetIllumination()
-     */
-    @Override
-    public double getTargetIllumination() throws Exception {
-        return ((SmartLightingInternalControlCI)this.getConnector()).getTargetIllumination();
-    }
+  /**
+   * @see
+   *     fr.sorbonne_u.components.equipments.smartLighting.interfaces.SmartLightingIlluminationI#getTargetIllumination()
+   */
+  @Override
+  public double getTargetIllumination() throws Exception {
+    return ((SmartLightingInternalControlCI) this.getConnector()).getTargetIllumination();
+  }
 
-    /**
-     * @see fr.sorbonne_u.components.equipments.smartLighting.interfaces.SmartLightingIlluminationI#getCurrentIllumination()
-     */
-    @Override
-    public double getCurrentIllumination() throws Exception {
-        return ((SmartLightingInternalControlCI)this.getConnector()).getCurrentIllumination();
-    }
+  /**
+   * @see
+   *     fr.sorbonne_u.components.equipments.smartLighting.interfaces.SmartLightingIlluminationI#getCurrentIllumination()
+   */
+  @Override
+  public double getCurrentIllumination() throws Exception {
+    return ((SmartLightingInternalControlCI) this.getConnector()).getCurrentIllumination();
+  }
 }

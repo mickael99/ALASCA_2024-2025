@@ -1,6 +1,6 @@
-package fr.sorbonne_u.components.equipments.smartLightingE3.measures;
+package fr.sorbonne_u.components.equipments.smartLighting.measures;
 
-import fr.sorbonne_u.components.equipments.smartLightingE3.SmartLighting;
+import fr.sorbonne_u.components.equipments.smartLighting.SmartLighting;
 import fr.sorbonne_u.components.utils.Measure;
 import fr.sorbonne_u.utils.aclocks.AcceleratedClock;
 

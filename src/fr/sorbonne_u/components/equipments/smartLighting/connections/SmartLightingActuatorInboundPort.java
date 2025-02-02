@@ -1,8 +1,8 @@
-package fr.sorbonne_u.components.equipments.smartLightingE3.connections;
+package fr.sorbonne_u.components.equipments.smartLighting.connections;
 
 import fr.sorbonne_u.components.ComponentI;
-import fr.sorbonne_u.components.equipments.smartLightingE3.SmartLightingActuatorCI;
-import fr.sorbonne_u.components.equipments.smartLightingE3.interfaces.SmartLightingInternalControlI;
+import fr.sorbonne_u.components.equipments.smartLighting.SmartLightingActuatorCI;
+import fr.sorbonne_u.components.equipments.smartLighting.interfaces.SmartLightingInternalControlI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
 import fr.sorbonne_u.exceptions.PreconditionException;
 

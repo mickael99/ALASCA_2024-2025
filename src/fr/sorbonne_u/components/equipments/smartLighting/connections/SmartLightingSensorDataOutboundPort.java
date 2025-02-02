@@ -1,8 +1,8 @@
-package fr.sorbonne_u.components.equipments.smartLightingE3.connections;
+package fr.sorbonne_u.components.equipments.smartLighting.connections;
 
 import fr.sorbonne_u.components.ComponentI;
-import fr.sorbonne_u.components.equipments.smartLightingE3.SmartLightingSensorDataCI;
-import fr.sorbonne_u.components.equipments.smartLightingE3.measures.SmartLightingSensorData;
+import fr.sorbonne_u.components.equipments.smartLighting.SmartLightingSensorDataCI;
+import fr.sorbonne_u.components.equipments.smartLighting.measures.SmartLightingSensorData;
 import fr.sorbonne_u.components.interfaces.DataRequiredCI;
 import fr.sorbonne_u.components.ports.AbstractDataOutboundPort;
 import fr.sorbonne_u.components.utils.Measure;
