@@ -41,15 +41,13 @@ public class FridgeConnector extends AbstractConnector implements AdjustableCI {
 	}
 	
 	protected void computeAndSetNewPowerLevel(int newMode) throws Exception {
+		System.out.println("le nouveau mode -> " + newMode);
 		assert	newMode >= 0 && newMode <= MAX_MODE :
 				new PreconditionException("newMode >= 0 && newMode <= MAX_MODE");
-
-		double maxPowerLevel =
-				((FridgeExternalControlCI)this.offering).getCurrentCoolingPower();
+		double maxPowerLevel = 500.0;
 		double newPowerLevel =
 				(newMode - 1) * maxPowerLevel/(MAX_MODE - 1);
 		((FridgeExternalControlCI)this.offering).setCurrentCoolingPower(newPowerLevel);
-
 	}
 
 	@Override
@@ -72,7 +70,6 @@ public class FridgeConnector extends AbstractConnector implements AdjustableCI {
 		assert	!this.suspended() : new PreconditionException("!suspended()");
 		assert	this.currentMode() > 0 :
 				new PreconditionException("currentMode() > 0");
-
 		try {
 			this.computeAndSetNewPowerLevel(this.currentMode - 1);
 			this.currentMode--;

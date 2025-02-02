@@ -53,7 +53,7 @@ public class CVMIntegrationTest extends AbstractCVM {
 	public static double ACCELERATION_FACTOR = 360.0;
 
 	public static ExecutionType	CURRENT_EXECUTION_TYPE = ExecutionType.INTEGRATION_TEST;
-	public static SimulationType CURRENT_SIMULATION_TYPE = SimulationType.MIL_SIMULATION;
+	public static SimulationType CURRENT_SIMULATION_TYPE = SimulationType.SIL_SIMULATION;
 
 	public static String CLOCK_URI = "hem-clock";
 	public static String START_INSTANT = "2023-11-22T00:00:00.00Z";
@@ -262,16 +262,6 @@ public class CVMIntegrationTest extends AbstractCVM {
 							 SIMULATION_TIME_UNIT,
 							 ACCELERATION_FACTOR,
 							 CLOCK_URI});
-		AbstractComponent.createComponent(
-				WindTurbineTester.class.getCanonicalName(),
-				new Object[]{WindTurbine.INBOUND_PORT_URI,
-							 CURRENT_EXECUTION_TYPE,
-							 CURRENT_SIMULATION_TYPE,
-							 globalArchitectureURI,
-							 windTurbineUserLocalArchitectureURI,
-							 SIMULATION_TIME_UNIT,
-							 ACCELERATION_FACTOR,
-							 CLOCK_URI});
 		
 		AbstractComponent.createComponent(
 				Battery.class.getCanonicalName(),
@@ -293,6 +283,17 @@ public class CVMIntegrationTest extends AbstractCVM {
 								 CURRENT_SIMULATION_TYPE,
 								 globalArchitectureURI,
 								 batteryUserLocalArchitectureURI,
+								 SIMULATION_TIME_UNIT,
+								 ACCELERATION_FACTOR,
+								 CLOCK_URI});
+			
+			AbstractComponent.createComponent(
+					WindTurbineTester.class.getCanonicalName(),
+					new Object[]{WindTurbine.INBOUND_PORT_URI,
+								 CURRENT_EXECUTION_TYPE,
+								 CURRENT_SIMULATION_TYPE,
+								 globalArchitectureURI,
+								 windTurbineUserLocalArchitectureURI,
 								 SIMULATION_TIME_UNIT,
 								 ACCELERATION_FACTOR,
 								 CLOCK_URI});

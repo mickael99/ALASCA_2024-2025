@@ -52,13 +52,13 @@ import fr.sorbonne_u.components.equipments.fridge.mil.events.CoolFridge;
 import fr.sorbonne_u.components.equipments.fridge.mil.events.DoNotCoolFridge;
 import fr.sorbonne_u.components.equipments.fridge.mil.events.OpenDoorFridge;
 import fr.sorbonne_u.components.equipments.fridge.mil.events.SetPowerFridge;
+import fr.sorbonne_u.components.equipments.fridge.mil.events.SetPowerFridge.PowerValue;
 import fr.sorbonne_u.components.equipments.fridge.mil.events.SwitchOffFridge;
 import fr.sorbonne_u.components.equipments.fridge.mil.events.SwitchOnFridge;
 import fr.sorbonne_u.components.equipments.fridge.sil.FridgeActuatorCI;
 import fr.sorbonne_u.components.equipments.fridge.sil.FridgeSensorDataCI;
 import fr.sorbonne_u.components.equipments.fridge.sil.connectors.FridgeActuatorInboundPort;
 import fr.sorbonne_u.components.equipments.fridge.sil.connectors.FridgeSensorDataInboundPort;
-import fr.sorbonne_u.components.equipments.heater.mil.events.SetPowerHeater.PowerValue;
 import fr.sorbonne_u.components.equipments.hem.registration.RegistrationOutboundPort;
 import fr.sorbonne_u.components.equipments.fridge.mil.LocalSimulationArchitectures;
 
@@ -606,7 +606,6 @@ public class Fridge extends AbstractCyPhyComponent implements FridgeInternalCont
 
 				clock.waitUntilSimulationEnd();
 
-				Thread.sleep(250L);
 				this.logMessage(this.asp.getFinalReport().toString());
 			}
 		}
@@ -701,21 +700,17 @@ public class Fridge extends AbstractCyPhyComponent implements FridgeInternalCont
 	public void setCurrentCoolingPower(double power) throws Exception { 
 		if (VERBOSE)
 			this.traceMessage("Trying to set current cooling power -> " + power + "\n.");
-				
 		assert this.currentState != FridgeState.OFF :
 			new PreconditionException("Impossible to set current cooling power because the fridge is off");
 		assert power >= 0 && power <= MAX_COOLING_POWER :
 			new PreconditionException("The cooling power is not between 0 and " + MAX_COOLING_POWER + " -> " + power);
-
 		this.currentCoolingPower = power;
-		
 		if (this.currentSimulationType.isSILSimulation()) {
 			PowerValue pv = new PowerValue(this.currentCoolingPower);
 			((RTAtomicSimulatorPlugin)this.asp).triggerExternalEvent(
 												FridgeStateModel.SIL_URI,
 												t -> new SetPowerFridge(t, pv));
 		}
-		
 			
 		if (VERBOSE)
 			this.traceMessage("Current cooling power is changing -> " + this.currentCoolingPower + "\n.");

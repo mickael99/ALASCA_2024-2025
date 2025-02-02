@@ -49,10 +49,13 @@ public class HEM extends AbstractComponent implements RegistrationI {
 	// -------------------------------------------------------------------------
 	// Constants and variables
 	// -------------------------------------------------------------------------
-
+	
 	public static boolean VERBOSE = true;
 	public static int X_RELATIVE_POSITION = 0;
 	public static int Y_RELATIVE_POSITION = 0;
+		
+	// The HEM start the wind turbine when the loop gets start
+	protected boolean isWindTurbineStartFirst = false;
 
 	// Registration ports
 	public static final String URI_REGISTRATION_INBOUND_PORT = "URI_REGISTRATION_INBOUND_PORT";
@@ -72,18 +75,20 @@ public class HEM extends AbstractComponent implements RegistrationI {
 	protected final SimulationType currentSimulationType;
 	protected final long PERIOD_IN_SECONDS = 60L;
 	
-	protected static final double CRITICAL_DIFFERENCE = 300.0;
+	// In ampere
+	protected static final double CRITICAL_DIFFERENCE = 7.0;
 	
 	
 	// -------------------------------------------------------------------------
 	// Constructors
 	// -------------------------------------------------------------------------
 	
-	protected HEM(SimulationType currentSimulationType) {
-		super(1, 1);
+	protected HEM(SimulationType currentSimulationType) throws Exception {
+		super(2, 1);
 
 		this.currentSimulationType = currentSimulationType;
-
+		
+		this.initialise();
 		if (VERBOSE) {
 			this.tracer.get().setTitle("Home Energy Manager component");
 			this.tracer.get().setRelativePosition(X_RELATIVE_POSITION,
@@ -92,6 +97,19 @@ public class HEM extends AbstractComponent implements RegistrationI {
 		}
 	}
 	
+	protected void initialise() throws Exception {
+		this.electricMeterOutboundPort = new ElectricMeterOutboundPort(this);
+		this.electricMeterOutboundPort.publishPort();
+
+		this.controlFridgeOutboundPort = new AdjustableOutboundPort(this);
+		this.controlFridgeOutboundPort.publishPort();
+		
+		this.windTurbineOutboundPort = new WindTurbineOutboundPort(this);
+		this.windTurbineOutboundPort.publishPort();
+		
+		this.batteryOutboundPort = new BatteryOutboundPort(this);
+		this.batteryOutboundPort.publishPort();
+	}
 	
 	// -------------------------------------------------------------------------
 	// Component internal methods
@@ -104,6 +122,12 @@ public class HEM extends AbstractComponent implements RegistrationI {
 			this.scheduleTask(
 				o -> {
 					try	{
+						if(!this.isWindTurbineStartFirst) {
+							this.windTurbineOutboundPort.activate();
+							this.isWindTurbineStartFirst = true;
+						}
+							
+						
 						// Get the devices production and devices consumption
 						double currentConsumption = this.electricMeterOutboundPort.
 																		getCurrentConsumption().
@@ -121,32 +145,57 @@ public class HEM extends AbstractComponent implements RegistrationI {
 						
 						if(difference > CRITICAL_DIFFERENCE) {
 							if(currentConsumption > currentProduction) {
-//								System.out.println("trop d'energy consommé");
+								System.out.println("trop de consommation");
 								// Handle battery, the battery has to give energy to the devices
 								if(batteryState != BATTERY_STATE.CONSUME && batteryChargeLevel > 0.0)
 									this.batteryOutboundPort.setState(BATTERY_STATE.CONSUME);
-								
+								else if(batteryState != BATTERY_STATE.STANDBY && batteryChargeLevel == 0.0)
+									this.batteryOutboundPort.setState(BATTERY_STATE.STANDBY);
 								// Suspend devices to save energy
-								if(!this.controlFridgeOutboundPort.suspended())
-									this.controlFridgeOutboundPort.suspend();
+								if(!this.controlFridgeOutboundPort.suspended()) {
+									if(this.controlFridgeOutboundPort.currentMode() > 1) {
+										this.controlFridgeOutboundPort.downMode();
+									} else {
+										this.controlFridgeOutboundPort.suspend();
+									}
+								}
+								
+								// Activate the wind turbine
+								if (!this.windTurbineOutboundPort.isActivate()) {
+		                            this.windTurbineOutboundPort.activate();
+		                        }
 							} else {
-//								System.out.println("trop d'energy produit");
+								System.out.println("trop de production");
 								// Handle battery, the battery has to save energy
 								if(batteryState != BATTERY_STATE.PRODUCT && batteryChargeLevel < 1.0)
 									this.batteryOutboundPort.setState(BATTERY_STATE.PRODUCT);
+								else if(batteryState != BATTERY_STATE.STANDBY && batteryChargeLevel == 1.0)
+									this.batteryOutboundPort.setState(BATTERY_STATE.STANDBY);
 								
-								// trigger devices if there are suspended
-								if(this.controlFridgeOutboundPort.suspended())
+								// Handle devices
+								if(this.controlFridgeOutboundPort.suspended()) {
 									this.controlFridgeOutboundPort.resume();
+								} else if(this.controlFridgeOutboundPort.currentMode() < this.controlFridgeOutboundPort.maxMode()){
+									this.controlFridgeOutboundPort.upMode();
+								}
+								
+								// Stop the wind turbine
+								if (this.windTurbineOutboundPort.isActivate()) {
+		                            this.windTurbineOutboundPort.stop();
+		                        }
 							}
 						} else {
+							System.out.println("bon");
 							// Handle battery, the battery doesn't need to do anything
 							if(batteryState != BATTERY_STATE.STANDBY)
 								this.batteryOutboundPort.setState(BATTERY_STATE.STANDBY);
 							
 							// trigger devices if there are suspended
-							if(this.controlFridgeOutboundPort.suspended())
+							if(this.controlFridgeOutboundPort.suspended()) {
 								this.controlFridgeOutboundPort.resume();
+							} else if(this.controlFridgeOutboundPort.currentMode() < 2) {
+								this.controlFridgeOutboundPort.upMode();
+							}
 						}
 						
 						
@@ -211,18 +260,6 @@ public class HEM extends AbstractComponent implements RegistrationI {
 		super.start();
 
 		try {
-			this.electricMeterOutboundPort = new ElectricMeterOutboundPort(this);
-			this.electricMeterOutboundPort.publishPort();
-
-			this.controlFridgeOutboundPort = new AdjustableOutboundPort(this);
-			this.controlFridgeOutboundPort.publishPort();
-			
-			this.windTurbineOutboundPort = new WindTurbineOutboundPort(this);
-			this.windTurbineOutboundPort.publishPort();
-			
-			this.batteryOutboundPort = new BatteryOutboundPort(this);
-			this.batteryOutboundPort.publishPort();
-			
 			this.doPortConnection(
 					this.electricMeterOutboundPort.getPortURI(),
 					ElectricMeter.ELECTRIC_METER_INBOUND_PORT_URI,

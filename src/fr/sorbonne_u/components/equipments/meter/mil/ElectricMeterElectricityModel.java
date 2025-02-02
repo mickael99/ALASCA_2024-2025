@@ -138,11 +138,7 @@ extends		AtomicHIOA
 		p += Electricity.computeProduction(
 							d, TENSION*this.currentPowerProduction.getValue());
 		Time t = this.totalProduction.getTime().add(d);
-		if (t != null && t.greaterThanOrEqual(totalProduction.getTime())) {
-		    totalProduction.setNewValue(p, t);
-		} else {
-		    System.out.println("DEBUG: Time issue, value ignored. t = " + t);
-		}
+		totalProduction.setNewValue(p, t);
 	}
 
 	protected double computePowerConsumption() {
@@ -169,7 +165,6 @@ extends		AtomicHIOA
                         //+
 //                        (this.currentGeneratorProduction == null || this.currentGeneratorProduction.getValue() == null
 //                		? 0.0 : currentGeneratorProduction.getValue());
-        
         return production;
     }
 

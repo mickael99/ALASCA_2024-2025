@@ -243,7 +243,7 @@ super(reflectionInboundPortURI, 2, 1);
 		
 		this.inboundPort = new WindTurbineInboundPort(inboundPortURI, this);
 		this.inboundPort.publishPort();
-		
+
 		switch (this.currentSimulationType) {
 			case MIL_SIMULATION:
 				Architecture architecture = null;
@@ -394,7 +394,7 @@ super(reflectionInboundPortURI, 2, 1);
 
 				clock.waitUntilSimulationEnd();
 
-				Thread.sleep(250L);
+				//Thread.sleep(250L);
 				this.logMessage(this.asp.getFinalReport().toString());
 			}
 		}

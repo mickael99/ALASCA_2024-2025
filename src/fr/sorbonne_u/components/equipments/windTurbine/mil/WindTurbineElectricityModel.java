@@ -62,8 +62,6 @@ public class WindTurbineElectricityModel extends AtomicHIOA implements WindTurbi
     // Nominal power of the wind turbine (Watts or kW)
     final double nominal_power = 5000.0;     
     
-    protected Time lastInternalTransitionTime;
-
     @ImportedVariable(type = Double.class)
     protected Value<Double> externalWindSpeed;
 
@@ -124,7 +122,6 @@ public class WindTurbineElectricityModel extends AtomicHIOA implements WindTurbi
     
     public WindTurbineElectricityModel(String uri, TimeUnit simulatedTimeUnit, AtomicSimulatorI simulationEngine) {
 		super(uri, simulatedTimeUnit, simulationEngine);
-		
 		this.evaluationStep = new Duration(ExternalWindModel.STEP, this.getSimulatedTimeUnit());
 		
 		this.getSimulationEngine().setLogger(new StandardLogger());
@@ -220,15 +217,15 @@ public class WindTurbineElectricityModel extends AtomicHIOA implements WindTurbi
             } else {
             	this.currentProduction.setNewValue(this.nominal_power / TENSION, this.getCurrentStateTime());
             }
-            
-        	this.totalProduction += currentProduction.getValue() * elapsedTime.getSimulatedDuration();
         } 
         else 
         	currentProduction.setNewValue(0.0, this.getCurrentStateTime());
         
         this.totalProduction += Electricity.computeProduction(elapsedTime, this.currentProduction.getValue() * TENSION);
 
-        
+//        System.out.println("state -> " + this.currentState);
+//        System.out.println("production -> " + this.currentProduction.getValue());
+//        System.out.println("total production -> " + this.totalProduction);
         logMessage("Current production " + currentProduction.getValue() + " at " + currentProduction.getTime() + "\n");
     }
 	
@@ -240,6 +237,7 @@ public class WindTurbineElectricityModel extends AtomicHIOA implements WindTurbi
 
         assert currentEvent instanceof AbstractWindTurbineEvent;
         currentEvent.executeOn(this);
+        System.out.println("action externe");
 
         super.userDefinedExternalTransition(elapsedTime);
         
