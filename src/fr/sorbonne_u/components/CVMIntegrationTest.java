@@ -262,16 +262,6 @@ public class CVMIntegrationTest extends AbstractCVM {
 							 SIMULATION_TIME_UNIT,
 							 ACCELERATION_FACTOR,
 							 CLOCK_URI});
-		AbstractComponent.createComponent(
-				WindTurbineTester.class.getCanonicalName(),
-				new Object[]{WindTurbine.INBOUND_PORT_URI,
-							 CURRENT_EXECUTION_TYPE,
-							 CURRENT_SIMULATION_TYPE,
-							 globalArchitectureURI,
-							 windTurbineUserLocalArchitectureURI,
-							 SIMULATION_TIME_UNIT,
-							 ACCELERATION_FACTOR,
-							 CLOCK_URI});
 		
 		AbstractComponent.createComponent(
 				Battery.class.getCanonicalName(),
@@ -293,6 +283,17 @@ public class CVMIntegrationTest extends AbstractCVM {
 								 CURRENT_SIMULATION_TYPE,
 								 globalArchitectureURI,
 								 batteryUserLocalArchitectureURI,
+								 SIMULATION_TIME_UNIT,
+								 ACCELERATION_FACTOR,
+								 CLOCK_URI});
+			
+			AbstractComponent.createComponent(
+					WindTurbineTester.class.getCanonicalName(),
+					new Object[]{WindTurbine.INBOUND_PORT_URI,
+								 CURRENT_EXECUTION_TYPE,
+								 CURRENT_SIMULATION_TYPE,
+								 globalArchitectureURI,
+								 windTurbineUserLocalArchitectureURI,
 								 SIMULATION_TIME_UNIT,
 								 ACCELERATION_FACTOR,
 								 CLOCK_URI});
@@ -374,7 +375,6 @@ public class CVMIntegrationTest extends AbstractCVM {
 				
 			default:
 			}
-			System.out.println("starting for " + executionDurationInMillis);
 			cvm.startStandardLifeCycle(executionDurationInMillis);
 			Thread.sleep(END_SLEEP_DURATION);
 			System.exit(0);

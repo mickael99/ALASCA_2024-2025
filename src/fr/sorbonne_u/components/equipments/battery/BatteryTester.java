@@ -397,9 +397,7 @@ public class BatteryTester extends AbstractCyPhyComponent {
 			this.traceMessage("testSetState() \n");
 		
 		try {
-			System.out.println(this.outboundPort.getState().toString());
 			this.outboundPort.setState(BATTERY_STATE.PRODUCT);
-			System.out.println(this.outboundPort.getState().toString());
 			assertEquals(BATTERY_STATE.PRODUCT, this.outboundPort.getState());
 		} catch(Exception e) {
 			assertTrue(false);

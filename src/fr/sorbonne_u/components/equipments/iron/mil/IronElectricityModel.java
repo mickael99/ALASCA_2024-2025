@@ -225,18 +225,6 @@ public class IronElectricityModel extends AtomicHIOA implements IronOperationI {
 			this.toggleConsumptionHasChanged();
 		}
 	}
-
-//	public IronState getState() {
-//		return this.currentState;
-//	}
-//	
-//	public boolean isEnergySavingModeEnabled() {
-//		return this.isEnergySavingMode;
-//	}
-//	
-//	public boolean isSteamModeEnabled() {
-//		return this.isSteamMode;
-//	}
 	
 	@Override
 	public void setState(IronState s) {
